@@ -1,2 +1,12 @@
+event:
+  - createEvent:
+  - getEvent:
+  - updateEvent:
+  - deleteEvent:
+  - listEvents:
+registration:
+  - registerForEvent:
+  - cancelRegistration:
+  - markAttendance:
 greeting:
   - hello:

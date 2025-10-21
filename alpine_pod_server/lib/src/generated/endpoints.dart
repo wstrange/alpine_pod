@@ -10,57 +10,34 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
-import '../greeting_endpoint.dart' as _i2;
-import '../endpoints/event_endpoint.dart' as _i3;
-import '../endpoints/registration_endpoint.dart' as _i4;
+import '../endpoints/event_endpoint.dart' as _i2;
+import '../endpoints/registration_endpoint.dart' as _i3;
+import '../greeting_endpoint.dart' as _i4;
+import 'package:alpine_pod_server/src/generated/event.dart' as _i5;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override
   void initializeEndpoints(_i1.Server server) {
     var endpoints = <String, _i1.Endpoint>{
-      'greeting': _i2.GreetingEndpoint()
-        ..initialize(
-          server,
-          'greeting',
-          null,
-        ),
-      'event': _i3.EventEndpoint()
+      'event': _i2.EventEndpoint()
         ..initialize(
           server,
           'event',
           null,
         ),
-      'registration': _i4.RegistrationEndpoint()
+      'registration': _i3.RegistrationEndpoint()
         ..initialize(
           server,
           'registration',
           null,
         ),
+      'greeting': _i4.GreetingEndpoint()
+        ..initialize(
+          server,
+          'greeting',
+          null,
+        ),
     };
-    connectors['greeting'] = _i1.EndpointConnector(
-      name: 'greeting',
-      endpoint: endpoints['greeting']!,
-      methodConnectors: {
-        'hello': _i1.MethodConnector(
-          name: 'hello',
-          params: {
-            'name': _i1.ParameterDescription(
-              name: 'name',
-              type: _i1.getType<String>(),
-              nullable: false,
-            )
-          },
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['greeting'] as _i2.GreetingEndpoint).hello(
-            session,
-            params['name'],
-          ),
-        )
-      },
-    );
     connectors['event'] = _i1.EndpointConnector(
       name: 'event',
       endpoint: endpoints['event']!,
@@ -70,7 +47,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'event': _i1.ParameterDescription(
               name: 'event',
-              type: _i1.getType<Object>(),
+              type: _i1.getType<_i5.Event>(),
               nullable: false,
             )
           },
@@ -78,7 +55,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['event'] as _i3.EventEndpoint).createEvent(
+              (endpoints['event'] as _i2.EventEndpoint).createEvent(
             session,
             params['event'],
           ),
@@ -96,7 +73,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['event'] as _i3.EventEndpoint).getEvent(
+              (endpoints['event'] as _i2.EventEndpoint).getEvent(
             session,
             params['id'],
           ),
@@ -106,7 +83,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'event': _i1.ParameterDescription(
               name: 'event',
-              type: _i1.getType<Object>(),
+              type: _i1.getType<_i5.Event>(),
               nullable: false,
             )
           },
@@ -114,7 +91,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['event'] as _i3.EventEndpoint).updateEvent(
+              (endpoints['event'] as _i2.EventEndpoint).updateEvent(
             session,
             params['event'],
           ),
@@ -132,7 +109,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['event'] as _i3.EventEndpoint).deleteEvent(
+              (endpoints['event'] as _i2.EventEndpoint).deleteEvent(
             session,
             params['id'],
           ),
@@ -142,7 +119,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'sectionId': _i1.ParameterDescription(
               name: 'sectionId',
-              type: _i1.getType<int>(),
+              type: _i1.getType<int?>(),
               nullable: true,
             )
           },
@@ -150,14 +127,13 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['event'] as _i3.EventEndpoint).listEvents(
+              (endpoints['event'] as _i2.EventEndpoint).listEvents(
             session,
             params['sectionId'],
           ),
         ),
       },
     );
-
     connectors['registration'] = _i1.EndpointConnector(
       name: 'registration',
       endpoint: endpoints['registration']!,
@@ -177,7 +153,7 @@ class Endpoints extends _i1.EndpointDispatch {
             ),
             'additionalGuests': _i1.ParameterDescription(
               name: 'additionalGuests',
-              type: _i1.getType<int>(),
+              type: _i1.getType<int?>(),
               nullable: true,
             ),
           },
@@ -185,7 +161,8 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['registration'] as _i4.RegistrationEndpoint).registerForEvent(
+              (endpoints['registration'] as _i3.RegistrationEndpoint)
+                  .registerForEvent(
             session,
             params['eventId'],
             params['waiverAccepted'],
@@ -205,7 +182,8 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['registration'] as _i4.RegistrationEndpoint).cancelRegistration(
+              (endpoints['registration'] as _i3.RegistrationEndpoint)
+                  .cancelRegistration(
             session,
             params['registrationId'],
           ),
@@ -228,12 +206,37 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['registration'] as _i4.RegistrationEndpoint).markAttendance(
+              (endpoints['registration'] as _i3.RegistrationEndpoint)
+                  .markAttendance(
             session,
             params['registrationId'],
             params['attended'],
           ),
         ),
+      },
+    );
+    connectors['greeting'] = _i1.EndpointConnector(
+      name: 'greeting',
+      endpoint: endpoints['greeting']!,
+      methodConnectors: {
+        'hello': _i1.MethodConnector(
+          name: 'hello',
+          params: {
+            'name': _i1.ParameterDescription(
+              name: 'name',
+              type: _i1.getType<String>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['greeting'] as _i4.GreetingEndpoint).hello(
+            session,
+            params['name'],
+          ),
+        )
       },
     );
   }

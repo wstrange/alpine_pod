@@ -22,6 +22,7 @@ import 'section.dart' as _i10;
 import 'section_membership.dart' as _i11;
 import 'user.dart' as _i12;
 import 'user_role.dart' as _i13;
+import 'package:alpine_pod_server/src/generated/event.dart' as _i14;
 export 'greeting.dart';
 export 'event.dart';
 export 'event_document.dart';
@@ -1042,6 +1043,10 @@ class Protocol extends _i1.SerializationManagerServer {
     }
     if (t == _i1.getType<_i13.UserRole?>()) {
       return (data != null ? _i13.UserRole.fromJson(data) : null) as T;
+    }
+    if (t == List<_i14.Event>) {
+      return (data as List).map((e) => deserialize<_i14.Event>(e)).toList()
+          as T;
     }
     try {
       return _i2.Protocol().deserialize<T>(data, t);
