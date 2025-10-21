@@ -39,6 +39,8 @@ This is a multi-tenant application to manage users who belong to one more alpine
 * Events may require users to have specific certifications or skills to participate (e.g., first aid certification, climbing experience).
 * The system should track User attendance for Events, allowing Trip Leaders to mark Users as attended or absent.
 * Events can have recurring schedules (e.g., weekly, monthly) to facilitate regular activities.
+* Events are of a specific type (e.g., hike, climb, ski, social). The event type should be an enumerated value.
+* Some events may allow direct registration. Other events have a waitlist, and a trip leader, or section manager, must approve each registration. The schema should support this use case.
 
 
 ### Users
@@ -77,16 +79,18 @@ This is a multi-tenant application to manage users who belong to one more alpine
 * Members: Can view and register for Events, and receive Notifications. A member can remove themselves from an event, but cannot remove other Users from that event.
 * Guests: Limited access to view public Events and Sections. Guests cannot register for Events or receive Notifications. However, a member can add a guest to an event they are attending. The schema should support this use case.
 * Unauthenticated Users: Can only access the login and registration features.
+* RBAC rules can be expensive to check on every request. Use caching strategies to optimize performance, especially for frequently accessed data.
 
 ## Instructions on how to generate the schema, server and client code
 
 To generate the database schema, server code, and client code for the alpine_pod application, follow these steps:
 
-* `cd alpine_pod_server; serverpod generate`
+* `cd alpine_pod_server; serverpod generate`. Anytime a .spy.yaml file is changed, this command must be run to regenerate the code.
 * Model files (example users.spy.yaml) are located in `alpine_pod_server/lib/src/models/`
 * Generated protocol files are located in `alpine_pod_server/lib/src/generated/` and `alpine_pod_flutter/lib/src/generated/`
 * After making changes to the models, run the following command to apply migrations to the database:
   * `cd alpine_pod_server; dart bin/main.dart --apply-migrations`
+  * Ask me before you apply migrations.
   * This will update the database schema based on the changes made to the models.
   * Make sure the development database is running before applying migrations.
 * After applying migrations, restart the Serverpod server to ensure the changes take effect:

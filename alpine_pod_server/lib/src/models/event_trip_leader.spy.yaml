@@ -1,0 +1,10 @@
+class: EventTripLeader
+table: event_trip_leaders
+fields:
+  eventId: int?
+  userId: int?
+  assignedAt: DateTime?
+indexes:
+  event_leader_idx:
+    fields: eventId, userId
+    unique: true

@@ -1,0 +1,9 @@
+enum: EventType
+values:
+  - hike
+  - climb
+  - ski
+  - social
+  - training
+  - meeting
+  - other

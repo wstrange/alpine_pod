@@ -3,22 +3,26 @@ table: event_registrations
 fields:
   userId: int?
   eventId: int?
-  registrationStatus: String # pending, confirmed, cancelled, waitlisted
+  registrationStatus: RegistrationStatus
   registrationDate: DateTime
   carPoolPreference: String? # drive, ride, none
   numberOfPassengers: int?
+  additionalGuests: int?
   equipmentNotes: String?
   waiverAccepted: bool
   waiverSignedDate: DateTime?
   participantNotes: String?
   # Internal management fields
   waitlistPosition: int?
+  waitlistedAt: DateTime?
   checkedIn: bool
   checkedInTime: DateTime?
   paymentStatus: String? # pending, completed, refunded
   paymentAmount: double?
   paymentDate: DateTime?
   modifiedAt: DateTime
+  attended: bool?
+  attendedAt: DateTime?
 indexes:
   user_event_idx:
     fields: userId, eventId

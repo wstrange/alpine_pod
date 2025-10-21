@@ -3,6 +3,7 @@ table: events
 fields:
   title: String
   description: String
+  type: EventType
   startTime: DateTime
   endTime: DateTime
   location: String?
@@ -24,12 +25,19 @@ fields:
   waitlistEnabled: bool
   registrationFee: double?
   currentRegistrationCount: int?
+  requiresApproval: bool
   waiverRequired: bool
   minimumParticipants: int?
   cancellationDeadline: DateTime?
   registrationNotes: String?
+  # Association to a section (optional). Events without sectionId are global/public.
+  sectionId: int?
+  # JSON list of documents (e.g. [{"type":"waiver","url":"..."}])
+  documentsJson: String?
 indexes:
   upcoming_events_idx:
     fields: startTime
   public_events_idx:
     fields: public, startTime
+  section_idx:
+    fields: sectionId

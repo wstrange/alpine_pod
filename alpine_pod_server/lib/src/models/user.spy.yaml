@@ -10,7 +10,8 @@ fields:
   emergencyContactName: String
   emergencyContactPhone: String
   medicalConditions: String?
-  certifications: String?
-  skills: String?
-  role: String
+  # certifications and skills stored as JSON-encoded arrays in strings
+  certificationsJson: String?
+  skillsJson: String?
+  role: UserRole
   createdAt: DateTime

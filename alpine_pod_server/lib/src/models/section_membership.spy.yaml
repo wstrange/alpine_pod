@@ -4,6 +4,8 @@ fields:
   userId: int?
   sectionId: int?
   externalUserId: String?
+  syncedAt: DateTime?
+  sourceSystem: String?
 indexes:
   user_section_unique_idx:
     fields: userId, sectionId

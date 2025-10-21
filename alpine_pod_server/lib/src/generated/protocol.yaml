@@ -1,2 +1,18 @@
+event:
+  - createEvent:
+  - getEvent:
+  - updateEvent:
+  - deleteEvent:
+  - listEvents:
+registration:
+  - updateRegistrationStatus:
+  - registerForEvent:
+  - cancelRegistration:
+  - markAttendance:
+user:
+  - updateUserRole:
+  - addUserToSection:
+  - removeUserFromSection:
+  - syncSectionMembership:
 greeting:
   - hello:
