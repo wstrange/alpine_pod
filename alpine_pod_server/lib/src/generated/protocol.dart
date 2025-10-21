@@ -16,18 +16,22 @@ import 'event.dart' as _i4;
 import 'event_document.dart' as _i5;
 import 'event_registration.dart' as _i6;
 import 'event_trip_leader.dart' as _i7;
-import 'notification.dart' as _i8;
-import 'registration_status.dart' as _i9;
-import 'section.dart' as _i10;
-import 'section_membership.dart' as _i11;
-import 'user.dart' as _i12;
-import 'user_role.dart' as _i13;
-import 'package:alpine_pod_server/src/generated/event.dart' as _i14;
+import 'event_type.dart' as _i8;
+import 'notification.dart' as _i9;
+import 'registration_status.dart' as _i10;
+import 'section.dart' as _i11;
+import 'section_membership.dart' as _i12;
+import 'user.dart' as _i13;
+import 'user_role.dart' as _i14;
+import 'package:alpine_pod_server/src/generated/event.dart' as _i15;
+import 'package:alpine_pod_server/src/generated/section_membership.dart'
+    as _i16;
 export 'greeting.dart';
 export 'event.dart';
 export 'event_document.dart';
 export 'event_registration.dart';
 export 'event_trip_leader.dart';
+export 'event_type.dart';
 export 'notification.dart';
 export 'registration_status.dart';
 export 'section.dart';
@@ -420,6 +424,12 @@ class Protocol extends _i1.SerializationManagerServer {
           dartType: 'String',
         ),
         _i2.ColumnDefinition(
+          name: 'type',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'protocol:EventType',
+        ),
+        _i2.ColumnDefinition(
           name: 'startTime',
           columnType: _i2.ColumnType.timestampWithoutTimeZone,
           isNullable: false,
@@ -538,6 +548,12 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'requiresApproval',
+          columnType: _i2.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
         ),
         _i2.ColumnDefinition(
           name: 'waiverRequired',
@@ -993,23 +1009,26 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i7.EventTripLeader) {
       return _i7.EventTripLeader.fromJson(data) as T;
     }
-    if (t == _i8.Notification) {
-      return _i8.Notification.fromJson(data) as T;
+    if (t == _i8.EventType) {
+      return _i8.EventType.fromJson(data) as T;
     }
-    if (t == _i9.RegistrationStatus) {
-      return _i9.RegistrationStatus.fromJson(data) as T;
+    if (t == _i9.Notification) {
+      return _i9.Notification.fromJson(data) as T;
     }
-    if (t == _i10.Section) {
-      return _i10.Section.fromJson(data) as T;
+    if (t == _i10.RegistrationStatus) {
+      return _i10.RegistrationStatus.fromJson(data) as T;
     }
-    if (t == _i11.SectionMembership) {
-      return _i11.SectionMembership.fromJson(data) as T;
+    if (t == _i11.Section) {
+      return _i11.Section.fromJson(data) as T;
     }
-    if (t == _i12.User) {
-      return _i12.User.fromJson(data) as T;
+    if (t == _i12.SectionMembership) {
+      return _i12.SectionMembership.fromJson(data) as T;
     }
-    if (t == _i13.UserRole) {
-      return _i13.UserRole.fromJson(data) as T;
+    if (t == _i13.User) {
+      return _i13.User.fromJson(data) as T;
+    }
+    if (t == _i14.UserRole) {
+      return _i14.UserRole.fromJson(data) as T;
     }
     if (t == _i1.getType<_i3.Greeting?>()) {
       return (data != null ? _i3.Greeting.fromJson(data) : null) as T;
@@ -1026,27 +1045,36 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i1.getType<_i7.EventTripLeader?>()) {
       return (data != null ? _i7.EventTripLeader.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i8.Notification?>()) {
-      return (data != null ? _i8.Notification.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i8.EventType?>()) {
+      return (data != null ? _i8.EventType.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i9.RegistrationStatus?>()) {
-      return (data != null ? _i9.RegistrationStatus.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i9.Notification?>()) {
+      return (data != null ? _i9.Notification.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i10.Section?>()) {
-      return (data != null ? _i10.Section.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i11.SectionMembership?>()) {
-      return (data != null ? _i11.SectionMembership.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i12.User?>()) {
-      return (data != null ? _i12.User.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i13.UserRole?>()) {
-      return (data != null ? _i13.UserRole.fromJson(data) : null) as T;
-    }
-    if (t == List<_i14.Event>) {
-      return (data as List).map((e) => deserialize<_i14.Event>(e)).toList()
+    if (t == _i1.getType<_i10.RegistrationStatus?>()) {
+      return (data != null ? _i10.RegistrationStatus.fromJson(data) : null)
           as T;
+    }
+    if (t == _i1.getType<_i11.Section?>()) {
+      return (data != null ? _i11.Section.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i12.SectionMembership?>()) {
+      return (data != null ? _i12.SectionMembership.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i13.User?>()) {
+      return (data != null ? _i13.User.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i14.UserRole?>()) {
+      return (data != null ? _i14.UserRole.fromJson(data) : null) as T;
+    }
+    if (t == List<_i15.Event>) {
+      return (data as List).map((e) => deserialize<_i15.Event>(e)).toList()
+          as T;
+    }
+    if (t == List<_i16.SectionMembership>) {
+      return (data as List)
+          .map((e) => deserialize<_i16.SectionMembership>(e))
+          .toList() as T;
     }
     try {
       return _i2.Protocol().deserialize<T>(data, t);
@@ -1073,22 +1101,25 @@ class Protocol extends _i1.SerializationManagerServer {
     if (data is _i7.EventTripLeader) {
       return 'EventTripLeader';
     }
-    if (data is _i8.Notification) {
+    if (data is _i8.EventType) {
+      return 'EventType';
+    }
+    if (data is _i9.Notification) {
       return 'Notification';
     }
-    if (data is _i9.RegistrationStatus) {
+    if (data is _i10.RegistrationStatus) {
       return 'RegistrationStatus';
     }
-    if (data is _i10.Section) {
+    if (data is _i11.Section) {
       return 'Section';
     }
-    if (data is _i11.SectionMembership) {
+    if (data is _i12.SectionMembership) {
       return 'SectionMembership';
     }
-    if (data is _i12.User) {
+    if (data is _i13.User) {
       return 'User';
     }
-    if (data is _i13.UserRole) {
+    if (data is _i14.UserRole) {
       return 'UserRole';
     }
     className = _i2.Protocol().getClassNameForObject(data);
@@ -1119,23 +1150,26 @@ class Protocol extends _i1.SerializationManagerServer {
     if (dataClassName == 'EventTripLeader') {
       return deserialize<_i7.EventTripLeader>(data['data']);
     }
+    if (dataClassName == 'EventType') {
+      return deserialize<_i8.EventType>(data['data']);
+    }
     if (dataClassName == 'Notification') {
-      return deserialize<_i8.Notification>(data['data']);
+      return deserialize<_i9.Notification>(data['data']);
     }
     if (dataClassName == 'RegistrationStatus') {
-      return deserialize<_i9.RegistrationStatus>(data['data']);
+      return deserialize<_i10.RegistrationStatus>(data['data']);
     }
     if (dataClassName == 'Section') {
-      return deserialize<_i10.Section>(data['data']);
+      return deserialize<_i11.Section>(data['data']);
     }
     if (dataClassName == 'SectionMembership') {
-      return deserialize<_i11.SectionMembership>(data['data']);
+      return deserialize<_i12.SectionMembership>(data['data']);
     }
     if (dataClassName == 'User') {
-      return deserialize<_i12.User>(data['data']);
+      return deserialize<_i13.User>(data['data']);
     }
     if (dataClassName == 'UserRole') {
-      return deserialize<_i13.UserRole>(data['data']);
+      return deserialize<_i14.UserRole>(data['data']);
     }
     if (dataClassName.startsWith('serverpod.')) {
       data['className'] = dataClassName.substring(10);
@@ -1161,14 +1195,14 @@ class Protocol extends _i1.SerializationManagerServer {
         return _i6.EventRegistration.t;
       case _i7.EventTripLeader:
         return _i7.EventTripLeader.t;
-      case _i8.Notification:
-        return _i8.Notification.t;
-      case _i10.Section:
-        return _i10.Section.t;
-      case _i11.SectionMembership:
-        return _i11.SectionMembership.t;
-      case _i12.User:
-        return _i12.User.t;
+      case _i9.Notification:
+        return _i9.Notification.t;
+      case _i11.Section:
+        return _i11.Section.t;
+      case _i12.SectionMembership:
+        return _i12.SectionMembership.t;
+      case _i13.User:
+        return _i13.User.t;
     }
     return null;
   }

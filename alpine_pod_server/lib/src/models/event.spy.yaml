@@ -3,6 +3,7 @@ table: events
 fields:
   title: String
   description: String
+  type: EventType
   startTime: DateTime
   endTime: DateTime
   location: String?
@@ -24,6 +25,7 @@ fields:
   waitlistEnabled: bool
   registrationFee: double?
   currentRegistrationCount: int?
+  requiresApproval: bool
   waiverRequired: bool
   minimumParticipants: int?
   cancellationDeadline: DateTime?

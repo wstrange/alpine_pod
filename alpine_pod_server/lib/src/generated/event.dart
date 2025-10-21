@@ -10,12 +10,14 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
+import 'event_type.dart' as _i2;
 
 abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   Event._({
     this.id,
     required this.title,
     required this.description,
+    required this.type,
     required this.startTime,
     required this.endTime,
     this.location,
@@ -36,6 +38,7 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     required this.waitlistEnabled,
     this.registrationFee,
     this.currentRegistrationCount,
+    required this.requiresApproval,
     required this.waiverRequired,
     this.minimumParticipants,
     this.cancellationDeadline,
@@ -48,6 +51,7 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     int? id,
     required String title,
     required String description,
+    required _i2.EventType type,
     required DateTime startTime,
     required DateTime endTime,
     String? location,
@@ -68,6 +72,7 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     required bool waitlistEnabled,
     double? registrationFee,
     int? currentRegistrationCount,
+    required bool requiresApproval,
     required bool waiverRequired,
     int? minimumParticipants,
     DateTime? cancellationDeadline,
@@ -81,6 +86,7 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       id: jsonSerialization['id'] as int?,
       title: jsonSerialization['title'] as String,
       description: jsonSerialization['description'] as String,
+      type: _i2.EventType.fromJson((jsonSerialization['type'] as int)),
       startTime:
           _i1.DateTimeJsonExtension.fromJson(jsonSerialization['startTime']),
       endTime: _i1.DateTimeJsonExtension.fromJson(jsonSerialization['endTime']),
@@ -114,6 +120,7 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
           (jsonSerialization['registrationFee'] as num?)?.toDouble(),
       currentRegistrationCount:
           jsonSerialization['currentRegistrationCount'] as int?,
+      requiresApproval: jsonSerialization['requiresApproval'] as bool,
       waiverRequired: jsonSerialization['waiverRequired'] as bool,
       minimumParticipants: jsonSerialization['minimumParticipants'] as int?,
       cancellationDeadline: jsonSerialization['cancellationDeadline'] == null
@@ -136,6 +143,8 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   String title;
 
   String description;
+
+  _i2.EventType type;
 
   DateTime startTime;
 
@@ -177,6 +186,8 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
 
   int? currentRegistrationCount;
 
+  bool requiresApproval;
+
   bool waiverRequired;
 
   int? minimumParticipants;
@@ -199,6 +210,7 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     int? id,
     String? title,
     String? description,
+    _i2.EventType? type,
     DateTime? startTime,
     DateTime? endTime,
     String? location,
@@ -219,6 +231,7 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     bool? waitlistEnabled,
     double? registrationFee,
     int? currentRegistrationCount,
+    bool? requiresApproval,
     bool? waiverRequired,
     int? minimumParticipants,
     DateTime? cancellationDeadline,
@@ -232,6 +245,7 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       if (id != null) 'id': id,
       'title': title,
       'description': description,
+      'type': type.toJson(),
       'startTime': startTime.toJson(),
       'endTime': endTime.toJson(),
       if (location != null) 'location': location,
@@ -256,6 +270,7 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       if (registrationFee != null) 'registrationFee': registrationFee,
       if (currentRegistrationCount != null)
         'currentRegistrationCount': currentRegistrationCount,
+      'requiresApproval': requiresApproval,
       'waiverRequired': waiverRequired,
       if (minimumParticipants != null)
         'minimumParticipants': minimumParticipants,
@@ -273,6 +288,7 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       if (id != null) 'id': id,
       'title': title,
       'description': description,
+      'type': type.toJson(),
       'startTime': startTime.toJson(),
       'endTime': endTime.toJson(),
       if (location != null) 'location': location,
@@ -297,6 +313,7 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       if (registrationFee != null) 'registrationFee': registrationFee,
       if (currentRegistrationCount != null)
         'currentRegistrationCount': currentRegistrationCount,
+      'requiresApproval': requiresApproval,
       'waiverRequired': waiverRequired,
       if (minimumParticipants != null)
         'minimumParticipants': minimumParticipants,
@@ -345,6 +362,7 @@ class _EventImpl extends Event {
     int? id,
     required String title,
     required String description,
+    required _i2.EventType type,
     required DateTime startTime,
     required DateTime endTime,
     String? location,
@@ -365,6 +383,7 @@ class _EventImpl extends Event {
     required bool waitlistEnabled,
     double? registrationFee,
     int? currentRegistrationCount,
+    required bool requiresApproval,
     required bool waiverRequired,
     int? minimumParticipants,
     DateTime? cancellationDeadline,
@@ -375,6 +394,7 @@ class _EventImpl extends Event {
           id: id,
           title: title,
           description: description,
+          type: type,
           startTime: startTime,
           endTime: endTime,
           location: location,
@@ -395,6 +415,7 @@ class _EventImpl extends Event {
           waitlistEnabled: waitlistEnabled,
           registrationFee: registrationFee,
           currentRegistrationCount: currentRegistrationCount,
+          requiresApproval: requiresApproval,
           waiverRequired: waiverRequired,
           minimumParticipants: minimumParticipants,
           cancellationDeadline: cancellationDeadline,
@@ -411,6 +432,7 @@ class _EventImpl extends Event {
     Object? id = _Undefined,
     String? title,
     String? description,
+    _i2.EventType? type,
     DateTime? startTime,
     DateTime? endTime,
     Object? location = _Undefined,
@@ -431,6 +453,7 @@ class _EventImpl extends Event {
     bool? waitlistEnabled,
     Object? registrationFee = _Undefined,
     Object? currentRegistrationCount = _Undefined,
+    bool? requiresApproval,
     bool? waiverRequired,
     Object? minimumParticipants = _Undefined,
     Object? cancellationDeadline = _Undefined,
@@ -442,6 +465,7 @@ class _EventImpl extends Event {
       id: id is int? ? id : this.id,
       title: title ?? this.title,
       description: description ?? this.description,
+      type: type ?? this.type,
       startTime: startTime ?? this.startTime,
       endTime: endTime ?? this.endTime,
       location: location is String? ? location : this.location,
@@ -477,6 +501,7 @@ class _EventImpl extends Event {
       currentRegistrationCount: currentRegistrationCount is int?
           ? currentRegistrationCount
           : this.currentRegistrationCount,
+      requiresApproval: requiresApproval ?? this.requiresApproval,
       waiverRequired: waiverRequired ?? this.waiverRequired,
       minimumParticipants: minimumParticipants is int?
           ? minimumParticipants
@@ -503,6 +528,11 @@ class EventTable extends _i1.Table<int?> {
     description = _i1.ColumnString(
       'description',
       this,
+    );
+    type = _i1.ColumnEnum(
+      'type',
+      this,
+      _i1.EnumSerialization.byIndex,
     );
     startTime = _i1.ColumnDateTime(
       'startTime',
@@ -584,6 +614,10 @@ class EventTable extends _i1.Table<int?> {
       'currentRegistrationCount',
       this,
     );
+    requiresApproval = _i1.ColumnBool(
+      'requiresApproval',
+      this,
+    );
     waiverRequired = _i1.ColumnBool(
       'waiverRequired',
       this,
@@ -613,6 +647,8 @@ class EventTable extends _i1.Table<int?> {
   late final _i1.ColumnString title;
 
   late final _i1.ColumnString description;
+
+  late final _i1.ColumnEnum<_i2.EventType> type;
 
   late final _i1.ColumnDateTime startTime;
 
@@ -654,6 +690,8 @@ class EventTable extends _i1.Table<int?> {
 
   late final _i1.ColumnInt currentRegistrationCount;
 
+  late final _i1.ColumnBool requiresApproval;
+
   late final _i1.ColumnBool waiverRequired;
 
   late final _i1.ColumnInt minimumParticipants;
@@ -671,6 +709,7 @@ class EventTable extends _i1.Table<int?> {
         id,
         title,
         description,
+        type,
         startTime,
         endTime,
         location,
@@ -691,6 +730,7 @@ class EventTable extends _i1.Table<int?> {
         waitlistEnabled,
         registrationFee,
         currentRegistrationCount,
+        requiresApproval,
         waiverRequired,
         minimumParticipants,
         cancellationDeadline,
