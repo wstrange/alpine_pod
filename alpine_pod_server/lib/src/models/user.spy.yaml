@@ -10,8 +10,7 @@ fields:
   emergencyContactName: String
   emergencyContactPhone: String
   medicalConditions: String?
-  # certifications and skills are stored as JSON arrays encoded as strings
-  # e.g. `["AST 2", "First Aid"]`
+  # certifications and skills stored as JSON-encoded arrays in strings
   certificationsJson: String?
   skillsJson: String?
   role: UserRole

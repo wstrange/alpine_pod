@@ -4,7 +4,6 @@ fields:
   userId: int?
   sectionId: int?
   externalUserId: String?
-  # Metadata for external syncs
   syncedAt: DateTime?
   sourceSystem: String?
 indexes:

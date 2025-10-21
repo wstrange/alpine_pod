@@ -3,13 +3,10 @@ table: event_registrations
 fields:
   userId: int?
   eventId: int?
-  # Use enum RegistrationStatus (pending, confirmed, cancelled, waitlisted)
   registrationStatus: RegistrationStatus
-  # Default set by application to DateTime.now() when creating
   registrationDate: DateTime
   carPoolPreference: String? # drive, ride, none
   numberOfPassengers: int?
-  # Members can add guests to their registration
   additionalGuests: int?
   equipmentNotes: String?
   waiverAccepted: bool
