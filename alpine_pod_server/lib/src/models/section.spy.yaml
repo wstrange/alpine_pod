@@ -1,0 +1,7 @@
+class: Section
+table: sections
+fields:
+  name: String
+  description: String
+  location: String?
+  contactInfo: String?

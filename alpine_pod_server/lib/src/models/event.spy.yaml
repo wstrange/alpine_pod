@@ -1,0 +1,35 @@
+class: Event
+table: events
+fields:
+  title: String
+  description: String
+  startTime: DateTime
+  endTime: DateTime
+  location: String?
+  gpsLatitude: double?
+  gpsLongitude: double?
+  mapLink: String?
+  carPoolingTime: DateTime?
+  carPoolingPlace: String?
+  carPoolingDriveOrRide: String?
+  maxParticipants: int?
+  public: bool
+  difficulty: String?
+  requiredEquipment: String?
+  prerequisites: String?
+  recurring: String?
+  # Registration management
+  registrationDeadline: DateTime?
+  registrationStartDate: DateTime?
+  waitlistEnabled: bool
+  registrationFee: double?
+  currentRegistrationCount: int?
+  waiverRequired: bool
+  minimumParticipants: int?
+  cancellationDeadline: DateTime?
+  registrationNotes: String?
+indexes:
+  upcoming_events_idx:
+    fields: startTime
+  public_events_idx:
+    fields: public, startTime

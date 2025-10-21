@@ -1,0 +1,10 @@
+class: SectionMembership
+table: section_memberships
+fields:
+  userId: int?
+  sectionId: int?
+  externalUserId: String?
+indexes:
+  user_section_unique_idx:
+    fields: userId, sectionId
+    unique: true

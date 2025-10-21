@@ -1,0 +1,13 @@
+class: Notification
+table: notifications
+fields:
+  title: String
+  message: String
+  timestamp: DateTime
+  read: bool
+  recipientId: int?
+  attachments: String?
+  relatedEventId: int?
+indexes:
+  recipient_idx:
+    fields: recipientId

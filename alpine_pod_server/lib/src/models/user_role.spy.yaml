@@ -1,0 +1,7 @@
+enum: UserRole
+values:
+  - admin
+  - sectionManager
+  - tripLeader
+  - member
+  - guest

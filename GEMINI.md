@@ -37,7 +37,37 @@ This is a multi-tenant application to manage users who belong to one more alpine
 * Events can have a waitlist feature when the maximum number of participants is reached.
 * Events can have a difficulty rating (e.g., easy, moderate, hard) to help Users choose appropriate activities.
 * Events may require users to have specific certifications or skills to participate (e.g., first aid certification, climbing experience).
-* 
+* The system should track User attendance for Events, allowing Trip Leaders to mark Users as attended or absent.
+* Events can have recurring schedules (e.g., weekly, monthly) to facilitate regular activities.
+
+
+### Users
+
+* Users have attributes such as name, email, password (hashed), phone number, and membership status.
+* Users can have profile pictures and personal information (e.g., emergency contact details, medical conditions). Emergency contact details are mandatory fields.
+* Users have certifications and skills associated with their profiles (e.g., first aid certification, climbing experience, AST 2, etc.). This information can be text.
+* Users can belong to multiple Sections.
+* Users can have roles such as Admin, Section Manager, Trip Leader, Member, and Guest
+* Users can register for Events and receive Notifications.
+
+### Sections
+
+* Sections have attributes such as name, description, location, and contact information.
+* Sections can host multiple Events.
+* Sections can have multiple Section Managers assigned to them.
+* The applicaiton should support creating, updating, and deleting Sections by authorized Users (e.g., Admins).
+* Section membersship is managed by an external system. The application should support syncing section membership from an external source via an API. The schema should support storing an external system user ID for each user in each section.
+
+### Notifications
+
+* Notifications have attributes such as title, message, timestamp, and recipient User.
+* Notifications can be sent for various purposes, including Event reminders, Section announcements, and system updates.
+* Notifications can be marked as read or unread by Users.
+* Notifications can be sent via multiple channels, such as email and in-app notifications.
+* Users can customize their notification preferences (e.g., frequency, channels).
+* Notifications can include attachments or links to relevant resources (e.g., event details, documents).
+* Notifications can be grouped or threaded for related messages (e.g., all notifications related to a specific Event).
+
 
 ## Role Based Access Control (RBAC)
 
@@ -47,3 +77,20 @@ This is a multi-tenant application to manage users who belong to one more alpine
 * Members: Can view and register for Events, and receive Notifications. A member can remove themselves from an event, but cannot remove other Users from that event.
 * Guests: Limited access to view public Events and Sections. Guests cannot register for Events or receive Notifications. However, a member can add a guest to an event they are attending. The schema should support this use case.
 * Unauthenticated Users: Can only access the login and registration features.
+
+## Instructions on how to generate the schema, server and client code
+
+To generate the database schema, server code, and client code for the alpine_pod application, follow these steps:
+
+* `cd alpine_pod_server; serverpod generate`
+* Model files (example users.spy.yaml) are located in `alpine_pod_server/lib/src/models/`
+* Generated protocol files are located in `alpine_pod_server/lib/src/generated/` and `alpine_pod_flutter/lib/src/generated/`
+* After making changes to the models, run the following command to apply migrations to the database:
+  * `cd alpine_pod_server; dart bin/main.dart --apply-migrations`
+  * This will update the database schema based on the changes made to the models.
+  * Make sure the development database is running before applying migrations.
+* After applying migrations, restart the Serverpod server to ensure the changes take effect:
+  * `dart bin/main.dart`
+
+If you make any changes make sure they are in a new git branch.
+

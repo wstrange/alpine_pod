@@ -8,6 +8,11 @@ This is a full-stack Dart/Flutter application built with Serverpod that consists
 2. **Client SDK (`alpine_pod_client/`)**: Generated Dart client code for server communication
 3. **Flutter App (`alpine_pod_flutter/`)**: Flutter frontend application
 
+
+## Application overvew
+
+Use the file GEMINI.md to understand the application features and data model.
+
 ### Key Components
 
 - Server entry point: `alpine_pod_server/lib/server.dart`

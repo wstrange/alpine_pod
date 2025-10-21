@@ -1,0 +1,16 @@
+class: User
+table: users
+fields:
+  name: String
+  email: String
+  password: String
+  phoneNumber: String
+  membershipStatus: String
+  profilePictureUrl: String?
+  emergencyContactName: String
+  emergencyContactPhone: String
+  medicalConditions: String?
+  certifications: String?
+  skills: String?
+  role: String
+  createdAt: DateTime
