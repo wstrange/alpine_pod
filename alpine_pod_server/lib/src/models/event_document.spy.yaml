@@ -1,0 +1,11 @@
+class: EventDocument
+table: event_documents
+fields:
+  eventId: int?
+  url: String
+  type: String? # e.g., waiver, safety, cancellation_policy
+  name: String?
+  uploadedAt: DateTime?
+indexes:
+  event_document_idx:
+    fields: eventId

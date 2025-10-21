@@ -1,0 +1,6 @@
+enum: RegistrationStatus
+values:
+  - pending
+  - confirmed
+  - cancelled
+  - waitlisted

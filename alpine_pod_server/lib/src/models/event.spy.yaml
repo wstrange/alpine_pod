@@ -21,6 +21,7 @@ fields:
   # Registration management
   registrationDeadline: DateTime?
   registrationStartDate: DateTime?
+  # If true, extra registrations are placed on a waitlist when full
   waitlistEnabled: bool
   registrationFee: double?
   currentRegistrationCount: int?
@@ -28,8 +29,14 @@ fields:
   minimumParticipants: int?
   cancellationDeadline: DateTime?
   registrationNotes: String?
+  # Association to a Section (events can be section-scoped)
+  sectionId: int?
+  # JSON list of {type, url, name} documents (waiver, safety guides, etc.)
+  documentsJson: String?
 indexes:
   upcoming_events_idx:
     fields: startTime
   public_events_idx:
     fields: public, startTime
+  section_idx:
+    fields: sectionId
