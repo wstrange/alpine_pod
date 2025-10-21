@@ -40,6 +40,8 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     this.minimumParticipants,
     this.cancellationDeadline,
     this.registrationNotes,
+    this.sectionId,
+    this.documentsJson,
   });
 
   factory Event({
@@ -70,6 +72,8 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     int? minimumParticipants,
     DateTime? cancellationDeadline,
     String? registrationNotes,
+    int? sectionId,
+    String? documentsJson,
   }) = _EventImpl;
 
   factory Event.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -117,6 +121,8 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
           : _i1.DateTimeJsonExtension.fromJson(
               jsonSerialization['cancellationDeadline']),
       registrationNotes: jsonSerialization['registrationNotes'] as String?,
+      sectionId: jsonSerialization['sectionId'] as int?,
+      documentsJson: jsonSerialization['documentsJson'] as String?,
     );
   }
 
@@ -179,6 +185,10 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
 
   String? registrationNotes;
 
+  int? sectionId;
+
+  String? documentsJson;
+
   @override
   _i1.Table<int?> get table => t;
 
@@ -213,6 +223,8 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     int? minimumParticipants,
     DateTime? cancellationDeadline,
     String? registrationNotes,
+    int? sectionId,
+    String? documentsJson,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -250,6 +262,8 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       if (cancellationDeadline != null)
         'cancellationDeadline': cancellationDeadline?.toJson(),
       if (registrationNotes != null) 'registrationNotes': registrationNotes,
+      if (sectionId != null) 'sectionId': sectionId,
+      if (documentsJson != null) 'documentsJson': documentsJson,
     };
   }
 
@@ -289,6 +303,8 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       if (cancellationDeadline != null)
         'cancellationDeadline': cancellationDeadline?.toJson(),
       if (registrationNotes != null) 'registrationNotes': registrationNotes,
+      if (sectionId != null) 'sectionId': sectionId,
+      if (documentsJson != null) 'documentsJson': documentsJson,
     };
   }
 
@@ -353,6 +369,8 @@ class _EventImpl extends Event {
     int? minimumParticipants,
     DateTime? cancellationDeadline,
     String? registrationNotes,
+    int? sectionId,
+    String? documentsJson,
   }) : super._(
           id: id,
           title: title,
@@ -381,6 +399,8 @@ class _EventImpl extends Event {
           minimumParticipants: minimumParticipants,
           cancellationDeadline: cancellationDeadline,
           registrationNotes: registrationNotes,
+          sectionId: sectionId,
+          documentsJson: documentsJson,
         );
 
   /// Returns a shallow copy of this [Event]
@@ -415,6 +435,8 @@ class _EventImpl extends Event {
     Object? minimumParticipants = _Undefined,
     Object? cancellationDeadline = _Undefined,
     Object? registrationNotes = _Undefined,
+    Object? sectionId = _Undefined,
+    Object? documentsJson = _Undefined,
   }) {
     return Event(
       id: id is int? ? id : this.id,
@@ -465,6 +487,9 @@ class _EventImpl extends Event {
       registrationNotes: registrationNotes is String?
           ? registrationNotes
           : this.registrationNotes,
+      sectionId: sectionId is int? ? sectionId : this.sectionId,
+      documentsJson:
+          documentsJson is String? ? documentsJson : this.documentsJson,
     );
   }
 }
@@ -575,6 +600,14 @@ class EventTable extends _i1.Table<int?> {
       'registrationNotes',
       this,
     );
+    sectionId = _i1.ColumnInt(
+      'sectionId',
+      this,
+    );
+    documentsJson = _i1.ColumnString(
+      'documentsJson',
+      this,
+    );
   }
 
   late final _i1.ColumnString title;
@@ -629,6 +662,10 @@ class EventTable extends _i1.Table<int?> {
 
   late final _i1.ColumnString registrationNotes;
 
+  late final _i1.ColumnInt sectionId;
+
+  late final _i1.ColumnString documentsJson;
+
   @override
   List<_i1.Column> get columns => [
         id,
@@ -658,6 +695,8 @@ class EventTable extends _i1.Table<int?> {
         minimumParticipants,
         cancellationDeadline,
         registrationNotes,
+        sectionId,
+        documentsJson,
       ];
 }
 

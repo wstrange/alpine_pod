@@ -10,6 +10,7 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
+import 'registration_status.dart' as _i2;
 
 abstract class EventRegistration
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -21,38 +22,46 @@ abstract class EventRegistration
     required this.registrationDate,
     this.carPoolPreference,
     this.numberOfPassengers,
+    this.additionalGuests,
     this.equipmentNotes,
     required this.waiverAccepted,
     this.waiverSignedDate,
     this.participantNotes,
     this.waitlistPosition,
+    this.waitlistedAt,
     required this.checkedIn,
     this.checkedInTime,
     this.paymentStatus,
     this.paymentAmount,
     this.paymentDate,
     required this.modifiedAt,
+    this.attended,
+    this.attendedAt,
   });
 
   factory EventRegistration({
     int? id,
     int? userId,
     int? eventId,
-    required String registrationStatus,
+    required _i2.RegistrationStatus registrationStatus,
     required DateTime registrationDate,
     String? carPoolPreference,
     int? numberOfPassengers,
+    int? additionalGuests,
     String? equipmentNotes,
     required bool waiverAccepted,
     DateTime? waiverSignedDate,
     String? participantNotes,
     int? waitlistPosition,
+    DateTime? waitlistedAt,
     required bool checkedIn,
     DateTime? checkedInTime,
     String? paymentStatus,
     double? paymentAmount,
     DateTime? paymentDate,
     required DateTime modifiedAt,
+    bool? attended,
+    DateTime? attendedAt,
   }) = _EventRegistrationImpl;
 
   factory EventRegistration.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -60,11 +69,13 @@ abstract class EventRegistration
       id: jsonSerialization['id'] as int?,
       userId: jsonSerialization['userId'] as int?,
       eventId: jsonSerialization['eventId'] as int?,
-      registrationStatus: jsonSerialization['registrationStatus'] as String,
+      registrationStatus: _i2.RegistrationStatus.fromJson(
+          (jsonSerialization['registrationStatus'] as int)),
       registrationDate: _i1.DateTimeJsonExtension.fromJson(
           jsonSerialization['registrationDate']),
       carPoolPreference: jsonSerialization['carPoolPreference'] as String?,
       numberOfPassengers: jsonSerialization['numberOfPassengers'] as int?,
+      additionalGuests: jsonSerialization['additionalGuests'] as int?,
       equipmentNotes: jsonSerialization['equipmentNotes'] as String?,
       waiverAccepted: jsonSerialization['waiverAccepted'] as bool,
       waiverSignedDate: jsonSerialization['waiverSignedDate'] == null
@@ -73,6 +84,10 @@ abstract class EventRegistration
               jsonSerialization['waiverSignedDate']),
       participantNotes: jsonSerialization['participantNotes'] as String?,
       waitlistPosition: jsonSerialization['waitlistPosition'] as int?,
+      waitlistedAt: jsonSerialization['waitlistedAt'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(
+              jsonSerialization['waitlistedAt']),
       checkedIn: jsonSerialization['checkedIn'] as bool,
       checkedInTime: jsonSerialization['checkedInTime'] == null
           ? null
@@ -86,6 +101,10 @@ abstract class EventRegistration
               jsonSerialization['paymentDate']),
       modifiedAt:
           _i1.DateTimeJsonExtension.fromJson(jsonSerialization['modifiedAt']),
+      attended: jsonSerialization['attended'] as bool?,
+      attendedAt: jsonSerialization['attendedAt'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['attendedAt']),
     );
   }
 
@@ -100,13 +119,15 @@ abstract class EventRegistration
 
   int? eventId;
 
-  String registrationStatus;
+  _i2.RegistrationStatus registrationStatus;
 
   DateTime registrationDate;
 
   String? carPoolPreference;
 
   int? numberOfPassengers;
+
+  int? additionalGuests;
 
   String? equipmentNotes;
 
@@ -117,6 +138,8 @@ abstract class EventRegistration
   String? participantNotes;
 
   int? waitlistPosition;
+
+  DateTime? waitlistedAt;
 
   bool checkedIn;
 
@@ -130,6 +153,10 @@ abstract class EventRegistration
 
   DateTime modifiedAt;
 
+  bool? attended;
+
+  DateTime? attendedAt;
+
   @override
   _i1.Table<int?> get table => t;
 
@@ -140,21 +167,25 @@ abstract class EventRegistration
     int? id,
     int? userId,
     int? eventId,
-    String? registrationStatus,
+    _i2.RegistrationStatus? registrationStatus,
     DateTime? registrationDate,
     String? carPoolPreference,
     int? numberOfPassengers,
+    int? additionalGuests,
     String? equipmentNotes,
     bool? waiverAccepted,
     DateTime? waiverSignedDate,
     String? participantNotes,
     int? waitlistPosition,
+    DateTime? waitlistedAt,
     bool? checkedIn,
     DateTime? checkedInTime,
     String? paymentStatus,
     double? paymentAmount,
     DateTime? paymentDate,
     DateTime? modifiedAt,
+    bool? attended,
+    DateTime? attendedAt,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -162,22 +193,26 @@ abstract class EventRegistration
       if (id != null) 'id': id,
       if (userId != null) 'userId': userId,
       if (eventId != null) 'eventId': eventId,
-      'registrationStatus': registrationStatus,
+      'registrationStatus': registrationStatus.toJson(),
       'registrationDate': registrationDate.toJson(),
       if (carPoolPreference != null) 'carPoolPreference': carPoolPreference,
       if (numberOfPassengers != null) 'numberOfPassengers': numberOfPassengers,
+      if (additionalGuests != null) 'additionalGuests': additionalGuests,
       if (equipmentNotes != null) 'equipmentNotes': equipmentNotes,
       'waiverAccepted': waiverAccepted,
       if (waiverSignedDate != null)
         'waiverSignedDate': waiverSignedDate?.toJson(),
       if (participantNotes != null) 'participantNotes': participantNotes,
       if (waitlistPosition != null) 'waitlistPosition': waitlistPosition,
+      if (waitlistedAt != null) 'waitlistedAt': waitlistedAt?.toJson(),
       'checkedIn': checkedIn,
       if (checkedInTime != null) 'checkedInTime': checkedInTime?.toJson(),
       if (paymentStatus != null) 'paymentStatus': paymentStatus,
       if (paymentAmount != null) 'paymentAmount': paymentAmount,
       if (paymentDate != null) 'paymentDate': paymentDate?.toJson(),
       'modifiedAt': modifiedAt.toJson(),
+      if (attended != null) 'attended': attended,
+      if (attendedAt != null) 'attendedAt': attendedAt?.toJson(),
     };
   }
 
@@ -187,22 +222,26 @@ abstract class EventRegistration
       if (id != null) 'id': id,
       if (userId != null) 'userId': userId,
       if (eventId != null) 'eventId': eventId,
-      'registrationStatus': registrationStatus,
+      'registrationStatus': registrationStatus.toJson(),
       'registrationDate': registrationDate.toJson(),
       if (carPoolPreference != null) 'carPoolPreference': carPoolPreference,
       if (numberOfPassengers != null) 'numberOfPassengers': numberOfPassengers,
+      if (additionalGuests != null) 'additionalGuests': additionalGuests,
       if (equipmentNotes != null) 'equipmentNotes': equipmentNotes,
       'waiverAccepted': waiverAccepted,
       if (waiverSignedDate != null)
         'waiverSignedDate': waiverSignedDate?.toJson(),
       if (participantNotes != null) 'participantNotes': participantNotes,
       if (waitlistPosition != null) 'waitlistPosition': waitlistPosition,
+      if (waitlistedAt != null) 'waitlistedAt': waitlistedAt?.toJson(),
       'checkedIn': checkedIn,
       if (checkedInTime != null) 'checkedInTime': checkedInTime?.toJson(),
       if (paymentStatus != null) 'paymentStatus': paymentStatus,
       if (paymentAmount != null) 'paymentAmount': paymentAmount,
       if (paymentDate != null) 'paymentDate': paymentDate?.toJson(),
       'modifiedAt': modifiedAt.toJson(),
+      if (attended != null) 'attended': attended,
+      if (attendedAt != null) 'attendedAt': attendedAt?.toJson(),
     };
   }
 
@@ -243,21 +282,25 @@ class _EventRegistrationImpl extends EventRegistration {
     int? id,
     int? userId,
     int? eventId,
-    required String registrationStatus,
+    required _i2.RegistrationStatus registrationStatus,
     required DateTime registrationDate,
     String? carPoolPreference,
     int? numberOfPassengers,
+    int? additionalGuests,
     String? equipmentNotes,
     required bool waiverAccepted,
     DateTime? waiverSignedDate,
     String? participantNotes,
     int? waitlistPosition,
+    DateTime? waitlistedAt,
     required bool checkedIn,
     DateTime? checkedInTime,
     String? paymentStatus,
     double? paymentAmount,
     DateTime? paymentDate,
     required DateTime modifiedAt,
+    bool? attended,
+    DateTime? attendedAt,
   }) : super._(
           id: id,
           userId: userId,
@@ -266,17 +309,21 @@ class _EventRegistrationImpl extends EventRegistration {
           registrationDate: registrationDate,
           carPoolPreference: carPoolPreference,
           numberOfPassengers: numberOfPassengers,
+          additionalGuests: additionalGuests,
           equipmentNotes: equipmentNotes,
           waiverAccepted: waiverAccepted,
           waiverSignedDate: waiverSignedDate,
           participantNotes: participantNotes,
           waitlistPosition: waitlistPosition,
+          waitlistedAt: waitlistedAt,
           checkedIn: checkedIn,
           checkedInTime: checkedInTime,
           paymentStatus: paymentStatus,
           paymentAmount: paymentAmount,
           paymentDate: paymentDate,
           modifiedAt: modifiedAt,
+          attended: attended,
+          attendedAt: attendedAt,
         );
 
   /// Returns a shallow copy of this [EventRegistration]
@@ -287,21 +334,25 @@ class _EventRegistrationImpl extends EventRegistration {
     Object? id = _Undefined,
     Object? userId = _Undefined,
     Object? eventId = _Undefined,
-    String? registrationStatus,
+    _i2.RegistrationStatus? registrationStatus,
     DateTime? registrationDate,
     Object? carPoolPreference = _Undefined,
     Object? numberOfPassengers = _Undefined,
+    Object? additionalGuests = _Undefined,
     Object? equipmentNotes = _Undefined,
     bool? waiverAccepted,
     Object? waiverSignedDate = _Undefined,
     Object? participantNotes = _Undefined,
     Object? waitlistPosition = _Undefined,
+    Object? waitlistedAt = _Undefined,
     bool? checkedIn,
     Object? checkedInTime = _Undefined,
     Object? paymentStatus = _Undefined,
     Object? paymentAmount = _Undefined,
     Object? paymentDate = _Undefined,
     DateTime? modifiedAt,
+    Object? attended = _Undefined,
+    Object? attendedAt = _Undefined,
   }) {
     return EventRegistration(
       id: id is int? ? id : this.id,
@@ -315,6 +366,8 @@ class _EventRegistrationImpl extends EventRegistration {
       numberOfPassengers: numberOfPassengers is int?
           ? numberOfPassengers
           : this.numberOfPassengers,
+      additionalGuests:
+          additionalGuests is int? ? additionalGuests : this.additionalGuests,
       equipmentNotes:
           equipmentNotes is String? ? equipmentNotes : this.equipmentNotes,
       waiverAccepted: waiverAccepted ?? this.waiverAccepted,
@@ -326,6 +379,8 @@ class _EventRegistrationImpl extends EventRegistration {
           : this.participantNotes,
       waitlistPosition:
           waitlistPosition is int? ? waitlistPosition : this.waitlistPosition,
+      waitlistedAt:
+          waitlistedAt is DateTime? ? waitlistedAt : this.waitlistedAt,
       checkedIn: checkedIn ?? this.checkedIn,
       checkedInTime:
           checkedInTime is DateTime? ? checkedInTime : this.checkedInTime,
@@ -335,6 +390,8 @@ class _EventRegistrationImpl extends EventRegistration {
           paymentAmount is double? ? paymentAmount : this.paymentAmount,
       paymentDate: paymentDate is DateTime? ? paymentDate : this.paymentDate,
       modifiedAt: modifiedAt ?? this.modifiedAt,
+      attended: attended is bool? ? attended : this.attended,
+      attendedAt: attendedAt is DateTime? ? attendedAt : this.attendedAt,
     );
   }
 }
@@ -350,9 +407,10 @@ class EventRegistrationTable extends _i1.Table<int?> {
       'eventId',
       this,
     );
-    registrationStatus = _i1.ColumnString(
+    registrationStatus = _i1.ColumnEnum(
       'registrationStatus',
       this,
+      _i1.EnumSerialization.byIndex,
     );
     registrationDate = _i1.ColumnDateTime(
       'registrationDate',
@@ -364,6 +422,10 @@ class EventRegistrationTable extends _i1.Table<int?> {
     );
     numberOfPassengers = _i1.ColumnInt(
       'numberOfPassengers',
+      this,
+    );
+    additionalGuests = _i1.ColumnInt(
+      'additionalGuests',
       this,
     );
     equipmentNotes = _i1.ColumnString(
@@ -384,6 +446,10 @@ class EventRegistrationTable extends _i1.Table<int?> {
     );
     waitlistPosition = _i1.ColumnInt(
       'waitlistPosition',
+      this,
+    );
+    waitlistedAt = _i1.ColumnDateTime(
+      'waitlistedAt',
       this,
     );
     checkedIn = _i1.ColumnBool(
@@ -410,19 +476,29 @@ class EventRegistrationTable extends _i1.Table<int?> {
       'modifiedAt',
       this,
     );
+    attended = _i1.ColumnBool(
+      'attended',
+      this,
+    );
+    attendedAt = _i1.ColumnDateTime(
+      'attendedAt',
+      this,
+    );
   }
 
   late final _i1.ColumnInt userId;
 
   late final _i1.ColumnInt eventId;
 
-  late final _i1.ColumnString registrationStatus;
+  late final _i1.ColumnEnum<_i2.RegistrationStatus> registrationStatus;
 
   late final _i1.ColumnDateTime registrationDate;
 
   late final _i1.ColumnString carPoolPreference;
 
   late final _i1.ColumnInt numberOfPassengers;
+
+  late final _i1.ColumnInt additionalGuests;
 
   late final _i1.ColumnString equipmentNotes;
 
@@ -433,6 +509,8 @@ class EventRegistrationTable extends _i1.Table<int?> {
   late final _i1.ColumnString participantNotes;
 
   late final _i1.ColumnInt waitlistPosition;
+
+  late final _i1.ColumnDateTime waitlistedAt;
 
   late final _i1.ColumnBool checkedIn;
 
@@ -446,6 +524,10 @@ class EventRegistrationTable extends _i1.Table<int?> {
 
   late final _i1.ColumnDateTime modifiedAt;
 
+  late final _i1.ColumnBool attended;
+
+  late final _i1.ColumnDateTime attendedAt;
+
   @override
   List<_i1.Column> get columns => [
         id,
@@ -455,17 +537,21 @@ class EventRegistrationTable extends _i1.Table<int?> {
         registrationDate,
         carPoolPreference,
         numberOfPassengers,
+        additionalGuests,
         equipmentNotes,
         waiverAccepted,
         waiverSignedDate,
         participantNotes,
         waitlistPosition,
+        waitlistedAt,
         checkedIn,
         checkedInTime,
         paymentStatus,
         paymentAmount,
         paymentDate,
         modifiedAt,
+        attended,
+        attendedAt,
       ];
 }
 

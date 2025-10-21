@@ -13,16 +13,22 @@ import 'package:serverpod/serverpod.dart' as _i1;
 import 'package:serverpod/protocol.dart' as _i2;
 import 'greeting.dart' as _i3;
 import 'event.dart' as _i4;
-import 'event_registration.dart' as _i5;
-import 'notification.dart' as _i6;
-import 'section.dart' as _i7;
-import 'section_membership.dart' as _i8;
-import 'user.dart' as _i9;
-import 'user_role.dart' as _i10;
+import 'event_document.dart' as _i5;
+import 'event_registration.dart' as _i6;
+import 'event_trip_leader.dart' as _i7;
+import 'notification.dart' as _i8;
+import 'registration_status.dart' as _i9;
+import 'section.dart' as _i10;
+import 'section_membership.dart' as _i11;
+import 'user.dart' as _i12;
+import 'user_role.dart' as _i13;
 export 'greeting.dart';
 export 'event.dart';
+export 'event_document.dart';
 export 'event_registration.dart';
+export 'event_trip_leader.dart';
 export 'notification.dart';
+export 'registration_status.dart';
 export 'section.dart';
 export 'section_membership.dart';
 export 'user.dart';
@@ -36,6 +42,81 @@ class Protocol extends _i1.SerializationManagerServer {
   static final Protocol _instance = Protocol._();
 
   static final List<_i2.TableDefinition> targetTableDefinitions = [
+    _i2.TableDefinition(
+      name: 'event_documents',
+      dartName: 'EventDocument',
+      schema: 'public',
+      module: 'alpine_pod',
+      columns: [
+        _i2.ColumnDefinition(
+          name: 'id',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'nextval(\'event_documents_id_seq\'::regclass)',
+        ),
+        _i2.ColumnDefinition(
+          name: 'eventId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'url',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'type',
+          columnType: _i2.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'name',
+          columnType: _i2.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'uploadedAt',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: true,
+          dartType: 'DateTime?',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _i2.IndexDefinition(
+          indexName: 'event_documents_pkey',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'id',
+            )
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: true,
+        ),
+        _i2.IndexDefinition(
+          indexName: 'event_document_idx',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'eventId',
+            )
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
     _i2.TableDefinition(
       name: 'event_registrations',
       dartName: 'EventRegistration',
@@ -63,9 +144,9 @@ class Protocol extends _i1.SerializationManagerServer {
         ),
         _i2.ColumnDefinition(
           name: 'registrationStatus',
-          columnType: _i2.ColumnType.text,
+          columnType: _i2.ColumnType.bigint,
           isNullable: false,
-          dartType: 'String',
+          dartType: 'protocol:RegistrationStatus',
         ),
         _i2.ColumnDefinition(
           name: 'registrationDate',
@@ -81,6 +162,12 @@ class Protocol extends _i1.SerializationManagerServer {
         ),
         _i2.ColumnDefinition(
           name: 'numberOfPassengers',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'additionalGuests',
           columnType: _i2.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
@@ -114,6 +201,12 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'waitlistedAt',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: true,
+          dartType: 'DateTime?',
         ),
         _i2.ColumnDefinition(
           name: 'checkedIn',
@@ -150,6 +243,18 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.timestampWithoutTimeZone,
           isNullable: false,
           dartType: 'DateTime',
+        ),
+        _i2.ColumnDefinition(
+          name: 'attended',
+          columnType: _i2.ColumnType.boolean,
+          isNullable: true,
+          dartType: 'bool?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'attendedAt',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: true,
+          dartType: 'DateTime?',
         ),
       ],
       foreignKeys: [],
@@ -216,6 +321,73 @@ class Protocol extends _i1.SerializationManagerServer {
           ],
           type: 'btree',
           isUnique: false,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _i2.TableDefinition(
+      name: 'event_trip_leaders',
+      dartName: 'EventTripLeader',
+      schema: 'public',
+      module: 'alpine_pod',
+      columns: [
+        _i2.ColumnDefinition(
+          name: 'id',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'nextval(\'event_trip_leaders_id_seq\'::regclass)',
+        ),
+        _i2.ColumnDefinition(
+          name: 'eventId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'userId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'assignedAt',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: true,
+          dartType: 'DateTime?',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _i2.IndexDefinition(
+          indexName: 'event_trip_leaders_pkey',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'id',
+            )
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: true,
+        ),
+        _i2.IndexDefinition(
+          indexName: 'event_leader_idx',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'eventId',
+            ),
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'userId',
+            ),
+          ],
+          type: 'btree',
+          isUnique: true,
           isPrimary: false,
         ),
       ],
@@ -390,6 +562,18 @@ class Protocol extends _i1.SerializationManagerServer {
           isNullable: true,
           dartType: 'String?',
         ),
+        _i2.ColumnDefinition(
+          name: 'sectionId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'documentsJson',
+          columnType: _i2.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
       ],
       foreignKeys: [],
       indexes: [
@@ -431,6 +615,19 @@ class Protocol extends _i1.SerializationManagerServer {
               type: _i2.IndexElementDefinitionType.column,
               definition: 'startTime',
             ),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+        _i2.IndexDefinition(
+          indexName: 'section_idx',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'sectionId',
+            )
           ],
           type: 'btree',
           isUnique: false,
@@ -553,6 +750,18 @@ class Protocol extends _i1.SerializationManagerServer {
         ),
         _i2.ColumnDefinition(
           name: 'externalUserId',
+          columnType: _i2.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'syncedAt',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: true,
+          dartType: 'DateTime?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'sourceSystem',
           columnType: _i2.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
@@ -717,22 +926,22 @@ class Protocol extends _i1.SerializationManagerServer {
           dartType: 'String?',
         ),
         _i2.ColumnDefinition(
-          name: 'certifications',
+          name: 'certificationsJson',
           columnType: _i2.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
         _i2.ColumnDefinition(
-          name: 'skills',
+          name: 'skillsJson',
           columnType: _i2.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
         _i2.ColumnDefinition(
           name: 'role',
-          columnType: _i2.ColumnType.text,
+          columnType: _i2.ColumnType.bigint,
           isNullable: false,
-          dartType: 'String',
+          dartType: 'protocol:UserRole',
         ),
         _i2.ColumnDefinition(
           name: 'createdAt',
@@ -774,23 +983,32 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i4.Event) {
       return _i4.Event.fromJson(data) as T;
     }
-    if (t == _i5.EventRegistration) {
-      return _i5.EventRegistration.fromJson(data) as T;
+    if (t == _i5.EventDocument) {
+      return _i5.EventDocument.fromJson(data) as T;
     }
-    if (t == _i6.Notification) {
-      return _i6.Notification.fromJson(data) as T;
+    if (t == _i6.EventRegistration) {
+      return _i6.EventRegistration.fromJson(data) as T;
     }
-    if (t == _i7.Section) {
-      return _i7.Section.fromJson(data) as T;
+    if (t == _i7.EventTripLeader) {
+      return _i7.EventTripLeader.fromJson(data) as T;
     }
-    if (t == _i8.SectionMembership) {
-      return _i8.SectionMembership.fromJson(data) as T;
+    if (t == _i8.Notification) {
+      return _i8.Notification.fromJson(data) as T;
     }
-    if (t == _i9.User) {
-      return _i9.User.fromJson(data) as T;
+    if (t == _i9.RegistrationStatus) {
+      return _i9.RegistrationStatus.fromJson(data) as T;
     }
-    if (t == _i10.UserRole) {
-      return _i10.UserRole.fromJson(data) as T;
+    if (t == _i10.Section) {
+      return _i10.Section.fromJson(data) as T;
+    }
+    if (t == _i11.SectionMembership) {
+      return _i11.SectionMembership.fromJson(data) as T;
+    }
+    if (t == _i12.User) {
+      return _i12.User.fromJson(data) as T;
+    }
+    if (t == _i13.UserRole) {
+      return _i13.UserRole.fromJson(data) as T;
     }
     if (t == _i1.getType<_i3.Greeting?>()) {
       return (data != null ? _i3.Greeting.fromJson(data) : null) as T;
@@ -798,23 +1016,32 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i1.getType<_i4.Event?>()) {
       return (data != null ? _i4.Event.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i5.EventRegistration?>()) {
-      return (data != null ? _i5.EventRegistration.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i5.EventDocument?>()) {
+      return (data != null ? _i5.EventDocument.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i6.Notification?>()) {
-      return (data != null ? _i6.Notification.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i6.EventRegistration?>()) {
+      return (data != null ? _i6.EventRegistration.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i7.Section?>()) {
-      return (data != null ? _i7.Section.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i7.EventTripLeader?>()) {
+      return (data != null ? _i7.EventTripLeader.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i8.SectionMembership?>()) {
-      return (data != null ? _i8.SectionMembership.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i8.Notification?>()) {
+      return (data != null ? _i8.Notification.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i9.User?>()) {
-      return (data != null ? _i9.User.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i9.RegistrationStatus?>()) {
+      return (data != null ? _i9.RegistrationStatus.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i10.UserRole?>()) {
-      return (data != null ? _i10.UserRole.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i10.Section?>()) {
+      return (data != null ? _i10.Section.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i11.SectionMembership?>()) {
+      return (data != null ? _i11.SectionMembership.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i12.User?>()) {
+      return (data != null ? _i12.User.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i13.UserRole?>()) {
+      return (data != null ? _i13.UserRole.fromJson(data) : null) as T;
     }
     try {
       return _i2.Protocol().deserialize<T>(data, t);
@@ -832,22 +1059,31 @@ class Protocol extends _i1.SerializationManagerServer {
     if (data is _i4.Event) {
       return 'Event';
     }
-    if (data is _i5.EventRegistration) {
+    if (data is _i5.EventDocument) {
+      return 'EventDocument';
+    }
+    if (data is _i6.EventRegistration) {
       return 'EventRegistration';
     }
-    if (data is _i6.Notification) {
+    if (data is _i7.EventTripLeader) {
+      return 'EventTripLeader';
+    }
+    if (data is _i8.Notification) {
       return 'Notification';
     }
-    if (data is _i7.Section) {
+    if (data is _i9.RegistrationStatus) {
+      return 'RegistrationStatus';
+    }
+    if (data is _i10.Section) {
       return 'Section';
     }
-    if (data is _i8.SectionMembership) {
+    if (data is _i11.SectionMembership) {
       return 'SectionMembership';
     }
-    if (data is _i9.User) {
+    if (data is _i12.User) {
       return 'User';
     }
-    if (data is _i10.UserRole) {
+    if (data is _i13.UserRole) {
       return 'UserRole';
     }
     className = _i2.Protocol().getClassNameForObject(data);
@@ -869,23 +1105,32 @@ class Protocol extends _i1.SerializationManagerServer {
     if (dataClassName == 'Event') {
       return deserialize<_i4.Event>(data['data']);
     }
+    if (dataClassName == 'EventDocument') {
+      return deserialize<_i5.EventDocument>(data['data']);
+    }
     if (dataClassName == 'EventRegistration') {
-      return deserialize<_i5.EventRegistration>(data['data']);
+      return deserialize<_i6.EventRegistration>(data['data']);
+    }
+    if (dataClassName == 'EventTripLeader') {
+      return deserialize<_i7.EventTripLeader>(data['data']);
     }
     if (dataClassName == 'Notification') {
-      return deserialize<_i6.Notification>(data['data']);
+      return deserialize<_i8.Notification>(data['data']);
+    }
+    if (dataClassName == 'RegistrationStatus') {
+      return deserialize<_i9.RegistrationStatus>(data['data']);
     }
     if (dataClassName == 'Section') {
-      return deserialize<_i7.Section>(data['data']);
+      return deserialize<_i10.Section>(data['data']);
     }
     if (dataClassName == 'SectionMembership') {
-      return deserialize<_i8.SectionMembership>(data['data']);
+      return deserialize<_i11.SectionMembership>(data['data']);
     }
     if (dataClassName == 'User') {
-      return deserialize<_i9.User>(data['data']);
+      return deserialize<_i12.User>(data['data']);
     }
     if (dataClassName == 'UserRole') {
-      return deserialize<_i10.UserRole>(data['data']);
+      return deserialize<_i13.UserRole>(data['data']);
     }
     if (dataClassName.startsWith('serverpod.')) {
       data['className'] = dataClassName.substring(10);
@@ -905,16 +1150,20 @@ class Protocol extends _i1.SerializationManagerServer {
     switch (t) {
       case _i4.Event:
         return _i4.Event.t;
-      case _i5.EventRegistration:
-        return _i5.EventRegistration.t;
-      case _i6.Notification:
-        return _i6.Notification.t;
-      case _i7.Section:
-        return _i7.Section.t;
-      case _i8.SectionMembership:
-        return _i8.SectionMembership.t;
-      case _i9.User:
-        return _i9.User.t;
+      case _i5.EventDocument:
+        return _i5.EventDocument.t;
+      case _i6.EventRegistration:
+        return _i6.EventRegistration.t;
+      case _i7.EventTripLeader:
+        return _i7.EventTripLeader.t;
+      case _i8.Notification:
+        return _i8.Notification.t;
+      case _i10.Section:
+        return _i10.Section.t;
+      case _i11.SectionMembership:
+        return _i11.SectionMembership.t;
+      case _i12.User:
+        return _i12.User.t;
     }
     return null;
   }

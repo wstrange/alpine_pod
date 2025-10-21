@@ -10,6 +10,7 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
+import 'user_role.dart' as _i2;
 
 abstract class User implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   User._({
@@ -23,8 +24,8 @@ abstract class User implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     required this.emergencyContactName,
     required this.emergencyContactPhone,
     this.medicalConditions,
-    this.certifications,
-    this.skills,
+    this.certificationsJson,
+    this.skillsJson,
     required this.role,
     required this.createdAt,
   });
@@ -40,9 +41,9 @@ abstract class User implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     required String emergencyContactName,
     required String emergencyContactPhone,
     String? medicalConditions,
-    String? certifications,
-    String? skills,
-    required String role,
+    String? certificationsJson,
+    String? skillsJson,
+    required _i2.UserRole role,
     required DateTime createdAt,
   }) = _UserImpl;
 
@@ -59,9 +60,9 @@ abstract class User implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       emergencyContactPhone:
           jsonSerialization['emergencyContactPhone'] as String,
       medicalConditions: jsonSerialization['medicalConditions'] as String?,
-      certifications: jsonSerialization['certifications'] as String?,
-      skills: jsonSerialization['skills'] as String?,
-      role: jsonSerialization['role'] as String,
+      certificationsJson: jsonSerialization['certificationsJson'] as String?,
+      skillsJson: jsonSerialization['skillsJson'] as String?,
+      role: _i2.UserRole.fromJson((jsonSerialization['role'] as int)),
       createdAt:
           _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
     );
@@ -92,11 +93,11 @@ abstract class User implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
 
   String? medicalConditions;
 
-  String? certifications;
+  String? certificationsJson;
 
-  String? skills;
+  String? skillsJson;
 
-  String role;
+  _i2.UserRole role;
 
   DateTime createdAt;
 
@@ -117,9 +118,9 @@ abstract class User implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     String? emergencyContactName,
     String? emergencyContactPhone,
     String? medicalConditions,
-    String? certifications,
-    String? skills,
-    String? role,
+    String? certificationsJson,
+    String? skillsJson,
+    _i2.UserRole? role,
     DateTime? createdAt,
   });
   @override
@@ -135,9 +136,9 @@ abstract class User implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       'emergencyContactName': emergencyContactName,
       'emergencyContactPhone': emergencyContactPhone,
       if (medicalConditions != null) 'medicalConditions': medicalConditions,
-      if (certifications != null) 'certifications': certifications,
-      if (skills != null) 'skills': skills,
-      'role': role,
+      if (certificationsJson != null) 'certificationsJson': certificationsJson,
+      if (skillsJson != null) 'skillsJson': skillsJson,
+      'role': role.toJson(),
       'createdAt': createdAt.toJson(),
     };
   }
@@ -155,9 +156,9 @@ abstract class User implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       'emergencyContactName': emergencyContactName,
       'emergencyContactPhone': emergencyContactPhone,
       if (medicalConditions != null) 'medicalConditions': medicalConditions,
-      if (certifications != null) 'certifications': certifications,
-      if (skills != null) 'skills': skills,
-      'role': role,
+      if (certificationsJson != null) 'certificationsJson': certificationsJson,
+      if (skillsJson != null) 'skillsJson': skillsJson,
+      'role': role.toJson(),
       'createdAt': createdAt.toJson(),
     };
   }
@@ -206,9 +207,9 @@ class _UserImpl extends User {
     required String emergencyContactName,
     required String emergencyContactPhone,
     String? medicalConditions,
-    String? certifications,
-    String? skills,
-    required String role,
+    String? certificationsJson,
+    String? skillsJson,
+    required _i2.UserRole role,
     required DateTime createdAt,
   }) : super._(
           id: id,
@@ -221,8 +222,8 @@ class _UserImpl extends User {
           emergencyContactName: emergencyContactName,
           emergencyContactPhone: emergencyContactPhone,
           medicalConditions: medicalConditions,
-          certifications: certifications,
-          skills: skills,
+          certificationsJson: certificationsJson,
+          skillsJson: skillsJson,
           role: role,
           createdAt: createdAt,
         );
@@ -242,9 +243,9 @@ class _UserImpl extends User {
     String? emergencyContactName,
     String? emergencyContactPhone,
     Object? medicalConditions = _Undefined,
-    Object? certifications = _Undefined,
-    Object? skills = _Undefined,
-    String? role,
+    Object? certificationsJson = _Undefined,
+    Object? skillsJson = _Undefined,
+    _i2.UserRole? role,
     DateTime? createdAt,
   }) {
     return User(
@@ -263,9 +264,10 @@ class _UserImpl extends User {
       medicalConditions: medicalConditions is String?
           ? medicalConditions
           : this.medicalConditions,
-      certifications:
-          certifications is String? ? certifications : this.certifications,
-      skills: skills is String? ? skills : this.skills,
+      certificationsJson: certificationsJson is String?
+          ? certificationsJson
+          : this.certificationsJson,
+      skillsJson: skillsJson is String? ? skillsJson : this.skillsJson,
       role: role ?? this.role,
       createdAt: createdAt ?? this.createdAt,
     );
@@ -310,17 +312,18 @@ class UserTable extends _i1.Table<int?> {
       'medicalConditions',
       this,
     );
-    certifications = _i1.ColumnString(
-      'certifications',
+    certificationsJson = _i1.ColumnString(
+      'certificationsJson',
       this,
     );
-    skills = _i1.ColumnString(
-      'skills',
+    skillsJson = _i1.ColumnString(
+      'skillsJson',
       this,
     );
-    role = _i1.ColumnString(
+    role = _i1.ColumnEnum(
       'role',
       this,
+      _i1.EnumSerialization.byIndex,
     );
     createdAt = _i1.ColumnDateTime(
       'createdAt',
@@ -346,11 +349,11 @@ class UserTable extends _i1.Table<int?> {
 
   late final _i1.ColumnString medicalConditions;
 
-  late final _i1.ColumnString certifications;
+  late final _i1.ColumnString certificationsJson;
 
-  late final _i1.ColumnString skills;
+  late final _i1.ColumnString skillsJson;
 
-  late final _i1.ColumnString role;
+  late final _i1.ColumnEnum<_i2.UserRole> role;
 
   late final _i1.ColumnDateTime createdAt;
 
@@ -366,8 +369,8 @@ class UserTable extends _i1.Table<int?> {
         emergencyContactName,
         emergencyContactPhone,
         medicalConditions,
-        certifications,
-        skills,
+        certificationsJson,
+        skillsJson,
         role,
         createdAt,
       ];
