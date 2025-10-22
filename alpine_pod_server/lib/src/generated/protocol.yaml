@@ -8,7 +8,6 @@ registration:
   - updateRegistrationStatus:
   - registerForEvent:
   - cancelRegistration:
-  - markAttendance:
 user:
   - updateUserRole:
   - addUserToSection:

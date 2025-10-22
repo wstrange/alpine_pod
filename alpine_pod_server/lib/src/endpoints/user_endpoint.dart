@@ -3,65 +3,69 @@ import '../generated/protocol.dart';
 import '../rbac.dart';
 
 class UserEndpoint extends Endpoint {
-  Future<User> updateUserRole(Session session, int userId, UserRole newRole) async {
+  Future<User> updateUserRole(Session session, User user) async {
     final admin = await isAdmin(session);
     if (!admin) throw Exception('Only administrators can change user roles');
 
-    final user = await User.db.findById(session, userId);
-    if (user == null) throw Exception('User not found');
+    final existing = await User.db.findById(session, user.id!);
+    if (existing == null) throw Exception('User not found');
 
-    final updated = user.copyWith(role: newRole);
+    // Validate that only the role is being changed
+    final updated = existing.copyWith(role: user.role);
     await User.db.updateRow(session, updated);
 
     // Invalidate the cache for this user
-    invalidateUserCache(userId);
+    invalidateUserCache(user.id!);
 
     return updated;
   }
 
   Future<SectionMembership> addUserToSection(
     Session session,
-    int userId,
-    int sectionId, {
-    String? externalUserId,
-    String? sourceSystem,
-  }) async {
+    SectionMembership membership,
+  ) async {
     // Check if user is admin or section manager for this section
-    final allowed = await isSectionManager(session, sectionId);
+    final allowed = await isSectionManager(session, membership.sectionId!);
     if (!allowed) throw Exception('Permission denied');
 
-    final membership = SectionMembership(
-      userId: userId,
-      sectionId: sectionId,
-      externalUserId: externalUserId,
-      sourceSystem: sourceSystem,
+    // Validate the membership has required fields
+    if (membership.userId == null || membership.sectionId == null) {
+      throw Exception('User ID and Section ID are required');
+    }
+
+    // Set syncedAt to current time
+    final validatedMembership = membership.copyWith(
       syncedAt: DateTime.now(),
     );
 
-    final result = await SectionMembership.db.insertRow(session, membership);
+    final result = await SectionMembership.db.insertRow(session, validatedMembership);
 
     // Invalidate the cache for this user
-    invalidateUserCache(userId);
+    invalidateUserCache(membership.userId!);
 
     return result;
   }
 
   Future<void> removeUserFromSection(
     Session session,
-    int userId,
-    int sectionId,
+    SectionMembership membership,
   ) async {
+    // Validate the membership has required fields
+    if (membership.userId == null || membership.sectionId == null) {
+      throw Exception('User ID and Section ID are required');
+    }
+
     // Check if user is admin or section manager for this section
-    final allowed = await isSectionManager(session, sectionId);
+    final allowed = await isSectionManager(session, membership.sectionId!);
     if (!allowed) throw Exception('Permission denied');
 
     await SectionMembership.db.deleteWhere(
       session,
-      where: (t) => t.userId.equals(userId) & t.sectionId.equals(sectionId),
+      where: (t) => t.userId.equals(membership.userId!) & t.sectionId.equals(membership.sectionId!),
     );
 
     // Invalidate the cache for this user
-    invalidateUserCache(userId);
+    invalidateUserCache(membership.userId!);
   }
 
   Future<void> syncSectionMembership(

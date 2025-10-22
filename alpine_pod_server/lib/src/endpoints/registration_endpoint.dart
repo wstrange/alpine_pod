@@ -46,12 +46,10 @@ class RegistrationEndpoint extends Endpoint {
 
       final currentConfirmed = await EventRegistration.db.count(
         session,
-        where: (t) => t.eventId.equals(reg.eventId!) &
-            t.registrationStatus.equals(RegistrationStatus.confirmed),
+        where: (t) => t.eventId.equals(reg.eventId!) & t.registrationStatus.equals(RegistrationStatus.confirmed),
       );
 
-      if (event.maxParticipants != null &&
-          currentConfirmed >= event.maxParticipants!) {
+      if (event.maxParticipants != null && currentConfirmed >= event.maxParticipants!) {
         throw Exception('Event is full');
       }
     }
@@ -61,16 +59,21 @@ class RegistrationEndpoint extends Endpoint {
       participantNotes: notes ?? reg.participantNotes,
       modifiedAt: DateTime.now(),
     );
-    
+
     return await EventRegistration.db.updateRow(session, updated);
   }
-  Future<EventRegistration> registerForEvent(
-      Session session, int eventId, bool waiverAccepted, int? additionalGuests) async {
+
+  Future<EventRegistration> registerForEvent(Session session, EventRegistration registration) async {
     final user = await getCurrentUser(session);
     if (user == null) throw Exception('Not authenticated');
 
-    final event = await Event.db.findById(session, eventId);
+    final event = await Event.db.findById(session, registration.eventId);
     if (event == null) throw Exception('Event not found');
+
+    // Validate registration fields
+    if (!registration.waiverAccepted) {
+      throw Exception('Waiver must be accepted');
+    }
 
     // Enforce registration window
     if (event.registrationDeadline != null && DateTime.now().isAfter(event.registrationDeadline!)) {
@@ -80,13 +83,12 @@ class RegistrationEndpoint extends Endpoint {
     // Get current registration count
     final currentCount = await EventRegistration.db.count(
       session,
-      where: (t) => t.eventId.equals(eventId) &
-          (t.registrationStatus.equals(RegistrationStatus.confirmed)),
+      where: (t) =>
+          t.eventId.equals(registration.eventId) & (t.registrationStatus.equals(RegistrationStatus.confirmed)),
     );
 
     // Determine if event is full
-    final isFull = event.maxParticipants != null &&
-        currentCount >= event.maxParticipants!;
+    final isFull = event.maxParticipants != null && currentCount >= event.maxParticipants!;
 
     // Determine initial registration status
     final status = _determineRegistrationStatus(
@@ -98,32 +100,20 @@ class RegistrationEndpoint extends Endpoint {
     // Get waitlist position if needed
     int? waitlistPosition;
     if (status == RegistrationStatus.waitlisted) {
-      waitlistPosition = await _getNextWaitlistPosition(session, eventId);
+      waitlistPosition = await _getNextWaitlistPosition(session, registration.eventId);
     }
 
-    final registration = EventRegistration(
-      userId: user.id,
-      eventId: eventId,
+    // Create validated registration with computed fields
+    final validatedRegistration = registration.copyWith(
+      userId: user.id!, // Ensure user ID from session
       registrationStatus: status,
       registrationDate: DateTime.now(),
-      carPoolPreference: null,
-      numberOfPassengers: null,
-      additionalGuests: additionalGuests,
-      equipmentNotes: null,
-      waiverAccepted: waiverAccepted,
-      waiverSignedDate: waiverAccepted ? DateTime.now() : null,
-      participantNotes: null,
       waitlistPosition: waitlistPosition,
       waitlistedAt: waitlistPosition != null ? DateTime.now() : null,
-      checkedIn: false,
-      checkedInTime: null,
-      paymentStatus: null,
-      paymentAmount: null,
-      paymentDate: null,
       modifiedAt: DateTime.now(),
     );
 
-    return await EventRegistration.db.insertRow(session, registration);
+    return await EventRegistration.db.insertRow(session, validatedRegistration);
   }
 
   Future<void> cancelRegistration(Session session, int registrationId) async {
@@ -137,14 +127,5 @@ class RegistrationEndpoint extends Endpoint {
     if (!isOwner && !isEditor) throw Exception('Permission denied');
 
     await EventRegistration.db.deleteRow(session, reg);
-  }
-
-  Future<EventRegistration> markAttendance(Session session, int registrationId, bool attended) async {
-    final reg = await EventRegistration.db.findById(session, registrationId);
-    if (reg == null) throw Exception('Registration not found');
-    final allowed = await isEventEditor(session, reg.eventId, null);
-    if (!allowed) throw Exception('Permission denied');
-    final updated = reg.copyWith(attended: attended, attendedAt: attended ? DateTime.now() : null);
-    return await EventRegistration.db.updateRow(session, updated);
   }
 }

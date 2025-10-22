@@ -1,11 +1,63 @@
 import 'package:serverpod/serverpod.dart';
 import '../generated/protocol.dart';
 import '../rbac.dart';
+import '../cache/user_cache.dart';
 
 class EventEndpoint extends Endpoint {
+  final _cache = UserCache();
+  void _validateEvent(Event event) {
+    // Validate required fields
+    if (event.title.isEmpty) throw Exception('Event title is required');
+    if (event.description.isEmpty) throw Exception('Event description is required');
+
+    // Validate dates
+    if (event.endTime.isBefore(event.startTime)) {
+      throw Exception('End time must be after start time');
+    }
+
+    // Validate registration settings
+    if (event.registrationDeadline != null && event.registrationDeadline!.isAfter(event.startTime)) {
+      throw Exception('Registration deadline must be before event start time');
+    }
+    if (event.maxParticipants != null && event.maxParticipants! <= 0) {
+      throw Exception('Maximum participants must be positive');
+    }
+    if (event.minimumParticipants != null && event.minimumParticipants! <= 0) {
+      throw Exception('Minimum participants must be positive');
+    }
+    if (event.minimumParticipants != null &&
+        event.maxParticipants != null &&
+        event.minimumParticipants! > event.maxParticipants!) {
+      throw Exception('Minimum participants cannot be greater than maximum participants');
+    }
+
+    // Validate GPS coordinates if provided
+    if ((event.gpsLatitude != null && event.gpsLongitude == null) ||
+        (event.gpsLatitude == null && event.gpsLongitude != null)) {
+      throw Exception('Both latitude and longitude must be provided together');
+    }
+    if (event.gpsLatitude != null && (event.gpsLatitude! < -90 || event.gpsLatitude! > 90)) {
+      throw Exception('Invalid latitude value');
+    }
+    if (event.gpsLongitude != null && (event.gpsLongitude! < -180 || event.gpsLongitude! > 180)) {
+      throw Exception('Invalid longitude value');
+    }
+  }
+
   Future<Event> createEvent(Session session, Event event) async {
-    final allowed = await isEventEditor(session, null, event.sectionId);
-    if (!allowed) throw Exception('Permission denied');
+    // Validate section ID is provided
+    if (event.sectionId == null) {
+      throw Exception('Events must be associated with a section');
+    }
+
+    // Validate event fields
+    _validateEvent(event);
+
+    // Check if user can create events in this section
+    final allowed = await isEventCreator(session, event.sectionId);
+    if (!allowed)
+      throw Exception('Permission denied. Only admins, section managers, or trip leaders can create events.');
+
     return await Event.db.insertRow(session, event);
   }
 
@@ -14,24 +66,93 @@ class EventEndpoint extends Endpoint {
   }
 
   Future<Event> updateEvent(Session session, Event event) async {
+    if (event.id == null) throw Exception('Event ID is required for updates');
+
     final existing = await Event.db.findById(session, event.id!);
     if (existing == null) throw Exception('Event not found');
+
+    // Validate event fields
+    _validateEvent(event);
+
+    // Check permissions
     final allowed = await isEventEditor(session, event.id, existing.sectionId);
     if (!allowed) throw Exception('Permission denied');
+
+    // Don't allow changing section ID if the event has registrations
+    if (existing.sectionId != event.sectionId) {
+      final hasRegistrations = await EventRegistration.db.count(
+            session,
+            where: (t) => t.eventId.equals(event.id!),
+          ) >
+          0;
+      if (hasRegistrations) {
+        throw Exception('Cannot change section for an event with registrations');
+      }
+    }
+
     return await Event.db.updateRow(session, event);
   }
 
   Future<void> deleteEvent(Session session, int id) async {
     final existing = await Event.db.findById(session, id);
     if (existing == null) return;
+
+    // Check permissions
     final allowed = await isEventEditor(session, id, existing.sectionId);
     if (!allowed) throw Exception('Permission denied');
+
+    // Check if event has registrations
+    final hasRegistrations = await EventRegistration.db.count(
+          session,
+          where: (t) => t.eventId.equals(id),
+        ) >
+        0;
+
+    if (hasRegistrations) {
+      throw Exception('Cannot delete an event with existing registrations');
+    }
+
     await Event.db.deleteRow(session, existing);
   }
 
   Future<List<Event>> listEvents(Session session, int? sectionId) async {
+    final user = await getCurrentUser(session);
+    if (user == null) {
+      // Unauthenticated users can only see public events
+      if (sectionId != null) {
+        return await Event.db.find(
+          session,
+          where: (t) => t.sectionId.equals(sectionId) & t.public.equals(true),
+        );
+      }
+      return await Event.db.find(
+        session,
+        where: (t) => t.public.equals(true),
+      );
+    }
+
+    // If section ID is provided, check membership unless user is admin
+    if (sectionId != null && !await isAdmin(session)) {
+      final dynamic s = session;
+      final int? userId = s.authenticatedUserId as int?;
+      if (userId == null) return [];
+
+      final isMember = await _cache.isSectionMember(session, userId, sectionId);
+      if (!isMember) {
+        // Non-members can only see public events
+        return await Event.db.find(
+          session,
+          where: (t) => t.sectionId.equals(sectionId) & t.public.equals(true),
+        );
+      }
+    }
+
+    // Return all events for the section or all events for admin
     if (sectionId != null) {
-      return await Event.db.find(session, where: (t) => t.sectionId.equals(sectionId));
+      return await Event.db.find(
+        session,
+        where: (t) => t.sectionId.equals(sectionId),
+      );
     }
     return await Event.db.find(session);
   }

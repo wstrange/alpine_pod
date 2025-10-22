@@ -44,7 +44,7 @@ Future<bool> isTripLeaderForEvent(Session session, int? eventId) async {
   if (userId == null) return false;
 
   // Check admin role first (using cache)
-  if (await _cache.hasRole(session, userId, UserRole.admin)) return true;
+  if (await isAdmin(session)) return true;
 
   // Trip leader status requires a database check
   final rel = await EventTripLeader.db.findFirstRow(
@@ -52,6 +52,25 @@ Future<bool> isTripLeaderForEvent(Session session, int? eventId) async {
     where: (t) => t.eventId.equals(eventId) & t.userId.equals(userId),
   );
   return rel != null;
+}
+
+Future<bool> isTripLeader(Session session) async {
+  final dynamic s = session;
+  final int? userId = s.authenticatedUserId as int?;
+  if (userId == null) return false;
+  return await _cache.hasRole(session, userId, UserRole.tripLeader);
+}
+
+// Can the user create an event in this section?
+Future<bool> isEventCreator(Session session, int? sectionId) async {
+  if (sectionId == null) return false;
+
+  // Check roles in order of privilege and cache efficiency
+  if (await isAdmin(session)) return true;
+  if (await isSectionManager(session, sectionId)) return true;
+  // Check if user has trip leader role
+  if (await isTripLeader(session)) return true;
+  return false;
 }
 
 Future<bool> isEventEditor(Session session, int? eventId, int? sectionId) async {

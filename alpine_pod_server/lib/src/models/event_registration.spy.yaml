@@ -1,28 +1,21 @@
 class: EventRegistration
 table: event_registrations
 fields:
-  userId: int?
-  eventId: int?
+  userId: int
+  eventId: int
   registrationStatus: RegistrationStatus
   registrationDate: DateTime
-  carPoolPreference: String? # drive, ride, none
-  numberOfPassengers: int?
-  additionalGuests: int?
-  equipmentNotes: String?
+  carPoolPreference: String? # drive, ride, none, number of passengers,
+  additionalGuests: int, default=0
   waiverAccepted: bool
-  waiverSignedDate: DateTime?
   participantNotes: String?
   # Internal management fields
   waitlistPosition: int?
   waitlistedAt: DateTime?
-  checkedIn: bool
-  checkedInTime: DateTime?
-  paymentStatus: String? # pending, completed, refunded
-  paymentAmount: double?
-  paymentDate: DateTime?
+  paymentStatus: String, default='N/A' # pending, completed, refunded
+  paymentAmount: double, default=0.0
   modifiedAt: DateTime
-  attended: bool?
-  attendedAt: DateTime?
+  noShow: bool, default=false
 indexes:
   user_event_idx:
     fields: userId, eventId

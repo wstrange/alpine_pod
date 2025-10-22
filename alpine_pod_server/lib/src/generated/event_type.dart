@@ -13,11 +13,14 @@ import 'package:serverpod/serverpod.dart' as _i1;
 
 enum EventType implements _i1.SerializableModel {
   hike,
-  climb,
   ski,
   social,
   training,
-  meeting,
+  rock_cragging,
+  mountaineering,
+  rock_multi_pitch,
+  ice_climbing,
+  presentation,
   other;
 
   static EventType fromJson(int index) {
@@ -25,16 +28,22 @@ enum EventType implements _i1.SerializableModel {
       case 0:
         return EventType.hike;
       case 1:
-        return EventType.climb;
-      case 2:
         return EventType.ski;
-      case 3:
+      case 2:
         return EventType.social;
-      case 4:
+      case 3:
         return EventType.training;
+      case 4:
+        return EventType.rock_cragging;
       case 5:
-        return EventType.meeting;
+        return EventType.mountaineering;
       case 6:
+        return EventType.rock_multi_pitch;
+      case 7:
+        return EventType.ice_climbing;
+      case 8:
+        return EventType.presentation;
+      case 9:
         return EventType.other;
       default:
         throw ArgumentError(

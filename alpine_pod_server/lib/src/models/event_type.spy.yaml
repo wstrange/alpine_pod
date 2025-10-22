@@ -1,9 +1,12 @@
 enum: EventType
 values:
   - hike
-  - climb
   - ski
   - social
   - training
-  - meeting
+  - rock_cragging
+  - mountaineering
+  - rock_multi_pitch
+  - ice_climbing
+  - presentation
   - other

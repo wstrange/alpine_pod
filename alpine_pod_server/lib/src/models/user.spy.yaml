@@ -11,7 +11,7 @@ fields:
   emergencyContactPhone: String
   medicalConditions: String?
   # certifications and skills stored as JSON-encoded arrays in strings
-  certificationsJson: String?
-  skillsJson: String?
+  certifications: String?
+  # Managed by the server
   role: UserRole
   createdAt: DateTime

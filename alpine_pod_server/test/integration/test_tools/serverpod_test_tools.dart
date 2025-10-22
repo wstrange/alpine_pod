@@ -407,39 +407,6 @@ class _RegistrationEndpoint {
       }
     });
   }
-
-  _i3.Future<_i5.EventRegistration> markAttendance(
-    _i1.TestSessionBuilder sessionBuilder,
-    int registrationId,
-    bool attended,
-  ) async {
-    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
-      var _localUniqueSession =
-          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
-        endpoint: 'registration',
-        method: 'markAttendance',
-      );
-      try {
-        var _localCallContext = await _endpointDispatch.getMethodCallContext(
-          createSessionCallback: (_) => _localUniqueSession,
-          endpointPath: 'registration',
-          methodName: 'markAttendance',
-          parameters: _i1.testObjectToJson({
-            'registrationId': registrationId,
-            'attended': attended,
-          }),
-          serializationManager: _serializationManager,
-        );
-        var _localReturnValue = await (_localCallContext.method.call(
-          _localUniqueSession,
-          _localCallContext.arguments,
-        ) as _i3.Future<_i5.EventRegistration>);
-        return _localReturnValue;
-      } finally {
-        await _localUniqueSession.close();
-      }
-    });
-  }
 }
 
 class _UserEndpoint {

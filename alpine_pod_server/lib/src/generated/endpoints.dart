@@ -230,31 +230,6 @@ class Endpoints extends _i1.EndpointDispatch {
             params['registrationId'],
           ),
         ),
-        'markAttendance': _i1.MethodConnector(
-          name: 'markAttendance',
-          params: {
-            'registrationId': _i1.ParameterDescription(
-              name: 'registrationId',
-              type: _i1.getType<int>(),
-              nullable: false,
-            ),
-            'attended': _i1.ParameterDescription(
-              name: 'attended',
-              type: _i1.getType<bool>(),
-              nullable: false,
-            ),
-          },
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['registration'] as _i3.RegistrationEndpoint)
-                  .markAttendance(
-            session,
-            params['registrationId'],
-            params['attended'],
-          ),
-        ),
       },
     );
     connectors['user'] = _i1.EndpointConnector(
