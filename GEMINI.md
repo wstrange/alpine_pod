@@ -81,6 +81,10 @@ This is a multi-tenant application to manage users who belong to one more alpine
 * Unauthenticated Users: Can only access the login and registration features.
 * RBAC rules can be expensive to check on every request. Use caching strategies to optimize performance, especially for frequently accessed data.
 
+## Implementation Details
+
+* Prefer to pass entity objects (e.g., User, Event) to endpoint methods. If those come from the client, assume they need to be validated.
+
 ## Instructions on how to generate the schema, server and client code
 
 To generate the database schema, server code, and client code for the alpine_pod application, follow these steps:

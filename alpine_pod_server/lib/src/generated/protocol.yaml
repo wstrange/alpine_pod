@@ -13,6 +13,8 @@ tripLeader:
   - removeTripLeader:
   - listEventTripLeaders:
   - listTripLeaderEvents:
+  - listEventsWithoutTripLeader:
+  - listSectionTripLeaders:
 user:
   - updateUserRole:
   - addUserToSection:

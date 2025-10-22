@@ -23,7 +23,9 @@ import 'section_membership.dart' as _i11;
 import 'user.dart' as _i12;
 import 'user_role.dart' as _i13;
 import 'package:alpine_pod_client/src/protocol/event.dart' as _i14;
-import 'package:alpine_pod_client/src/protocol/section_membership.dart' as _i15;
+import 'package:alpine_pod_client/src/protocol/event_trip_leader.dart' as _i15;
+import 'package:alpine_pod_client/src/protocol/section_membership.dart' as _i16;
+import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i17;
 export 'greeting.dart';
 export 'event.dart';
 export 'event_document.dart';
@@ -127,11 +129,19 @@ class Protocol extends _i1.SerializationManager {
       return (data as List).map((e) => deserialize<_i14.Event>(e)).toList()
           as T;
     }
-    if (t == List<_i15.SectionMembership>) {
+    if (t == List<_i15.EventTripLeader>) {
       return (data as List)
-          .map((e) => deserialize<_i15.SectionMembership>(e))
+          .map((e) => deserialize<_i15.EventTripLeader>(e))
           .toList() as T;
     }
+    if (t == List<_i16.SectionMembership>) {
+      return (data as List)
+          .map((e) => deserialize<_i16.SectionMembership>(e))
+          .toList() as T;
+    }
+    try {
+      return _i17.Protocol().deserialize<T>(data, t);
+    } on _i1.DeserializationTypeNotFoundException catch (_) {}
     return super.deserialize<T>(data, t);
   }
 
@@ -174,6 +184,10 @@ class Protocol extends _i1.SerializationManager {
     }
     if (data is _i13.UserRole) {
       return 'UserRole';
+    }
+    className = _i17.Protocol().getClassNameForObject(data);
+    if (className != null) {
+      return 'serverpod_auth.$className';
     }
     return null;
   }
@@ -219,6 +233,10 @@ class Protocol extends _i1.SerializationManager {
     }
     if (dataClassName == 'UserRole') {
       return deserialize<_i13.UserRole>(data['data']);
+    }
+    if (dataClassName.startsWith('serverpod_auth.')) {
+      data['className'] = dataClassName.substring(15);
+      return _i17.Protocol().deserializeByClassName(data);
     }
     return super.deserializeByClassName(data);
   }

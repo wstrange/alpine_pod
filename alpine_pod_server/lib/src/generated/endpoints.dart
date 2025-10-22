@@ -23,6 +23,7 @@ import 'package:alpine_pod_server/src/generated/event_trip_leader.dart' as _i10;
 import 'package:alpine_pod_server/src/generated/user.dart' as _i11;
 import 'package:alpine_pod_server/src/generated/section_membership.dart'
     as _i12;
+import 'package:serverpod_auth_server/serverpod_auth_server.dart' as _i13;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override
@@ -310,6 +311,44 @@ class Endpoints extends _i1.EndpointDispatch {
             params['userId'],
           ),
         ),
+        'listEventsWithoutTripLeader': _i1.MethodConnector(
+          name: 'listEventsWithoutTripLeader',
+          params: {
+            'sectionId': _i1.ParameterDescription(
+              name: 'sectionId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['tripLeader'] as _i4.TripLeaderEndpoint)
+                  .listEventsWithoutTripLeader(
+            session,
+            params['sectionId'],
+          ),
+        ),
+        'listSectionTripLeaders': _i1.MethodConnector(
+          name: 'listSectionTripLeaders',
+          params: {
+            'sectionId': _i1.ParameterDescription(
+              name: 'sectionId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['tripLeader'] as _i4.TripLeaderEndpoint)
+                  .listSectionTripLeaders(
+            session,
+            params['sectionId'],
+          ),
+        ),
       },
     );
     connectors['user'] = _i1.EndpointConnector(
@@ -414,5 +453,6 @@ class Endpoints extends _i1.EndpointDispatch {
         )
       },
     );
+    modules['serverpod_auth'] = _i13.Endpoints()..initializeEndpoints(server);
   }
 }

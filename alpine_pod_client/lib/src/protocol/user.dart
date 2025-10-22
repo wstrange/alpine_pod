@@ -24,8 +24,7 @@ abstract class User implements _i1.SerializableModel {
     required this.emergencyContactName,
     required this.emergencyContactPhone,
     this.medicalConditions,
-    this.certificationsJson,
-    this.skillsJson,
+    this.certifications,
     required this.role,
     required this.createdAt,
   });
@@ -41,8 +40,7 @@ abstract class User implements _i1.SerializableModel {
     required String emergencyContactName,
     required String emergencyContactPhone,
     String? medicalConditions,
-    String? certificationsJson,
-    String? skillsJson,
+    String? certifications,
     required _i2.UserRole role,
     required DateTime createdAt,
   }) = _UserImpl;
@@ -60,8 +58,7 @@ abstract class User implements _i1.SerializableModel {
       emergencyContactPhone:
           jsonSerialization['emergencyContactPhone'] as String,
       medicalConditions: jsonSerialization['medicalConditions'] as String?,
-      certificationsJson: jsonSerialization['certificationsJson'] as String?,
-      skillsJson: jsonSerialization['skillsJson'] as String?,
+      certifications: jsonSerialization['certifications'] as String?,
       role: _i2.UserRole.fromJson((jsonSerialization['role'] as int)),
       createdAt:
           _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
@@ -91,9 +88,7 @@ abstract class User implements _i1.SerializableModel {
 
   String? medicalConditions;
 
-  String? certificationsJson;
-
-  String? skillsJson;
+  String? certifications;
 
   _i2.UserRole role;
 
@@ -113,8 +108,7 @@ abstract class User implements _i1.SerializableModel {
     String? emergencyContactName,
     String? emergencyContactPhone,
     String? medicalConditions,
-    String? certificationsJson,
-    String? skillsJson,
+    String? certifications,
     _i2.UserRole? role,
     DateTime? createdAt,
   });
@@ -131,8 +125,7 @@ abstract class User implements _i1.SerializableModel {
       'emergencyContactName': emergencyContactName,
       'emergencyContactPhone': emergencyContactPhone,
       if (medicalConditions != null) 'medicalConditions': medicalConditions,
-      if (certificationsJson != null) 'certificationsJson': certificationsJson,
-      if (skillsJson != null) 'skillsJson': skillsJson,
+      if (certifications != null) 'certifications': certifications,
       'role': role.toJson(),
       'createdAt': createdAt.toJson(),
     };
@@ -158,8 +151,7 @@ class _UserImpl extends User {
     required String emergencyContactName,
     required String emergencyContactPhone,
     String? medicalConditions,
-    String? certificationsJson,
-    String? skillsJson,
+    String? certifications,
     required _i2.UserRole role,
     required DateTime createdAt,
   }) : super._(
@@ -173,8 +165,7 @@ class _UserImpl extends User {
           emergencyContactName: emergencyContactName,
           emergencyContactPhone: emergencyContactPhone,
           medicalConditions: medicalConditions,
-          certificationsJson: certificationsJson,
-          skillsJson: skillsJson,
+          certifications: certifications,
           role: role,
           createdAt: createdAt,
         );
@@ -194,8 +185,7 @@ class _UserImpl extends User {
     String? emergencyContactName,
     String? emergencyContactPhone,
     Object? medicalConditions = _Undefined,
-    Object? certificationsJson = _Undefined,
-    Object? skillsJson = _Undefined,
+    Object? certifications = _Undefined,
     _i2.UserRole? role,
     DateTime? createdAt,
   }) {
@@ -215,10 +205,8 @@ class _UserImpl extends User {
       medicalConditions: medicalConditions is String?
           ? medicalConditions
           : this.medicalConditions,
-      certificationsJson: certificationsJson is String?
-          ? certificationsJson
-          : this.certificationsJson,
-      skillsJson: skillsJson is String? ? skillsJson : this.skillsJson,
+      certifications:
+          certifications is String? ? certifications : this.certifications,
       role: role ?? this.role,
       createdAt: createdAt ?? this.createdAt,
     );
