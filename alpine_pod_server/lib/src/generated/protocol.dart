@@ -24,8 +24,9 @@ import 'section_membership.dart' as _i12;
 import 'user.dart' as _i13;
 import 'user_role.dart' as _i14;
 import 'package:alpine_pod_server/src/generated/event.dart' as _i15;
+import 'package:alpine_pod_server/src/generated/event_trip_leader.dart' as _i16;
 import 'package:alpine_pod_server/src/generated/section_membership.dart'
-    as _i16;
+    as _i17;
 export 'greeting.dart';
 export 'event.dart';
 export 'event_document.dart';
@@ -1027,9 +1028,14 @@ class Protocol extends _i1.SerializationManagerServer {
       return (data as List).map((e) => deserialize<_i15.Event>(e)).toList()
           as T;
     }
-    if (t == List<_i16.SectionMembership>) {
+    if (t == List<_i16.EventTripLeader>) {
       return (data as List)
-          .map((e) => deserialize<_i16.SectionMembership>(e))
+          .map((e) => deserialize<_i16.EventTripLeader>(e))
+          .toList() as T;
+    }
+    if (t == List<_i17.SectionMembership>) {
+      return (data as List)
+          .map((e) => deserialize<_i17.SectionMembership>(e))
           .toList() as T;
     }
     try {

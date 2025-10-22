@@ -55,8 +55,9 @@ class EventEndpoint extends Endpoint {
 
     // Check if user can create events in this section
     final allowed = await isEventCreator(session, event.sectionId);
-    if (!allowed)
+    if (!allowed) {
       throw Exception('Permission denied. Only admins, section managers, or trip leaders can create events.');
+    }
 
     return await Event.db.insertRow(session, event);
   }

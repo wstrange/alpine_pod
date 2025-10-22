@@ -8,6 +8,11 @@ registration:
   - updateRegistrationStatus:
   - registerForEvent:
   - cancelRegistration:
+tripLeader:
+  - assignTripLeader:
+  - removeTripLeader:
+  - listEventTripLeaders:
+  - listTripLeaderEvents:
 user:
   - updateUserRole:
   - addUserToSection:
