@@ -15,13 +15,12 @@ import 'package:serverpod_test/serverpod_test.dart' as _i1;
 import 'package:serverpod/serverpod.dart' as _i2;
 import 'dart:async' as _i3;
 import 'package:alpine_pod_server/src/generated/event.dart' as _i4;
-import 'package:alpine_pod_server/src/generated/event_registration.dart' as _i5;
+import 'package:alpine_pod_server/src/generated/member.dart' as _i5;
+import 'package:alpine_pod_server/src/generated/section_membership.dart' as _i6;
+import 'package:alpine_pod_server/src/generated/event_registration.dart' as _i7;
 import 'package:alpine_pod_server/src/generated/registration_status.dart'
-    as _i6;
-import 'package:alpine_pod_server/src/generated/event_trip_leader.dart' as _i7;
-import 'package:alpine_pod_server/src/generated/user.dart' as _i8;
-import 'package:alpine_pod_server/src/generated/section_membership.dart' as _i9;
-import 'package:alpine_pod_server/src/generated/greeting.dart' as _i10;
+    as _i8;
+import 'package:alpine_pod_server/src/generated/event_trip_leader.dart' as _i9;
 import 'package:alpine_pod_server/src/generated/protocol.dart';
 import 'package:alpine_pod_server/src/generated/endpoints.dart';
 export 'package:serverpod_test/serverpod_test_public_exports.dart';
@@ -110,13 +109,11 @@ void withServerpod(
 class TestEndpoints {
   late final _EventEndpoint event;
 
+  late final _MemberEndpoint member;
+
   late final _RegistrationEndpoint registration;
 
   late final _TripLeaderEndpoint tripLeader;
-
-  late final _UserEndpoint user;
-
-  late final _GreetingEndpoint greeting;
 }
 
 class _InternalTestEndpoints extends TestEndpoints
@@ -130,19 +127,15 @@ class _InternalTestEndpoints extends TestEndpoints
       endpoints,
       serializationManager,
     );
+    member = _MemberEndpoint(
+      endpoints,
+      serializationManager,
+    );
     registration = _RegistrationEndpoint(
       endpoints,
       serializationManager,
     );
     tripLeader = _TripLeaderEndpoint(
-      endpoints,
-      serializationManager,
-    );
-    user = _UserEndpoint(
-      endpoints,
-      serializationManager,
-    );
-    greeting = _GreetingEndpoint(
       endpoints,
       serializationManager,
     );
@@ -305,6 +298,162 @@ class _EventEndpoint {
   }
 }
 
+class _MemberEndpoint {
+  _MemberEndpoint(
+    this._endpointDispatch,
+    this._serializationManager,
+  );
+
+  final _i2.EndpointDispatch _endpointDispatch;
+
+  final _i2.SerializationManager _serializationManager;
+
+  _i3.Future<_i5.Member> updateMemberRole(
+    _i1.TestSessionBuilder sessionBuilder,
+    _i5.Member member,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'member',
+        method: 'updateMemberRole',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'member',
+          methodName: 'updateMemberRole',
+          parameters: _i1.testObjectToJson({'member': member}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<_i5.Member>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<_i5.Member> createMember(
+    _i1.TestSessionBuilder sessionBuilder,
+    _i5.Member member,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'member',
+        method: 'createMember',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'member',
+          methodName: 'createMember',
+          parameters: _i1.testObjectToJson({'member': member}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<_i5.Member>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<_i6.SectionMembership> addMemberToSection(
+    _i1.TestSessionBuilder sessionBuilder,
+    _i6.SectionMembership membership,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'member',
+        method: 'addMemberToSection',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'member',
+          methodName: 'addMemberToSection',
+          parameters: _i1.testObjectToJson({'membership': membership}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<_i6.SectionMembership>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<void> removeMemberFromSection(
+    _i1.TestSessionBuilder sessionBuilder,
+    _i6.SectionMembership membership,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'member',
+        method: 'removeMemberFromSection',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'member',
+          methodName: 'removeMemberFromSection',
+          parameters: _i1.testObjectToJson({'membership': membership}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<void>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<void> syncSectionMembership(
+    _i1.TestSessionBuilder sessionBuilder,
+    List<_i6.SectionMembership> memberships,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'member',
+        method: 'syncSectionMembership',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'member',
+          methodName: 'syncSectionMembership',
+          parameters: _i1.testObjectToJson({'memberships': memberships}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<void>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+}
+
 class _RegistrationEndpoint {
   _RegistrationEndpoint(
     this._endpointDispatch,
@@ -315,10 +464,10 @@ class _RegistrationEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i3.Future<_i5.EventRegistration> updateRegistrationStatus(
+  _i3.Future<_i7.EventRegistration> updateRegistrationStatus(
     _i1.TestSessionBuilder sessionBuilder,
     int registrationId,
-    _i6.RegistrationStatus newStatus, {
+    _i8.RegistrationStatus newStatus, {
     String? notes,
   }) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
@@ -342,7 +491,7 @@ class _RegistrationEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<_i5.EventRegistration>);
+        ) as _i3.Future<_i7.EventRegistration>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -350,9 +499,9 @@ class _RegistrationEndpoint {
     });
   }
 
-  _i3.Future<_i5.EventRegistration> registerForEvent(
+  _i3.Future<_i7.EventRegistration> registerForEvent(
     _i1.TestSessionBuilder sessionBuilder,
-    _i5.EventRegistration registration,
+    _i7.EventRegistration registration,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -371,7 +520,7 @@ class _RegistrationEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<_i5.EventRegistration>);
+        ) as _i3.Future<_i7.EventRegistration>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -419,9 +568,9 @@ class _TripLeaderEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i3.Future<_i7.EventTripLeader> assignTripLeader(
+  _i3.Future<_i9.EventTripLeader> assignTripLeader(
     _i1.TestSessionBuilder sessionBuilder,
-    _i7.EventTripLeader tripLeader,
+    _i9.EventTripLeader tripLeader,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -440,7 +589,7 @@ class _TripLeaderEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<_i7.EventTripLeader>);
+        ) as _i3.Future<_i9.EventTripLeader>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -450,7 +599,7 @@ class _TripLeaderEndpoint {
 
   _i3.Future<void> removeTripLeader(
     _i1.TestSessionBuilder sessionBuilder,
-    _i7.EventTripLeader tripLeader,
+    _i9.EventTripLeader tripLeader,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -477,7 +626,7 @@ class _TripLeaderEndpoint {
     });
   }
 
-  _i3.Future<List<_i7.EventTripLeader>> listEventTripLeaders(
+  _i3.Future<List<_i9.EventTripLeader>> listEventTripLeaders(
     _i1.TestSessionBuilder sessionBuilder,
     int eventId,
   ) async {
@@ -498,7 +647,7 @@ class _TripLeaderEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<List<_i7.EventTripLeader>>);
+        ) as _i3.Future<List<_i9.EventTripLeader>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -508,7 +657,7 @@ class _TripLeaderEndpoint {
 
   _i3.Future<List<_i4.Event>> listTripLeaderEvents(
     _i1.TestSessionBuilder sessionBuilder,
-    int userId,
+    int memberId,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -521,7 +670,7 @@ class _TripLeaderEndpoint {
           createSessionCallback: (_) => _localUniqueSession,
           endpointPath: 'tripLeader',
           methodName: 'listTripLeaderEvents',
-          parameters: _i1.testObjectToJson({'userId': userId}),
+          parameters: _i1.testObjectToJson({'memberId': memberId}),
           serializationManager: _serializationManager,
         );
         var _localReturnValue = await (_localCallContext.method.call(
@@ -564,7 +713,7 @@ class _TripLeaderEndpoint {
     });
   }
 
-  _i3.Future<List<_i7.EventTripLeader>> listSectionTripLeaders(
+  _i3.Future<List<_i9.EventTripLeader>> listSectionTripLeaders(
     _i1.TestSessionBuilder sessionBuilder,
     int sectionId,
   ) async {
@@ -585,174 +734,7 @@ class _TripLeaderEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<List<_i7.EventTripLeader>>);
-        return _localReturnValue;
-      } finally {
-        await _localUniqueSession.close();
-      }
-    });
-  }
-}
-
-class _UserEndpoint {
-  _UserEndpoint(
-    this._endpointDispatch,
-    this._serializationManager,
-  );
-
-  final _i2.EndpointDispatch _endpointDispatch;
-
-  final _i2.SerializationManager _serializationManager;
-
-  _i3.Future<_i8.User> updateUserRole(
-    _i1.TestSessionBuilder sessionBuilder,
-    _i8.User user,
-  ) async {
-    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
-      var _localUniqueSession =
-          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
-        endpoint: 'user',
-        method: 'updateUserRole',
-      );
-      try {
-        var _localCallContext = await _endpointDispatch.getMethodCallContext(
-          createSessionCallback: (_) => _localUniqueSession,
-          endpointPath: 'user',
-          methodName: 'updateUserRole',
-          parameters: _i1.testObjectToJson({'user': user}),
-          serializationManager: _serializationManager,
-        );
-        var _localReturnValue = await (_localCallContext.method.call(
-          _localUniqueSession,
-          _localCallContext.arguments,
-        ) as _i3.Future<_i8.User>);
-        return _localReturnValue;
-      } finally {
-        await _localUniqueSession.close();
-      }
-    });
-  }
-
-  _i3.Future<_i9.SectionMembership> addUserToSection(
-    _i1.TestSessionBuilder sessionBuilder,
-    _i9.SectionMembership membership,
-  ) async {
-    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
-      var _localUniqueSession =
-          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
-        endpoint: 'user',
-        method: 'addUserToSection',
-      );
-      try {
-        var _localCallContext = await _endpointDispatch.getMethodCallContext(
-          createSessionCallback: (_) => _localUniqueSession,
-          endpointPath: 'user',
-          methodName: 'addUserToSection',
-          parameters: _i1.testObjectToJson({'membership': membership}),
-          serializationManager: _serializationManager,
-        );
-        var _localReturnValue = await (_localCallContext.method.call(
-          _localUniqueSession,
-          _localCallContext.arguments,
-        ) as _i3.Future<_i9.SectionMembership>);
-        return _localReturnValue;
-      } finally {
-        await _localUniqueSession.close();
-      }
-    });
-  }
-
-  _i3.Future<void> removeUserFromSection(
-    _i1.TestSessionBuilder sessionBuilder,
-    _i9.SectionMembership membership,
-  ) async {
-    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
-      var _localUniqueSession =
-          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
-        endpoint: 'user',
-        method: 'removeUserFromSection',
-      );
-      try {
-        var _localCallContext = await _endpointDispatch.getMethodCallContext(
-          createSessionCallback: (_) => _localUniqueSession,
-          endpointPath: 'user',
-          methodName: 'removeUserFromSection',
-          parameters: _i1.testObjectToJson({'membership': membership}),
-          serializationManager: _serializationManager,
-        );
-        var _localReturnValue = await (_localCallContext.method.call(
-          _localUniqueSession,
-          _localCallContext.arguments,
-        ) as _i3.Future<void>);
-        return _localReturnValue;
-      } finally {
-        await _localUniqueSession.close();
-      }
-    });
-  }
-
-  _i3.Future<void> syncSectionMembership(
-    _i1.TestSessionBuilder sessionBuilder,
-    List<_i9.SectionMembership> memberships,
-  ) async {
-    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
-      var _localUniqueSession =
-          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
-        endpoint: 'user',
-        method: 'syncSectionMembership',
-      );
-      try {
-        var _localCallContext = await _endpointDispatch.getMethodCallContext(
-          createSessionCallback: (_) => _localUniqueSession,
-          endpointPath: 'user',
-          methodName: 'syncSectionMembership',
-          parameters: _i1.testObjectToJson({'memberships': memberships}),
-          serializationManager: _serializationManager,
-        );
-        var _localReturnValue = await (_localCallContext.method.call(
-          _localUniqueSession,
-          _localCallContext.arguments,
-        ) as _i3.Future<void>);
-        return _localReturnValue;
-      } finally {
-        await _localUniqueSession.close();
-      }
-    });
-  }
-}
-
-class _GreetingEndpoint {
-  _GreetingEndpoint(
-    this._endpointDispatch,
-    this._serializationManager,
-  );
-
-  final _i2.EndpointDispatch _endpointDispatch;
-
-  final _i2.SerializationManager _serializationManager;
-
-  _i3.Future<_i10.Greeting> hello(
-    _i1.TestSessionBuilder sessionBuilder,
-    String name,
-  ) async {
-    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
-      var _localUniqueSession =
-          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
-        endpoint: 'greeting',
-        method: 'hello',
-      );
-      try {
-        var _localCallContext = await _endpointDispatch.getMethodCallContext(
-          createSessionCallback: (_) => _localUniqueSession,
-          endpointPath: 'greeting',
-          methodName: 'hello',
-          parameters: _i1.testObjectToJson({'name': name}),
-          serializationManager: _serializationManager,
-        );
-        var _localReturnValue = await (_localCallContext.method.call(
-          _localUniqueSession,
-          _localCallContext.arguments,
-        ) as _i3.Future<_i10.Greeting>);
+        ) as _i3.Future<List<_i9.EventTripLeader>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

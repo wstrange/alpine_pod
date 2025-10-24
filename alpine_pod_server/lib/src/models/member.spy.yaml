@@ -1,5 +1,5 @@
-class: User
-table: users
+class: Member
+table: members
 fields:
   name: String
   email: String
@@ -13,5 +13,5 @@ fields:
   # certifications and skills stored as JSON-encoded arrays in strings
   certifications: String?
   # Managed by the server
-  role: UserRole
+  role: MemberRole
   createdAt: DateTime

@@ -1,4 +1,4 @@
-enum: UserRole
+enum: MemberRole
 values:
   - admin
   - sectionManager

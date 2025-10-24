@@ -1,31 +1,31 @@
 import 'package:serverpod/serverpod.dart';
 import '../generated/protocol.dart';
 import '../rbac.dart';
-import '../cache/user_cache.dart';
+import '../cache/member_cache.dart';
 
 class TripLeaderEndpoint extends Endpoint {
-  final _cache = UserCache();
+  final _cache = MemberCache();
   Future<EventTripLeader> assignTripLeader(
     Session session,
     EventTripLeader tripLeader,
   ) async {
     if (tripLeader.eventId == null || tripLeader.userId == null) {
-      throw Exception('Event ID and User ID are required');
+      throw Exception('Event ID and Member ID are required');
     }
 
     // Get the event to check section
     final event = await Event.db.findById(session, tripLeader.eventId!);
     if (event == null) throw Exception('Event not found');
 
-    // Check if user has permission (admin or section manager)
+    // Check if member has permission (admin or section manager)
     final allowed = await isSectionManager(session, event.sectionId);
     if (!allowed) throw Exception('Permission denied');
 
-    // Check if the user being assigned is a trip leader
-    final assignedUser = await User.db.findById(session, tripLeader.userId!);
-    if (assignedUser == null) throw Exception('User not found');
-    if (!await _cache.hasRole(session, assignedUser.id!, UserRole.tripLeader)) {
-      throw Exception('User must have trip leader role to be assigned');
+    // Check if the member being assigned is a trip leader
+    final assignedMember = await Member.db.findById(session, tripLeader.userId!);
+    if (assignedMember == null) throw Exception('Member not found');
+    if (!await _cache.hasRole(session, assignedMember.id!, MemberRole.tripLeader)) {
+      throw Exception('Member must have trip leader role to be assigned');
     }
 
     // Check if event has already ended
@@ -33,7 +33,7 @@ class TripLeaderEndpoint extends Endpoint {
       throw Exception('Cannot assign trip leaders to past events');
     }
 
-    // Check if user is already a member of the section
+    // Check if member is already a member of the section
     if (!await _cache.isSectionMember(session, tripLeader.userId!, event.sectionId!)) {
       throw Exception('Trip leader must be a member of the section');
     }
@@ -44,7 +44,7 @@ class TripLeaderEndpoint extends Endpoint {
       where: (t) => t.eventId.equals(tripLeader.eventId!) & t.userId.equals(tripLeader.userId!),
     );
     if (existing != null) {
-      throw Exception('User is already a trip leader for this event');
+      throw Exception('Member is already a trip leader for this event');
     }
 
     // Create new assignment with timestamp
@@ -56,10 +56,10 @@ class TripLeaderEndpoint extends Endpoint {
   }
 
   /// Check if an event has any trip leaders assigned
-  Future<bool> _hasOtherTripLeaders(Session session, int eventId, int excludeUserId) async {
+  Future<bool> _hasOtherTripLeaders(Session session, int eventId, int excludeMemberId) async {
     final otherLeader = await EventTripLeader.db.findFirstRow(
       session,
-      where: (t) => t.eventId.equals(eventId) & t.userId.notEquals(excludeUserId),
+      where: (t) => t.eventId.equals(eventId) & t.userId.notEquals(excludeMemberId),
     );
     return otherLeader != null;
   }
@@ -82,14 +82,14 @@ class TripLeaderEndpoint extends Endpoint {
     EventTripLeader tripLeader,
   ) async {
     if (tripLeader.eventId == null || tripLeader.userId == null) {
-      throw Exception('Event ID and User ID are required');
+      throw Exception('Event ID and Member ID are required');
     }
 
     // Get the event to check section
     final event = await Event.db.findById(session, tripLeader.eventId!);
     if (event == null) throw Exception('Event not found');
 
-    // Check if user has permission (admin or section manager)
+    // Check if member has permission (admin or section manager)
     final allowed = await isSectionManager(session, event.sectionId);
     if (!allowed) throw Exception('Permission denied');
 
@@ -121,12 +121,12 @@ class TripLeaderEndpoint extends Endpoint {
 
   Future<List<Event>> listTripLeaderEvents(
     Session session,
-    int userId,
+    int memberId,
   ) async {
-    // Get all events where this user is a trip leader
+    // Get all events where this member is a trip leader
     final tripLeaderAssignments = await EventTripLeader.db.find(
       session,
-      where: (t) => t.userId.equals(userId),
+      where: (t) => t.userId.equals(memberId),
     );
 
     if (tripLeaderAssignments.isEmpty) return [];
@@ -148,7 +148,7 @@ class TripLeaderEndpoint extends Endpoint {
     Session session,
     int sectionId,
   ) async {
-    // Check if user has permission to view section events
+    // Check if member has permission to view section events
     final allowed = await isSectionManager(session, sectionId);
     if (!allowed) throw Exception('Permission denied');
 
@@ -178,7 +178,7 @@ class TripLeaderEndpoint extends Endpoint {
     Session session,
     int sectionId,
   ) async {
-    // Check if user can view section details
+    // Check if member can view section details
     if (!await isSectionManager(session, sectionId)) {
       throw Exception('Permission denied');
     }

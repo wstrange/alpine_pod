@@ -10,10 +10,10 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
-import 'user_role.dart' as _i2;
+import 'member_role.dart' as _i2;
 
-abstract class User implements _i1.SerializableModel {
-  User._({
+abstract class Member implements _i1.SerializableModel {
+  Member._({
     this.id,
     required this.name,
     required this.email,
@@ -29,7 +29,7 @@ abstract class User implements _i1.SerializableModel {
     required this.createdAt,
   });
 
-  factory User({
+  factory Member({
     int? id,
     required String name,
     required String email,
@@ -41,12 +41,12 @@ abstract class User implements _i1.SerializableModel {
     required String emergencyContactPhone,
     String? medicalConditions,
     String? certifications,
-    required _i2.UserRole role,
+    required _i2.MemberRole role,
     required DateTime createdAt,
-  }) = _UserImpl;
+  }) = _MemberImpl;
 
-  factory User.fromJson(Map<String, dynamic> jsonSerialization) {
-    return User(
+  factory Member.fromJson(Map<String, dynamic> jsonSerialization) {
+    return Member(
       id: jsonSerialization['id'] as int?,
       name: jsonSerialization['name'] as String,
       email: jsonSerialization['email'] as String,
@@ -59,7 +59,7 @@ abstract class User implements _i1.SerializableModel {
           jsonSerialization['emergencyContactPhone'] as String,
       medicalConditions: jsonSerialization['medicalConditions'] as String?,
       certifications: jsonSerialization['certifications'] as String?,
-      role: _i2.UserRole.fromJson((jsonSerialization['role'] as int)),
+      role: _i2.MemberRole.fromJson((jsonSerialization['role'] as int)),
       createdAt:
           _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
     );
@@ -90,14 +90,14 @@ abstract class User implements _i1.SerializableModel {
 
   String? certifications;
 
-  _i2.UserRole role;
+  _i2.MemberRole role;
 
   DateTime createdAt;
 
-  /// Returns a shallow copy of this [User]
+  /// Returns a shallow copy of this [Member]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
-  User copyWith({
+  Member copyWith({
     int? id,
     String? name,
     String? email,
@@ -109,7 +109,7 @@ abstract class User implements _i1.SerializableModel {
     String? emergencyContactPhone,
     String? medicalConditions,
     String? certifications,
-    _i2.UserRole? role,
+    _i2.MemberRole? role,
     DateTime? createdAt,
   });
   @override
@@ -139,8 +139,8 @@ abstract class User implements _i1.SerializableModel {
 
 class _Undefined {}
 
-class _UserImpl extends User {
-  _UserImpl({
+class _MemberImpl extends Member {
+  _MemberImpl({
     int? id,
     required String name,
     required String email,
@@ -152,7 +152,7 @@ class _UserImpl extends User {
     required String emergencyContactPhone,
     String? medicalConditions,
     String? certifications,
-    required _i2.UserRole role,
+    required _i2.MemberRole role,
     required DateTime createdAt,
   }) : super._(
           id: id,
@@ -170,11 +170,11 @@ class _UserImpl extends User {
           createdAt: createdAt,
         );
 
-  /// Returns a shallow copy of this [User]
+  /// Returns a shallow copy of this [Member]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
   @override
-  User copyWith({
+  Member copyWith({
     Object? id = _Undefined,
     String? name,
     String? email,
@@ -186,10 +186,10 @@ class _UserImpl extends User {
     String? emergencyContactPhone,
     Object? medicalConditions = _Undefined,
     Object? certifications = _Undefined,
-    _i2.UserRole? role,
+    _i2.MemberRole? role,
     DateTime? createdAt,
   }) {
-    return User(
+    return Member(
       id: id is int? ? id : this.id,
       name: name ?? this.name,
       email: email ?? this.email,

@@ -11,19 +11,18 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
 import '../endpoints/event_endpoint.dart' as _i2;
-import '../endpoints/registration_endpoint.dart' as _i3;
-import '../endpoints/trip_leader_endpoint.dart' as _i4;
-import '../endpoints/user_endpoint.dart' as _i5;
-import '../greeting_endpoint.dart' as _i6;
-import 'package:alpine_pod_server/src/generated/event.dart' as _i7;
+import '../endpoints/member_endpoint.dart' as _i3;
+import '../endpoints/registration_endpoint.dart' as _i4;
+import '../endpoints/trip_leader_endpoint.dart' as _i5;
+import 'package:alpine_pod_server/src/generated/event.dart' as _i6;
+import 'package:alpine_pod_server/src/generated/member.dart' as _i7;
+import 'package:alpine_pod_server/src/generated/section_membership.dart' as _i8;
 import 'package:alpine_pod_server/src/generated/registration_status.dart'
-    as _i8;
-import 'package:alpine_pod_server/src/generated/event_registration.dart' as _i9;
-import 'package:alpine_pod_server/src/generated/event_trip_leader.dart' as _i10;
-import 'package:alpine_pod_server/src/generated/user.dart' as _i11;
-import 'package:alpine_pod_server/src/generated/section_membership.dart'
-    as _i12;
-import 'package:serverpod_auth_server/serverpod_auth_server.dart' as _i13;
+    as _i9;
+import 'package:alpine_pod_server/src/generated/event_registration.dart'
+    as _i10;
+import 'package:alpine_pod_server/src/generated/event_trip_leader.dart' as _i11;
+import 'package:serverpod_auth_server/serverpod_auth_server.dart' as _i12;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override
@@ -35,28 +34,22 @@ class Endpoints extends _i1.EndpointDispatch {
           'event',
           null,
         ),
-      'registration': _i3.RegistrationEndpoint()
+      'member': _i3.MemberEndpoint()
+        ..initialize(
+          server,
+          'member',
+          null,
+        ),
+      'registration': _i4.RegistrationEndpoint()
         ..initialize(
           server,
           'registration',
           null,
         ),
-      'tripLeader': _i4.TripLeaderEndpoint()
+      'tripLeader': _i5.TripLeaderEndpoint()
         ..initialize(
           server,
           'tripLeader',
-          null,
-        ),
-      'user': _i5.UserEndpoint()
-        ..initialize(
-          server,
-          'user',
-          null,
-        ),
-      'greeting': _i6.GreetingEndpoint()
-        ..initialize(
-          server,
-          'greeting',
           null,
         ),
     };
@@ -69,7 +62,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'event': _i1.ParameterDescription(
               name: 'event',
-              type: _i1.getType<_i7.Event>(),
+              type: _i1.getType<_i6.Event>(),
               nullable: false,
             )
           },
@@ -105,7 +98,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'event': _i1.ParameterDescription(
               name: 'event',
-              type: _i1.getType<_i7.Event>(),
+              type: _i1.getType<_i6.Event>(),
               nullable: false,
             )
           },
@@ -156,6 +149,103 @@ class Endpoints extends _i1.EndpointDispatch {
         ),
       },
     );
+    connectors['member'] = _i1.EndpointConnector(
+      name: 'member',
+      endpoint: endpoints['member']!,
+      methodConnectors: {
+        'updateMemberRole': _i1.MethodConnector(
+          name: 'updateMemberRole',
+          params: {
+            'member': _i1.ParameterDescription(
+              name: 'member',
+              type: _i1.getType<_i7.Member>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['member'] as _i3.MemberEndpoint).updateMemberRole(
+            session,
+            params['member'],
+          ),
+        ),
+        'createMember': _i1.MethodConnector(
+          name: 'createMember',
+          params: {
+            'member': _i1.ParameterDescription(
+              name: 'member',
+              type: _i1.getType<_i7.Member>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['member'] as _i3.MemberEndpoint).createMember(
+            session,
+            params['member'],
+          ),
+        ),
+        'addMemberToSection': _i1.MethodConnector(
+          name: 'addMemberToSection',
+          params: {
+            'membership': _i1.ParameterDescription(
+              name: 'membership',
+              type: _i1.getType<_i8.SectionMembership>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['member'] as _i3.MemberEndpoint).addMemberToSection(
+            session,
+            params['membership'],
+          ),
+        ),
+        'removeMemberFromSection': _i1.MethodConnector(
+          name: 'removeMemberFromSection',
+          params: {
+            'membership': _i1.ParameterDescription(
+              name: 'membership',
+              type: _i1.getType<_i8.SectionMembership>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['member'] as _i3.MemberEndpoint)
+                  .removeMemberFromSection(
+            session,
+            params['membership'],
+          ),
+        ),
+        'syncSectionMembership': _i1.MethodConnector(
+          name: 'syncSectionMembership',
+          params: {
+            'memberships': _i1.ParameterDescription(
+              name: 'memberships',
+              type: _i1.getType<List<_i8.SectionMembership>>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['member'] as _i3.MemberEndpoint).syncSectionMembership(
+            session,
+            params['memberships'],
+          ),
+        ),
+      },
+    );
     connectors['registration'] = _i1.EndpointConnector(
       name: 'registration',
       endpoint: endpoints['registration']!,
@@ -170,7 +260,7 @@ class Endpoints extends _i1.EndpointDispatch {
             ),
             'newStatus': _i1.ParameterDescription(
               name: 'newStatus',
-              type: _i1.getType<_i8.RegistrationStatus>(),
+              type: _i1.getType<_i9.RegistrationStatus>(),
               nullable: false,
             ),
             'notes': _i1.ParameterDescription(
@@ -183,7 +273,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['registration'] as _i3.RegistrationEndpoint)
+              (endpoints['registration'] as _i4.RegistrationEndpoint)
                   .updateRegistrationStatus(
             session,
             params['registrationId'],
@@ -196,7 +286,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'registration': _i1.ParameterDescription(
               name: 'registration',
-              type: _i1.getType<_i9.EventRegistration>(),
+              type: _i1.getType<_i10.EventRegistration>(),
               nullable: false,
             )
           },
@@ -204,7 +294,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['registration'] as _i3.RegistrationEndpoint)
+              (endpoints['registration'] as _i4.RegistrationEndpoint)
                   .registerForEvent(
             session,
             params['registration'],
@@ -223,7 +313,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['registration'] as _i3.RegistrationEndpoint)
+              (endpoints['registration'] as _i4.RegistrationEndpoint)
                   .cancelRegistration(
             session,
             params['registrationId'],
@@ -240,7 +330,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'tripLeader': _i1.ParameterDescription(
               name: 'tripLeader',
-              type: _i1.getType<_i10.EventTripLeader>(),
+              type: _i1.getType<_i11.EventTripLeader>(),
               nullable: false,
             )
           },
@@ -248,7 +338,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['tripLeader'] as _i4.TripLeaderEndpoint)
+              (endpoints['tripLeader'] as _i5.TripLeaderEndpoint)
                   .assignTripLeader(
             session,
             params['tripLeader'],
@@ -259,7 +349,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'tripLeader': _i1.ParameterDescription(
               name: 'tripLeader',
-              type: _i1.getType<_i10.EventTripLeader>(),
+              type: _i1.getType<_i11.EventTripLeader>(),
               nullable: false,
             )
           },
@@ -267,7 +357,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['tripLeader'] as _i4.TripLeaderEndpoint)
+              (endpoints['tripLeader'] as _i5.TripLeaderEndpoint)
                   .removeTripLeader(
             session,
             params['tripLeader'],
@@ -286,7 +376,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['tripLeader'] as _i4.TripLeaderEndpoint)
+              (endpoints['tripLeader'] as _i5.TripLeaderEndpoint)
                   .listEventTripLeaders(
             session,
             params['eventId'],
@@ -295,8 +385,8 @@ class Endpoints extends _i1.EndpointDispatch {
         'listTripLeaderEvents': _i1.MethodConnector(
           name: 'listTripLeaderEvents',
           params: {
-            'userId': _i1.ParameterDescription(
-              name: 'userId',
+            'memberId': _i1.ParameterDescription(
+              name: 'memberId',
               type: _i1.getType<int>(),
               nullable: false,
             )
@@ -305,10 +395,10 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['tripLeader'] as _i4.TripLeaderEndpoint)
+              (endpoints['tripLeader'] as _i5.TripLeaderEndpoint)
                   .listTripLeaderEvents(
             session,
-            params['userId'],
+            params['memberId'],
           ),
         ),
         'listEventsWithoutTripLeader': _i1.MethodConnector(
@@ -324,7 +414,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['tripLeader'] as _i4.TripLeaderEndpoint)
+              (endpoints['tripLeader'] as _i5.TripLeaderEndpoint)
                   .listEventsWithoutTripLeader(
             session,
             params['sectionId'],
@@ -343,7 +433,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['tripLeader'] as _i4.TripLeaderEndpoint)
+              (endpoints['tripLeader'] as _i5.TripLeaderEndpoint)
                   .listSectionTripLeaders(
             session,
             params['sectionId'],
@@ -351,108 +441,6 @@ class Endpoints extends _i1.EndpointDispatch {
         ),
       },
     );
-    connectors['user'] = _i1.EndpointConnector(
-      name: 'user',
-      endpoint: endpoints['user']!,
-      methodConnectors: {
-        'updateUserRole': _i1.MethodConnector(
-          name: 'updateUserRole',
-          params: {
-            'user': _i1.ParameterDescription(
-              name: 'user',
-              type: _i1.getType<_i11.User>(),
-              nullable: false,
-            )
-          },
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['user'] as _i5.UserEndpoint).updateUserRole(
-            session,
-            params['user'],
-          ),
-        ),
-        'addUserToSection': _i1.MethodConnector(
-          name: 'addUserToSection',
-          params: {
-            'membership': _i1.ParameterDescription(
-              name: 'membership',
-              type: _i1.getType<_i12.SectionMembership>(),
-              nullable: false,
-            )
-          },
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['user'] as _i5.UserEndpoint).addUserToSection(
-            session,
-            params['membership'],
-          ),
-        ),
-        'removeUserFromSection': _i1.MethodConnector(
-          name: 'removeUserFromSection',
-          params: {
-            'membership': _i1.ParameterDescription(
-              name: 'membership',
-              type: _i1.getType<_i12.SectionMembership>(),
-              nullable: false,
-            )
-          },
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['user'] as _i5.UserEndpoint).removeUserFromSection(
-            session,
-            params['membership'],
-          ),
-        ),
-        'syncSectionMembership': _i1.MethodConnector(
-          name: 'syncSectionMembership',
-          params: {
-            'memberships': _i1.ParameterDescription(
-              name: 'memberships',
-              type: _i1.getType<List<_i12.SectionMembership>>(),
-              nullable: false,
-            )
-          },
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['user'] as _i5.UserEndpoint).syncSectionMembership(
-            session,
-            params['memberships'],
-          ),
-        ),
-      },
-    );
-    connectors['greeting'] = _i1.EndpointConnector(
-      name: 'greeting',
-      endpoint: endpoints['greeting']!,
-      methodConnectors: {
-        'hello': _i1.MethodConnector(
-          name: 'hello',
-          params: {
-            'name': _i1.ParameterDescription(
-              name: 'name',
-              type: _i1.getType<String>(),
-              nullable: false,
-            )
-          },
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['greeting'] as _i6.GreetingEndpoint).hello(
-            session,
-            params['name'],
-          ),
-        )
-      },
-    );
-    modules['serverpod_auth'] = _i13.Endpoints()..initializeEndpoints(server);
+    modules['serverpod_auth'] = _i12.Endpoints()..initializeEndpoints(server);
   }
 }

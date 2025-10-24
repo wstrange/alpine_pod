@@ -1,10 +1,10 @@
 import 'package:serverpod/serverpod.dart';
 import '../generated/protocol.dart';
 import '../rbac.dart';
-import '../cache/user_cache.dart';
+import '../cache/member_cache.dart';
 
 class EventEndpoint extends Endpoint {
-  final _cache = UserCache();
+  final _cache = MemberCache();
   void _validateEvent(Event event) {
     // Validate required fields
     if (event.title.isEmpty) throw Exception('Event title is required');
@@ -53,7 +53,7 @@ class EventEndpoint extends Endpoint {
     // Validate event fields
     _validateEvent(event);
 
-    // Check if user can create events in this section
+    // Check if member can create events in this section
     final allowed = await isEventCreator(session, event.sectionId);
     if (!allowed) {
       throw Exception('Permission denied. Only admins, section managers, or trip leaders can create events.');
@@ -117,9 +117,9 @@ class EventEndpoint extends Endpoint {
   }
 
   Future<List<Event>> listEvents(Session session, int? sectionId) async {
-    final user = await getCurrentUser(session);
-    if (user == null) {
-      // Unauthenticated users can only see public events
+    final member = await getCurrentMember(session);
+    if (member == null) {
+      // Unauthenticated members can only see public events
       if (sectionId != null) {
         return await Event.db.find(
           session,
@@ -132,13 +132,13 @@ class EventEndpoint extends Endpoint {
       );
     }
 
-    // If section ID is provided, check membership unless user is admin
+    // If section ID is provided, check membership unless member is admin
     if (sectionId != null && !await isAdmin(session)) {
       final dynamic s = session;
-      final int? userId = s.authenticatedUserId as int?;
-      if (userId == null) return [];
+      final int? memberId = s.authenticatedUserId as int?;
+      if (memberId == null) return [];
 
-      final isMember = await _cache.isSectionMember(session, userId, sectionId);
+      final isMember = await _cache.isSectionMember(session, memberId, sectionId);
       if (!isMember) {
         // Non-members can only see public events
         return await Event.db.find(

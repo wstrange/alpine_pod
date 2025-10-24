@@ -11,27 +11,28 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
 
-enum UserRole implements _i1.SerializableModel {
+enum MemberRole implements _i1.SerializableModel {
   admin,
   sectionManager,
   tripLeader,
   member,
   guest;
 
-  static UserRole fromJson(int index) {
+  static MemberRole fromJson(int index) {
     switch (index) {
       case 0:
-        return UserRole.admin;
+        return MemberRole.admin;
       case 1:
-        return UserRole.sectionManager;
+        return MemberRole.sectionManager;
       case 2:
-        return UserRole.tripLeader;
+        return MemberRole.tripLeader;
       case 3:
-        return UserRole.member;
+        return MemberRole.member;
       case 4:
-        return UserRole.guest;
+        return MemberRole.guest;
       default:
-        throw ArgumentError('Value "$index" cannot be converted to "UserRole"');
+        throw ArgumentError(
+            'Value "$index" cannot be converted to "MemberRole"');
     }
   }
 

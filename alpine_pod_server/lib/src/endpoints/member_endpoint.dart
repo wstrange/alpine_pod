@@ -2,35 +2,64 @@ import 'package:serverpod/serverpod.dart';
 import '../generated/protocol.dart';
 import '../rbac.dart';
 
-class UserEndpoint extends Endpoint {
-  Future<User> updateUserRole(Session session, User user) async {
+class MemberEndpoint extends Endpoint {
+  Future<Member> updateMemberRole(Session session, Member member) async {
     final admin = await isAdmin(session);
-    if (!admin) throw Exception('Only administrators can change user roles');
+    if (!admin) throw Exception('Only administrators can change member roles');
 
-    final existing = await User.db.findById(session, user.id!);
-    if (existing == null) throw Exception('User not found');
+    final existing = await Member.db.findById(session, member.id!);
+    if (existing == null) throw Exception('Member not found');
 
     // Validate that only the role is being changed
-    final updated = existing.copyWith(role: user.role);
-    await User.db.updateRow(session, updated);
+    final updated = existing.copyWith(role: member.role);
+    await Member.db.updateRow(session, updated);
 
-    // Invalidate the cache for this user
-    invalidateUserCache(user.id!);
+    // Invalidate the cache for this member
+    invalidateMemberCache(member.id!);
 
     return updated;
   }
 
-  Future<SectionMembership> addUserToSection(
+  /// Create a new member.
+  ///
+  /// - Validates that the email is not already in use.
+  /// - Sets `createdAt` to now.
+  /// - Inserts the member row and invalidates the member cache.
+  Future<Member> createMember(Session session, Member member) async {
+    // Basic validation
+    if (member.email.isEmpty) throw Exception('Email is required');
+    if (member.password.isEmpty) throw Exception('Password is required');
+    if (member.name.isEmpty) throw Exception('Name is required');
+
+    // Ensure the email is unique
+    final existing = await Member.db.findFirstRow(
+      session,
+      where: (t) => t.email.equals(member.email),
+    );
+    if (existing != null) throw Exception('A member with that email already exists');
+
+    // Ensure createdAt is set to now
+    final toInsert = member.copyWith(createdAt: DateTime.now());
+
+    final created = await Member.db.insertRow(session, toInsert);
+
+    // Invalidate any cache entries for this member id
+    if (created.id != null) invalidateMemberCache(created.id!);
+
+    return created;
+  }
+
+  Future<SectionMembership> addMemberToSection(
     Session session,
     SectionMembership membership,
   ) async {
-    // Check if user is admin or section manager for this section
+    // Check if member is admin or section manager for this section
     final allowed = await isSectionManager(session, membership.sectionId!);
     if (!allowed) throw Exception('Permission denied');
 
     // Validate the membership has required fields
     if (membership.userId == null || membership.sectionId == null) {
-      throw Exception('User ID and Section ID are required');
+      throw Exception('Member ID and Section ID are required');
     }
 
     // Set syncedAt to current time
@@ -40,22 +69,22 @@ class UserEndpoint extends Endpoint {
 
     final result = await SectionMembership.db.insertRow(session, validatedMembership);
 
-    // Invalidate the cache for this user
-    invalidateUserCache(membership.userId!);
+    // Invalidate the cache for this member
+    invalidateMemberCache(membership.userId!);
 
     return result;
   }
 
-  Future<void> removeUserFromSection(
+  Future<void> removeMemberFromSection(
     Session session,
     SectionMembership membership,
   ) async {
     // Validate the membership has required fields
     if (membership.userId == null || membership.sectionId == null) {
-      throw Exception('User ID and Section ID are required');
+      throw Exception('Member ID and Section ID are required');
     }
 
-    // Check if user is admin or section manager for this section
+    // Check if member is admin or section manager for this section
     final allowed = await isSectionManager(session, membership.sectionId!);
     if (!allowed) throw Exception('Permission denied');
 
@@ -64,8 +93,8 @@ class UserEndpoint extends Endpoint {
       where: (t) => t.userId.equals(membership.userId!) & t.sectionId.equals(membership.sectionId!),
     );
 
-    // Invalidate the cache for this user
-    invalidateUserCache(membership.userId!);
+    // Invalidate the cache for this member
+    invalidateMemberCache(membership.userId!);
   }
 
   Future<void> syncSectionMembership(
@@ -109,13 +138,13 @@ class UserEndpoint extends Endpoint {
       // Remove old memberships
       for (final m in toRemove) {
         await SectionMembership.db.deleteRow(session, m);
-        if (m.userId != null) invalidateUserCache(m.userId!);
+        if (m.userId != null) invalidateMemberCache(m.userId!);
       }
 
       // Add new memberships
       for (final m in toAdd) {
         await SectionMembership.db.insertRow(session, m);
-        if (m.userId != null) invalidateUserCache(m.userId!);
+        if (m.userId != null) invalidateMemberCache(m.userId!);
       }
 
       // Update existing memberships with new sync time
@@ -125,7 +154,7 @@ class UserEndpoint extends Endpoint {
             session,
             m.copyWith(syncedAt: DateTime.now()),
           );
-          if (m.userId != null) invalidateUserCache(m.userId!);
+          if (m.userId != null) invalidateMemberCache(m.userId!);
         }
       }
     }

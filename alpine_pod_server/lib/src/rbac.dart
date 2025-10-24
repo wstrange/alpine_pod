@@ -1,47 +1,47 @@
 import 'package:serverpod/serverpod.dart';
 import 'generated/protocol.dart';
-import 'cache/user_cache.dart';
+import 'cache/member_cache.dart';
 
-final _cache = UserCache();
+final _cache = MemberCache();
 
-Future<User?> getCurrentUser(Session session) async {
+Future<Member?> getCurrentMember(Session session) async {
   final dynamic s = session;
-  final int? userId = s.authenticatedUserId as int?;
-  if (userId == null) return null;
-  final user = await User.db.findById(session, userId);
-  if (user != null) {
-    // Update cache when retrieving user
-    await _cache.updateCache(session, user);
+  final int? memberId = s.authenticatedUserId as int?;
+  if (memberId == null) return null;
+  final member = await Member.db.findById(session, memberId);
+  if (member != null) {
+    // Update cache when retrieving member
+    await _cache.updateCache(session, member);
   }
-  return user;
+  return member;
 }
 
 Future<bool> isAdmin(Session session) async {
   final dynamic s = session;
-  final int? userId = s.authenticatedUserId as int?;
-  if (userId == null) return false;
-  return await _cache.hasRole(session, userId, UserRole.admin);
+  final int? memberId = s.authenticatedUserId as int?;
+  if (memberId == null) return false;
+  return await _cache.hasRole(session, memberId, MemberRole.admin);
 }
 
 Future<bool> isSectionManager(Session session, int? sectionId) async {
   if (sectionId == null) return false;
   final dynamic s = session;
-  final int? userId = s.authenticatedUserId as int?;
-  if (userId == null) return false;
+  final int? memberId = s.authenticatedUserId as int?;
+  if (memberId == null) return false;
 
   // Check admin role first (using cache)
-  if (await _cache.hasRole(session, userId, UserRole.admin)) return true;
+  if (await _cache.hasRole(session, memberId, MemberRole.admin)) return true;
 
   // Check section manager role and membership (using cache)
-  if (!await _cache.hasRole(session, userId, UserRole.sectionManager)) return false;
-  return await _cache.isSectionMember(session, userId, sectionId);
+  if (!await _cache.hasRole(session, memberId, MemberRole.sectionManager)) return false;
+  return await _cache.isSectionMember(session, memberId, sectionId);
 }
 
 Future<bool> isTripLeaderForEvent(Session session, int? eventId) async {
   if (eventId == null) return false;
   final dynamic s = session;
-  final int? userId = s.authenticatedUserId as int?;
-  if (userId == null) return false;
+  final int? memberId = s.authenticatedUserId as int?;
+  if (memberId == null) return false;
 
   // Check admin role first (using cache)
   if (await isAdmin(session)) return true;
@@ -49,26 +49,26 @@ Future<bool> isTripLeaderForEvent(Session session, int? eventId) async {
   // Trip leader status requires a database check
   final rel = await EventTripLeader.db.findFirstRow(
     session,
-    where: (t) => t.eventId.equals(eventId) & t.userId.equals(userId),
+    where: (t) => t.eventId.equals(eventId) & t.userId.equals(memberId),
   );
   return rel != null;
 }
 
 Future<bool> isTripLeader(Session session) async {
   final dynamic s = session;
-  final int? userId = s.authenticatedUserId as int?;
-  if (userId == null) return false;
-  return await _cache.hasRole(session, userId, UserRole.tripLeader);
+  final int? memberId = s.authenticatedUserId as int?;
+  if (memberId == null) return false;
+  return await _cache.hasRole(session, memberId, MemberRole.tripLeader);
 }
 
-// Can the user create an event in this section?
+// Can the member create an event in this section?
 Future<bool> isEventCreator(Session session, int? sectionId) async {
   if (sectionId == null) return false;
 
   // Check roles in order of privilege and cache efficiency
   if (await isAdmin(session)) return true;
   if (await isSectionManager(session, sectionId)) return true;
-  // Check if user has trip leader role
+  // Check if member has trip leader role
   if (await isTripLeader(session)) return true;
   return false;
 }
@@ -81,6 +81,6 @@ Future<bool> isEventEditor(Session session, int? eventId, int? sectionId) async 
 }
 
 /// Call this when roles or section memberships change to invalidate the cache
-void invalidateUserCache(int userId) {
-  _cache.invalidateUser(userId);
+void invalidateMemberCache(int memberId) {
+  _cache.invalidateMember(memberId);
 }

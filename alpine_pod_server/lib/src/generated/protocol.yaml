@@ -4,6 +4,12 @@ event:
   - updateEvent:
   - deleteEvent:
   - listEvents:
+member:
+  - updateMemberRole:
+  - createMember:
+  - addMemberToSection:
+  - removeMemberFromSection:
+  - syncSectionMembership:
 registration:
   - updateRegistrationStatus:
   - registerForEvent:
@@ -15,10 +21,3 @@ tripLeader:
   - listTripLeaderEvents:
   - listEventsWithoutTripLeader:
   - listSectionTripLeaders:
-user:
-  - updateUserRole:
-  - addUserToSection:
-  - removeUserFromSection:
-  - syncSectionMembership:
-greeting:
-  - hello:

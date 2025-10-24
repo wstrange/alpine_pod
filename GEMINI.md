@@ -83,7 +83,7 @@ This is a multi-tenant application to manage users who belong to one more alpine
 
 ## Implementation Details
 
-* Prefer to pass entity objects (e.g., User, Event) to endpoint methods. If those come from the client, assume they need to be validated.
+* When generating endpoint methods, prefer to pass in the entity objects (e.g., User, Event) rather than just IDs. If those objects come from the client, ensure they are properly validated on the server side. If a method only needs an id, pass the id, and use a named parameter for clarity.
 
 ## Instructions on how to generate the schema, server and client code
 
@@ -99,6 +99,7 @@ To generate the database schema, server code, and client code for the alpine_pod
   * Make sure the development database is running before applying migrations.
 * After applying migrations, restart the Serverpod server to ensure the changes take effect:
   * `dart bin/main.dart`
+
 
 If you make any changes make sure they are in a new git branch.
 
