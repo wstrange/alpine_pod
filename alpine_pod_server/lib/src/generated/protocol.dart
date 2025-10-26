@@ -24,9 +24,10 @@ import 'registration_status.dart' as _i12;
 import 'section.dart' as _i13;
 import 'section_membership.dart' as _i14;
 import 'package:alpine_pod_server/src/generated/event.dart' as _i15;
+import 'package:alpine_pod_server/src/generated/member.dart' as _i16;
 import 'package:alpine_pod_server/src/generated/section_membership.dart'
-    as _i16;
-import 'package:alpine_pod_server/src/generated/event_trip_leader.dart' as _i17;
+    as _i17;
+import 'package:alpine_pod_server/src/generated/event_trip_leader.dart' as _i18;
 export 'event.dart';
 export 'event_document.dart';
 export 'event_registration.dart';
@@ -629,10 +630,22 @@ class Protocol extends _i1.SerializationManagerServer {
           columnDefault: 'nextval(\'members_id_seq\'::regclass)',
         ),
         _i2.ColumnDefinition(
-          name: 'name',
+          name: 'firstName',
           columnType: _i2.ColumnType.text,
           isNullable: false,
           dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'lastName',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'userInfoId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
         ),
         _i2.ColumnDefinition(
           name: 'email',
@@ -700,6 +713,12 @@ class Protocol extends _i1.SerializationManagerServer {
           isNullable: false,
           dartType: 'DateTime',
         ),
+        _i2.ColumnDefinition(
+          name: 'updatedAt',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
       ],
       foreignKeys: [],
       indexes: [
@@ -715,7 +734,33 @@ class Protocol extends _i1.SerializationManagerServer {
           type: 'btree',
           isUnique: true,
           isPrimary: true,
-        )
+        ),
+        _i2.IndexDefinition(
+          indexName: 'userinfo_idx',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'userInfoId',
+            )
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: false,
+        ),
+        _i2.IndexDefinition(
+          indexName: 'email_idx',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'email',
+            )
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: false,
+        ),
       ],
       managed: true,
     ),
@@ -1022,14 +1067,18 @@ class Protocol extends _i1.SerializationManagerServer {
       return (data as List).map((e) => deserialize<_i15.Event>(e)).toList()
           as T;
     }
-    if (t == List<_i16.SectionMembership>) {
+    if (t == List<_i16.Member>) {
+      return (data as List).map((e) => deserialize<_i16.Member>(e)).toList()
+          as T;
+    }
+    if (t == List<_i17.SectionMembership>) {
       return (data as List)
-          .map((e) => deserialize<_i16.SectionMembership>(e))
+          .map((e) => deserialize<_i17.SectionMembership>(e))
           .toList() as T;
     }
-    if (t == List<_i17.EventTripLeader>) {
+    if (t == List<_i18.EventTripLeader>) {
       return (data as List)
-          .map((e) => deserialize<_i17.EventTripLeader>(e))
+          .map((e) => deserialize<_i18.EventTripLeader>(e))
           .toList() as T;
     }
     try {

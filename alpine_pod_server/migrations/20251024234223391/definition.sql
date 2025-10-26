@@ -97,6 +97,25 @@ CREATE INDEX "public_events_idx" ON "events" USING btree ("public", "startTime")
 CREATE INDEX "section_idx" ON "events" USING btree ("sectionId");
 
 --
+-- Class Member as table members
+--
+CREATE TABLE "members" (
+    "id" bigserial PRIMARY KEY,
+    "name" text NOT NULL,
+    "email" text NOT NULL,
+    "password" text NOT NULL,
+    "phoneNumber" text NOT NULL,
+    "membershipStatus" text NOT NULL,
+    "profilePictureUrl" text,
+    "emergencyContactName" text NOT NULL,
+    "emergencyContactPhone" text NOT NULL,
+    "medicalConditions" text,
+    "certifications" text,
+    "role" bigint NOT NULL,
+    "createdAt" timestamp without time zone NOT NULL
+);
+
+--
 -- Class Notification as table notifications
 --
 CREATE TABLE "notifications" (
@@ -137,25 +156,6 @@ CREATE TABLE "sections" (
     "description" text NOT NULL,
     "location" text,
     "contactInfo" text
-);
-
---
--- Class User as table users
---
-CREATE TABLE "users" (
-    "id" bigserial PRIMARY KEY,
-    "name" text NOT NULL,
-    "email" text NOT NULL,
-    "password" text NOT NULL,
-    "phoneNumber" text NOT NULL,
-    "membershipStatus" text NOT NULL,
-    "profilePictureUrl" text,
-    "emergencyContactName" text NOT NULL,
-    "emergencyContactPhone" text NOT NULL,
-    "medicalConditions" text,
-    "certifications" text,
-    "role" bigint NOT NULL,
-    "createdAt" timestamp without time zone NOT NULL
 );
 
 --
@@ -511,9 +511,9 @@ ALTER TABLE ONLY "serverpod_query_log"
 -- MIGRATION VERSION FOR alpine_pod
 --
 INSERT INTO "serverpod_migrations" ("module", "version", "timestamp")
-    VALUES ('alpine_pod', '20251022022411373', now())
+    VALUES ('alpine_pod', '20251024234223391', now())
     ON CONFLICT ("module")
-    DO UPDATE SET "version" = '20251022022411373', "timestamp" = now();
+    DO UPDATE SET "version" = '20251024234223391', "timestamp" = now();
 
 --
 -- MIGRATION VERSION FOR serverpod

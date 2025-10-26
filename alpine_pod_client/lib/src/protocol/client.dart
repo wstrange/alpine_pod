@@ -76,6 +76,13 @@ class EndpointMember extends _i1.EndpointRef {
         {'member': member},
       );
 
+  _i2.Future<List<_i4.Member>> getMembers() =>
+      caller.callServerEndpoint<List<_i4.Member>>(
+        'member',
+        'getMembers',
+        {},
+      );
+
   /// Create a new member.
   ///
   /// - Validates that the email is not already in use.

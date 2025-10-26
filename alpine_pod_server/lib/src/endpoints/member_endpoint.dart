@@ -20,6 +20,14 @@ class MemberEndpoint extends Endpoint {
     return updated;
   }
 
+  Future<List<Member>> getMembers(Session session) async {
+    // TODO: Fix
+    // final admin = await isAdmin(session);
+    // if (!admin) throw Exception('Only administrators can view member list');
+
+    return await Member.db.find(session);
+  }
+
   /// Create a new member.
   ///
   /// - Validates that the email is not already in use.
@@ -29,7 +37,8 @@ class MemberEndpoint extends Endpoint {
     // Basic validation
     if (member.email.isEmpty) throw Exception('Email is required');
     if (member.password.isEmpty) throw Exception('Password is required');
-    if (member.name.isEmpty) throw Exception('Name is required');
+    if (member.firstName.isEmpty) throw Exception('First Name is required');
+    if (member.lastName.isEmpty) throw Exception('Last Name is required');
 
     // Ensure the email is unique
     final existing = await Member.db.findFirstRow(

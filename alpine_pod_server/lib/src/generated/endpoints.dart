@@ -171,6 +171,15 @@ class Endpoints extends _i1.EndpointDispatch {
             params['member'],
           ),
         ),
+        'getMembers': _i1.MethodConnector(
+          name: 'getMembers',
+          params: {},
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['member'] as _i3.MemberEndpoint).getMembers(session),
+        ),
         'createMember': _i1.MethodConnector(
           name: 'createMember',
           params: {

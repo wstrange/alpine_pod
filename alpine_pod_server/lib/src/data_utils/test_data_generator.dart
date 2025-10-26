@@ -34,7 +34,8 @@ class TestDataGenerator {
       id: null, // Let the database assign the ID
       email: 'member$id@example.com',
       password: 'password$id', // In real app, would be hashed
-      name: 'Test Member $id',
+      firstName: 'Member $id',
+      lastName: 'LastName $id',
       phoneNumber: '+1555${id.toString().padLeft(7, '0')}',
       membershipStatus: 'active',
       emergencyContactName: 'Emergency Contact $id',
@@ -44,6 +45,7 @@ class TestDataGenerator {
       certifications: null,
       medicalConditions: null,
       profilePictureUrl: null,
+      updatedAt: DateTime.now(),
     );
 
     // Insert the member and return the result with assigned ID
@@ -105,7 +107,13 @@ class TestDataGenerator {
 
   /// Pick a random member role.
   MemberRole _randomMemberRole() {
-    const roles = [MemberRole.member, MemberRole.sectionManager, MemberRole.tripLeader, MemberRole.admin, MemberRole.guest];
+    const roles = [
+      MemberRole.member,
+      MemberRole.sectionManager,
+      MemberRole.tripLeader,
+      MemberRole.admin,
+      MemberRole.guest
+    ];
     return roles[_random.nextInt(roles.length)];
   }
 }

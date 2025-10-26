@@ -89,17 +89,24 @@ This is a multi-tenant application to manage users who belong to one more alpine
 
 To generate the database schema, server code, and client code for the alpine_pod application, follow these steps:
 
-* `cd alpine_pod_server; serverpod generate`. Anytime a .spy.yaml file is changed, this command must be run to regenerate the code.
-* Model files (example users.spy.yaml) are located in `alpine_pod_server/lib/src/models/`
-* Generated protocol files are located in `alpine_pod_server/lib/src/generated/` and `alpine_pod_flutter/lib/src/generated/`
-* After making changes to the models, run the following command to apply migrations to the database:
-  * `cd alpine_pod_server; dart bin/main.dart --apply-migrations`
+* These commands are run from the server directory: alpine_pod_server
+* To run the development database,from the alpine_pod_sever directory, use the following command:
+  * `docker compose up -d`
+* Anytime a .spy.yaml file is changed, run the command `serverpod generate`.
+* Model files (example users.spy.yaml) are located in `lib/src/models/`
+* Generated protocol files are located in `lib/src/generated/` and `lib/src/generated/`
+* After making changes to the models, run the following commands to apply migrations to the database:
+  * `serverpod create-migration`
+    * This will create a new migration file based on the changes made to the models.
+  * `dart bin/main.dart --apply-migrations`
   * Ask me before you apply migrations.
   * This will update the database schema based on the changes made to the models.
-  * Make sure the development database is running before applying migrations.
+* Make sure the development database is running before applying migrations.
 * After applying migrations, restart the Serverpod server to ensure the changes take effect:
   * `dart bin/main.dart`
 
-
 If you make any changes make sure they are in a new git branch.
 
+## UI
+
+See the alpine_pod_flutter/README.md.

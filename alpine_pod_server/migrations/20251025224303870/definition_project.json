@@ -558,6 +558,151 @@
       "managed": true
     },
     {
+      "name": "members",
+      "dartName": "Member",
+      "module": "alpine_pod",
+      "schema": "public",
+      "columns": [
+        {
+          "name": "id",
+          "columnType": 6,
+          "isNullable": false,
+          "columnDefault": "nextval('members_id_seq'::regclass)",
+          "dartType": "int?"
+        },
+        {
+          "name": "firstName",
+          "columnType": 0,
+          "isNullable": false,
+          "dartType": "String"
+        },
+        {
+          "name": "lastName",
+          "columnType": 0,
+          "isNullable": false,
+          "dartType": "String"
+        },
+        {
+          "name": "userInfoId",
+          "columnType": 6,
+          "isNullable": true,
+          "dartType": "int?"
+        },
+        {
+          "name": "email",
+          "columnType": 0,
+          "isNullable": false,
+          "dartType": "String"
+        },
+        {
+          "name": "password",
+          "columnType": 0,
+          "isNullable": false,
+          "dartType": "String"
+        },
+        {
+          "name": "phoneNumber",
+          "columnType": 0,
+          "isNullable": false,
+          "dartType": "String"
+        },
+        {
+          "name": "membershipStatus",
+          "columnType": 0,
+          "isNullable": false,
+          "dartType": "String"
+        },
+        {
+          "name": "profilePictureUrl",
+          "columnType": 0,
+          "isNullable": true,
+          "dartType": "String?"
+        },
+        {
+          "name": "emergencyContactName",
+          "columnType": 0,
+          "isNullable": false,
+          "dartType": "String"
+        },
+        {
+          "name": "emergencyContactPhone",
+          "columnType": 0,
+          "isNullable": false,
+          "dartType": "String"
+        },
+        {
+          "name": "medicalConditions",
+          "columnType": 0,
+          "isNullable": true,
+          "dartType": "String?"
+        },
+        {
+          "name": "certifications",
+          "columnType": 0,
+          "isNullable": true,
+          "dartType": "String?"
+        },
+        {
+          "name": "role",
+          "columnType": 6,
+          "isNullable": false,
+          "dartType": "protocol:MemberRole"
+        },
+        {
+          "name": "createdAt",
+          "columnType": 4,
+          "isNullable": false,
+          "dartType": "DateTime"
+        },
+        {
+          "name": "updatedAt",
+          "columnType": 4,
+          "isNullable": false,
+          "dartType": "DateTime"
+        }
+      ],
+      "foreignKeys": [],
+      "indexes": [
+        {
+          "indexName": "members_pkey",
+          "elements": [
+            {
+              "type": 0,
+              "definition": "id"
+            }
+          ],
+          "type": "btree",
+          "isUnique": true,
+          "isPrimary": true
+        },
+        {
+          "indexName": "userinfo_idx",
+          "elements": [
+            {
+              "type": 0,
+              "definition": "userInfoId"
+            }
+          ],
+          "type": "btree",
+          "isUnique": true,
+          "isPrimary": false
+        },
+        {
+          "indexName": "email_idx",
+          "elements": [
+            {
+              "type": 0,
+              "definition": "email"
+            }
+          ],
+          "type": "btree",
+          "isUnique": true,
+          "isPrimary": false
+        }
+      ],
+      "managed": true
+    },
+    {
       "name": "notifications",
       "dartName": "Notification",
       "module": "alpine_pod",
@@ -761,109 +906,6 @@
       "indexes": [
         {
           "indexName": "sections_pkey",
-          "elements": [
-            {
-              "type": 0,
-              "definition": "id"
-            }
-          ],
-          "type": "btree",
-          "isUnique": true,
-          "isPrimary": true
-        }
-      ],
-      "managed": true
-    },
-    {
-      "name": "users",
-      "dartName": "User",
-      "module": "alpine_pod",
-      "schema": "public",
-      "columns": [
-        {
-          "name": "id",
-          "columnType": 6,
-          "isNullable": false,
-          "columnDefault": "nextval('users_id_seq'::regclass)",
-          "dartType": "int?"
-        },
-        {
-          "name": "name",
-          "columnType": 0,
-          "isNullable": false,
-          "dartType": "String"
-        },
-        {
-          "name": "email",
-          "columnType": 0,
-          "isNullable": false,
-          "dartType": "String"
-        },
-        {
-          "name": "password",
-          "columnType": 0,
-          "isNullable": false,
-          "dartType": "String"
-        },
-        {
-          "name": "phoneNumber",
-          "columnType": 0,
-          "isNullable": false,
-          "dartType": "String"
-        },
-        {
-          "name": "membershipStatus",
-          "columnType": 0,
-          "isNullable": false,
-          "dartType": "String"
-        },
-        {
-          "name": "profilePictureUrl",
-          "columnType": 0,
-          "isNullable": true,
-          "dartType": "String?"
-        },
-        {
-          "name": "emergencyContactName",
-          "columnType": 0,
-          "isNullable": false,
-          "dartType": "String"
-        },
-        {
-          "name": "emergencyContactPhone",
-          "columnType": 0,
-          "isNullable": false,
-          "dartType": "String"
-        },
-        {
-          "name": "medicalConditions",
-          "columnType": 0,
-          "isNullable": true,
-          "dartType": "String?"
-        },
-        {
-          "name": "certifications",
-          "columnType": 0,
-          "isNullable": true,
-          "dartType": "String?"
-        },
-        {
-          "name": "role",
-          "columnType": 6,
-          "isNullable": false,
-          "dartType": "protocol:UserRole"
-        },
-        {
-          "name": "createdAt",
-          "columnType": 4,
-          "isNullable": false,
-          "dartType": "DateTime"
-        }
-      ],
-      "foreignKeys": [],
-      "indexes": [
-        {
-          "indexName": "users_pkey",
           "elements": [
             {
               "type": 0,

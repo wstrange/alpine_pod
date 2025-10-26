@@ -15,7 +15,9 @@ import 'member_role.dart' as _i2;
 abstract class Member implements _i1.SerializableModel {
   Member._({
     this.id,
-    required this.name,
+    required this.firstName,
+    required this.lastName,
+    this.userInfoId,
     required this.email,
     required this.password,
     required this.phoneNumber,
@@ -27,11 +29,14 @@ abstract class Member implements _i1.SerializableModel {
     this.certifications,
     required this.role,
     required this.createdAt,
+    required this.updatedAt,
   });
 
   factory Member({
     int? id,
-    required String name,
+    required String firstName,
+    required String lastName,
+    int? userInfoId,
     required String email,
     required String password,
     required String phoneNumber,
@@ -43,12 +48,15 @@ abstract class Member implements _i1.SerializableModel {
     String? certifications,
     required _i2.MemberRole role,
     required DateTime createdAt,
+    required DateTime updatedAt,
   }) = _MemberImpl;
 
   factory Member.fromJson(Map<String, dynamic> jsonSerialization) {
     return Member(
       id: jsonSerialization['id'] as int?,
-      name: jsonSerialization['name'] as String,
+      firstName: jsonSerialization['firstName'] as String,
+      lastName: jsonSerialization['lastName'] as String,
+      userInfoId: jsonSerialization['userInfoId'] as int?,
       email: jsonSerialization['email'] as String,
       password: jsonSerialization['password'] as String,
       phoneNumber: jsonSerialization['phoneNumber'] as String,
@@ -62,6 +70,8 @@ abstract class Member implements _i1.SerializableModel {
       role: _i2.MemberRole.fromJson((jsonSerialization['role'] as int)),
       createdAt:
           _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
+      updatedAt:
+          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
     );
   }
 
@@ -70,7 +80,11 @@ abstract class Member implements _i1.SerializableModel {
   /// the id will be null.
   int? id;
 
-  String name;
+  String firstName;
+
+  String lastName;
+
+  int? userInfoId;
 
   String email;
 
@@ -94,12 +108,16 @@ abstract class Member implements _i1.SerializableModel {
 
   DateTime createdAt;
 
+  DateTime updatedAt;
+
   /// Returns a shallow copy of this [Member]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
   Member copyWith({
     int? id,
-    String? name,
+    String? firstName,
+    String? lastName,
+    int? userInfoId,
     String? email,
     String? password,
     String? phoneNumber,
@@ -111,12 +129,15 @@ abstract class Member implements _i1.SerializableModel {
     String? certifications,
     _i2.MemberRole? role,
     DateTime? createdAt,
+    DateTime? updatedAt,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
-      'name': name,
+      'firstName': firstName,
+      'lastName': lastName,
+      if (userInfoId != null) 'userInfoId': userInfoId,
       'email': email,
       'password': password,
       'phoneNumber': phoneNumber,
@@ -128,6 +149,7 @@ abstract class Member implements _i1.SerializableModel {
       if (certifications != null) 'certifications': certifications,
       'role': role.toJson(),
       'createdAt': createdAt.toJson(),
+      'updatedAt': updatedAt.toJson(),
     };
   }
 
@@ -142,7 +164,9 @@ class _Undefined {}
 class _MemberImpl extends Member {
   _MemberImpl({
     int? id,
-    required String name,
+    required String firstName,
+    required String lastName,
+    int? userInfoId,
     required String email,
     required String password,
     required String phoneNumber,
@@ -154,9 +178,12 @@ class _MemberImpl extends Member {
     String? certifications,
     required _i2.MemberRole role,
     required DateTime createdAt,
+    required DateTime updatedAt,
   }) : super._(
           id: id,
-          name: name,
+          firstName: firstName,
+          lastName: lastName,
+          userInfoId: userInfoId,
           email: email,
           password: password,
           phoneNumber: phoneNumber,
@@ -168,6 +195,7 @@ class _MemberImpl extends Member {
           certifications: certifications,
           role: role,
           createdAt: createdAt,
+          updatedAt: updatedAt,
         );
 
   /// Returns a shallow copy of this [Member]
@@ -176,7 +204,9 @@ class _MemberImpl extends Member {
   @override
   Member copyWith({
     Object? id = _Undefined,
-    String? name,
+    String? firstName,
+    String? lastName,
+    Object? userInfoId = _Undefined,
     String? email,
     String? password,
     String? phoneNumber,
@@ -188,10 +218,13 @@ class _MemberImpl extends Member {
     Object? certifications = _Undefined,
     _i2.MemberRole? role,
     DateTime? createdAt,
+    DateTime? updatedAt,
   }) {
     return Member(
       id: id is int? ? id : this.id,
-      name: name ?? this.name,
+      firstName: firstName ?? this.firstName,
+      lastName: lastName ?? this.lastName,
+      userInfoId: userInfoId is int? ? userInfoId : this.userInfoId,
       email: email ?? this.email,
       password: password ?? this.password,
       phoneNumber: phoneNumber ?? this.phoneNumber,
@@ -209,6 +242,7 @@ class _MemberImpl extends Member {
           certifications is String? ? certifications : this.certifications,
       role: role ?? this.role,
       createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 }

@@ -1,7 +1,9 @@
 class: Member
 table: members
 fields:
-  name: String
+  firstName: String
+  lastName: String
+  userInfoId: int?
   email: String
   password: String
   phoneNumber: String
@@ -15,3 +17,11 @@ fields:
   # Managed by the server
   role: MemberRole
   createdAt: DateTime
+  updatedAt: DateTime
+indexes:
+  userinfo_idx:
+    fields: userInfoId
+    unique: true
+  email_idx:
+    fields: email
+    unique: true

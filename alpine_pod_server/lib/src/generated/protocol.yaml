@@ -6,6 +6,7 @@ event:
   - listEvents:
 member:
   - updateMemberRole:
+  - getMembers:
   - createMember:
   - addMemberToSection:
   - removeMemberFromSection:

@@ -1,5 +1,6 @@
 import 'package:alpine_pod_client/alpine_pod_client.dart';
 import 'package:flutter/material.dart';
+import 'package:serverpod_auth_shared_flutter/serverpod_auth_shared_flutter.dart';
 import 'package:serverpod_flutter/serverpod_flutter.dart';
 
 /// Sets up a global client object that can be used to talk to the server from
@@ -11,21 +12,28 @@ import 'package:serverpod_flutter/serverpod_flutter.dart';
 /// instead of using a global client object. This is just a simple example.
 late final Client client;
 
+late SessionManager sessionManager;
+
 late String serverUrl;
 
-void main() {
+void main() async {
+  // Need to call this as we are using Flutter bindings before runApp is called.
+  WidgetsFlutterBinding.ensureInitialized();
   // When you are running the app on a physical device, you need to set the
   // server URL to the IP address of your computer. You can find the IP
   // address by running `ipconfig` on Windows or `ifconfig` on Mac/Linux.
   // You can set the variable when running or building your app like this:
   // E.g. `flutter run --dart-define=SERVER_URL=https://api.example.com/`
   const serverUrlFromEnv = String.fromEnvironment('SERVER_URL');
-  final serverUrl =
-      serverUrlFromEnv.isEmpty ? 'http://$localhost:8080/' : serverUrlFromEnv;
+  final serverUrl = serverUrlFromEnv.isEmpty ? 'http://$localhost:8080/' : serverUrlFromEnv;
 
-  client = Client(serverUrl)
+  client = Client(serverUrl, authenticationKeyManager: FlutterAuthenticationKeyManager())
     ..connectivityMonitor = FlutterConnectivityMonitor();
 
+ sessionManager = SessionManager(
+    caller: client.modules.auth,
+  );
+  await sessionManager.initialize();
   runApp(const MyApp());
 }
 

@@ -27,6 +27,9 @@ dependencies:
   serverpod_flutter: 2.9.1
   alpine_pod_client:
     path: ../alpine_pod_client
+  hooks_riverpod: ^3.0.3
+  go_router: ^16.3.0
+  serverpod_auth_shared_flutter: ^2.9.1
 
 
   # The following adds the Cupertino Icons font to your application.
