@@ -3,6 +3,8 @@ table: members
 fields:
   firstName: String
   lastName: String
+  displayName: String
+  bio: String?
   userInfoId: int?
   email: String
   password: String

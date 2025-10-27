@@ -1,0 +1,35 @@
+import 'package:flutter/material.dart';
+import 'package:serverpod_auth_email_flutter/serverpod_auth_email_flutter.dart';
+import 'package:serverpod_auth_google_flutter/serverpod_auth_google_flutter.dart';
+
+import '../../main.dart';
+
+class LoginScreen extends StatelessWidget {
+  const LoginScreen({super.key});
+
+  final _serverClientId = "465372895035-suuujrnk4gm211s8sd4craj58a6g1v79.apps.googleusercontent.com";
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Login'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SignInWithEmailButton(caller: client.modules.auth),
+            const SizedBox(height: 16),
+            SignInWithGoogleButton(
+              caller: client.modules.auth,
+              serverClientId: _serverClientId,
+              redirectUri: Uri.parse('http://localhost:8082/googlesignin'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

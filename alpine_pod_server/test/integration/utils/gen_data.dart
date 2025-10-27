@@ -35,13 +35,19 @@ class GenData {
     final fn = firstName ?? f.person.firstName();
     final ln = lastName ?? f.person.lastName();
     return Member(
+      password: 'password', // Default password for testing
+      membershipStatus: 'active',
+      role: MemberRole.member,
+      phoneNumber: f.phoneNumber.us(),
+      emergencyContactName: f.person.name(),
+      emergencyContactPhone: f.phoneNumber.us(),
+      medicalConditions: f.lorem.sentence(),
       id: id ?? _rnd.nextInt(100000),
       firstName: fn,
       lastName: ln,
       email: email ?? f.internet.email(),
       displayName: displayName ?? '$fn $ln',
       bio: bio ?? f.lorem.sentence(),
-      isActive: isActive ?? true,
       createdAt: createdAt ?? DateTime.now().subtract(Duration(days: _rnd.nextInt(365))),
       updatedAt: updatedAt ?? DateTime.now(),
     );
@@ -62,12 +68,9 @@ class GenData {
     final f = faker;
     final t = title ?? f.lorem.words(2).join(' ');
     return Section(
-      id: id ?? _rnd.nextInt(100000),
-      title: t,
+      name: 'Calgary',
+      // id: id ?? _rnd.nextInt(100000),
       description: description ?? f.lorem.sentences(2).join(' '),
-      slug: slug ?? _slugify(t),
-      createdAt: createdAt ?? DateTime.now().subtract(Duration(days: _rnd.nextInt(365))),
-      updatedAt: updatedAt ?? DateTime.now(),
     );
   }
 

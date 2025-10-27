@@ -28,5 +28,23 @@
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
+
+ <key>CFBundleURLTypes</key>
+  <array>
+    <dict>
+      <key>CFBundleTypeRole</key>
+      <string>Editor</string>
+      <key>CFBundleURLSchemes</key>
+      <array>
+        <string>com.googleusercontent.apps.465372895035-5p053c41aglk40jvjrki8d1qtq2c43g0</string>
+      </array>
+    </dict>
+  </array>
+
+
+	<key>GIDClientID</key>
+	<string>465372895035-5p053c41aglk40jvjrki8d1qtq2c43g0.apps.googleusercontent.com</string>
+
+
 </dict>
 </plist>

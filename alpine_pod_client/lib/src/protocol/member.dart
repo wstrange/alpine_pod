@@ -17,6 +17,8 @@ abstract class Member implements _i1.SerializableModel {
     this.id,
     required this.firstName,
     required this.lastName,
+    required this.displayName,
+    this.bio,
     this.userInfoId,
     required this.email,
     required this.password,
@@ -36,6 +38,8 @@ abstract class Member implements _i1.SerializableModel {
     int? id,
     required String firstName,
     required String lastName,
+    required String displayName,
+    String? bio,
     int? userInfoId,
     required String email,
     required String password,
@@ -56,6 +60,8 @@ abstract class Member implements _i1.SerializableModel {
       id: jsonSerialization['id'] as int?,
       firstName: jsonSerialization['firstName'] as String,
       lastName: jsonSerialization['lastName'] as String,
+      displayName: jsonSerialization['displayName'] as String,
+      bio: jsonSerialization['bio'] as String?,
       userInfoId: jsonSerialization['userInfoId'] as int?,
       email: jsonSerialization['email'] as String,
       password: jsonSerialization['password'] as String,
@@ -83,6 +89,10 @@ abstract class Member implements _i1.SerializableModel {
   String firstName;
 
   String lastName;
+
+  String displayName;
+
+  String? bio;
 
   int? userInfoId;
 
@@ -117,6 +127,8 @@ abstract class Member implements _i1.SerializableModel {
     int? id,
     String? firstName,
     String? lastName,
+    String? displayName,
+    String? bio,
     int? userInfoId,
     String? email,
     String? password,
@@ -137,6 +149,8 @@ abstract class Member implements _i1.SerializableModel {
       if (id != null) 'id': id,
       'firstName': firstName,
       'lastName': lastName,
+      'displayName': displayName,
+      if (bio != null) 'bio': bio,
       if (userInfoId != null) 'userInfoId': userInfoId,
       'email': email,
       'password': password,
@@ -166,6 +180,8 @@ class _MemberImpl extends Member {
     int? id,
     required String firstName,
     required String lastName,
+    required String displayName,
+    String? bio,
     int? userInfoId,
     required String email,
     required String password,
@@ -183,6 +199,8 @@ class _MemberImpl extends Member {
           id: id,
           firstName: firstName,
           lastName: lastName,
+          displayName: displayName,
+          bio: bio,
           userInfoId: userInfoId,
           email: email,
           password: password,
@@ -206,6 +224,8 @@ class _MemberImpl extends Member {
     Object? id = _Undefined,
     String? firstName,
     String? lastName,
+    String? displayName,
+    Object? bio = _Undefined,
     Object? userInfoId = _Undefined,
     String? email,
     String? password,
@@ -224,6 +244,8 @@ class _MemberImpl extends Member {
       id: id is int? ? id : this.id,
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,
+      displayName: displayName ?? this.displayName,
+      bio: bio is String? ? bio : this.bio,
       userInfoId: userInfoId is int? ? userInfoId : this.userInfoId,
       email: email ?? this.email,
       password: password ?? this.password,

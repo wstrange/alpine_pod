@@ -17,6 +17,8 @@ abstract class Member implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     this.id,
     required this.firstName,
     required this.lastName,
+    required this.displayName,
+    this.bio,
     this.userInfoId,
     required this.email,
     required this.password,
@@ -36,6 +38,8 @@ abstract class Member implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     int? id,
     required String firstName,
     required String lastName,
+    required String displayName,
+    String? bio,
     int? userInfoId,
     required String email,
     required String password,
@@ -56,6 +60,8 @@ abstract class Member implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       id: jsonSerialization['id'] as int?,
       firstName: jsonSerialization['firstName'] as String,
       lastName: jsonSerialization['lastName'] as String,
+      displayName: jsonSerialization['displayName'] as String,
+      bio: jsonSerialization['bio'] as String?,
       userInfoId: jsonSerialization['userInfoId'] as int?,
       email: jsonSerialization['email'] as String,
       password: jsonSerialization['password'] as String,
@@ -85,6 +91,10 @@ abstract class Member implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   String firstName;
 
   String lastName;
+
+  String displayName;
+
+  String? bio;
 
   int? userInfoId;
 
@@ -122,6 +132,8 @@ abstract class Member implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     int? id,
     String? firstName,
     String? lastName,
+    String? displayName,
+    String? bio,
     int? userInfoId,
     String? email,
     String? password,
@@ -142,6 +154,8 @@ abstract class Member implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       if (id != null) 'id': id,
       'firstName': firstName,
       'lastName': lastName,
+      'displayName': displayName,
+      if (bio != null) 'bio': bio,
       if (userInfoId != null) 'userInfoId': userInfoId,
       'email': email,
       'password': password,
@@ -164,6 +178,8 @@ abstract class Member implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       if (id != null) 'id': id,
       'firstName': firstName,
       'lastName': lastName,
+      'displayName': displayName,
+      if (bio != null) 'bio': bio,
       if (userInfoId != null) 'userInfoId': userInfoId,
       'email': email,
       'password': password,
@@ -217,6 +233,8 @@ class _MemberImpl extends Member {
     int? id,
     required String firstName,
     required String lastName,
+    required String displayName,
+    String? bio,
     int? userInfoId,
     required String email,
     required String password,
@@ -234,6 +252,8 @@ class _MemberImpl extends Member {
           id: id,
           firstName: firstName,
           lastName: lastName,
+          displayName: displayName,
+          bio: bio,
           userInfoId: userInfoId,
           email: email,
           password: password,
@@ -257,6 +277,8 @@ class _MemberImpl extends Member {
     Object? id = _Undefined,
     String? firstName,
     String? lastName,
+    String? displayName,
+    Object? bio = _Undefined,
     Object? userInfoId = _Undefined,
     String? email,
     String? password,
@@ -275,6 +297,8 @@ class _MemberImpl extends Member {
       id: id is int? ? id : this.id,
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,
+      displayName: displayName ?? this.displayName,
+      bio: bio is String? ? bio : this.bio,
       userInfoId: userInfoId is int? ? userInfoId : this.userInfoId,
       email: email ?? this.email,
       password: password ?? this.password,
@@ -306,6 +330,14 @@ class MemberTable extends _i1.Table<int?> {
     );
     lastName = _i1.ColumnString(
       'lastName',
+      this,
+    );
+    displayName = _i1.ColumnString(
+      'displayName',
+      this,
+    );
+    bio = _i1.ColumnString(
+      'bio',
       this,
     );
     userInfoId = _i1.ColumnInt(
@@ -367,6 +399,10 @@ class MemberTable extends _i1.Table<int?> {
 
   late final _i1.ColumnString lastName;
 
+  late final _i1.ColumnString displayName;
+
+  late final _i1.ColumnString bio;
+
   late final _i1.ColumnInt userInfoId;
 
   late final _i1.ColumnString email;
@@ -398,6 +434,8 @@ class MemberTable extends _i1.Table<int?> {
         id,
         firstName,
         lastName,
+        displayName,
+        bio,
         userInfoId,
         email,
         password,

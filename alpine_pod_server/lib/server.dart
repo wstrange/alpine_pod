@@ -10,6 +10,21 @@ import 'src/generated/endpoints.dart';
 // configuring Relic (Serverpod's web-server), or need custom setup work.
 
 void run(List<String> args) async {
+  auth.AuthConfig.set(auth.AuthConfig(
+    sendValidationEmail: (session, email, validationCode) async {
+      // Send the validation email to the user.
+      // Return `true` if the email was successfully sent, otherwise `false`.
+      print('Send validation email to $email with code $validationCode');
+      return true;
+    },
+    sendPasswordResetEmail: (session, userInfo, validationCode) async {
+      // Send the password reset email to the user.
+      // Return `true` if the email was successfully sent, otherwise `false`.
+      print('Send password reset email to ${userInfo.email} with code $validationCode');
+      return true;
+    },
+  ));
+
   // Initialize Serverpod and connect it with your generated code.
   final pod = Serverpod(args, Protocol(), Endpoints(), authenticationHandler: auth.authenticationHandler);
 
