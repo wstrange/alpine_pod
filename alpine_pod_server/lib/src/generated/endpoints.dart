@@ -13,16 +13,18 @@ import 'package:serverpod/serverpod.dart' as _i1;
 import '../endpoints/event_endpoint.dart' as _i2;
 import '../endpoints/member_endpoint.dart' as _i3;
 import '../endpoints/registration_endpoint.dart' as _i4;
-import '../endpoints/trip_leader_endpoint.dart' as _i5;
-import 'package:alpine_pod_server/src/generated/event.dart' as _i6;
-import 'package:alpine_pod_server/src/generated/member.dart' as _i7;
-import 'package:alpine_pod_server/src/generated/section_membership.dart' as _i8;
+import '../endpoints/section_endpoint.dart' as _i5;
+import '../endpoints/trip_leader_endpoint.dart' as _i6;
+import 'package:alpine_pod_server/src/generated/event.dart' as _i7;
+import 'package:alpine_pod_server/src/generated/member.dart' as _i8;
+import 'package:alpine_pod_server/src/generated/section_membership.dart' as _i9;
 import 'package:alpine_pod_server/src/generated/registration_status.dart'
-    as _i9;
-import 'package:alpine_pod_server/src/generated/event_registration.dart'
     as _i10;
-import 'package:alpine_pod_server/src/generated/event_trip_leader.dart' as _i11;
-import 'package:serverpod_auth_server/serverpod_auth_server.dart' as _i12;
+import 'package:alpine_pod_server/src/generated/event_registration.dart'
+    as _i11;
+import 'package:alpine_pod_server/src/generated/section.dart' as _i12;
+import 'package:alpine_pod_server/src/generated/event_trip_leader.dart' as _i13;
+import 'package:serverpod_auth_server/serverpod_auth_server.dart' as _i14;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override
@@ -46,7 +48,13 @@ class Endpoints extends _i1.EndpointDispatch {
           'registration',
           null,
         ),
-      'tripLeader': _i5.TripLeaderEndpoint()
+      'section': _i5.SectionEndpoint()
+        ..initialize(
+          server,
+          'section',
+          null,
+        ),
+      'tripLeader': _i6.TripLeaderEndpoint()
         ..initialize(
           server,
           'tripLeader',
@@ -62,7 +70,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'event': _i1.ParameterDescription(
               name: 'event',
-              type: _i1.getType<_i6.Event>(),
+              type: _i1.getType<_i7.Event>(),
               nullable: false,
             )
           },
@@ -98,7 +106,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'event': _i1.ParameterDescription(
               name: 'event',
-              type: _i1.getType<_i6.Event>(),
+              type: _i1.getType<_i7.Event>(),
               nullable: false,
             )
           },
@@ -158,7 +166,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'member': _i1.ParameterDescription(
               name: 'member',
-              type: _i1.getType<_i7.Member>(),
+              type: _i1.getType<_i8.Member>(),
               nullable: false,
             )
           },
@@ -185,7 +193,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'member': _i1.ParameterDescription(
               name: 'member',
-              type: _i1.getType<_i7.Member>(),
+              type: _i1.getType<_i8.Member>(),
               nullable: false,
             )
           },
@@ -203,7 +211,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'membership': _i1.ParameterDescription(
               name: 'membership',
-              type: _i1.getType<_i8.SectionMembership>(),
+              type: _i1.getType<_i9.SectionMembership>(),
               nullable: false,
             )
           },
@@ -221,7 +229,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'membership': _i1.ParameterDescription(
               name: 'membership',
-              type: _i1.getType<_i8.SectionMembership>(),
+              type: _i1.getType<_i9.SectionMembership>(),
               nullable: false,
             )
           },
@@ -240,7 +248,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'memberships': _i1.ParameterDescription(
               name: 'memberships',
-              type: _i1.getType<List<_i8.SectionMembership>>(),
+              type: _i1.getType<List<_i9.SectionMembership>>(),
               nullable: false,
             )
           },
@@ -269,7 +277,7 @@ class Endpoints extends _i1.EndpointDispatch {
             ),
             'newStatus': _i1.ParameterDescription(
               name: 'newStatus',
-              type: _i1.getType<_i9.RegistrationStatus>(),
+              type: _i1.getType<_i10.RegistrationStatus>(),
               nullable: false,
             ),
             'notes': _i1.ParameterDescription(
@@ -295,7 +303,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'registration': _i1.ParameterDescription(
               name: 'registration',
-              type: _i1.getType<_i10.EventRegistration>(),
+              type: _i1.getType<_i11.EventRegistration>(),
               nullable: false,
             )
           },
@@ -330,6 +338,94 @@ class Endpoints extends _i1.EndpointDispatch {
         ),
       },
     );
+    connectors['section'] = _i1.EndpointConnector(
+      name: 'section',
+      endpoint: endpoints['section']!,
+      methodConnectors: {
+        'createSection': _i1.MethodConnector(
+          name: 'createSection',
+          params: {
+            'section': _i1.ParameterDescription(
+              name: 'section',
+              type: _i1.getType<_i12.Section>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['section'] as _i5.SectionEndpoint).createSection(
+            session,
+            params['section'],
+          ),
+        ),
+        'getSection': _i1.MethodConnector(
+          name: 'getSection',
+          params: {
+            'id': _i1.ParameterDescription(
+              name: 'id',
+              type: _i1.getType<int>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['section'] as _i5.SectionEndpoint).getSection(
+            session,
+            params['id'],
+          ),
+        ),
+        'updateSection': _i1.MethodConnector(
+          name: 'updateSection',
+          params: {
+            'section': _i1.ParameterDescription(
+              name: 'section',
+              type: _i1.getType<_i12.Section>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['section'] as _i5.SectionEndpoint).updateSection(
+            session,
+            params['section'],
+          ),
+        ),
+        'deleteSection': _i1.MethodConnector(
+          name: 'deleteSection',
+          params: {
+            'id': _i1.ParameterDescription(
+              name: 'id',
+              type: _i1.getType<int>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['section'] as _i5.SectionEndpoint).deleteSection(
+            session,
+            params['id'],
+          ),
+        ),
+        'listSections': _i1.MethodConnector(
+          name: 'listSections',
+          params: {},
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['section'] as _i5.SectionEndpoint)
+                  .listSections(session),
+        ),
+      },
+    );
     connectors['tripLeader'] = _i1.EndpointConnector(
       name: 'tripLeader',
       endpoint: endpoints['tripLeader']!,
@@ -339,7 +435,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'tripLeader': _i1.ParameterDescription(
               name: 'tripLeader',
-              type: _i1.getType<_i11.EventTripLeader>(),
+              type: _i1.getType<_i13.EventTripLeader>(),
               nullable: false,
             )
           },
@@ -347,7 +443,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['tripLeader'] as _i5.TripLeaderEndpoint)
+              (endpoints['tripLeader'] as _i6.TripLeaderEndpoint)
                   .assignTripLeader(
             session,
             params['tripLeader'],
@@ -358,7 +454,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'tripLeader': _i1.ParameterDescription(
               name: 'tripLeader',
-              type: _i1.getType<_i11.EventTripLeader>(),
+              type: _i1.getType<_i13.EventTripLeader>(),
               nullable: false,
             )
           },
@@ -366,7 +462,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['tripLeader'] as _i5.TripLeaderEndpoint)
+              (endpoints['tripLeader'] as _i6.TripLeaderEndpoint)
                   .removeTripLeader(
             session,
             params['tripLeader'],
@@ -385,7 +481,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['tripLeader'] as _i5.TripLeaderEndpoint)
+              (endpoints['tripLeader'] as _i6.TripLeaderEndpoint)
                   .listEventTripLeaders(
             session,
             params['eventId'],
@@ -404,7 +500,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['tripLeader'] as _i5.TripLeaderEndpoint)
+              (endpoints['tripLeader'] as _i6.TripLeaderEndpoint)
                   .listTripLeaderEvents(
             session,
             params['memberId'],
@@ -423,7 +519,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['tripLeader'] as _i5.TripLeaderEndpoint)
+              (endpoints['tripLeader'] as _i6.TripLeaderEndpoint)
                   .listEventsWithoutTripLeader(
             session,
             params['sectionId'],
@@ -442,7 +538,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['tripLeader'] as _i5.TripLeaderEndpoint)
+              (endpoints['tripLeader'] as _i6.TripLeaderEndpoint)
                   .listSectionTripLeaders(
             session,
             params['sectionId'],
@@ -450,6 +546,6 @@ class Endpoints extends _i1.EndpointDispatch {
         ),
       },
     );
-    modules['serverpod_auth'] = _i12.Endpoints()..initializeEndpoints(server);
+    modules['serverpod_auth'] = _i14.Endpoints()..initializeEndpoints(server);
   }
 }

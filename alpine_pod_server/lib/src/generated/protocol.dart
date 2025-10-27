@@ -27,7 +27,8 @@ import 'package:alpine_pod_server/src/generated/event.dart' as _i15;
 import 'package:alpine_pod_server/src/generated/member.dart' as _i16;
 import 'package:alpine_pod_server/src/generated/section_membership.dart'
     as _i17;
-import 'package:alpine_pod_server/src/generated/event_trip_leader.dart' as _i18;
+import 'package:alpine_pod_server/src/generated/section.dart' as _i18;
+import 'package:alpine_pod_server/src/generated/event_trip_leader.dart' as _i19;
 export 'event.dart';
 export 'event_document.dart';
 export 'event_registration.dart';
@@ -994,7 +995,20 @@ class Protocol extends _i1.SerializationManagerServer {
           type: 'btree',
           isUnique: true,
           isPrimary: true,
-        )
+        ),
+        _i2.IndexDefinition(
+          indexName: 'idx_sections_name',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'name',
+            )
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: false,
+        ),
       ],
       managed: true,
     ),
@@ -1088,9 +1102,13 @@ class Protocol extends _i1.SerializationManagerServer {
           .map((e) => deserialize<_i17.SectionMembership>(e))
           .toList() as T;
     }
-    if (t == List<_i18.EventTripLeader>) {
+    if (t == List<_i18.Section>) {
+      return (data as List).map((e) => deserialize<_i18.Section>(e)).toList()
+          as T;
+    }
+    if (t == List<_i19.EventTripLeader>) {
       return (data as List)
-          .map((e) => deserialize<_i18.EventTripLeader>(e))
+          .map((e) => deserialize<_i19.EventTripLeader>(e))
           .toList() as T;
     }
     try {

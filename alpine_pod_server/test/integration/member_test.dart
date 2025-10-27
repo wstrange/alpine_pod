@@ -5,9 +5,9 @@ import 'package:alpine_pod_server/src/generated/protocol.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:test/test.dart';
 import 'test_tools/serverpod_test_tools.dart';
-import '../utils/entity_generator.dart';
+import 'utils/gen_data.dart';
 
-final genData = EntityGenerator();
+final genData = GenData();
 
 void main() {
   const id = 1;
@@ -26,7 +26,7 @@ void main() {
       });
 
       test('insert a new member and verify it exists', () async {
-        final m = genData.generateMember();
+        final m = genData.member();
         print(m);
 
         final member = await endpoints.member.createMember(authenticatedSessionBuilder, m);

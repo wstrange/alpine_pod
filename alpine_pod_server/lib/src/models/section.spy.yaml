@@ -5,3 +5,7 @@ fields:
   description: String
   location: String?
   contactInfo: String?
+indexes:
+  idx_sections_name:
+    fields: name
+    unique: true

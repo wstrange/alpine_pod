@@ -15,6 +15,12 @@ registration:
   - updateRegistrationStatus:
   - registerForEvent:
   - cancelRegistration:
+section:
+  - createSection:
+  - getSection:
+  - updateSection:
+  - deleteSection:
+  - listSections:
 tripLeader:
   - assignTripLeader:
   - removeTripLeader:

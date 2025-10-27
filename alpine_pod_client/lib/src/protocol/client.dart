@@ -16,9 +16,10 @@ import 'package:alpine_pod_client/src/protocol/member.dart' as _i4;
 import 'package:alpine_pod_client/src/protocol/section_membership.dart' as _i5;
 import 'package:alpine_pod_client/src/protocol/event_registration.dart' as _i6;
 import 'package:alpine_pod_client/src/protocol/registration_status.dart' as _i7;
-import 'package:alpine_pod_client/src/protocol/event_trip_leader.dart' as _i8;
-import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i9;
-import 'protocol.dart' as _i10;
+import 'package:alpine_pod_client/src/protocol/section.dart' as _i8;
+import 'package:alpine_pod_client/src/protocol/event_trip_leader.dart' as _i9;
+import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i10;
+import 'protocol.dart' as _i11;
 
 /// {@category Endpoint}
 class EndpointEvent extends _i1.EndpointRef {
@@ -159,29 +160,71 @@ class EndpointRegistration extends _i1.EndpointRef {
 }
 
 /// {@category Endpoint}
+class EndpointSection extends _i1.EndpointRef {
+  EndpointSection(_i1.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'section';
+
+  _i2.Future<_i8.Section> createSection(_i8.Section section) =>
+      caller.callServerEndpoint<_i8.Section>(
+        'section',
+        'createSection',
+        {'section': section},
+      );
+
+  _i2.Future<_i8.Section?> getSection(int id) =>
+      caller.callServerEndpoint<_i8.Section?>(
+        'section',
+        'getSection',
+        {'id': id},
+      );
+
+  _i2.Future<_i8.Section> updateSection(_i8.Section section) =>
+      caller.callServerEndpoint<_i8.Section>(
+        'section',
+        'updateSection',
+        {'section': section},
+      );
+
+  _i2.Future<void> deleteSection(int id) => caller.callServerEndpoint<void>(
+        'section',
+        'deleteSection',
+        {'id': id},
+      );
+
+  _i2.Future<List<_i8.Section>> listSections() =>
+      caller.callServerEndpoint<List<_i8.Section>>(
+        'section',
+        'listSections',
+        {},
+      );
+}
+
+/// {@category Endpoint}
 class EndpointTripLeader extends _i1.EndpointRef {
   EndpointTripLeader(_i1.EndpointCaller caller) : super(caller);
 
   @override
   String get name => 'tripLeader';
 
-  _i2.Future<_i8.EventTripLeader> assignTripLeader(
-          _i8.EventTripLeader tripLeader) =>
-      caller.callServerEndpoint<_i8.EventTripLeader>(
+  _i2.Future<_i9.EventTripLeader> assignTripLeader(
+          _i9.EventTripLeader tripLeader) =>
+      caller.callServerEndpoint<_i9.EventTripLeader>(
         'tripLeader',
         'assignTripLeader',
         {'tripLeader': tripLeader},
       );
 
-  _i2.Future<void> removeTripLeader(_i8.EventTripLeader tripLeader) =>
+  _i2.Future<void> removeTripLeader(_i9.EventTripLeader tripLeader) =>
       caller.callServerEndpoint<void>(
         'tripLeader',
         'removeTripLeader',
         {'tripLeader': tripLeader},
       );
 
-  _i2.Future<List<_i8.EventTripLeader>> listEventTripLeaders(int eventId) =>
-      caller.callServerEndpoint<List<_i8.EventTripLeader>>(
+  _i2.Future<List<_i9.EventTripLeader>> listEventTripLeaders(int eventId) =>
+      caller.callServerEndpoint<List<_i9.EventTripLeader>>(
         'tripLeader',
         'listEventTripLeaders',
         {'eventId': eventId},
@@ -203,8 +246,8 @@ class EndpointTripLeader extends _i1.EndpointRef {
       );
 
   /// List all trip leaders for events in a section
-  _i2.Future<List<_i8.EventTripLeader>> listSectionTripLeaders(int sectionId) =>
-      caller.callServerEndpoint<List<_i8.EventTripLeader>>(
+  _i2.Future<List<_i9.EventTripLeader>> listSectionTripLeaders(int sectionId) =>
+      caller.callServerEndpoint<List<_i9.EventTripLeader>>(
         'tripLeader',
         'listSectionTripLeaders',
         {'sectionId': sectionId},
@@ -213,10 +256,10 @@ class EndpointTripLeader extends _i1.EndpointRef {
 
 class Modules {
   Modules(Client client) {
-    auth = _i9.Caller(client);
+    auth = _i10.Caller(client);
   }
 
-  late final _i9.Caller auth;
+  late final _i10.Caller auth;
 }
 
 class Client extends _i1.ServerpodClientShared {
@@ -235,7 +278,7 @@ class Client extends _i1.ServerpodClientShared {
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
           host,
-          _i10.Protocol(),
+          _i11.Protocol(),
           securityContext: securityContext,
           authenticationKeyManager: authenticationKeyManager,
           streamingConnectionTimeout: streamingConnectionTimeout,
@@ -248,6 +291,7 @@ class Client extends _i1.ServerpodClientShared {
     event = EndpointEvent(this);
     member = EndpointMember(this);
     registration = EndpointRegistration(this);
+    section = EndpointSection(this);
     tripLeader = EndpointTripLeader(this);
     modules = Modules(this);
   }
@@ -258,6 +302,8 @@ class Client extends _i1.ServerpodClientShared {
 
   late final EndpointRegistration registration;
 
+  late final EndpointSection section;
+
   late final EndpointTripLeader tripLeader;
 
   late final Modules modules;
@@ -267,6 +313,7 @@ class Client extends _i1.ServerpodClientShared {
         'event': event,
         'member': member,
         'registration': registration,
+        'section': section,
         'tripLeader': tripLeader,
       };
 
