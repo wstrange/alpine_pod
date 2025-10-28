@@ -21,18 +21,19 @@ abstract class Member implements _i1.SerializableModel {
     this.bio,
     this.userInfoId,
     required this.email,
-    required this.password,
     required this.phoneNumber,
-    required this.membershipStatus,
+    String? membershipStatus,
     this.profilePictureUrl,
     required this.emergencyContactName,
     required this.emergencyContactPhone,
     this.medicalConditions,
     this.certifications,
     required this.role,
-    required this.createdAt,
-    required this.updatedAt,
-  });
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  })  : membershipStatus = membershipStatus ?? 'active',
+        createdAt = createdAt ?? DateTime.now(),
+        updatedAt = updatedAt ?? DateTime.now();
 
   factory Member({
     int? id,
@@ -42,17 +43,16 @@ abstract class Member implements _i1.SerializableModel {
     String? bio,
     int? userInfoId,
     required String email,
-    required String password,
     required String phoneNumber,
-    required String membershipStatus,
+    String? membershipStatus,
     String? profilePictureUrl,
     required String emergencyContactName,
     required String emergencyContactPhone,
     String? medicalConditions,
     String? certifications,
     required _i2.MemberRole role,
-    required DateTime createdAt,
-    required DateTime updatedAt,
+    DateTime? createdAt,
+    DateTime? updatedAt,
   }) = _MemberImpl;
 
   factory Member.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -64,7 +64,6 @@ abstract class Member implements _i1.SerializableModel {
       bio: jsonSerialization['bio'] as String?,
       userInfoId: jsonSerialization['userInfoId'] as int?,
       email: jsonSerialization['email'] as String,
-      password: jsonSerialization['password'] as String,
       phoneNumber: jsonSerialization['phoneNumber'] as String,
       membershipStatus: jsonSerialization['membershipStatus'] as String,
       profilePictureUrl: jsonSerialization['profilePictureUrl'] as String?,
@@ -98,8 +97,6 @@ abstract class Member implements _i1.SerializableModel {
 
   String email;
 
-  String password;
-
   String phoneNumber;
 
   String membershipStatus;
@@ -131,7 +128,6 @@ abstract class Member implements _i1.SerializableModel {
     String? bio,
     int? userInfoId,
     String? email,
-    String? password,
     String? phoneNumber,
     String? membershipStatus,
     String? profilePictureUrl,
@@ -153,7 +149,6 @@ abstract class Member implements _i1.SerializableModel {
       if (bio != null) 'bio': bio,
       if (userInfoId != null) 'userInfoId': userInfoId,
       'email': email,
-      'password': password,
       'phoneNumber': phoneNumber,
       'membershipStatus': membershipStatus,
       if (profilePictureUrl != null) 'profilePictureUrl': profilePictureUrl,
@@ -184,17 +179,16 @@ class _MemberImpl extends Member {
     String? bio,
     int? userInfoId,
     required String email,
-    required String password,
     required String phoneNumber,
-    required String membershipStatus,
+    String? membershipStatus,
     String? profilePictureUrl,
     required String emergencyContactName,
     required String emergencyContactPhone,
     String? medicalConditions,
     String? certifications,
     required _i2.MemberRole role,
-    required DateTime createdAt,
-    required DateTime updatedAt,
+    DateTime? createdAt,
+    DateTime? updatedAt,
   }) : super._(
           id: id,
           firstName: firstName,
@@ -203,7 +197,6 @@ class _MemberImpl extends Member {
           bio: bio,
           userInfoId: userInfoId,
           email: email,
-          password: password,
           phoneNumber: phoneNumber,
           membershipStatus: membershipStatus,
           profilePictureUrl: profilePictureUrl,
@@ -228,7 +221,6 @@ class _MemberImpl extends Member {
     Object? bio = _Undefined,
     Object? userInfoId = _Undefined,
     String? email,
-    String? password,
     String? phoneNumber,
     String? membershipStatus,
     Object? profilePictureUrl = _Undefined,
@@ -248,7 +240,6 @@ class _MemberImpl extends Member {
       bio: bio is String? ? bio : this.bio,
       userInfoId: userInfoId is int? ? userInfoId : this.userInfoId,
       email: email ?? this.email,
-      password: password ?? this.password,
       phoneNumber: phoneNumber ?? this.phoneNumber,
       membershipStatus: membershipStatus ?? this.membershipStatus,
       profilePictureUrl: profilePictureUrl is String?

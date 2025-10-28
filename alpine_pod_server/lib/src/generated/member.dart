@@ -21,18 +21,19 @@ abstract class Member implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     this.bio,
     this.userInfoId,
     required this.email,
-    required this.password,
     required this.phoneNumber,
-    required this.membershipStatus,
+    String? membershipStatus,
     this.profilePictureUrl,
     required this.emergencyContactName,
     required this.emergencyContactPhone,
     this.medicalConditions,
     this.certifications,
     required this.role,
-    required this.createdAt,
-    required this.updatedAt,
-  });
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  })  : membershipStatus = membershipStatus ?? 'active',
+        createdAt = createdAt ?? DateTime.now(),
+        updatedAt = updatedAt ?? DateTime.now();
 
   factory Member({
     int? id,
@@ -42,17 +43,16 @@ abstract class Member implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     String? bio,
     int? userInfoId,
     required String email,
-    required String password,
     required String phoneNumber,
-    required String membershipStatus,
+    String? membershipStatus,
     String? profilePictureUrl,
     required String emergencyContactName,
     required String emergencyContactPhone,
     String? medicalConditions,
     String? certifications,
     required _i2.MemberRole role,
-    required DateTime createdAt,
-    required DateTime updatedAt,
+    DateTime? createdAt,
+    DateTime? updatedAt,
   }) = _MemberImpl;
 
   factory Member.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -64,7 +64,6 @@ abstract class Member implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       bio: jsonSerialization['bio'] as String?,
       userInfoId: jsonSerialization['userInfoId'] as int?,
       email: jsonSerialization['email'] as String,
-      password: jsonSerialization['password'] as String,
       phoneNumber: jsonSerialization['phoneNumber'] as String,
       membershipStatus: jsonSerialization['membershipStatus'] as String,
       profilePictureUrl: jsonSerialization['profilePictureUrl'] as String?,
@@ -100,8 +99,6 @@ abstract class Member implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
 
   String email;
 
-  String password;
-
   String phoneNumber;
 
   String membershipStatus;
@@ -136,7 +133,6 @@ abstract class Member implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     String? bio,
     int? userInfoId,
     String? email,
-    String? password,
     String? phoneNumber,
     String? membershipStatus,
     String? profilePictureUrl,
@@ -158,7 +154,6 @@ abstract class Member implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       if (bio != null) 'bio': bio,
       if (userInfoId != null) 'userInfoId': userInfoId,
       'email': email,
-      'password': password,
       'phoneNumber': phoneNumber,
       'membershipStatus': membershipStatus,
       if (profilePictureUrl != null) 'profilePictureUrl': profilePictureUrl,
@@ -182,7 +177,6 @@ abstract class Member implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       if (bio != null) 'bio': bio,
       if (userInfoId != null) 'userInfoId': userInfoId,
       'email': email,
-      'password': password,
       'phoneNumber': phoneNumber,
       'membershipStatus': membershipStatus,
       if (profilePictureUrl != null) 'profilePictureUrl': profilePictureUrl,
@@ -237,17 +231,16 @@ class _MemberImpl extends Member {
     String? bio,
     int? userInfoId,
     required String email,
-    required String password,
     required String phoneNumber,
-    required String membershipStatus,
+    String? membershipStatus,
     String? profilePictureUrl,
     required String emergencyContactName,
     required String emergencyContactPhone,
     String? medicalConditions,
     String? certifications,
     required _i2.MemberRole role,
-    required DateTime createdAt,
-    required DateTime updatedAt,
+    DateTime? createdAt,
+    DateTime? updatedAt,
   }) : super._(
           id: id,
           firstName: firstName,
@@ -256,7 +249,6 @@ class _MemberImpl extends Member {
           bio: bio,
           userInfoId: userInfoId,
           email: email,
-          password: password,
           phoneNumber: phoneNumber,
           membershipStatus: membershipStatus,
           profilePictureUrl: profilePictureUrl,
@@ -281,7 +273,6 @@ class _MemberImpl extends Member {
     Object? bio = _Undefined,
     Object? userInfoId = _Undefined,
     String? email,
-    String? password,
     String? phoneNumber,
     String? membershipStatus,
     Object? profilePictureUrl = _Undefined,
@@ -301,7 +292,6 @@ class _MemberImpl extends Member {
       bio: bio is String? ? bio : this.bio,
       userInfoId: userInfoId is int? ? userInfoId : this.userInfoId,
       email: email ?? this.email,
-      password: password ?? this.password,
       phoneNumber: phoneNumber ?? this.phoneNumber,
       membershipStatus: membershipStatus ?? this.membershipStatus,
       profilePictureUrl: profilePictureUrl is String?
@@ -348,10 +338,6 @@ class MemberTable extends _i1.Table<int?> {
       'email',
       this,
     );
-    password = _i1.ColumnString(
-      'password',
-      this,
-    );
     phoneNumber = _i1.ColumnString(
       'phoneNumber',
       this,
@@ -359,6 +345,7 @@ class MemberTable extends _i1.Table<int?> {
     membershipStatus = _i1.ColumnString(
       'membershipStatus',
       this,
+      hasDefault: true,
     );
     profilePictureUrl = _i1.ColumnString(
       'profilePictureUrl',
@@ -388,10 +375,12 @@ class MemberTable extends _i1.Table<int?> {
     createdAt = _i1.ColumnDateTime(
       'createdAt',
       this,
+      hasDefault: true,
     );
     updatedAt = _i1.ColumnDateTime(
       'updatedAt',
       this,
+      hasDefault: true,
     );
   }
 
@@ -406,8 +395,6 @@ class MemberTable extends _i1.Table<int?> {
   late final _i1.ColumnInt userInfoId;
 
   late final _i1.ColumnString email;
-
-  late final _i1.ColumnString password;
 
   late final _i1.ColumnString phoneNumber;
 
@@ -438,7 +425,6 @@ class MemberTable extends _i1.Table<int?> {
         bio,
         userInfoId,
         email,
-        password,
         phoneNumber,
         membershipStatus,
         profilePictureUrl,

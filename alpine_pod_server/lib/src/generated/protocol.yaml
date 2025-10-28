@@ -1,3 +1,9 @@
+admin:
+  - createSection:
+  - getSection:
+  - updateSection:
+  - deleteSection:
+  - listSections:
 event:
   - createEvent:
   - getEvent:
@@ -10,16 +16,12 @@ member:
   - createMember:
   - addMemberToSection:
   - removeMemberFromSection:
-  - syncSectionMembership:
 registration:
   - updateRegistrationStatus:
   - registerForEvent:
   - cancelRegistration:
 section:
-  - createSection:
   - getSection:
-  - updateSection:
-  - deleteSection:
   - listSections:
 tripLeader:
   - assignTripLeader:

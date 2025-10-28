@@ -14,17 +14,17 @@ import 'package:serverpod_client/serverpod_client.dart' as _i1;
 abstract class SectionMembership implements _i1.SerializableModel {
   SectionMembership._({
     this.id,
-    this.userId,
-    this.sectionId,
+    required this.memberId,
+    required this.sectionId,
     this.externalUserId,
-    this.syncedAt,
+    DateTime? syncedAt,
     this.sourceSystem,
-  });
+  }) : syncedAt = syncedAt ?? DateTime.now();
 
   factory SectionMembership({
     int? id,
-    int? userId,
-    int? sectionId,
+    required int memberId,
+    required int sectionId,
     String? externalUserId,
     DateTime? syncedAt,
     String? sourceSystem,
@@ -33,12 +33,11 @@ abstract class SectionMembership implements _i1.SerializableModel {
   factory SectionMembership.fromJson(Map<String, dynamic> jsonSerialization) {
     return SectionMembership(
       id: jsonSerialization['id'] as int?,
-      userId: jsonSerialization['userId'] as int?,
-      sectionId: jsonSerialization['sectionId'] as int?,
+      memberId: jsonSerialization['memberId'] as int,
+      sectionId: jsonSerialization['sectionId'] as int,
       externalUserId: jsonSerialization['externalUserId'] as String?,
-      syncedAt: jsonSerialization['syncedAt'] == null
-          ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['syncedAt']),
+      syncedAt:
+          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['syncedAt']),
       sourceSystem: jsonSerialization['sourceSystem'] as String?,
     );
   }
@@ -48,13 +47,13 @@ abstract class SectionMembership implements _i1.SerializableModel {
   /// the id will be null.
   int? id;
 
-  int? userId;
+  int memberId;
 
-  int? sectionId;
+  int sectionId;
 
   String? externalUserId;
 
-  DateTime? syncedAt;
+  DateTime syncedAt;
 
   String? sourceSystem;
 
@@ -63,7 +62,7 @@ abstract class SectionMembership implements _i1.SerializableModel {
   @_i1.useResult
   SectionMembership copyWith({
     int? id,
-    int? userId,
+    int? memberId,
     int? sectionId,
     String? externalUserId,
     DateTime? syncedAt,
@@ -73,10 +72,10 @@ abstract class SectionMembership implements _i1.SerializableModel {
   Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
-      if (userId != null) 'userId': userId,
-      if (sectionId != null) 'sectionId': sectionId,
+      'memberId': memberId,
+      'sectionId': sectionId,
       if (externalUserId != null) 'externalUserId': externalUserId,
-      if (syncedAt != null) 'syncedAt': syncedAt?.toJson(),
+      'syncedAt': syncedAt.toJson(),
       if (sourceSystem != null) 'sourceSystem': sourceSystem,
     };
   }
@@ -92,14 +91,14 @@ class _Undefined {}
 class _SectionMembershipImpl extends SectionMembership {
   _SectionMembershipImpl({
     int? id,
-    int? userId,
-    int? sectionId,
+    required int memberId,
+    required int sectionId,
     String? externalUserId,
     DateTime? syncedAt,
     String? sourceSystem,
   }) : super._(
           id: id,
-          userId: userId,
+          memberId: memberId,
           sectionId: sectionId,
           externalUserId: externalUserId,
           syncedAt: syncedAt,
@@ -112,19 +111,19 @@ class _SectionMembershipImpl extends SectionMembership {
   @override
   SectionMembership copyWith({
     Object? id = _Undefined,
-    Object? userId = _Undefined,
-    Object? sectionId = _Undefined,
+    int? memberId,
+    int? sectionId,
     Object? externalUserId = _Undefined,
-    Object? syncedAt = _Undefined,
+    DateTime? syncedAt,
     Object? sourceSystem = _Undefined,
   }) {
     return SectionMembership(
       id: id is int? ? id : this.id,
-      userId: userId is int? ? userId : this.userId,
-      sectionId: sectionId is int? ? sectionId : this.sectionId,
+      memberId: memberId ?? this.memberId,
+      sectionId: sectionId ?? this.sectionId,
       externalUserId:
           externalUserId is String? ? externalUserId : this.externalUserId,
-      syncedAt: syncedAt is DateTime? ? syncedAt : this.syncedAt,
+      syncedAt: syncedAt ?? this.syncedAt,
       sourceSystem: sourceSystem is String? ? sourceSystem : this.sourceSystem,
     );
   }

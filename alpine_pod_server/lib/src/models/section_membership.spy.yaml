@@ -1,12 +1,12 @@
 class: SectionMembership
 table: section_memberships
 fields:
-  userId: int?
-  sectionId: int?
+  memberId: int, relation(parent=members, onDelete=cascade)
+  sectionId: int, relation(parent=sections, onDelete=cascade)
   externalUserId: String?
-  syncedAt: DateTime?
+  syncedAt: DateTime, default=now
   sourceSystem: String?
 indexes:
   user_section_unique_idx:
-    fields: userId, sectionId
+    fields: memberId, sectionId
     unique: true

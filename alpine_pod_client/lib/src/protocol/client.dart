@@ -11,15 +11,58 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import 'dart:async' as _i2;
-import 'package:alpine_pod_client/src/protocol/event.dart' as _i3;
-import 'package:alpine_pod_client/src/protocol/member.dart' as _i4;
-import 'package:alpine_pod_client/src/protocol/section_membership.dart' as _i5;
-import 'package:alpine_pod_client/src/protocol/event_registration.dart' as _i6;
-import 'package:alpine_pod_client/src/protocol/registration_status.dart' as _i7;
-import 'package:alpine_pod_client/src/protocol/section.dart' as _i8;
+import 'package:alpine_pod_client/src/protocol/section.dart' as _i3;
+import 'package:alpine_pod_client/src/protocol/event.dart' as _i4;
+import 'package:alpine_pod_client/src/protocol/member.dart' as _i5;
+import 'package:alpine_pod_client/src/protocol/section_membership.dart' as _i6;
+import 'package:alpine_pod_client/src/protocol/event_registration.dart' as _i7;
+import 'package:alpine_pod_client/src/protocol/registration_status.dart' as _i8;
 import 'package:alpine_pod_client/src/protocol/event_trip_leader.dart' as _i9;
 import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i10;
 import 'protocol.dart' as _i11;
+
+/// {@category Endpoint}
+class EndpointAdmin extends _i1.EndpointRef {
+  EndpointAdmin(_i1.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'admin';
+
+  /// Section Management
+  _i2.Future<_i3.Section> createSection(_i3.Section section) =>
+      caller.callServerEndpoint<_i3.Section>(
+        'admin',
+        'createSection',
+        {'section': section},
+      );
+
+  _i2.Future<_i3.Section?> getSection(int id) =>
+      caller.callServerEndpoint<_i3.Section?>(
+        'admin',
+        'getSection',
+        {'id': id},
+      );
+
+  _i2.Future<_i3.Section> updateSection(_i3.Section section) =>
+      caller.callServerEndpoint<_i3.Section>(
+        'admin',
+        'updateSection',
+        {'section': section},
+      );
+
+  _i2.Future<void> deleteSection(int id) => caller.callServerEndpoint<void>(
+        'admin',
+        'deleteSection',
+        {'id': id},
+      );
+
+  _i2.Future<List<_i3.Section>> listSections() =>
+      caller.callServerEndpoint<List<_i3.Section>>(
+        'admin',
+        'listSections',
+        {},
+      );
+}
 
 /// {@category Endpoint}
 class EndpointEvent extends _i1.EndpointRef {
@@ -28,22 +71,22 @@ class EndpointEvent extends _i1.EndpointRef {
   @override
   String get name => 'event';
 
-  _i2.Future<_i3.Event> createEvent(_i3.Event event) =>
-      caller.callServerEndpoint<_i3.Event>(
+  _i2.Future<_i4.Event> createEvent(_i4.Event event) =>
+      caller.callServerEndpoint<_i4.Event>(
         'event',
         'createEvent',
         {'event': event},
       );
 
-  _i2.Future<_i3.Event?> getEvent(int id) =>
-      caller.callServerEndpoint<_i3.Event?>(
+  _i2.Future<_i4.Event?> getEvent(int id) =>
+      caller.callServerEndpoint<_i4.Event?>(
         'event',
         'getEvent',
         {'id': id},
       );
 
-  _i2.Future<_i3.Event> updateEvent(_i3.Event event) =>
-      caller.callServerEndpoint<_i3.Event>(
+  _i2.Future<_i4.Event> updateEvent(_i4.Event event) =>
+      caller.callServerEndpoint<_i4.Event>(
         'event',
         'updateEvent',
         {'event': event},
@@ -55,14 +98,17 @@ class EndpointEvent extends _i1.EndpointRef {
         {'id': id},
       );
 
-  _i2.Future<List<_i3.Event>> listEvents(int? sectionId) =>
-      caller.callServerEndpoint<List<_i3.Event>>(
+  _i2.Future<List<_i4.Event>> listEvents(int? sectionId) =>
+      caller.callServerEndpoint<List<_i4.Event>>(
         'event',
         'listEvents',
         {'sectionId': sectionId},
       );
 }
 
+/// TODO: Use RBAC to restrict access to these methods
+///
+///
 /// {@category Endpoint}
 class EndpointMember extends _i1.EndpointRef {
   EndpointMember(_i1.EndpointCaller caller) : super(caller);
@@ -70,15 +116,15 @@ class EndpointMember extends _i1.EndpointRef {
   @override
   String get name => 'member';
 
-  _i2.Future<_i4.Member> updateMemberRole(_i4.Member member) =>
-      caller.callServerEndpoint<_i4.Member>(
+  _i2.Future<_i5.Member> updateMemberRole(_i5.Member member) =>
+      caller.callServerEndpoint<_i5.Member>(
         'member',
         'updateMemberRole',
         {'member': member},
       );
 
-  _i2.Future<List<_i4.Member>> getMembers() =>
-      caller.callServerEndpoint<List<_i4.Member>>(
+  _i2.Future<List<_i5.Member>> getMembers() =>
+      caller.callServerEndpoint<List<_i5.Member>>(
         'member',
         'getMembers',
         {},
@@ -89,34 +135,26 @@ class EndpointMember extends _i1.EndpointRef {
   /// - Validates that the email is not already in use.
   /// - Sets `createdAt` to now.
   /// - Inserts the member row and invalidates the member cache.
-  _i2.Future<_i4.Member> createMember(_i4.Member member) =>
-      caller.callServerEndpoint<_i4.Member>(
+  _i2.Future<_i5.Member> createMember(_i5.Member member) =>
+      caller.callServerEndpoint<_i5.Member>(
         'member',
         'createMember',
         {'member': member},
       );
 
-  _i2.Future<_i5.SectionMembership> addMemberToSection(
-          _i5.SectionMembership membership) =>
-      caller.callServerEndpoint<_i5.SectionMembership>(
+  _i2.Future<_i6.SectionMembership> addMemberToSection(
+          _i6.SectionMembership membership) =>
+      caller.callServerEndpoint<_i6.SectionMembership>(
         'member',
         'addMemberToSection',
         {'membership': membership},
       );
 
-  _i2.Future<void> removeMemberFromSection(_i5.SectionMembership membership) =>
+  _i2.Future<void> removeMemberFromSection(_i6.SectionMembership membership) =>
       caller.callServerEndpoint<void>(
         'member',
         'removeMemberFromSection',
         {'membership': membership},
-      );
-
-  _i2.Future<void> syncSectionMembership(
-          List<_i5.SectionMembership> memberships) =>
-      caller.callServerEndpoint<void>(
-        'member',
-        'syncSectionMembership',
-        {'memberships': memberships},
       );
 }
 
@@ -128,12 +166,12 @@ class EndpointRegistration extends _i1.EndpointRef {
   String get name => 'registration';
 
   /// Approve or reject a registration
-  _i2.Future<_i6.EventRegistration> updateRegistrationStatus(
+  _i2.Future<_i7.EventRegistration> updateRegistrationStatus(
     int registrationId,
-    _i7.RegistrationStatus newStatus, {
+    _i8.RegistrationStatus newStatus, {
     String? notes,
   }) =>
-      caller.callServerEndpoint<_i6.EventRegistration>(
+      caller.callServerEndpoint<_i7.EventRegistration>(
         'registration',
         'updateRegistrationStatus',
         {
@@ -143,9 +181,9 @@ class EndpointRegistration extends _i1.EndpointRef {
         },
       );
 
-  _i2.Future<_i6.EventRegistration> registerForEvent(
-          _i6.EventRegistration registration) =>
-      caller.callServerEndpoint<_i6.EventRegistration>(
+  _i2.Future<_i7.EventRegistration> registerForEvent(
+          _i7.EventRegistration registration) =>
+      caller.callServerEndpoint<_i7.EventRegistration>(
         'registration',
         'registerForEvent',
         {'registration': registration},
@@ -166,35 +204,15 @@ class EndpointSection extends _i1.EndpointRef {
   @override
   String get name => 'section';
 
-  _i2.Future<_i8.Section> createSection(_i8.Section section) =>
-      caller.callServerEndpoint<_i8.Section>(
-        'section',
-        'createSection',
-        {'section': section},
-      );
-
-  _i2.Future<_i8.Section?> getSection(int id) =>
-      caller.callServerEndpoint<_i8.Section?>(
+  _i2.Future<_i3.Section?> getSection(int id) =>
+      caller.callServerEndpoint<_i3.Section?>(
         'section',
         'getSection',
         {'id': id},
       );
 
-  _i2.Future<_i8.Section> updateSection(_i8.Section section) =>
-      caller.callServerEndpoint<_i8.Section>(
-        'section',
-        'updateSection',
-        {'section': section},
-      );
-
-  _i2.Future<void> deleteSection(int id) => caller.callServerEndpoint<void>(
-        'section',
-        'deleteSection',
-        {'id': id},
-      );
-
-  _i2.Future<List<_i8.Section>> listSections() =>
-      caller.callServerEndpoint<List<_i8.Section>>(
+  _i2.Future<List<_i3.Section>> listSections() =>
+      caller.callServerEndpoint<List<_i3.Section>>(
         'section',
         'listSections',
         {},
@@ -230,16 +248,16 @@ class EndpointTripLeader extends _i1.EndpointRef {
         {'eventId': eventId},
       );
 
-  _i2.Future<List<_i3.Event>> listTripLeaderEvents(int memberId) =>
-      caller.callServerEndpoint<List<_i3.Event>>(
+  _i2.Future<List<_i4.Event>> listTripLeaderEvents(int memberId) =>
+      caller.callServerEndpoint<List<_i4.Event>>(
         'tripLeader',
         'listTripLeaderEvents',
         {'memberId': memberId},
       );
 
   /// List events in a section that have no trip leaders assigned
-  _i2.Future<List<_i3.Event>> listEventsWithoutTripLeader(int sectionId) =>
-      caller.callServerEndpoint<List<_i3.Event>>(
+  _i2.Future<List<_i4.Event>> listEventsWithoutTripLeader(int sectionId) =>
+      caller.callServerEndpoint<List<_i4.Event>>(
         'tripLeader',
         'listEventsWithoutTripLeader',
         {'sectionId': sectionId},
@@ -288,6 +306,7 @@ class Client extends _i1.ServerpodClientShared {
           disconnectStreamsOnLostInternetConnection:
               disconnectStreamsOnLostInternetConnection,
         ) {
+    admin = EndpointAdmin(this);
     event = EndpointEvent(this);
     member = EndpointMember(this);
     registration = EndpointRegistration(this);
@@ -295,6 +314,8 @@ class Client extends _i1.ServerpodClientShared {
     tripLeader = EndpointTripLeader(this);
     modules = Modules(this);
   }
+
+  late final EndpointAdmin admin;
 
   late final EndpointEvent event;
 
@@ -310,6 +331,7 @@ class Client extends _i1.ServerpodClientShared {
 
   @override
   Map<String, _i1.EndpointRef> get endpointRefLookup => {
+        'admin': admin,
         'event': event,
         'member': member,
         'registration': registration,

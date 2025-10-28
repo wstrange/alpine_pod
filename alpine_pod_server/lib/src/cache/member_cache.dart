@@ -17,10 +17,10 @@ class MemberCache {
   Future<void> updateCache(Session session, Member member) async {
     final memberships = await SectionMembership.db.find(
       session,
-      where: (t) => t.userId.equals(member.id),
+      where: (t) => t.memberId.equals(member.id),
     );
 
-    final sectionIds = memberships.map((m) => m.sectionId!).toSet();
+    final sectionIds = memberships.map((m) => m.sectionId).toSet();
 
     _cache[member.id!] = _MemberCacheEntry(
       role: member.role,

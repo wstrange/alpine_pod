@@ -15,17 +15,17 @@ abstract class SectionMembership
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   SectionMembership._({
     this.id,
-    this.userId,
-    this.sectionId,
+    required this.memberId,
+    required this.sectionId,
     this.externalUserId,
-    this.syncedAt,
+    DateTime? syncedAt,
     this.sourceSystem,
-  });
+  }) : syncedAt = syncedAt ?? DateTime.now();
 
   factory SectionMembership({
     int? id,
-    int? userId,
-    int? sectionId,
+    required int memberId,
+    required int sectionId,
     String? externalUserId,
     DateTime? syncedAt,
     String? sourceSystem,
@@ -34,12 +34,11 @@ abstract class SectionMembership
   factory SectionMembership.fromJson(Map<String, dynamic> jsonSerialization) {
     return SectionMembership(
       id: jsonSerialization['id'] as int?,
-      userId: jsonSerialization['userId'] as int?,
-      sectionId: jsonSerialization['sectionId'] as int?,
+      memberId: jsonSerialization['memberId'] as int,
+      sectionId: jsonSerialization['sectionId'] as int,
       externalUserId: jsonSerialization['externalUserId'] as String?,
-      syncedAt: jsonSerialization['syncedAt'] == null
-          ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['syncedAt']),
+      syncedAt:
+          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['syncedAt']),
       sourceSystem: jsonSerialization['sourceSystem'] as String?,
     );
   }
@@ -51,13 +50,13 @@ abstract class SectionMembership
   @override
   int? id;
 
-  int? userId;
+  int memberId;
 
-  int? sectionId;
+  int sectionId;
 
   String? externalUserId;
 
-  DateTime? syncedAt;
+  DateTime syncedAt;
 
   String? sourceSystem;
 
@@ -69,7 +68,7 @@ abstract class SectionMembership
   @_i1.useResult
   SectionMembership copyWith({
     int? id,
-    int? userId,
+    int? memberId,
     int? sectionId,
     String? externalUserId,
     DateTime? syncedAt,
@@ -79,10 +78,10 @@ abstract class SectionMembership
   Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
-      if (userId != null) 'userId': userId,
-      if (sectionId != null) 'sectionId': sectionId,
+      'memberId': memberId,
+      'sectionId': sectionId,
       if (externalUserId != null) 'externalUserId': externalUserId,
-      if (syncedAt != null) 'syncedAt': syncedAt?.toJson(),
+      'syncedAt': syncedAt.toJson(),
       if (sourceSystem != null) 'sourceSystem': sourceSystem,
     };
   }
@@ -91,10 +90,10 @@ abstract class SectionMembership
   Map<String, dynamic> toJsonForProtocol() {
     return {
       if (id != null) 'id': id,
-      if (userId != null) 'userId': userId,
-      if (sectionId != null) 'sectionId': sectionId,
+      'memberId': memberId,
+      'sectionId': sectionId,
       if (externalUserId != null) 'externalUserId': externalUserId,
-      if (syncedAt != null) 'syncedAt': syncedAt?.toJson(),
+      'syncedAt': syncedAt.toJson(),
       if (sourceSystem != null) 'sourceSystem': sourceSystem,
     };
   }
@@ -134,14 +133,14 @@ class _Undefined {}
 class _SectionMembershipImpl extends SectionMembership {
   _SectionMembershipImpl({
     int? id,
-    int? userId,
-    int? sectionId,
+    required int memberId,
+    required int sectionId,
     String? externalUserId,
     DateTime? syncedAt,
     String? sourceSystem,
   }) : super._(
           id: id,
-          userId: userId,
+          memberId: memberId,
           sectionId: sectionId,
           externalUserId: externalUserId,
           syncedAt: syncedAt,
@@ -154,19 +153,19 @@ class _SectionMembershipImpl extends SectionMembership {
   @override
   SectionMembership copyWith({
     Object? id = _Undefined,
-    Object? userId = _Undefined,
-    Object? sectionId = _Undefined,
+    int? memberId,
+    int? sectionId,
     Object? externalUserId = _Undefined,
-    Object? syncedAt = _Undefined,
+    DateTime? syncedAt,
     Object? sourceSystem = _Undefined,
   }) {
     return SectionMembership(
       id: id is int? ? id : this.id,
-      userId: userId is int? ? userId : this.userId,
-      sectionId: sectionId is int? ? sectionId : this.sectionId,
+      memberId: memberId ?? this.memberId,
+      sectionId: sectionId ?? this.sectionId,
       externalUserId:
           externalUserId is String? ? externalUserId : this.externalUserId,
-      syncedAt: syncedAt is DateTime? ? syncedAt : this.syncedAt,
+      syncedAt: syncedAt ?? this.syncedAt,
       sourceSystem: sourceSystem is String? ? sourceSystem : this.sourceSystem,
     );
   }
@@ -175,8 +174,8 @@ class _SectionMembershipImpl extends SectionMembership {
 class SectionMembershipTable extends _i1.Table<int?> {
   SectionMembershipTable({super.tableRelation})
       : super(tableName: 'section_memberships') {
-    userId = _i1.ColumnInt(
-      'userId',
+    memberId = _i1.ColumnInt(
+      'memberId',
       this,
     );
     sectionId = _i1.ColumnInt(
@@ -190,6 +189,7 @@ class SectionMembershipTable extends _i1.Table<int?> {
     syncedAt = _i1.ColumnDateTime(
       'syncedAt',
       this,
+      hasDefault: true,
     );
     sourceSystem = _i1.ColumnString(
       'sourceSystem',
@@ -197,7 +197,7 @@ class SectionMembershipTable extends _i1.Table<int?> {
     );
   }
 
-  late final _i1.ColumnInt userId;
+  late final _i1.ColumnInt memberId;
 
   late final _i1.ColumnInt sectionId;
 
@@ -210,7 +210,7 @@ class SectionMembershipTable extends _i1.Table<int?> {
   @override
   List<_i1.Column> get columns => [
         id,
-        userId,
+        memberId,
         sectionId,
         externalUserId,
         syncedAt,

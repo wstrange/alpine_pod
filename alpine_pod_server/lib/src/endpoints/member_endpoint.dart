@@ -2,6 +2,9 @@ import 'package:serverpod/serverpod.dart';
 import '../generated/protocol.dart';
 import '../rbac.dart';
 
+/// TODO: Use RBAC to restrict access to these methods
+///
+///
 class MemberEndpoint extends Endpoint {
   Future<Member> updateMemberRole(Session session, Member member) async {
     final admin = await isAdmin(session);
@@ -36,7 +39,6 @@ class MemberEndpoint extends Endpoint {
   Future<Member> createMember(Session session, Member member) async {
     // Basic validation
     if (member.email.isEmpty) throw Exception('Email is required');
-    if (member.password.isEmpty) throw Exception('Password is required');
     if (member.firstName.isEmpty) throw Exception('First Name is required');
     if (member.lastName.isEmpty) throw Exception('Last Name is required');
 
@@ -62,15 +64,6 @@ class MemberEndpoint extends Endpoint {
     Session session,
     SectionMembership membership,
   ) async {
-    // Check if member is admin or section manager for this section
-    final allowed = await isSectionManager(session, membership.sectionId!);
-    if (!allowed) throw Exception('Permission denied');
-
-    // Validate the membership has required fields
-    if (membership.userId == null || membership.sectionId == null) {
-      throw Exception('Member ID and Section ID are required');
-    }
-
     // Set syncedAt to current time
     final validatedMembership = membership.copyWith(
       syncedAt: DateTime.now(),
@@ -79,7 +72,7 @@ class MemberEndpoint extends Endpoint {
     final result = await SectionMembership.db.insertRow(session, validatedMembership);
 
     // Invalidate the cache for this member
-    invalidateMemberCache(membership.userId!);
+    invalidateMemberCache(membership.memberId);
 
     return result;
   }
@@ -88,84 +81,16 @@ class MemberEndpoint extends Endpoint {
     Session session,
     SectionMembership membership,
   ) async {
-    // Validate the membership has required fields
-    if (membership.userId == null || membership.sectionId == null) {
-      throw Exception('Member ID and Section ID are required');
-    }
-
     // Check if member is admin or section manager for this section
-    final allowed = await isSectionManager(session, membership.sectionId!);
+    final allowed = await isSectionManager(session, membership.sectionId);
     if (!allowed) throw Exception('Permission denied');
 
     await SectionMembership.db.deleteWhere(
       session,
-      where: (t) => t.userId.equals(membership.userId!) & t.sectionId.equals(membership.sectionId!),
+      where: (t) => t.memberId.equals(membership.memberId) & t.sectionId.equals(membership.sectionId),
     );
 
     // Invalidate the cache for this member
-    invalidateMemberCache(membership.userId!);
-  }
-
-  Future<void> syncSectionMembership(
-    Session session,
-    List<SectionMembership> memberships,
-  ) async {
-    final admin = await isAdmin(session);
-    if (!admin) throw Exception('Only administrators can sync memberships');
-
-    // Group memberships by sectionId for easier processing
-    final membershipsBySectionId = <int, List<SectionMembership>>{};
-    for (final m in memberships) {
-      if (m.sectionId == null) continue;
-      membershipsBySectionId.putIfAbsent(m.sectionId!, () => []).add(m);
-    }
-
-    // Process each section's memberships
-    for (final sectionId in membershipsBySectionId.keys) {
-      final sectionMemberships = membershipsBySectionId[sectionId]!;
-
-      // Get existing memberships for this section
-      final existing = await SectionMembership.db.find(
-        session,
-        where: (t) => t.sectionId.equals(sectionId),
-      );
-
-      // Create sets for efficient comparison
-      final existingSet = {for (var e in existing) '${e.userId}:${e.externalUserId ?? ""}'};
-      final newSet = {for (var m in sectionMemberships) '${m.userId}:${m.externalUserId ?? ""}'};
-
-      // Find memberships to remove (in existing but not in new)
-      final toRemove = existing.where(
-        (e) => !newSet.contains('${e.userId}:${e.externalUserId ?? ""}'),
-      );
-
-      // Find memberships to add (in new but not in existing)
-      final toAdd = sectionMemberships.where(
-        (m) => !existingSet.contains('${m.userId}:${m.externalUserId ?? ""}'),
-      );
-
-      // Remove old memberships
-      for (final m in toRemove) {
-        await SectionMembership.db.deleteRow(session, m);
-        if (m.userId != null) invalidateMemberCache(m.userId!);
-      }
-
-      // Add new memberships
-      for (final m in toAdd) {
-        await SectionMembership.db.insertRow(session, m);
-        if (m.userId != null) invalidateMemberCache(m.userId!);
-      }
-
-      // Update existing memberships with new sync time
-      for (final m in sectionMemberships) {
-        if (existingSet.contains('${m.userId}:${m.externalUserId ?? ""}')) {
-          await SectionMembership.db.updateRow(
-            session,
-            m.copyWith(syncedAt: DateTime.now()),
-          );
-          if (m.userId != null) invalidateMemberCache(m.userId!);
-        }
-      }
-    }
+    invalidateMemberCache(membership.memberId);
   }
 }

@@ -23,12 +23,10 @@ import 'notification.dart' as _i11;
 import 'registration_status.dart' as _i12;
 import 'section.dart' as _i13;
 import 'section_membership.dart' as _i14;
-import 'package:alpine_pod_server/src/generated/event.dart' as _i15;
-import 'package:alpine_pod_server/src/generated/member.dart' as _i16;
-import 'package:alpine_pod_server/src/generated/section_membership.dart'
-    as _i17;
-import 'package:alpine_pod_server/src/generated/section.dart' as _i18;
-import 'package:alpine_pod_server/src/generated/event_trip_leader.dart' as _i19;
+import 'package:alpine_pod_server/src/generated/section.dart' as _i15;
+import 'package:alpine_pod_server/src/generated/event.dart' as _i16;
+import 'package:alpine_pod_server/src/generated/member.dart' as _i17;
+import 'package:alpine_pod_server/src/generated/event_trip_leader.dart' as _i18;
 export 'event.dart';
 export 'event_document.dart';
 export 'event_registration.dart';
@@ -667,12 +665,6 @@ class Protocol extends _i1.SerializationManagerServer {
           dartType: 'String',
         ),
         _i2.ColumnDefinition(
-          name: 'password',
-          columnType: _i2.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-        _i2.ColumnDefinition(
           name: 'phoneNumber',
           columnType: _i2.ColumnType.text,
           isNullable: false,
@@ -683,6 +675,7 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.text,
           isNullable: false,
           dartType: 'String',
+          columnDefault: '\'active\'::text',
         ),
         _i2.ColumnDefinition(
           name: 'profilePictureUrl',
@@ -725,12 +718,14 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.timestampWithoutTimeZone,
           isNullable: false,
           dartType: 'DateTime',
+          columnDefault: 'CURRENT_TIMESTAMP',
         ),
         _i2.ColumnDefinition(
           name: 'updatedAt',
           columnType: _i2.ColumnType.timestampWithoutTimeZone,
           isNullable: false,
           dartType: 'DateTime',
+          columnDefault: 'CURRENT_TIMESTAMP',
         ),
       ],
       foreignKeys: [],
@@ -878,16 +873,16 @@ class Protocol extends _i1.SerializationManagerServer {
           columnDefault: 'nextval(\'section_memberships_id_seq\'::regclass)',
         ),
         _i2.ColumnDefinition(
-          name: 'userId',
+          name: 'memberId',
           columnType: _i2.ColumnType.bigint,
-          isNullable: true,
-          dartType: 'int?',
+          isNullable: false,
+          dartType: 'int',
         ),
         _i2.ColumnDefinition(
           name: 'sectionId',
           columnType: _i2.ColumnType.bigint,
-          isNullable: true,
-          dartType: 'int?',
+          isNullable: false,
+          dartType: 'int',
         ),
         _i2.ColumnDefinition(
           name: 'externalUserId',
@@ -898,8 +893,9 @@ class Protocol extends _i1.SerializationManagerServer {
         _i2.ColumnDefinition(
           name: 'syncedAt',
           columnType: _i2.ColumnType.timestampWithoutTimeZone,
-          isNullable: true,
-          dartType: 'DateTime?',
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'CURRENT_TIMESTAMP',
         ),
         _i2.ColumnDefinition(
           name: 'sourceSystem',
@@ -908,7 +904,28 @@ class Protocol extends _i1.SerializationManagerServer {
           dartType: 'String?',
         ),
       ],
-      foreignKeys: [],
+      foreignKeys: [
+        _i2.ForeignKeyDefinition(
+          constraintName: 'section_memberships_fk_0',
+          columns: ['memberId'],
+          referenceTable: 'members',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _i2.ForeignKeyAction.noAction,
+          onDelete: _i2.ForeignKeyAction.cascade,
+          matchType: null,
+        ),
+        _i2.ForeignKeyDefinition(
+          constraintName: 'section_memberships_fk_1',
+          columns: ['sectionId'],
+          referenceTable: 'sections',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _i2.ForeignKeyAction.noAction,
+          onDelete: _i2.ForeignKeyAction.cascade,
+          matchType: null,
+        ),
+      ],
       indexes: [
         _i2.IndexDefinition(
           indexName: 'section_memberships_pkey',
@@ -929,7 +946,7 @@ class Protocol extends _i1.SerializationManagerServer {
           elements: [
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
-              definition: 'userId',
+              definition: 'memberId',
             ),
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
@@ -1089,26 +1106,21 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i1.getType<_i14.SectionMembership?>()) {
       return (data != null ? _i14.SectionMembership.fromJson(data) : null) as T;
     }
-    if (t == List<_i15.Event>) {
-      return (data as List).map((e) => deserialize<_i15.Event>(e)).toList()
+    if (t == List<_i15.Section>) {
+      return (data as List).map((e) => deserialize<_i15.Section>(e)).toList()
           as T;
     }
-    if (t == List<_i16.Member>) {
-      return (data as List).map((e) => deserialize<_i16.Member>(e)).toList()
+    if (t == List<_i16.Event>) {
+      return (data as List).map((e) => deserialize<_i16.Event>(e)).toList()
           as T;
     }
-    if (t == List<_i17.SectionMembership>) {
+    if (t == List<_i17.Member>) {
+      return (data as List).map((e) => deserialize<_i17.Member>(e)).toList()
+          as T;
+    }
+    if (t == List<_i18.EventTripLeader>) {
       return (data as List)
-          .map((e) => deserialize<_i17.SectionMembership>(e))
-          .toList() as T;
-    }
-    if (t == List<_i18.Section>) {
-      return (data as List).map((e) => deserialize<_i18.Section>(e)).toList()
-          as T;
-    }
-    if (t == List<_i19.EventTripLeader>) {
-      return (data as List)
-          .map((e) => deserialize<_i19.EventTripLeader>(e))
+          .map((e) => deserialize<_i18.EventTripLeader>(e))
           .toList() as T;
     }
     try {

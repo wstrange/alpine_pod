@@ -35,7 +35,6 @@ class GenData {
     final fn = firstName ?? f.person.firstName();
     final ln = lastName ?? f.person.lastName();
     return Member(
-      password: 'password', // Default password for testing
       membershipStatus: 'active',
       role: MemberRole.member,
       phoneNumber: f.phoneNumber.us(),
