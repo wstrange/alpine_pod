@@ -1,4 +1,4 @@
-
+import 'package:alpine_pod_flutter/main.dart';
 import 'package:flutter/material.dart';
 
 import '../widgets/bottom_nav_bar.dart';
@@ -11,11 +11,25 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Section Name'),
-        leading: IconButton(
-          icon: const Icon(Icons.menu),
-          onPressed: () {
-            // Open navigation drawer
-          },
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            const DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+              child: Text('Menu'),
+            ),
+            ListTile(
+              title: const Text('Logout'),
+              onTap: () {
+                sessionManager.signOutDevice();
+                Navigator.pop(context); // Close the drawer
+              },
+            ),
+          ],
         ),
       ),
       body: ListView.builder(

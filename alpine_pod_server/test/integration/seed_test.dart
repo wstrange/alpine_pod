@@ -85,18 +85,18 @@ void main() {
       final s2 = sections[1];
 
       for (var i = 0; i < 5; i++) {
-        var email = 'test$i@acc.ac';
+        var email = 'test$i@acc.ca';
         UserInfo? u;
 
+        final hash = await Emails.generatePasswordHash('Passw0rd');
         try {
-          u = await Emails.createUser(session, 'test$i', email, 'Passw0rd');
+          u = await Emails.createUser(session, 'test$i', email, 'Passw0rd', hash);
         } catch (e) {
           print('User $email already exists, skipping');
           continue;
         }
 
         var id = u!.id!;
-
         u = await Users.updateUserScopes(
           session,
           id,

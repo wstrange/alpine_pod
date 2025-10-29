@@ -30,8 +30,10 @@ webServer:
 # This is the database setup for your server.
 database:
   host: localhost
-  port: 8090
-  name: alpine_pod
+  # port: 8090
+  # name: alpine_pod
+  port: 9090
+  name: alpine_pod_test
   user: postgres
   #requireSsl: true # defaults to false
   #isUnixSocket: true # defaults to false
