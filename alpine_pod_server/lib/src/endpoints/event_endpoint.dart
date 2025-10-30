@@ -1,10 +1,8 @@
 import 'package:serverpod/serverpod.dart';
 import '../generated/protocol.dart';
-import '../rbac.dart';
-import '../cache/member_cache.dart';
+import '../member_cache.dart';
 
 class EventEndpoint extends Endpoint {
-  final _cache = MemberCache();
   void _validateEvent(Event event) {
     // Validate required fields
     if (event.title.isEmpty) throw Exception('Event title is required');
@@ -52,13 +50,6 @@ class EventEndpoint extends Endpoint {
 
     // Validate event fields
     _validateEvent(event);
-
-    // Check if member can create events in this section
-    final allowed = await isEventCreator(session, event.sectionId);
-    if (!allowed) {
-      throw Exception('Permission denied. Only admins, section managers, or trip leaders can create events.');
-    }
-
     return await Event.db.insertRow(session, event);
   }
 
@@ -74,10 +65,6 @@ class EventEndpoint extends Endpoint {
 
     // Validate event fields
     _validateEvent(event);
-
-    // Check permissions
-    final allowed = await isEventEditor(session, event.id, existing.sectionId);
-    if (!allowed) throw Exception('Permission denied');
 
     // Don't allow changing section ID if the event has registrations
     if (existing.sectionId != event.sectionId) {
@@ -98,10 +85,6 @@ class EventEndpoint extends Endpoint {
     final existing = await Event.db.findById(session, id);
     if (existing == null) return;
 
-    // Check permissions
-    final allowed = await isEventEditor(session, id, existing.sectionId);
-    if (!allowed) throw Exception('Permission denied');
-
     // Check if event has registrations
     final hasRegistrations = await EventRegistration.db.count(
           session,
@@ -117,28 +100,13 @@ class EventEndpoint extends Endpoint {
   }
 
   Future<List<Event>> listEvents(Session session, int? sectionId) async {
-    final member = await getCurrentMember(session);
-    if (member == null) {
-      // Unauthenticated members can only see public events
-      if (sectionId != null) {
-        return await Event.db.find(
-          session,
-          where: (t) => t.sectionId.equals(sectionId) & t.public.equals(true),
-        );
-      }
-      return await Event.db.find(
-        session,
-        where: (t) => t.public.equals(true),
-      );
-    }
-
     // If section ID is provided, check membership unless member is admin
-    if (sectionId != null && !await isAdmin(session)) {
+    if (sectionId != null) {
       final dynamic s = session;
       final int? memberId = s.authenticatedUserId as int?;
       if (memberId == null) return [];
 
-      final isMember = await _cache.isSectionMember(session, memberId, sectionId);
+      final isMember = await cache.isSectionMember(session, sectionId);
       if (!isMember) {
         // Non-members can only see public events
         return await Event.db.find(

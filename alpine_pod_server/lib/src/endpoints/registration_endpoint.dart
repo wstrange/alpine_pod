@@ -1,11 +1,8 @@
 import 'package:serverpod/serverpod.dart';
 import '../generated/protocol.dart';
-import '../rbac.dart';
-import '../cache/member_cache.dart';
+import '../member_cache.dart';
 
 class RegistrationEndpoint extends Endpoint {
-  final _cache = MemberCache();
-
   /// Determines the initial registration status based on event settings and capacity
   RegistrationStatus _determineRegistrationStatus({
     required bool requiresApproval,
@@ -39,17 +36,14 @@ class RegistrationEndpoint extends Endpoint {
     final reg = await EventRegistration.db.findById(session, registrationId);
     if (reg == null) throw Exception('Registration not found');
 
-    final allowed = await isEventEditor(session, reg.eventId, null);
-    if (!allowed) throw Exception('Permission denied');
-
     // If approving, check if event is full
     if (newStatus == RegistrationStatus.confirmed) {
-      final event = await Event.db.findById(session, reg.eventId!);
+      final event = await Event.db.findById(session, reg.eventId);
       if (event == null) throw Exception('Event not found');
 
       final currentConfirmed = await EventRegistration.db.count(
         session,
-        where: (t) => t.eventId.equals(reg.eventId!) & t.registrationStatus.equals(RegistrationStatus.confirmed),
+        where: (t) => t.eventId.equals(reg.eventId) & t.registrationStatus.equals(RegistrationStatus.confirmed),
       );
 
       if (event.maxParticipants != null && currentConfirmed >= event.maxParticipants!) {
@@ -70,39 +64,6 @@ class RegistrationEndpoint extends Endpoint {
     // Validate required fields
     if (member.id == null) throw Exception('Invalid member');
     if (event.id == null) throw Exception('Invalid event');
-
-    // Check if member has privileged access (admin, section manager, trip leader)
-    final bool privileged = await isAdmin(session);
-    if (!privileged && event.sectionId != null) {
-      final isSectionMgr = await isSectionManager(session, event.sectionId);
-      if (isSectionMgr) return true;
-    }
-    if (!privileged) {
-      final isTripLeader = await isTripLeaderForEvent(session, event.id);
-      if (isTripLeader) return true;
-    }
-
-    // Non-privileged members must pass all checks
-    // Check section membership if required
-    if (!event.public && event.sectionId != null && member.id != null) {
-      try {
-        // We can use the null assertion operator here since we've checked above
-        final memberId = member.id!;
-        final sectionId = event.sectionId!;
-        final isMember = await _cache.isSectionMember(
-          session,
-          memberId,
-          sectionId,
-        );
-        if (!isMember) {
-          throw Exception('Section membership required for this event');
-        }
-      } catch (e) {
-        // If there's an error with membership check,
-        // deny access by default
-        throw Exception('Unable to verify section membership');
-      }
-    }
 
     // Check registration window
     final now = DateTime.now();
@@ -128,20 +89,19 @@ class RegistrationEndpoint extends Endpoint {
 
   Future<EventRegistration> registerForEvent(Session session, EventRegistration registration) async {
     // Validate session and get member
-    final member = await getCurrentMember(session);
-    if (member == null) throw Exception('Not authenticated');
+
+    final memberInfo = await cache.getMemberInfo(session);
+
+    if (memberInfo == null) throw Exception('Not authenticated');
 
     // Validate event exists
     final event = await Event.db.findById(session, registration.eventId);
     if (event == null) throw Exception('Event not found');
 
-    // Check if member can register
-    await _canRegisterForEvent(session, member, event);
-
     // Check if member is already registered
     final existingReg = await EventRegistration.db.findFirstRow(
       session,
-      where: (t) => t.eventId.equals(event.id) & t.userId.equals(member.id),
+      where: (t) => t.eventId.equals(event.id) & t.userId.equals(memberInfo.member.id),
     );
     if (existingReg != null) {
       throw Exception('Already registered for this event');
@@ -153,7 +113,7 @@ class RegistrationEndpoint extends Endpoint {
     }
 
     final validatedReg = registration.copyWith(
-      userId: member.id,
+      userId: memberInfo.member.id,
       eventId: event.id,
       registrationDate: DateTime.now(),
       modifiedAt: DateTime.now(),
@@ -202,13 +162,10 @@ class RegistrationEndpoint extends Endpoint {
   Future<void> cancelRegistration(Session session, int registrationId) async {
     final reg = await EventRegistration.db.findById(session, registrationId);
     if (reg == null) return;
-    final member = await getCurrentMember(session);
+    final member = await cache.getMemberInfo(session);
     if (member == null) throw Exception('Not authenticated');
 
-    final isOwner = reg.userId == member.id;
-    final isEditor = await isEventEditor(session, reg.eventId, null);
-    if (!isOwner && !isEditor) throw Exception('Permission denied');
-
     await EventRegistration.db.deleteRow(session, reg);
+    session.log('Deleted Registration $reg');
   }
 }

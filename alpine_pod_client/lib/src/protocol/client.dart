@@ -116,13 +116,6 @@ class EndpointMember extends _i1.EndpointRef {
   @override
   String get name => 'member';
 
-  _i2.Future<_i5.Member> updateMemberRole(_i5.Member member) =>
-      caller.callServerEndpoint<_i5.Member>(
-        'member',
-        'updateMemberRole',
-        {'member': member},
-      );
-
   _i2.Future<List<_i5.Member>> getMembers() =>
       caller.callServerEndpoint<List<_i5.Member>>(
         'member',
@@ -215,6 +208,13 @@ class EndpointSection extends _i1.EndpointRef {
       caller.callServerEndpoint<List<_i3.Section>>(
         'section',
         'listSections',
+        {},
+      );
+
+  _i2.Future<List<_i3.Section>> getSectionsForCurrentUser() =>
+      caller.callServerEndpoint<List<_i3.Section>>(
+        'section',
+        'getSectionsForCurrentUser',
         {},
       );
 }

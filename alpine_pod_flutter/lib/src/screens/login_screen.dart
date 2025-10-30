@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:serverpod_auth_email_flutter/serverpod_auth_email_flutter.dart';
 import 'package:serverpod_auth_google_flutter/serverpod_auth_google_flutter.dart';
-
-import '../../main.dart';
+import '../provider.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -20,6 +19,11 @@ class LoginScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            ElevatedButton(
+                onPressed: () async {
+                  var r = await signInWithEmail('test1@acc.ca', 'Passw0rd');
+                },
+                child: Text('Quick login')),
             SignInWithEmailButton(caller: client.modules.auth),
             const SizedBox(height: 16),
             SignInWithGoogleButton(
@@ -31,5 +35,31 @@ class LoginScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+Future<void> signInWithEmail(String email, String password) async {
+  try {
+    final authResponse = await client.modules.auth.email.authenticate(
+      email,
+      password,
+    );
+
+    // Register the sign-in with the session manager to update the app state
+    if (authResponse.success) {
+      await sessionManager.registerSignedInUser(
+        authResponse.userInfo!,
+        authResponse.keyId!,
+        authResponse.key!,
+      );
+      print('Sign-in successful!');
+    } else {
+      // Handle login failure. The `authResponse` contains information on why
+      // the sign-in failed.
+      print('Sign-in failed: ${authResponse.failReason}');
+    }
+  } catch (e) {
+    // Handle network errors or other exceptions
+    print('An error occurred during sign-in: $e');
   }
 }

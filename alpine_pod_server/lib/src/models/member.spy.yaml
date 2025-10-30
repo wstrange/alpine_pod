@@ -1,11 +1,11 @@
 class: Member
 table: members
 fields:
+  id: int? # We set the id to be the same as the Users UserInfo.id field
   firstName: String
   lastName: String
-  displayName: String
+  displayName: String?
   bio: String?
-  userInfoId: int?
   email: String
   phoneNumber: String
   membershipStatus: String, default="active"
@@ -15,14 +15,12 @@ fields:
   medicalConditions: String?
   # certifications and skills stored as JSON-encoded arrays in strings
   certifications: String?
-  # Managed by the server
-  role: MemberRole
   createdAt: DateTime, default=now
   updatedAt: DateTime, default=now
 indexes:
-  userinfo_idx:
-    fields: userInfoId
-    unique: true
+  # userinfo_idx:
+  #   fields: userInfoId
+  #   unique: true
   email_idx:
     fields: email
     unique: true

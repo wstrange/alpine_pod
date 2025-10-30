@@ -10,16 +10,14 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
-import 'member_role.dart' as _i2;
 
 abstract class Member implements _i1.SerializableModel {
   Member._({
     this.id,
     required this.firstName,
     required this.lastName,
-    required this.displayName,
+    this.displayName,
     this.bio,
-    this.userInfoId,
     required this.email,
     required this.phoneNumber,
     String? membershipStatus,
@@ -28,7 +26,6 @@ abstract class Member implements _i1.SerializableModel {
     required this.emergencyContactPhone,
     this.medicalConditions,
     this.certifications,
-    required this.role,
     DateTime? createdAt,
     DateTime? updatedAt,
   })  : membershipStatus = membershipStatus ?? 'active',
@@ -39,9 +36,8 @@ abstract class Member implements _i1.SerializableModel {
     int? id,
     required String firstName,
     required String lastName,
-    required String displayName,
+    String? displayName,
     String? bio,
-    int? userInfoId,
     required String email,
     required String phoneNumber,
     String? membershipStatus,
@@ -50,7 +46,6 @@ abstract class Member implements _i1.SerializableModel {
     required String emergencyContactPhone,
     String? medicalConditions,
     String? certifications,
-    required _i2.MemberRole role,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) = _MemberImpl;
@@ -60,9 +55,8 @@ abstract class Member implements _i1.SerializableModel {
       id: jsonSerialization['id'] as int?,
       firstName: jsonSerialization['firstName'] as String,
       lastName: jsonSerialization['lastName'] as String,
-      displayName: jsonSerialization['displayName'] as String,
+      displayName: jsonSerialization['displayName'] as String?,
       bio: jsonSerialization['bio'] as String?,
-      userInfoId: jsonSerialization['userInfoId'] as int?,
       email: jsonSerialization['email'] as String,
       phoneNumber: jsonSerialization['phoneNumber'] as String,
       membershipStatus: jsonSerialization['membershipStatus'] as String,
@@ -72,7 +66,6 @@ abstract class Member implements _i1.SerializableModel {
           jsonSerialization['emergencyContactPhone'] as String,
       medicalConditions: jsonSerialization['medicalConditions'] as String?,
       certifications: jsonSerialization['certifications'] as String?,
-      role: _i2.MemberRole.fromJson((jsonSerialization['role'] as int)),
       createdAt:
           _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
       updatedAt:
@@ -89,11 +82,9 @@ abstract class Member implements _i1.SerializableModel {
 
   String lastName;
 
-  String displayName;
+  String? displayName;
 
   String? bio;
-
-  int? userInfoId;
 
   String email;
 
@@ -111,8 +102,6 @@ abstract class Member implements _i1.SerializableModel {
 
   String? certifications;
 
-  _i2.MemberRole role;
-
   DateTime createdAt;
 
   DateTime updatedAt;
@@ -126,7 +115,6 @@ abstract class Member implements _i1.SerializableModel {
     String? lastName,
     String? displayName,
     String? bio,
-    int? userInfoId,
     String? email,
     String? phoneNumber,
     String? membershipStatus,
@@ -135,7 +123,6 @@ abstract class Member implements _i1.SerializableModel {
     String? emergencyContactPhone,
     String? medicalConditions,
     String? certifications,
-    _i2.MemberRole? role,
     DateTime? createdAt,
     DateTime? updatedAt,
   });
@@ -145,9 +132,8 @@ abstract class Member implements _i1.SerializableModel {
       if (id != null) 'id': id,
       'firstName': firstName,
       'lastName': lastName,
-      'displayName': displayName,
+      if (displayName != null) 'displayName': displayName,
       if (bio != null) 'bio': bio,
-      if (userInfoId != null) 'userInfoId': userInfoId,
       'email': email,
       'phoneNumber': phoneNumber,
       'membershipStatus': membershipStatus,
@@ -156,7 +142,6 @@ abstract class Member implements _i1.SerializableModel {
       'emergencyContactPhone': emergencyContactPhone,
       if (medicalConditions != null) 'medicalConditions': medicalConditions,
       if (certifications != null) 'certifications': certifications,
-      'role': role.toJson(),
       'createdAt': createdAt.toJson(),
       'updatedAt': updatedAt.toJson(),
     };
@@ -175,9 +160,8 @@ class _MemberImpl extends Member {
     int? id,
     required String firstName,
     required String lastName,
-    required String displayName,
+    String? displayName,
     String? bio,
-    int? userInfoId,
     required String email,
     required String phoneNumber,
     String? membershipStatus,
@@ -186,7 +170,6 @@ class _MemberImpl extends Member {
     required String emergencyContactPhone,
     String? medicalConditions,
     String? certifications,
-    required _i2.MemberRole role,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) : super._(
@@ -195,7 +178,6 @@ class _MemberImpl extends Member {
           lastName: lastName,
           displayName: displayName,
           bio: bio,
-          userInfoId: userInfoId,
           email: email,
           phoneNumber: phoneNumber,
           membershipStatus: membershipStatus,
@@ -204,7 +186,6 @@ class _MemberImpl extends Member {
           emergencyContactPhone: emergencyContactPhone,
           medicalConditions: medicalConditions,
           certifications: certifications,
-          role: role,
           createdAt: createdAt,
           updatedAt: updatedAt,
         );
@@ -217,9 +198,8 @@ class _MemberImpl extends Member {
     Object? id = _Undefined,
     String? firstName,
     String? lastName,
-    String? displayName,
+    Object? displayName = _Undefined,
     Object? bio = _Undefined,
-    Object? userInfoId = _Undefined,
     String? email,
     String? phoneNumber,
     String? membershipStatus,
@@ -228,7 +208,6 @@ class _MemberImpl extends Member {
     String? emergencyContactPhone,
     Object? medicalConditions = _Undefined,
     Object? certifications = _Undefined,
-    _i2.MemberRole? role,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -236,9 +215,8 @@ class _MemberImpl extends Member {
       id: id is int? ? id : this.id,
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,
-      displayName: displayName ?? this.displayName,
+      displayName: displayName is String? ? displayName : this.displayName,
       bio: bio is String? ? bio : this.bio,
-      userInfoId: userInfoId is int? ? userInfoId : this.userInfoId,
       email: email ?? this.email,
       phoneNumber: phoneNumber ?? this.phoneNumber,
       membershipStatus: membershipStatus ?? this.membershipStatus,
@@ -253,7 +231,6 @@ class _MemberImpl extends Member {
           : this.medicalConditions,
       certifications:
           certifications is String? ? certifications : this.certifications,
-      role: role ?? this.role,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );

@@ -19,6 +19,7 @@ abstract class SectionMembership implements _i1.SerializableModel {
     this.externalUserId,
     DateTime? syncedAt,
     this.sourceSystem,
+    required this.scopes,
   }) : syncedAt = syncedAt ?? DateTime.now();
 
   factory SectionMembership({
@@ -28,6 +29,7 @@ abstract class SectionMembership implements _i1.SerializableModel {
     String? externalUserId,
     DateTime? syncedAt,
     String? sourceSystem,
+    required Set<String> scopes,
   }) = _SectionMembershipImpl;
 
   factory SectionMembership.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -39,6 +41,9 @@ abstract class SectionMembership implements _i1.SerializableModel {
       syncedAt:
           _i1.DateTimeJsonExtension.fromJson(jsonSerialization['syncedAt']),
       sourceSystem: jsonSerialization['sourceSystem'] as String?,
+      scopes: _i1.SetJsonExtension.fromJson(
+          (jsonSerialization['scopes'] as List),
+          itemFromJson: (e) => e as String)!,
     );
   }
 
@@ -57,6 +62,8 @@ abstract class SectionMembership implements _i1.SerializableModel {
 
   String? sourceSystem;
 
+  Set<String> scopes;
+
   /// Returns a shallow copy of this [SectionMembership]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
@@ -67,6 +74,7 @@ abstract class SectionMembership implements _i1.SerializableModel {
     String? externalUserId,
     DateTime? syncedAt,
     String? sourceSystem,
+    Set<String>? scopes,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -77,6 +85,7 @@ abstract class SectionMembership implements _i1.SerializableModel {
       if (externalUserId != null) 'externalUserId': externalUserId,
       'syncedAt': syncedAt.toJson(),
       if (sourceSystem != null) 'sourceSystem': sourceSystem,
+      'scopes': scopes.toJson(),
     };
   }
 
@@ -96,6 +105,7 @@ class _SectionMembershipImpl extends SectionMembership {
     String? externalUserId,
     DateTime? syncedAt,
     String? sourceSystem,
+    required Set<String> scopes,
   }) : super._(
           id: id,
           memberId: memberId,
@@ -103,6 +113,7 @@ class _SectionMembershipImpl extends SectionMembership {
           externalUserId: externalUserId,
           syncedAt: syncedAt,
           sourceSystem: sourceSystem,
+          scopes: scopes,
         );
 
   /// Returns a shallow copy of this [SectionMembership]
@@ -116,6 +127,7 @@ class _SectionMembershipImpl extends SectionMembership {
     Object? externalUserId = _Undefined,
     DateTime? syncedAt,
     Object? sourceSystem = _Undefined,
+    Set<String>? scopes,
   }) {
     return SectionMembership(
       id: id is int? ? id : this.id,
@@ -125,6 +137,7 @@ class _SectionMembershipImpl extends SectionMembership {
           externalUserId is String? ? externalUserId : this.externalUserId,
       syncedAt: syncedAt ?? this.syncedAt,
       sourceSystem: sourceSystem is String? ? sourceSystem : this.sourceSystem,
+      scopes: scopes ?? this.scopes.map((e0) => e0).toSet(),
     );
   }
 }

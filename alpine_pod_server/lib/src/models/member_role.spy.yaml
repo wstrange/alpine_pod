@@ -1,7 +1,0 @@
-enum: MemberRole
-values:
-  - admin
-  - sectionManager
-  - tripLeader
-  - member
-  - guest

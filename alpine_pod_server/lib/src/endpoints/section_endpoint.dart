@@ -15,4 +15,28 @@ class SectionEndpoint extends Endpoint {
   Future<List<Section>> listSections(Session session) async {
     return await Section.db.find(session);
   }
+
+  Future<List<Section>> getSectionsForCurrentUser(Session session) async {
+    final authInfo = await session.authenticated;
+    if (authInfo == null) {
+      return [];
+    }
+    final userId = authInfo.userId;
+
+    final memberships = await SectionMembership.db.find(
+      session,
+      where: (t) => t.memberId.equals(userId),
+    );
+
+    if (memberships.isEmpty) {
+      return [];
+    }
+
+    final sectionIds = memberships.map((e) => e.sectionId).toList();
+
+    return await Section.db.find(
+      session,
+      where: (t) => t.id.inSet(sectionIds.toSet()),
+    );
+  }
 }

@@ -6,6 +6,7 @@ fields:
   externalUserId: String?
   syncedAt: DateTime, default=now
   sourceSystem: String?
+  scopes: Set<String>
 indexes:
   user_section_unique_idx:
     fields: memberId, sectionId

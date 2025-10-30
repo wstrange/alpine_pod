@@ -113,27 +113,25 @@ void main() {
               displayName: 'testy tester$i',
               email: email,
               phoneNumber: '555-1212',
-              userInfoId: id,
+              id: id,
               emergencyContactName: 'Santa',
               emergencyContactPhone: '5555555',
-              role: MemberRole.sectionManager,
             ));
         print('Created member profile: $m');
 
+        var scopes = {CustomScope.sectionManager.toString(), CustomScope.member.toString()};
+
         // assign to first and second sections
-        var sm = await endpoints.member.addMemberToSection(
-            authSession,
-            SectionMembership(
-              memberId: m.id!,
-              sectionId: s1.id!,
-            ));
+        var sm = await endpoints.member
+            .addMemberToSection(authSession, SectionMembership(memberId: id, sectionId: s1.id!, scopes: scopes));
 
         print(sm);
         sm = await endpoints.member.addMemberToSection(
             authSession,
             SectionMembership(
-              memberId: m.id!,
+              memberId: id,
               sectionId: s2.id!,
+              scopes: scopes,
             ));
         print(sm);
       }

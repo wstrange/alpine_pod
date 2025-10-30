@@ -14,13 +14,13 @@ void run(List<String> args) async {
     sendValidationEmail: (session, email, validationCode) async {
       // Send the validation email to the user.
       // Return `true` if the email was successfully sent, otherwise `false`.
-      print('Send validation email to $email with code $validationCode');
+      session.log('Send validation email to $email with code $validationCode');
       return true;
     },
     sendPasswordResetEmail: (session, userInfo, validationCode) async {
       // Send the password reset email to the user.
       // Return `true` if the email was successfully sent, otherwise `false`.
-      print('Send password reset email to ${userInfo.email} with code $validationCode');
+      session.log('Send password reset email to ${userInfo.email} with code $validationCode');
       return true;
     },
   ));

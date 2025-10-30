@@ -36,7 +36,6 @@ class GenData {
     final ln = lastName ?? f.person.lastName();
     return Member(
       membershipStatus: 'active',
-      role: MemberRole.member,
       phoneNumber: f.phoneNumber.us(),
       emergencyContactName: f.person.name(),
       emergencyContactPhone: f.phoneNumber.us(),
@@ -65,7 +64,7 @@ class GenData {
     DateTime? updatedAt,
   }) {
     final f = faker;
-    final t = title ?? f.lorem.words(2).join(' ');
+    //final t = title ?? f.lorem.words(2).join(' ');
     return Section(
       name: 'Calgary',
       // id: id ?? _rnd.nextInt(100000),
@@ -78,6 +77,4 @@ class GenData {
   List<Section> sections(int count) => List.generate(count, (_) => section());
 
   // Simple slug generator
-  String _slugify(String s) =>
-      s.toLowerCase().replaceAll(RegExp(r'[^a-z0-9]+'), '-').replaceAll(RegExp(r'(^-|-$)'), '');
 }
