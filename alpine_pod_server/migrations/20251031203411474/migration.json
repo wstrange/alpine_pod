@@ -1,0 +1,70 @@
+{
+  "actions": [
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "events",
+        "schema": "public",
+        "addColumns": [],
+        "deleteColumns": [
+          "public"
+        ],
+        "modifyColumns": [
+          {
+            "columnName": "sectionId",
+            "addNullable": false,
+            "removeNullable": true,
+            "changeDefault": false
+          }
+        ],
+        "addIndexes": [],
+        "deleteIndexes": [
+          "public_events_idx"
+        ],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "columnDropped",
+            "message": "Column \"public\" of table \"events\" will be dropped.",
+            "table": "events",
+            "columns": [
+              "public"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "notNullAdded",
+            "message": "Column sectionId of table events is modified to be not null. If there are existing rows with null values, this migration will fail.",
+            "table": "events",
+            "columns": [
+              "sectionId"
+            ],
+            "destrucive": false
+          }
+        ]
+      }
+    }
+  ],
+  "warnings": [
+    {
+      "type": "columnDropped",
+      "message": "Column \"public\" of table \"events\" will be dropped.",
+      "table": "events",
+      "columns": [
+        "public"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "notNullAdded",
+      "message": "Column sectionId of table events is modified to be not null. If there are existing rows with null values, this migration will fail.",
+      "table": "events",
+      "columns": [
+        "sectionId"
+      ],
+      "destrucive": false
+    }
+  ],
+  "migrationApiVersion": 1
+}

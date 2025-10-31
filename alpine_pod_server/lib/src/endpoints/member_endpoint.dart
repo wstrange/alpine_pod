@@ -5,6 +5,15 @@ import '../generated/protocol.dart';
 ///
 ///
 class MemberEndpoint extends Endpoint {
+  Future<Member?> getCurrentMember(Session session) async {
+    final authInfo = await session.authenticated;
+    if (authInfo == null) {
+      return null;
+    }
+    final userInfoId = authInfo.userId;
+    return await Member.db.findById(session, userInfoId);
+  }
+
   Future<List<Member>> getMembers(Session session) async {
     // TODO: Fix
     // final admin = await isAdmin(session);
@@ -23,7 +32,12 @@ class MemberEndpoint extends Endpoint {
     if (member.email.isEmpty) throw Exception('Email is required');
     if (member.firstName.isEmpty) throw Exception('First Name is required');
     if (member.lastName.isEmpty) throw Exception('Last Name is required');
-    if (member.id == null) throw Exception('Set member id to the UserInfo.id!');
+
+    final authInfo = await session.authenticated;
+    if (authInfo == null) {
+      throw Exception('User not authenticated');
+    }
+    final userInfoId = authInfo.userId;
 
     // Ensure the email is unique
     final existing = await Member.db.findFirstRow(
@@ -33,7 +47,10 @@ class MemberEndpoint extends Endpoint {
     if (existing != null) throw Exception('A member with that email already exists');
 
     // Ensure createdAt is set to now
-    final toInsert = member.copyWith(createdAt: DateTime.now());
+    final toInsert = member.copyWith(
+      id: userInfoId,
+      createdAt: DateTime.now(),
+    );
 
     final created = await Member.db.insertRow(session, toInsert);
 
@@ -62,5 +79,10 @@ class MemberEndpoint extends Endpoint {
       session,
       where: (t) => t.memberId.equals(membership.memberId) & t.sectionId.equals(membership.sectionId),
     );
+  }
+
+  Future<Member> updateMember(Session session, Member member) async {
+    final updated = await Member.db.updateRow(session, member);
+    return updated;
   }
 }

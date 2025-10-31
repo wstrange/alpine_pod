@@ -16,6 +16,8 @@ Section? currentSection;
 // @riverpod
 // Section mySection(Ref ref) => Section(name: 'foo', description: 'foo');
 
+/// todo: Not clear why we need this since sessionManager lives throughout
+/// the app lifetime. Same for client
 final sessionManagerProvider = Provider<SessionManager>((ref) {
   throw UnimplementedError('sessionManagerProvider must be overridden');
 });
@@ -46,6 +48,13 @@ final userSectionsProvider = FutureProvider<List<Section>>((ref) async {
   return await client.section.getSectionsForCurrentUser();
 });
 
+final currentMemberProvider = FutureProvider<Member?>((ref) async {
+  final client = ref.watch(clientProvider);
+  return await client.member.getCurrentMember();
+});
+
+// todo: This is not working. Section is not getting reflected in the app
+//
 @riverpod
 class SectionNotifier extends _$SectionNotifier {
   @override
@@ -56,6 +65,7 @@ class SectionNotifier extends _$SectionNotifier {
 
   void setValue(Section? section) {
     state = section;
+    ref.invalidateSelf(); // todo:????
   }
 }
 
@@ -70,7 +80,7 @@ final class LoggerProvider extends ProviderObserver {
     print('''
 {
   "provider": "${context.provider}",
-    "prevValue": "$previousValue",
+  "prevValue": "$previousValue",
   "newValue": "$newValue",
   "mutation": "${context.mutation}"
 }''');

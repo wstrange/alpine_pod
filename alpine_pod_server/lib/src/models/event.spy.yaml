@@ -14,7 +14,6 @@ fields:
   carPoolingPlace: String?
   carPoolingDriveOrRide: String?
   maxParticipants: int?
-  public: bool
   difficulty: String?
   requiredEquipment: String?
   prerequisites: String?
@@ -30,14 +29,11 @@ fields:
   minimumParticipants: int?
   cancellationDeadline: DateTime?
   registrationNotes: String?
-  # Association to a section (optional). Events without sectionId are global/public.
-  sectionId: int?
+  sectionId: int # Associated section
   # JSON list of documents (e.g. [{"type":"waiver","url":"..."}])
   documentsJson: String?
 indexes:
   upcoming_events_idx:
     fields: startTime
-  public_events_idx:
-    fields: public, startTime
   section_idx:
     fields: sectionId

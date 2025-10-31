@@ -1,7 +1,7 @@
 import 'package:alpine_pod_flutter/src/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import '../widgets/bottom_nav_bar.dart';
+
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -58,7 +58,6 @@ class HomeScreen extends ConsumerWidget {
           );
         },
       ),
-      bottomNavigationBar: const BottomNavBar(),
     );
   }
 }

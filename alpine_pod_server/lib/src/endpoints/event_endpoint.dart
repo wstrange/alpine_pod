@@ -43,10 +43,12 @@ class EventEndpoint extends Endpoint {
   }
 
   Future<Event> createEvent(Session session, Event event) async {
+    session.log('Creating Event $event ', level: LogLevel.info);
     // Validate section ID is provided
-    if (event.sectionId == null) {
-      throw Exception('Events must be associated with a section');
-    }
+    // Cant be null, so this check is void.. todo: validate sections exists?
+    // if (event.sectionId == null) {
+    //   throw Exception('Events must be associated with a section');
+    // }
 
     // Validate event fields
     _validateEvent(event);
@@ -111,7 +113,7 @@ class EventEndpoint extends Endpoint {
         // Non-members can only see public events
         return await Event.db.find(
           session,
-          where: (t) => t.sectionId.equals(sectionId) & t.public.equals(true),
+          where: (t) => t.sectionId.equals(sectionId),
         );
       }
     }

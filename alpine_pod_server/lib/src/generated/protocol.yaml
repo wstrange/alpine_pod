@@ -11,10 +11,12 @@ event:
   - deleteEvent:
   - listEvents:
 member:
+  - getCurrentMember:
   - getMembers:
   - createMember:
   - addMemberToSection:
   - removeMemberFromSection:
+  - updateMember:
 registration:
   - updateRegistrationStatus:
   - registerForEvent:

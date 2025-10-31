@@ -116,6 +116,13 @@ class EndpointMember extends _i1.EndpointRef {
   @override
   String get name => 'member';
 
+  _i2.Future<_i5.Member?> getCurrentMember() =>
+      caller.callServerEndpoint<_i5.Member?>(
+        'member',
+        'getCurrentMember',
+        {},
+      );
+
   _i2.Future<List<_i5.Member>> getMembers() =>
       caller.callServerEndpoint<List<_i5.Member>>(
         'member',
@@ -148,6 +155,13 @@ class EndpointMember extends _i1.EndpointRef {
         'member',
         'removeMemberFromSection',
         {'membership': membership},
+      );
+
+  _i2.Future<_i5.Member> updateMember(_i5.Member member) =>
+      caller.callServerEndpoint<_i5.Member>(
+        'member',
+        'updateMember',
+        {'member': member},
       );
 }
 

@@ -1,5 +1,5 @@
-
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class BottomNavBar extends StatelessWidget {
   const BottomNavBar({super.key});
@@ -29,7 +29,16 @@ class BottomNavBar extends StatelessWidget {
       selectedItemColor: Colors.amber[800],
       unselectedItemColor: Colors.grey,
       onTap: (index) {
-        // Handle navigation
+        switch (index) {
+          case 0: // Home
+            GoRouter.of(context).go('/');
+            break;
+          case 2: // Profile
+            GoRouter.of(context).go('/profile');
+            break;
+          default:
+            GoRouter.of(context).go('/');
+        }
       },
     );
   }

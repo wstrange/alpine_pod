@@ -41,7 +41,7 @@ final class SectionNotifierProvider
   }
 }
 
-String _$sectionNotifierHash() => r'4aaa3ac659d3a20d2eed3a1ded1b10c1e4d27bb5';
+String _$sectionNotifierHash() => r'16c8eed2cb35a95ca1875037ba1b723801382bfb';
 
 abstract class _$SectionNotifier extends $Notifier<Section?> {
   Section? build();

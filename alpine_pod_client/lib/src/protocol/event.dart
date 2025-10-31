@@ -28,7 +28,6 @@ abstract class Event implements _i1.SerializableModel {
     this.carPoolingPlace,
     this.carPoolingDriveOrRide,
     this.maxParticipants,
-    required this.public,
     this.difficulty,
     this.requiredEquipment,
     this.prerequisites,
@@ -43,7 +42,7 @@ abstract class Event implements _i1.SerializableModel {
     this.minimumParticipants,
     this.cancellationDeadline,
     this.registrationNotes,
-    this.sectionId,
+    required this.sectionId,
     this.documentsJson,
   });
 
@@ -62,7 +61,6 @@ abstract class Event implements _i1.SerializableModel {
     String? carPoolingPlace,
     String? carPoolingDriveOrRide,
     int? maxParticipants,
-    required bool public,
     String? difficulty,
     String? requiredEquipment,
     String? prerequisites,
@@ -77,7 +75,7 @@ abstract class Event implements _i1.SerializableModel {
     int? minimumParticipants,
     DateTime? cancellationDeadline,
     String? registrationNotes,
-    int? sectionId,
+    required int sectionId,
     String? documentsJson,
   }) = _EventImpl;
 
@@ -102,7 +100,6 @@ abstract class Event implements _i1.SerializableModel {
       carPoolingDriveOrRide:
           jsonSerialization['carPoolingDriveOrRide'] as String?,
       maxParticipants: jsonSerialization['maxParticipants'] as int?,
-      public: jsonSerialization['public'] as bool,
       difficulty: jsonSerialization['difficulty'] as String?,
       requiredEquipment: jsonSerialization['requiredEquipment'] as String?,
       prerequisites: jsonSerialization['prerequisites'] as String?,
@@ -128,7 +125,7 @@ abstract class Event implements _i1.SerializableModel {
           : _i1.DateTimeJsonExtension.fromJson(
               jsonSerialization['cancellationDeadline']),
       registrationNotes: jsonSerialization['registrationNotes'] as String?,
-      sectionId: jsonSerialization['sectionId'] as int?,
+      sectionId: jsonSerialization['sectionId'] as int,
       documentsJson: jsonSerialization['documentsJson'] as String?,
     );
   }
@@ -164,8 +161,6 @@ abstract class Event implements _i1.SerializableModel {
 
   int? maxParticipants;
 
-  bool public;
-
   String? difficulty;
 
   String? requiredEquipment;
@@ -194,7 +189,7 @@ abstract class Event implements _i1.SerializableModel {
 
   String? registrationNotes;
 
-  int? sectionId;
+  int sectionId;
 
   String? documentsJson;
 
@@ -216,7 +211,6 @@ abstract class Event implements _i1.SerializableModel {
     String? carPoolingPlace,
     String? carPoolingDriveOrRide,
     int? maxParticipants,
-    bool? public,
     String? difficulty,
     String? requiredEquipment,
     String? prerequisites,
@@ -252,7 +246,6 @@ abstract class Event implements _i1.SerializableModel {
       if (carPoolingDriveOrRide != null)
         'carPoolingDriveOrRide': carPoolingDriveOrRide,
       if (maxParticipants != null) 'maxParticipants': maxParticipants,
-      'public': public,
       if (difficulty != null) 'difficulty': difficulty,
       if (requiredEquipment != null) 'requiredEquipment': requiredEquipment,
       if (prerequisites != null) 'prerequisites': prerequisites,
@@ -272,7 +265,7 @@ abstract class Event implements _i1.SerializableModel {
       if (cancellationDeadline != null)
         'cancellationDeadline': cancellationDeadline?.toJson(),
       if (registrationNotes != null) 'registrationNotes': registrationNotes,
-      if (sectionId != null) 'sectionId': sectionId,
+      'sectionId': sectionId,
       if (documentsJson != null) 'documentsJson': documentsJson,
     };
   }
@@ -301,7 +294,6 @@ class _EventImpl extends Event {
     String? carPoolingPlace,
     String? carPoolingDriveOrRide,
     int? maxParticipants,
-    required bool public,
     String? difficulty,
     String? requiredEquipment,
     String? prerequisites,
@@ -316,7 +308,7 @@ class _EventImpl extends Event {
     int? minimumParticipants,
     DateTime? cancellationDeadline,
     String? registrationNotes,
-    int? sectionId,
+    required int sectionId,
     String? documentsJson,
   }) : super._(
           id: id,
@@ -333,7 +325,6 @@ class _EventImpl extends Event {
           carPoolingPlace: carPoolingPlace,
           carPoolingDriveOrRide: carPoolingDriveOrRide,
           maxParticipants: maxParticipants,
-          public: public,
           difficulty: difficulty,
           requiredEquipment: requiredEquipment,
           prerequisites: prerequisites,
@@ -371,7 +362,6 @@ class _EventImpl extends Event {
     Object? carPoolingPlace = _Undefined,
     Object? carPoolingDriveOrRide = _Undefined,
     Object? maxParticipants = _Undefined,
-    bool? public,
     Object? difficulty = _Undefined,
     Object? requiredEquipment = _Undefined,
     Object? prerequisites = _Undefined,
@@ -386,7 +376,7 @@ class _EventImpl extends Event {
     Object? minimumParticipants = _Undefined,
     Object? cancellationDeadline = _Undefined,
     Object? registrationNotes = _Undefined,
-    Object? sectionId = _Undefined,
+    int? sectionId,
     Object? documentsJson = _Undefined,
   }) {
     return Event(
@@ -409,7 +399,6 @@ class _EventImpl extends Event {
           : this.carPoolingDriveOrRide,
       maxParticipants:
           maxParticipants is int? ? maxParticipants : this.maxParticipants,
-      public: public ?? this.public,
       difficulty: difficulty is String? ? difficulty : this.difficulty,
       requiredEquipment: requiredEquipment is String?
           ? requiredEquipment
@@ -440,7 +429,7 @@ class _EventImpl extends Event {
       registrationNotes: registrationNotes is String?
           ? registrationNotes
           : this.registrationNotes,
-      sectionId: sectionId is int? ? sectionId : this.sectionId,
+      sectionId: sectionId ?? this.sectionId,
       documentsJson:
           documentsJson is String? ? documentsJson : this.documentsJson,
     );

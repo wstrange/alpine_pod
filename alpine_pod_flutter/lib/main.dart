@@ -1,12 +1,15 @@
 import 'package:alpine_pod_client/alpine_pod_client.dart';
 import 'package:alpine_pod_flutter/src/screens/home_screen.dart';
 import 'package:alpine_pod_flutter/src/screens/login_screen.dart';
+import 'package:alpine_pod_flutter/src/screens/event_edit_screen.dart';
+import 'package:alpine_pod_flutter/src/screens/member_edit_screen.dart';
 import 'package:alpine_pod_flutter/src/screens/section_selection_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:serverpod_auth_shared_flutter/serverpod_auth_shared_flutter.dart';
 import 'package:serverpod_flutter/serverpod_flutter.dart';
+import 'package:alpine_pod_flutter/src/widgets/scaffold_with_nav_bar.dart';
 
 import 'src/provider.dart';
 
@@ -52,8 +55,12 @@ class MyApp extends ConsumerWidget {
   }
 }
 
+final _rootNavigatorKey = GlobalKey<NavigatorState>();
+
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
+    navigatorKey: _rootNavigatorKey,
+    initialLocation: '/',
     routes: [
       GoRoute(
         path: '/login',
@@ -64,11 +71,41 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const SectionSelectionScreen(),
       ),
       GoRoute(
-        path: '/',
-        builder: (context, state) => const HomeScreen(),
+        path: '/create-event',
+        builder: (context, state) => const EventEditScreen(),
+      ),
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) {
+          return ScaffoldWithNavBar(navigationShell: navigationShell);
+        },
+        branches: [
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/',
+                builder: (context, state) => const HomeScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/profile',
+                builder: (context, state) => const MemberEditScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/event',
+                builder: (context, state) => const EventEditScreen(),
+              ),
+            ],
+          ),
+        ],
       ),
     ],
-    initialLocation: '/',
     redirect: (BuildContext context, GoRouterState state) async {
       final bool loggedIn = sessionManager.isSignedIn;
       final bool loggingIn = state.matchedLocation == '/login';
