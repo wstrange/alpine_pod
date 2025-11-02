@@ -1,9 +1,11 @@
 import 'package:alpine_pod_client/alpine_pod_client.dart';
-import 'package:alpine_pod_flutter/src/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:logging/logging.dart';
+
+import '../provider.dart';
 
 final log = Logger('EventEditScreen');
 
@@ -27,7 +29,7 @@ class EventEditScreen extends HookConsumerWidget {
     var section = ref.watch(sectionProvider);
     var sid = section?.id;
 
-    void save() {
+    void save() async {
       final eventToSave = event?.copyWith(
             sectionId: sid!,
             title: titleController.text,
@@ -49,15 +51,45 @@ class EventEditScreen extends HookConsumerWidget {
             waiverRequired: false,
           );
 
-      if (isCreating) {
-        client.event.createEvent(eventToSave).then((x) {
-          // TODO: Navigate to event list or event details
-          log.info('Created event $x');
-        });
-      } else {
-        client.event.updateEvent(eventToSave).then((_) {
-          // TODO: Navigate to event details
-        });
+      try {
+        if (isCreating) {
+          await client.event.createEvent(eventToSave);
+        } else {
+          await client.event.updateEvent(eventToSave);
+        }
+        await ref.refresh(currentEventsProvider.future);
+        if (context.mounted) {
+          await showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: const Text('Success'),
+              content: const Text('Event saved successfully'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('OK'),
+                ),
+              ],
+            ),
+          );
+          GoRouter.of(context).pop();
+        }
+      } catch (e) {
+        if (context.mounted) {
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: const Text('Error'),
+              content: Text('Error saving event: $e'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('OK'),
+                ),
+              ],
+            ),
+          );
+        }
       }
     }
 
@@ -71,6 +103,13 @@ class EventEditScreen extends HookConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            ref.invalidate(currentEventsProvider);
+            GoRouter.of(context).pop();
+          },
+        ),
         title: Text(isCreating ? 'Create Event' : 'Edit Event'),
       ),
       body: SingleChildScrollView(
@@ -89,7 +128,60 @@ class EventEditScreen extends HookConsumerWidget {
               controller: locationController,
               decoration: const InputDecoration(labelText: 'Location'),
             ),
-            // TODO: Add date time pickers for start and end time
+            ListTile(
+              title: const Text('Start Time'),
+              subtitle: Text(startTime.value.toString()),
+              onTap: () async {
+                final date = await showDatePicker(
+                  context: context,
+                  initialDate: startTime.value,
+                  firstDate: DateTime(2000),
+                  lastDate: DateTime(2100),
+                );
+                if (date != null) {
+                  final time = await showTimePicker(
+                    context: context,
+                    initialTime: TimeOfDay.fromDateTime(startTime.value),
+                  );
+                  if (time != null) {
+                    startTime.value = DateTime(
+                      date.year,
+                      date.month,
+                      date.day,
+                      time.hour,
+                      time.minute,
+                    );
+                  }
+                }
+              },
+            ),
+            ListTile(
+              title: const Text('End Time'),
+              subtitle: Text(endTime.value.toString()),
+              onTap: () async {
+                final date = await showDatePicker(
+                  context: context,
+                  initialDate: endTime.value,
+                  firstDate: DateTime(2000),
+                  lastDate: DateTime(2100),
+                );
+                if (date != null) {
+                  final time = await showTimePicker(
+                    context: context,
+                    initialTime: TimeOfDay.fromDateTime(endTime.value),
+                  );
+                  if (time != null) {
+                    endTime.value = DateTime(
+                      date.year,
+                      date.month,
+                      date.day,
+                      time.hour,
+                      time.minute,
+                    );
+                  }
+                }
+              },
+            ),
           ],
         ),
       ),

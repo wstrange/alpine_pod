@@ -55,3 +55,37 @@ abstract class _$SectionNotifier extends $Notifier<Section?> {
     element.handleValue(ref, created);
   }
 }
+
+@ProviderFor(currentEvents)
+const currentEventsProvider = CurrentEventsProvider._();
+
+final class CurrentEventsProvider extends $FunctionalProvider<
+        AsyncValue<List<Event>>, List<Event>, FutureOr<List<Event>>>
+    with $FutureModifier<List<Event>>, $FutureProvider<List<Event>> {
+  const CurrentEventsProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'currentEventsProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$currentEventsHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<List<Event>> $createElement(
+          $ProviderPointer pointer) =>
+      $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<List<Event>> create(Ref ref) {
+    return currentEvents(ref);
+  }
+}
+
+String _$currentEventsHash() => r'dca26712fe9ea50faa8f6092da10191798be03ad';

@@ -13,13 +13,6 @@ class ScaffoldWithNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: navigationShell,
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          GoRouter.of(context).go('/create-event');
-        },
-        child: const Icon(Icons.add),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
         shape: const CircularNotchedRectangle(),
         notchMargin: 4.0,
@@ -31,10 +24,15 @@ class ScaffoldWithNavBar extends StatelessWidget {
               onPressed: () => _onTap(context, 0),
             ),
             IconButton(
+              icon: const Icon(Icons.event),
+              onPressed: () {
+                GoRouter.of(context).push('/create-event');
+              },
+            ),
+            IconButton(
               icon: const Icon(Icons.person),
               onPressed: () => _onTap(context, 1),
             ),
-            IconButton(onPressed: () => _onTap(context, 2), icon: Icon(Icons.event)),
           ],
         ),
       ),

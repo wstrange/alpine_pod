@@ -1,4 +1,7 @@
+import 'package:alpine_pod_client/alpine_pod_client.dart';
+import 'package:alpine_pod_flutter/src/widgets/event_view.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../provider.dart';
 
@@ -10,6 +13,8 @@ class HomeScreen extends ConsumerWidget {
     var section = ref.watch(sectionProvider);
 
     var sectionName = section?.name;
+
+    var events = ref.watch(currentEventsProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -36,18 +41,54 @@ class HomeScreen extends ConsumerWidget {
           ],
         ),
       ),
-      body: ListView.builder(
-        itemCount: 10, // Mock data
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text('Upcoming Event ${index + 1}'),
-            subtitle: const Text('Event details...'),
-            onTap: () {
-              // Navigate to event details screen
-            },
-          );
-        },
-      ),
+      body: switch (events) {
+        AsyncData(:final value) => EventListDisplay(value),
+        AsyncError(:final error, :final stackTrace) => Center(
+            child: Text('Error: $error\nStack: $stackTrace'),
+          ),
+        AsyncLoading() => const Center(
+            child: CircularProgressIndicator(),
+          ),
+      },
     );
+  }
+}
+
+class EventListDisplay extends StatelessWidget {
+  final List<Event> events;
+
+  const EventListDisplay(this.events, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+        itemCount: events.length,
+        itemBuilder: (context, i) {
+          return ListTile(
+            title: Text(events[i].title),
+          onTap: () {
+            showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: Text(events[i].title),
+                content: EventView(event: events[i]),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text('Close'),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      GoRouter.of(context).push('/event-details', extra: events[i]);
+                    },
+                    child: const Text('Edit'),
+                  ),
+                ],
+              ),
+            );
+          },
+          );
+        });
   }
 }

@@ -18,6 +18,7 @@ import 'provider.dart';
 void main() async {
   Logger.root.level = Level.ALL;
   Logger.root.onRecord.listen((record) {
+    // ignore: avoid_print
     print('${record.level.name}: ${record.time}: ${record.message}');
   });
 
@@ -81,6 +82,13 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/create-event',
         builder: (context, state) => const EventEditScreen(),
       ),
+      GoRoute(
+        path: '/event-details',
+        builder: (context, state) {
+          final event = state.extra as Event;
+          return EventEditScreen(event: event);
+        },
+      ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
           return ScaffoldWithNavBar(navigationShell: navigationShell);
@@ -99,14 +107,6 @@ final routerProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: '/profile',
                 builder: (context, state) => const MemberEditScreen(),
-              ),
-            ],
-          ),
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: '/event',
-                builder: (context, state) => const EventEditScreen(),
               ),
             ],
           ),

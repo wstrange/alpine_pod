@@ -14,9 +14,6 @@ final log = Logger('provider');
 late final Client client;
 late SessionManager sessionManager;
 
-// @riverpod
-// Section mySection(Ref ref) => Section(name: 'foo', description: 'foo');
-
 /// todo: Not clear why we need this since sessionManager lives throughout
 /// the app lifetime. Same for client
 final sessionManagerProvider = Provider<SessionManager>((ref) {
@@ -67,6 +64,13 @@ class SectionNotifier extends _$SectionNotifier {
   void setValue(Section? section) {
     state = section;
   }
+}
+
+@riverpod
+Future<List<Event>> currentEvents(Ref ref) async {
+  final s = ref.watch(sectionProvider);
+  var e = await client.event.listEvents(s?.id);
+  return e;
 }
 
 // A basic logger, which logs any state changes.

@@ -25,7 +25,7 @@ class TripLeaderEndpoint extends Endpoint {
     }
 
     // Check if member is already a member of the section
-    if (!await cache.isSectionMember(session, event.sectionId!)) {
+    if (!await cache.isSectionMember(session, event.sectionId)) {
       throw Exception('Trip leader must be a member of the section');
     }
 

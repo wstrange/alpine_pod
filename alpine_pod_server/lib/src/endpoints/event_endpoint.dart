@@ -1,6 +1,5 @@
 import 'package:serverpod/serverpod.dart';
 import '../generated/protocol.dart';
-import '../member_cache.dart';
 
 class EventEndpoint extends Endpoint {
   void _validateEvent(Event event) {
@@ -60,6 +59,7 @@ class EventEndpoint extends Endpoint {
   }
 
   Future<Event> updateEvent(Session session, Event event) async {
+    session.log('Update Event $event');
     if (event.id == null) throw Exception('Event ID is required for updates');
 
     final existing = await Event.db.findById(session, event.id!);
@@ -102,22 +102,6 @@ class EventEndpoint extends Endpoint {
   }
 
   Future<List<Event>> listEvents(Session session, int? sectionId) async {
-    // If section ID is provided, check membership unless member is admin
-    if (sectionId != null) {
-      final dynamic s = session;
-      final int? memberId = s.authenticatedUserId as int?;
-      if (memberId == null) return [];
-
-      final isMember = await cache.isSectionMember(session, sectionId);
-      if (!isMember) {
-        // Non-members can only see public events
-        return await Event.db.find(
-          session,
-          where: (t) => t.sectionId.equals(sectionId),
-        );
-      }
-    }
-
     // Return all events for the section or all events for admin
     if (sectionId != null) {
       return await Event.db.find(
