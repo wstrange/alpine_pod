@@ -2,16 +2,17 @@ import 'dart:async';
 
 import 'package:alpine_pod_client/alpine_pod_client.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:logging/logging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:serverpod_auth_client/serverpod_auth_client.dart';
 import 'package:serverpod_auth_shared_flutter/serverpod_auth_shared_flutter.dart';
 
 part 'provider.g.dart';
 
+final log = Logger('provider');
+
 late final Client client;
 late SessionManager sessionManager;
-
-Section? currentSection;
 
 // @riverpod
 // Section mySection(Ref ref) => Section(name: 'foo', description: 'foo');
@@ -55,17 +56,16 @@ final currentMemberProvider = FutureProvider<Member?>((ref) async {
 
 // todo: This is not working. Section is not getting reflected in the app
 //
-@riverpod
+@Riverpod(keepAlive: true)
 class SectionNotifier extends _$SectionNotifier {
   @override
   Section? build() {
-    state = null;
-    return state;
+    //state = null;
+    return null;
   }
 
   void setValue(Section? section) {
     state = section;
-    ref.invalidateSelf(); // todo:????
   }
 }
 
@@ -77,7 +77,7 @@ final class LoggerProvider extends ProviderObserver {
     Object? previousValue,
     Object? newValue,
   ) {
-    print('''
+    log.info('''
 {
   "provider": "${context.provider}",
   "prevValue": "$previousValue",

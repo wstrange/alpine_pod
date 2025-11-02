@@ -1,5 +1,4 @@
-import 'package:alpine_pod_client/alpine_pod_client.dart';
-import 'package:alpine_pod_flutter/src/provider.dart';
+import '../provider.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -35,7 +34,7 @@ class MemberEditScreen extends HookConsumerWidget {
         final medicalConditionsController = useTextEditingController(text: member.medicalConditions);
         final certificationsController = useTextEditingController(text: member.certifications);
 
-        void _save() {
+        void save() {
           final updatedMember = member.copyWith(
             firstName: firstNameController.text,
             lastName: lastNameController.text,
@@ -53,7 +52,7 @@ class MemberEditScreen extends HookConsumerWidget {
           });
         }
 
-        void _reset() {
+        void reset() {
           firstNameController.text = member.firstName;
           lastNameController.text = member.lastName;
           displayNameController.text = member.displayName ?? '';
@@ -122,12 +121,12 @@ class MemberEditScreen extends HookConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ElevatedButton.icon(
-                  onPressed: _reset,
+                  onPressed: reset,
                   icon: const Icon(Icons.refresh),
                   label: const Text('Reset'),
                 ),
                 ElevatedButton.icon(
-                  onPressed: _save,
+                  onPressed: save,
                   icon: const Icon(Icons.save),
                   label: const Text('Save'),
                 ),

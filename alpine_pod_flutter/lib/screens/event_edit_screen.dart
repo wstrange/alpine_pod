@@ -3,6 +3,9 @@ import 'package:alpine_pod_flutter/src/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:logging/logging.dart';
+
+final log = Logger('EventEditScreen');
 
 class EventEditScreen extends HookConsumerWidget {
   const EventEditScreen({this.event, super.key});
@@ -21,11 +24,8 @@ class EventEditScreen extends HookConsumerWidget {
 
     final client = ref.watch(clientProvider);
 
-    if (currentSection == null) {
-      throw Exception('null sections... fix me');
-    }
-
-    var sid = currentSection?.id;
+    var section = ref.watch(sectionProvider);
+    var sid = section?.id;
 
     void save() {
       final eventToSave = event?.copyWith(
@@ -52,7 +52,7 @@ class EventEditScreen extends HookConsumerWidget {
       if (isCreating) {
         client.event.createEvent(eventToSave).then((x) {
           // TODO: Navigate to event list or event details
-          print('Created event $x');
+          log.info('Created event $x');
         });
       } else {
         client.event.updateEvent(eventToSave).then((_) {

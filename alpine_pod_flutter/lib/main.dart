@@ -1,19 +1,26 @@
 import 'package:alpine_pod_client/alpine_pod_client.dart';
-import 'package:alpine_pod_flutter/src/screens/home_screen.dart';
-import 'package:alpine_pod_flutter/src/screens/login_screen.dart';
-import 'package:alpine_pod_flutter/src/screens/event_edit_screen.dart';
-import 'package:alpine_pod_flutter/src/screens/member_edit_screen.dart';
-import 'package:alpine_pod_flutter/src/screens/section_selection_screen.dart';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:logging/logging.dart';
 import 'package:serverpod_auth_shared_flutter/serverpod_auth_shared_flutter.dart';
 import 'package:serverpod_flutter/serverpod_flutter.dart';
-import 'package:alpine_pod_flutter/src/widgets/scaffold_with_nav_bar.dart';
 
-import 'src/provider.dart';
+import 'screens/event_edit_screen.dart';
+import 'screens/home_screen.dart';
+import 'screens/login_screen.dart';
+import 'screens/member_edit_screen.dart';
+import 'screens/section_selection_screen.dart';
+import 'widgets/scaffold_with_nav_bar.dart';
+import 'provider.dart';
 
 void main() async {
+  Logger.root.level = Level.ALL;
+  Logger.root.onRecord.listen((record) {
+    print('${record.level.name}: ${record.time}: ${record.message}');
+  });
+
   WidgetsFlutterBinding.ensureInitialized();
 
   const serverUrlFromEnv = String.fromEnvironment('SERVER_URL');
@@ -121,7 +128,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           if (sections.length > 1) {
             return '/section-selection';
           } else {
-            currentSection = sections[0];
+            ref.read(sectionProvider.notifier).setValue(sections[0]);
             return '/';
           }
         } catch (e) {

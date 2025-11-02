@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'selected_section_provider.dart';
+part of 'provider.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -9,28 +9,28 @@ part of 'selected_section_provider.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(SelectedSection)
-const selectedSectionProvider = SelectedSectionProvider._();
+@ProviderFor(SectionNotifier)
+const sectionProvider = SectionNotifierProvider._();
 
-final class SelectedSectionProvider
-    extends $NotifierProvider<SelectedSection, Section?> {
-  const SelectedSectionProvider._()
+final class SectionNotifierProvider
+    extends $NotifierProvider<SectionNotifier, Section?> {
+  const SectionNotifierProvider._()
       : super(
           from: null,
           argument: null,
           retry: null,
-          name: r'selectedSectionProvider',
-          isAutoDispose: true,
+          name: r'sectionProvider',
+          isAutoDispose: false,
           dependencies: null,
           $allTransitiveDependencies: null,
         );
 
   @override
-  String debugGetCreateSourceHash() => _$selectedSectionHash();
+  String debugGetCreateSourceHash() => _$sectionNotifierHash();
 
   @$internal
   @override
-  SelectedSection create() => SelectedSection();
+  SectionNotifier create() => SectionNotifier();
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(Section? value) {
@@ -41,9 +41,9 @@ final class SelectedSectionProvider
   }
 }
 
-String _$selectedSectionHash() => r'e2ec4c61451794011c148516e2cd1a2767ee1f7d';
+String _$sectionNotifierHash() => r'615493152c0973fbc65e0f80bd6b805290e9383b';
 
-abstract class _$SelectedSection extends $Notifier<Section?> {
+abstract class _$SectionNotifier extends $Notifier<Section?> {
   Section? build();
   @$mustCallSuper
   @override

@@ -1,7 +1,6 @@
-import 'package:alpine_pod_flutter/src/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-
+import '../provider.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -10,15 +9,7 @@ class HomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     var section = ref.watch(sectionProvider);
 
-    print('section = $section');
-    var sectionName = currentSection?.name ?? 'NA';
-    print(sectionName);
-
-    var sectionsList = ref.watch(userSectionsProvider);
-
-    print(' ${sectionsList.value}');
-
-    print(sessionManager.signedInUser);
+    var sectionName = section?.name;
 
     return Scaffold(
       appBar: AppBar(
@@ -38,7 +29,6 @@ class HomeScreen extends ConsumerWidget {
               title: const Text('Logout'),
               onTap: () {
                 ref.read(sectionProvider.notifier).setValue(null);
-                currentSection = null;
                 sessionManager.signOutDevice();
                 Navigator.pop(context); // Close the drawer
               },

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
 import 'package:serverpod_auth_email_flutter/serverpod_auth_email_flutter.dart';
 import 'package:serverpod_auth_google_flutter/serverpod_auth_google_flutter.dart';
 import '../provider.dart';
+
+final log = Logger('LoginScreen');
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -52,14 +55,14 @@ Future<void> signInWithEmail(String email, String password) async {
         authResponse.keyId!,
         authResponse.key!,
       );
-      print('Sign-in successful!');
+      log.info('Sign-in successful!');
     } else {
       // Handle login failure. The `authResponse` contains information on why
       // the sign-in failed.
-      print('Sign-in failed: ${authResponse.failReason}');
+      log.info('Sign-in failed: ${authResponse.failReason}');
     }
   } catch (e) {
     // Handle network errors or other exceptions
-    print('An error occurred during sign-in: $e');
+    log.info('An error occurred during sign-in: $e');
   }
 }
