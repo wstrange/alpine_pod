@@ -1,5 +1,5 @@
 import 'package:alpine_pod_client/alpine_pod_client.dart';
-import 'package:alpine_pod_flutter/src/widgets/event_view.dart';
+import 'package:alpine_pod_flutter/widgets/event_view.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';

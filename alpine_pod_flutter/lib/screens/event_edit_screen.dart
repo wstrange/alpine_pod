@@ -6,6 +6,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:logging/logging.dart';
 
 import '../provider.dart';
+import '../util.dart';
 
 final log = Logger('EventEditScreen');
 
@@ -22,7 +23,7 @@ class EventEditScreen extends HookConsumerWidget {
     final descriptionController = useTextEditingController(text: event?.description);
     final locationController = useTextEditingController(text: event?.location);
     final startTime = useState(event?.startTime ?? DateTime.now());
-    final endTime = useState(event?.endTime ?? DateTime.now().add(const Duration(hours: 2)));
+    final endTime = useState(event?.endTime ?? DateTime.now().add(const Duration(hours: 8)));
 
     final client = ref.watch(clientProvider);
 
@@ -57,7 +58,7 @@ class EventEditScreen extends HookConsumerWidget {
         } else {
           await client.event.updateEvent(eventToSave);
         }
-        await ref.refresh(currentEventsProvider.future);
+        ref.invalidate(currentEventsProvider);
         if (context.mounted) {
           await showDialog(
             context: context,
@@ -123,6 +124,8 @@ class EventEditScreen extends HookConsumerWidget {
             TextFormField(
               controller: descriptionController,
               decoration: const InputDecoration(labelText: 'Description'),
+              maxLines: 30,
+              minLines: 5,
             ),
             TextFormField(
               controller: locationController,
@@ -130,42 +133,44 @@ class EventEditScreen extends HookConsumerWidget {
             ),
             ListTile(
               title: const Text('Start Time'),
-              subtitle: Text(startTime.value.toString()),
+              subtitle: Text(eventDateFormat(startTime.value)),
               onTap: () async {
                 final date = await showDatePicker(
                   context: context,
                   initialDate: startTime.value,
-                  firstDate: DateTime(2000),
-                  lastDate: DateTime(2100),
+                  firstDate: DateTime(2025),
+                  lastDate: DateTime(2050),
                 );
-                if (date != null) {
+                if (date != null && context.mounted) {
                   final time = await showTimePicker(
                     context: context,
                     initialTime: TimeOfDay.fromDateTime(startTime.value),
                   );
                   if (time != null) {
-                    startTime.value = DateTime(
+                    final newStartTime = DateTime(
                       date.year,
                       date.month,
                       date.day,
                       time.hour,
                       time.minute,
                     );
+                    startTime.value = newStartTime;
+                    endTime.value = newStartTime.add(const Duration(hours: 8));
                   }
                 }
               },
             ),
             ListTile(
               title: const Text('End Time'),
-              subtitle: Text(endTime.value.toString()),
+              subtitle: Text(eventDateFormat(endTime.value)),
               onTap: () async {
                 final date = await showDatePicker(
                   context: context,
                   initialDate: endTime.value,
-                  firstDate: DateTime(2000),
+                  firstDate: startTime.value,
                   lastDate: DateTime(2100),
                 );
-                if (date != null) {
+                if (date != null && context.mounted) {
                   final time = await showTimePicker(
                     context: context,
                     initialTime: TimeOfDay.fromDateTime(endTime.value),

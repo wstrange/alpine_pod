@@ -7,8 +7,8 @@ Flutter UI for the alpine_pod Serverpod backend.
 * Uses Riverpod, and Flutter Hooks for state management.
 * Uses GoRouter for routing.
 * Users serverpod_auth_client for authentication.
-* Standalone widgets go in lib/src/widgets/.
-* Screens go in lib/src/screens/
+* Standalone widgets go in lib/widgets/.
+* Screens go in lib/screens/
 * For now keep the folder nesting to a minimum.
 
 

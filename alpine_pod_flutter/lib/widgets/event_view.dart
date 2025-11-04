@@ -1,5 +1,6 @@
 import 'package:alpine_pod_client/alpine_pod_client.dart';
 import 'package:flutter/material.dart';
+import '../util.dart';
 
 class EventView extends StatelessWidget {
   const EventView({required this.event, super.key});
@@ -15,10 +16,24 @@ class EventView extends StatelessWidget {
         children: [
           Text(event.title, style: Theme.of(context).textTheme.headlineSmall),
           const SizedBox(height: 8),
-          Text(event.description),
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final style = DefaultTextStyle.of(context).style;
+              final lineHeight = style.fontSize! * (style.height ?? 1.2);
+              return ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxHeight: 30 * lineHeight,
+                  minHeight: 5 * lineHeight,
+                ),
+                child: SingleChildScrollView(
+                  child: Text(event.description),
+                ),
+              );
+            },
+          ),
           const SizedBox(height: 8),
-          Text('Starts: ${event.startTime}'),
-          Text('Ends: ${event.endTime}'),
+          Text('Starts: ${eventDateFormat(event.startTime)}'),
+          Text('Ends: ${eventDateFormat(event.endTime)}'),
           const SizedBox(height: 8),
           Text('Location: ${event.location}'),
         ],
