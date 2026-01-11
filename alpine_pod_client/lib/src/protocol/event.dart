@@ -44,7 +44,8 @@ abstract class Event implements _i1.SerializableModel {
     this.registrationNotes,
     required this.sectionId,
     this.documentsJson,
-  });
+    bool? published,
+  }) : published = published ?? false;
 
   factory Event({
     int? id,
@@ -77,6 +78,7 @@ abstract class Event implements _i1.SerializableModel {
     String? registrationNotes,
     required int sectionId,
     String? documentsJson,
+    bool? published,
   }) = _EventImpl;
 
   factory Event.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -127,6 +129,7 @@ abstract class Event implements _i1.SerializableModel {
       registrationNotes: jsonSerialization['registrationNotes'] as String?,
       sectionId: jsonSerialization['sectionId'] as int,
       documentsJson: jsonSerialization['documentsJson'] as String?,
+      published: jsonSerialization['published'] as bool,
     );
   }
 
@@ -193,6 +196,8 @@ abstract class Event implements _i1.SerializableModel {
 
   String? documentsJson;
 
+  bool published;
+
   /// Returns a shallow copy of this [Event]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
@@ -227,6 +232,7 @@ abstract class Event implements _i1.SerializableModel {
     String? registrationNotes,
     int? sectionId,
     String? documentsJson,
+    bool? published,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -267,6 +273,7 @@ abstract class Event implements _i1.SerializableModel {
       if (registrationNotes != null) 'registrationNotes': registrationNotes,
       'sectionId': sectionId,
       if (documentsJson != null) 'documentsJson': documentsJson,
+      'published': published,
     };
   }
 
@@ -310,6 +317,7 @@ class _EventImpl extends Event {
     String? registrationNotes,
     required int sectionId,
     String? documentsJson,
+    bool? published,
   }) : super._(
           id: id,
           title: title,
@@ -341,6 +349,7 @@ class _EventImpl extends Event {
           registrationNotes: registrationNotes,
           sectionId: sectionId,
           documentsJson: documentsJson,
+          published: published,
         );
 
   /// Returns a shallow copy of this [Event]
@@ -378,6 +387,7 @@ class _EventImpl extends Event {
     Object? registrationNotes = _Undefined,
     int? sectionId,
     Object? documentsJson = _Undefined,
+    bool? published,
   }) {
     return Event(
       id: id is int? ? id : this.id,
@@ -432,6 +442,7 @@ class _EventImpl extends Event {
       sectionId: sectionId ?? this.sectionId,
       documentsJson:
           documentsJson is String? ? documentsJson : this.documentsJson,
+      published: published ?? this.published,
     );
   }
 }

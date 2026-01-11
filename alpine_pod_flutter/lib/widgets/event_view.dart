@@ -16,9 +16,10 @@ class EventView extends StatelessWidget {
         children: [
           Text(event.title, style: Theme.of(context).textTheme.headlineSmall),
           const SizedBox(height: 8),
-          LayoutBuilder(
-            builder: (context, constraints) {
-              final style = DefaultTextStyle.of(context).style;
+          const SizedBox(height: 8),
+          Builder(
+            builder: (context) {
+              final style = Theme.of(context).textTheme.bodyMedium!;
               final lineHeight = style.fontSize! * (style.height ?? 1.2);
               return ConstrainedBox(
                 constraints: BoxConstraints(

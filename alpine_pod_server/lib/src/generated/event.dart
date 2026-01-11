@@ -44,7 +44,8 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     this.registrationNotes,
     required this.sectionId,
     this.documentsJson,
-  });
+    bool? published,
+  }) : published = published ?? false;
 
   factory Event({
     int? id,
@@ -77,6 +78,7 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     String? registrationNotes,
     required int sectionId,
     String? documentsJson,
+    bool? published,
   }) = _EventImpl;
 
   factory Event.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -127,6 +129,7 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       registrationNotes: jsonSerialization['registrationNotes'] as String?,
       sectionId: jsonSerialization['sectionId'] as int,
       documentsJson: jsonSerialization['documentsJson'] as String?,
+      published: jsonSerialization['published'] as bool,
     );
   }
 
@@ -195,6 +198,8 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
 
   String? documentsJson;
 
+  bool published;
+
   @override
   _i1.Table<int?> get table => t;
 
@@ -232,6 +237,7 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     String? registrationNotes,
     int? sectionId,
     String? documentsJson,
+    bool? published,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -272,6 +278,7 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       if (registrationNotes != null) 'registrationNotes': registrationNotes,
       'sectionId': sectionId,
       if (documentsJson != null) 'documentsJson': documentsJson,
+      'published': published,
     };
   }
 
@@ -314,6 +321,7 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       if (registrationNotes != null) 'registrationNotes': registrationNotes,
       'sectionId': sectionId,
       if (documentsJson != null) 'documentsJson': documentsJson,
+      'published': published,
     };
   }
 
@@ -381,6 +389,7 @@ class _EventImpl extends Event {
     String? registrationNotes,
     required int sectionId,
     String? documentsJson,
+    bool? published,
   }) : super._(
           id: id,
           title: title,
@@ -412,6 +421,7 @@ class _EventImpl extends Event {
           registrationNotes: registrationNotes,
           sectionId: sectionId,
           documentsJson: documentsJson,
+          published: published,
         );
 
   /// Returns a shallow copy of this [Event]
@@ -449,6 +459,7 @@ class _EventImpl extends Event {
     Object? registrationNotes = _Undefined,
     int? sectionId,
     Object? documentsJson = _Undefined,
+    bool? published,
   }) {
     return Event(
       id: id is int? ? id : this.id,
@@ -503,6 +514,7 @@ class _EventImpl extends Event {
       sectionId: sectionId ?? this.sectionId,
       documentsJson:
           documentsJson is String? ? documentsJson : this.documentsJson,
+      published: published ?? this.published,
     );
   }
 }
@@ -626,6 +638,11 @@ class EventTable extends _i1.Table<int?> {
       'documentsJson',
       this,
     );
+    published = _i1.ColumnBool(
+      'published',
+      this,
+      hasDefault: true,
+    );
   }
 
   late final _i1.ColumnString title;
@@ -686,6 +703,8 @@ class EventTable extends _i1.Table<int?> {
 
   late final _i1.ColumnString documentsJson;
 
+  late final _i1.ColumnBool published;
+
   @override
   List<_i1.Column> get columns => [
         id,
@@ -718,6 +737,7 @@ class EventTable extends _i1.Table<int?> {
         registrationNotes,
         sectionId,
         documentsJson,
+        published,
       ];
 }
 

@@ -32,6 +32,7 @@ fields:
   sectionId: int # Associated section
   # JSON list of documents (e.g. [{"type":"waiver","url":"..."}])
   documentsJson: String?
+  published: bool, default=false
 indexes:
   upcoming_events_idx:
     fields: startTime
