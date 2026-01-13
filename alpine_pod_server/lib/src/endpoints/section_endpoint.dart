@@ -17,11 +17,12 @@ class SectionEndpoint extends Endpoint {
   }
 
   Future<List<Section>> getSectionsForCurrentUser(Session session) async {
-    final authInfo = await session.authenticated;
+    final authInfo = session.authenticated;
     if (authInfo == null) {
       return [];
     }
-    final userId = authInfo.userId;
+    final userId = int.tryParse(authInfo.authId);
+    if (userId == null) return [];
 
     final memberships = await SectionMembership.db.find(
       session,

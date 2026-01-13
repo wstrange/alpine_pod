@@ -7,6 +7,7 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
@@ -51,10 +52,10 @@ class EndpointAdmin extends _i1.EndpointRef {
       );
 
   _i2.Future<void> deleteSection(int id) => caller.callServerEndpoint<void>(
-        'admin',
-        'deleteSection',
-        {'id': id},
-      );
+    'admin',
+    'deleteSection',
+    {'id': id},
+  );
 
   _i2.Future<List<_i3.Section>> listSections() =>
       caller.callServerEndpoint<List<_i3.Section>>(
@@ -93,10 +94,10 @@ class EndpointEvent extends _i1.EndpointRef {
       );
 
   _i2.Future<void> deleteEvent(int id) => caller.callServerEndpoint<void>(
-        'event',
-        'deleteEvent',
-        {'id': id},
-      );
+    'event',
+    'deleteEvent',
+    {'id': id},
+  );
 
   _i2.Future<List<_i4.Event>> listEvents(int? sectionId) =>
       caller.callServerEndpoint<List<_i4.Event>>(
@@ -143,12 +144,12 @@ class EndpointMember extends _i1.EndpointRef {
       );
 
   _i2.Future<_i6.SectionMembership> addMemberToSection(
-          _i6.SectionMembership membership) =>
-      caller.callServerEndpoint<_i6.SectionMembership>(
-        'member',
-        'addMemberToSection',
-        {'membership': membership},
-      );
+    _i6.SectionMembership membership,
+  ) => caller.callServerEndpoint<_i6.SectionMembership>(
+    'member',
+    'addMemberToSection',
+    {'membership': membership},
+  );
 
   _i2.Future<void> removeMemberFromSection(_i6.SectionMembership membership) =>
       caller.callServerEndpoint<void>(
@@ -177,24 +178,23 @@ class EndpointRegistration extends _i1.EndpointRef {
     int registrationId,
     _i8.RegistrationStatus newStatus, {
     String? notes,
-  }) =>
-      caller.callServerEndpoint<_i7.EventRegistration>(
-        'registration',
-        'updateRegistrationStatus',
-        {
-          'registrationId': registrationId,
-          'newStatus': newStatus,
-          'notes': notes,
-        },
-      );
+  }) => caller.callServerEndpoint<_i7.EventRegistration>(
+    'registration',
+    'updateRegistrationStatus',
+    {
+      'registrationId': registrationId,
+      'newStatus': newStatus,
+      'notes': notes,
+    },
+  );
 
   _i2.Future<_i7.EventRegistration> registerForEvent(
-          _i7.EventRegistration registration) =>
-      caller.callServerEndpoint<_i7.EventRegistration>(
-        'registration',
-        'registerForEvent',
-        {'registration': registration},
-      );
+    _i7.EventRegistration registration,
+  ) => caller.callServerEndpoint<_i7.EventRegistration>(
+    'registration',
+    'registerForEvent',
+    {'registration': registration},
+  );
 
   _i2.Future<void> cancelRegistration(int registrationId) =>
       caller.callServerEndpoint<void>(
@@ -241,12 +241,12 @@ class EndpointTripLeader extends _i1.EndpointRef {
   String get name => 'tripLeader';
 
   _i2.Future<_i9.EventTripLeader> assignTripLeader(
-          _i9.EventTripLeader tripLeader) =>
-      caller.callServerEndpoint<_i9.EventTripLeader>(
-        'tripLeader',
-        'assignTripLeader',
-        {'tripLeader': tripLeader},
-      );
+    _i9.EventTripLeader tripLeader,
+  ) => caller.callServerEndpoint<_i9.EventTripLeader>(
+    'tripLeader',
+    'assignTripLeader',
+    {'tripLeader': tripLeader},
+  );
 
   _i2.Future<void> removeTripLeader(_i9.EventTripLeader tripLeader) =>
       caller.callServerEndpoint<void>(
@@ -298,28 +298,31 @@ class Client extends _i1.ServerpodClientShared {
   Client(
     String host, {
     dynamic securityContext,
-    _i1.AuthenticationKeyManager? authenticationKeyManager,
+    @Deprecated(
+      'Use authKeyProvider instead. This will be removed in future releases.',
+    )
+    super.authenticationKeyManager,
     Duration? streamingConnectionTimeout,
     Duration? connectionTimeout,
     Function(
       _i1.MethodCallContext,
       Object,
       StackTrace,
-    )? onFailedCall,
+    )?
+    onFailedCall,
     Function(_i1.MethodCallContext)? onSucceededCall,
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
-          host,
-          _i11.Protocol(),
-          securityContext: securityContext,
-          authenticationKeyManager: authenticationKeyManager,
-          streamingConnectionTimeout: streamingConnectionTimeout,
-          connectionTimeout: connectionTimeout,
-          onFailedCall: onFailedCall,
-          onSucceededCall: onSucceededCall,
-          disconnectStreamsOnLostInternetConnection:
-              disconnectStreamsOnLostInternetConnection,
-        ) {
+         host,
+         _i11.Protocol(),
+         securityContext: securityContext,
+         streamingConnectionTimeout: streamingConnectionTimeout,
+         connectionTimeout: connectionTimeout,
+         onFailedCall: onFailedCall,
+         onSucceededCall: onSucceededCall,
+         disconnectStreamsOnLostInternetConnection:
+             disconnectStreamsOnLostInternetConnection,
+       ) {
     admin = EndpointAdmin(this);
     event = EndpointEvent(this);
     member = EndpointMember(this);
@@ -345,15 +348,16 @@ class Client extends _i1.ServerpodClientShared {
 
   @override
   Map<String, _i1.EndpointRef> get endpointRefLookup => {
-        'admin': admin,
-        'event': event,
-        'member': member,
-        'registration': registration,
-        'section': section,
-        'tripLeader': tripLeader,
-      };
+    'admin': admin,
+    'event': event,
+    'member': member,
+    'registration': registration,
+    'section': section,
+    'tripLeader': tripLeader,
+  };
 
   @override
-  Map<String, _i1.ModuleEndpointCaller> get moduleLookup =>
-      {'auth': modules.auth};
+  Map<String, _i1.ModuleEndpointCaller> get moduleLookup => {
+    'auth': modules.auth,
+  };
 }

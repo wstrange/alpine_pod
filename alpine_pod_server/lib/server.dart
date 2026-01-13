@@ -20,22 +20,24 @@ void run(List<String> args) async {
     sendPasswordResetEmail: (session, userInfo, validationCode) async {
       // Send the password reset email to the user.
       // Return `true` if the email was successfully sent, otherwise `false`.
-      session.log('Send password reset email to ${userInfo.email} with code $validationCode');
+      session.log(
+          'Send password reset email to ${userInfo.email} with code $validationCode');
       return true;
     },
   ));
 
   // Initialize Serverpod and connect it with your generated code.
-  final pod = Serverpod(args, Protocol(), Endpoints(), authenticationHandler: auth.authenticationHandler);
+  final pod = Serverpod(args, Protocol(), Endpoints(),
+      authenticationHandler: auth.authenticationHandler);
 
   // Setup a default page at the web root.
-  pod.webServer.addRoute(RouteRoot(), '/');
-  pod.webServer.addRoute(RouteRoot(), '/index.html');
+  // pod.webServer.addRoute(RouteRoot(), '/');
+  // pod.webServer.addRoute(RouteRoot(), '/index.html');
   // Serve all files in the /static directory.
-  pod.webServer.addRoute(
-    RouteStaticDirectory(serverDirectory: 'static', basePath: '/'),
-    '/*',
-  );
+  // pod.webServer.addRoute(
+  //   StaticDirectory(serverDirectory: 'static', basePath: '/'),
+  //   '/*',
+  // );
 
   // Start the server.
   await pod.start();

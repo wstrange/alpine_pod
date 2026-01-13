@@ -7,6 +7,7 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
@@ -86,9 +87,10 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       id: jsonSerialization['id'] as int?,
       title: jsonSerialization['title'] as String,
       description: jsonSerialization['description'] as String,
-      type: _i2.EventType.fromJson((jsonSerialization['type'] as int)),
-      startTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['startTime']),
+      type: _i2.EventType.fromJson((jsonSerialization['type'] as String)),
+      startTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['startTime'],
+      ),
       endTime: _i1.DateTimeJsonExtension.fromJson(jsonSerialization['endTime']),
       location: jsonSerialization['location'] as String?,
       gpsLatitude: (jsonSerialization['gpsLatitude'] as num?)?.toDouble(),
@@ -97,7 +99,8 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       carPoolingTime: jsonSerialization['carPoolingTime'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(
-              jsonSerialization['carPoolingTime']),
+              jsonSerialization['carPoolingTime'],
+            ),
       carPoolingPlace: jsonSerialization['carPoolingPlace'] as String?,
       carPoolingDriveOrRide:
           jsonSerialization['carPoolingDriveOrRide'] as String?,
@@ -109,14 +112,16 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       registrationDeadline: jsonSerialization['registrationDeadline'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(
-              jsonSerialization['registrationDeadline']),
+              jsonSerialization['registrationDeadline'],
+            ),
       registrationStartDate: jsonSerialization['registrationStartDate'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(
-              jsonSerialization['registrationStartDate']),
+              jsonSerialization['registrationStartDate'],
+            ),
       waitlistEnabled: jsonSerialization['waitlistEnabled'] as bool,
-      registrationFee:
-          (jsonSerialization['registrationFee'] as num?)?.toDouble(),
+      registrationFee: (jsonSerialization['registrationFee'] as num?)
+          ?.toDouble(),
       currentRegistrationCount:
           jsonSerialization['currentRegistrationCount'] as int?,
       requiresApproval: jsonSerialization['requiresApproval'] as bool,
@@ -125,11 +130,12 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       cancellationDeadline: jsonSerialization['cancellationDeadline'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(
-              jsonSerialization['cancellationDeadline']),
+              jsonSerialization['cancellationDeadline'],
+            ),
       registrationNotes: jsonSerialization['registrationNotes'] as String?,
       sectionId: jsonSerialization['sectionId'] as int,
       documentsJson: jsonSerialization['documentsJson'] as String?,
-      published: jsonSerialization['published'] as bool,
+      published: jsonSerialization['published'] as bool?,
     );
   }
 
@@ -242,6 +248,7 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'Event',
       if (id != null) 'id': id,
       'title': title,
       'description': description,
@@ -285,6 +292,7 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'Event',
       if (id != null) 'id': id,
       'title': title,
       'description': description,
@@ -391,38 +399,38 @@ class _EventImpl extends Event {
     String? documentsJson,
     bool? published,
   }) : super._(
-          id: id,
-          title: title,
-          description: description,
-          type: type,
-          startTime: startTime,
-          endTime: endTime,
-          location: location,
-          gpsLatitude: gpsLatitude,
-          gpsLongitude: gpsLongitude,
-          mapLink: mapLink,
-          carPoolingTime: carPoolingTime,
-          carPoolingPlace: carPoolingPlace,
-          carPoolingDriveOrRide: carPoolingDriveOrRide,
-          maxParticipants: maxParticipants,
-          difficulty: difficulty,
-          requiredEquipment: requiredEquipment,
-          prerequisites: prerequisites,
-          recurring: recurring,
-          registrationDeadline: registrationDeadline,
-          registrationStartDate: registrationStartDate,
-          waitlistEnabled: waitlistEnabled,
-          registrationFee: registrationFee,
-          currentRegistrationCount: currentRegistrationCount,
-          requiresApproval: requiresApproval,
-          waiverRequired: waiverRequired,
-          minimumParticipants: minimumParticipants,
-          cancellationDeadline: cancellationDeadline,
-          registrationNotes: registrationNotes,
-          sectionId: sectionId,
-          documentsJson: documentsJson,
-          published: published,
-        );
+         id: id,
+         title: title,
+         description: description,
+         type: type,
+         startTime: startTime,
+         endTime: endTime,
+         location: location,
+         gpsLatitude: gpsLatitude,
+         gpsLongitude: gpsLongitude,
+         mapLink: mapLink,
+         carPoolingTime: carPoolingTime,
+         carPoolingPlace: carPoolingPlace,
+         carPoolingDriveOrRide: carPoolingDriveOrRide,
+         maxParticipants: maxParticipants,
+         difficulty: difficulty,
+         requiredEquipment: requiredEquipment,
+         prerequisites: prerequisites,
+         recurring: recurring,
+         registrationDeadline: registrationDeadline,
+         registrationStartDate: registrationStartDate,
+         waitlistEnabled: waitlistEnabled,
+         registrationFee: registrationFee,
+         currentRegistrationCount: currentRegistrationCount,
+         requiresApproval: requiresApproval,
+         waiverRequired: waiverRequired,
+         minimumParticipants: minimumParticipants,
+         cancellationDeadline: cancellationDeadline,
+         registrationNotes: registrationNotes,
+         sectionId: sectionId,
+         documentsJson: documentsJson,
+         published: published,
+       );
 
   /// Returns a shallow copy of this [Event]
   /// with some or all fields replaced by the given arguments.
@@ -472,21 +480,25 @@ class _EventImpl extends Event {
       gpsLatitude: gpsLatitude is double? ? gpsLatitude : this.gpsLatitude,
       gpsLongitude: gpsLongitude is double? ? gpsLongitude : this.gpsLongitude,
       mapLink: mapLink is String? ? mapLink : this.mapLink,
-      carPoolingTime:
-          carPoolingTime is DateTime? ? carPoolingTime : this.carPoolingTime,
-      carPoolingPlace:
-          carPoolingPlace is String? ? carPoolingPlace : this.carPoolingPlace,
+      carPoolingTime: carPoolingTime is DateTime?
+          ? carPoolingTime
+          : this.carPoolingTime,
+      carPoolingPlace: carPoolingPlace is String?
+          ? carPoolingPlace
+          : this.carPoolingPlace,
       carPoolingDriveOrRide: carPoolingDriveOrRide is String?
           ? carPoolingDriveOrRide
           : this.carPoolingDriveOrRide,
-      maxParticipants:
-          maxParticipants is int? ? maxParticipants : this.maxParticipants,
+      maxParticipants: maxParticipants is int?
+          ? maxParticipants
+          : this.maxParticipants,
       difficulty: difficulty is String? ? difficulty : this.difficulty,
       requiredEquipment: requiredEquipment is String?
           ? requiredEquipment
           : this.requiredEquipment,
-      prerequisites:
-          prerequisites is String? ? prerequisites : this.prerequisites,
+      prerequisites: prerequisites is String?
+          ? prerequisites
+          : this.prerequisites,
       recurring: recurring is String? ? recurring : this.recurring,
       registrationDeadline: registrationDeadline is DateTime?
           ? registrationDeadline
@@ -495,8 +507,9 @@ class _EventImpl extends Event {
           ? registrationStartDate
           : this.registrationStartDate,
       waitlistEnabled: waitlistEnabled ?? this.waitlistEnabled,
-      registrationFee:
-          registrationFee is double? ? registrationFee : this.registrationFee,
+      registrationFee: registrationFee is double?
+          ? registrationFee
+          : this.registrationFee,
       currentRegistrationCount: currentRegistrationCount is int?
           ? currentRegistrationCount
           : this.currentRegistrationCount,
@@ -512,15 +525,187 @@ class _EventImpl extends Event {
           ? registrationNotes
           : this.registrationNotes,
       sectionId: sectionId ?? this.sectionId,
-      documentsJson:
-          documentsJson is String? ? documentsJson : this.documentsJson,
+      documentsJson: documentsJson is String?
+          ? documentsJson
+          : this.documentsJson,
       published: published ?? this.published,
     );
   }
 }
 
+class EventUpdateTable extends _i1.UpdateTable<EventTable> {
+  EventUpdateTable(super.table);
+
+  _i1.ColumnValue<String, String> title(String value) => _i1.ColumnValue(
+    table.title,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> description(String value) => _i1.ColumnValue(
+    table.description,
+    value,
+  );
+
+  _i1.ColumnValue<_i2.EventType, _i2.EventType> type(_i2.EventType value) =>
+      _i1.ColumnValue(
+        table.type,
+        value,
+      );
+
+  _i1.ColumnValue<DateTime, DateTime> startTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.startTime,
+        value,
+      );
+
+  _i1.ColumnValue<DateTime, DateTime> endTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.endTime,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> location(String? value) => _i1.ColumnValue(
+    table.location,
+    value,
+  );
+
+  _i1.ColumnValue<double, double> gpsLatitude(double? value) => _i1.ColumnValue(
+    table.gpsLatitude,
+    value,
+  );
+
+  _i1.ColumnValue<double, double> gpsLongitude(double? value) =>
+      _i1.ColumnValue(
+        table.gpsLongitude,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> mapLink(String? value) => _i1.ColumnValue(
+    table.mapLink,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> carPoolingTime(DateTime? value) =>
+      _i1.ColumnValue(
+        table.carPoolingTime,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> carPoolingPlace(String? value) =>
+      _i1.ColumnValue(
+        table.carPoolingPlace,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> carPoolingDriveOrRide(String? value) =>
+      _i1.ColumnValue(
+        table.carPoolingDriveOrRide,
+        value,
+      );
+
+  _i1.ColumnValue<int, int> maxParticipants(int? value) => _i1.ColumnValue(
+    table.maxParticipants,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> difficulty(String? value) => _i1.ColumnValue(
+    table.difficulty,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> requiredEquipment(String? value) =>
+      _i1.ColumnValue(
+        table.requiredEquipment,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> prerequisites(String? value) =>
+      _i1.ColumnValue(
+        table.prerequisites,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> recurring(String? value) => _i1.ColumnValue(
+    table.recurring,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> registrationDeadline(DateTime? value) =>
+      _i1.ColumnValue(
+        table.registrationDeadline,
+        value,
+      );
+
+  _i1.ColumnValue<DateTime, DateTime> registrationStartDate(DateTime? value) =>
+      _i1.ColumnValue(
+        table.registrationStartDate,
+        value,
+      );
+
+  _i1.ColumnValue<bool, bool> waitlistEnabled(bool value) => _i1.ColumnValue(
+    table.waitlistEnabled,
+    value,
+  );
+
+  _i1.ColumnValue<double, double> registrationFee(double? value) =>
+      _i1.ColumnValue(
+        table.registrationFee,
+        value,
+      );
+
+  _i1.ColumnValue<int, int> currentRegistrationCount(int? value) =>
+      _i1.ColumnValue(
+        table.currentRegistrationCount,
+        value,
+      );
+
+  _i1.ColumnValue<bool, bool> requiresApproval(bool value) => _i1.ColumnValue(
+    table.requiresApproval,
+    value,
+  );
+
+  _i1.ColumnValue<bool, bool> waiverRequired(bool value) => _i1.ColumnValue(
+    table.waiverRequired,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> minimumParticipants(int? value) => _i1.ColumnValue(
+    table.minimumParticipants,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> cancellationDeadline(DateTime? value) =>
+      _i1.ColumnValue(
+        table.cancellationDeadline,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> registrationNotes(String? value) =>
+      _i1.ColumnValue(
+        table.registrationNotes,
+        value,
+      );
+
+  _i1.ColumnValue<int, int> sectionId(int value) => _i1.ColumnValue(
+    table.sectionId,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> documentsJson(String? value) =>
+      _i1.ColumnValue(
+        table.documentsJson,
+        value,
+      );
+
+  _i1.ColumnValue<bool, bool> published(bool value) => _i1.ColumnValue(
+    table.published,
+    value,
+  );
+}
+
 class EventTable extends _i1.Table<int?> {
   EventTable({super.tableRelation}) : super(tableName: 'events') {
+    updateTable = EventUpdateTable(this);
     title = _i1.ColumnString(
       'title',
       this,
@@ -532,7 +717,7 @@ class EventTable extends _i1.Table<int?> {
     type = _i1.ColumnEnum(
       'type',
       this,
-      _i1.EnumSerialization.byIndex,
+      _i1.EnumSerialization.byName,
     );
     startTime = _i1.ColumnDateTime(
       'startTime',
@@ -645,6 +830,8 @@ class EventTable extends _i1.Table<int?> {
     );
   }
 
+  late final EventUpdateTable updateTable;
+
   late final _i1.ColumnString title;
 
   late final _i1.ColumnString description;
@@ -707,38 +894,38 @@ class EventTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        title,
-        description,
-        type,
-        startTime,
-        endTime,
-        location,
-        gpsLatitude,
-        gpsLongitude,
-        mapLink,
-        carPoolingTime,
-        carPoolingPlace,
-        carPoolingDriveOrRide,
-        maxParticipants,
-        difficulty,
-        requiredEquipment,
-        prerequisites,
-        recurring,
-        registrationDeadline,
-        registrationStartDate,
-        waitlistEnabled,
-        registrationFee,
-        currentRegistrationCount,
-        requiresApproval,
-        waiverRequired,
-        minimumParticipants,
-        cancellationDeadline,
-        registrationNotes,
-        sectionId,
-        documentsJson,
-        published,
-      ];
+    id,
+    title,
+    description,
+    type,
+    startTime,
+    endTime,
+    location,
+    gpsLatitude,
+    gpsLongitude,
+    mapLink,
+    carPoolingTime,
+    carPoolingPlace,
+    carPoolingDriveOrRide,
+    maxParticipants,
+    difficulty,
+    requiredEquipment,
+    prerequisites,
+    recurring,
+    registrationDeadline,
+    registrationStartDate,
+    waitlistEnabled,
+    registrationFee,
+    currentRegistrationCount,
+    requiresApproval,
+    waiverRequired,
+    minimumParticipants,
+    cancellationDeadline,
+    registrationNotes,
+    sectionId,
+    documentsJson,
+    published,
+  ];
 }
 
 class EventInclude extends _i1.IncludeObject {
@@ -926,6 +1113,46 @@ class EventRepository {
     return session.db.updateRow<Event>(
       row,
       columns: columns?.call(Event.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [Event] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<Event?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<EventUpdateTable> columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<Event>(
+      id,
+      columnValues: columnValues(Event.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [Event]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<Event>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<EventUpdateTable> columnValues,
+    required _i1.WhereExpressionBuilder<EventTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<EventTable>? orderBy,
+    _i1.OrderByListBuilder<EventTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<Event>(
+      columnValues: columnValues(Event.t.updateTable),
+      where: where(Event.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(Event.t),
+      orderByList: orderByList?.call(Event.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

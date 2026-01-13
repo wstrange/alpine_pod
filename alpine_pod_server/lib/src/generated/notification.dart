@@ -7,6 +7,7 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
@@ -40,8 +41,9 @@ abstract class Notification
       id: jsonSerialization['id'] as int?,
       title: jsonSerialization['title'] as String,
       message: jsonSerialization['message'] as String,
-      timestamp:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['timestamp']),
+      timestamp: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['timestamp'],
+      ),
       read: jsonSerialization['read'] as bool,
       recipientId: jsonSerialization['recipientId'] as int?,
       attachments: jsonSerialization['attachments'] as String?,
@@ -89,6 +91,7 @@ abstract class Notification
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'Notification',
       if (id != null) 'id': id,
       'title': title,
       'message': message,
@@ -103,6 +106,7 @@ abstract class Notification
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'Notification',
       if (id != null) 'id': id,
       'title': title,
       'message': message,
@@ -157,15 +161,15 @@ class _NotificationImpl extends Notification {
     String? attachments,
     int? relatedEventId,
   }) : super._(
-          id: id,
-          title: title,
-          message: message,
-          timestamp: timestamp,
-          read: read,
-          recipientId: recipientId,
-          attachments: attachments,
-          relatedEventId: relatedEventId,
-        );
+         id: id,
+         title: title,
+         message: message,
+         timestamp: timestamp,
+         read: read,
+         recipientId: recipientId,
+         attachments: attachments,
+         relatedEventId: relatedEventId,
+       );
 
   /// Returns a shallow copy of this [Notification]
   /// with some or all fields replaced by the given arguments.
@@ -189,14 +193,56 @@ class _NotificationImpl extends Notification {
       read: read ?? this.read,
       recipientId: recipientId is int? ? recipientId : this.recipientId,
       attachments: attachments is String? ? attachments : this.attachments,
-      relatedEventId:
-          relatedEventId is int? ? relatedEventId : this.relatedEventId,
+      relatedEventId: relatedEventId is int?
+          ? relatedEventId
+          : this.relatedEventId,
     );
   }
 }
 
+class NotificationUpdateTable extends _i1.UpdateTable<NotificationTable> {
+  NotificationUpdateTable(super.table);
+
+  _i1.ColumnValue<String, String> title(String value) => _i1.ColumnValue(
+    table.title,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> message(String value) => _i1.ColumnValue(
+    table.message,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> timestamp(DateTime value) =>
+      _i1.ColumnValue(
+        table.timestamp,
+        value,
+      );
+
+  _i1.ColumnValue<bool, bool> read(bool value) => _i1.ColumnValue(
+    table.read,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> recipientId(int? value) => _i1.ColumnValue(
+    table.recipientId,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> attachments(String? value) => _i1.ColumnValue(
+    table.attachments,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> relatedEventId(int? value) => _i1.ColumnValue(
+    table.relatedEventId,
+    value,
+  );
+}
+
 class NotificationTable extends _i1.Table<int?> {
   NotificationTable({super.tableRelation}) : super(tableName: 'notifications') {
+    updateTable = NotificationUpdateTable(this);
     title = _i1.ColumnString(
       'title',
       this,
@@ -227,6 +273,8 @@ class NotificationTable extends _i1.Table<int?> {
     );
   }
 
+  late final NotificationUpdateTable updateTable;
+
   late final _i1.ColumnString title;
 
   late final _i1.ColumnString message;
@@ -243,15 +291,15 @@ class NotificationTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        title,
-        message,
-        timestamp,
-        read,
-        recipientId,
-        attachments,
-        relatedEventId,
-      ];
+    id,
+    title,
+    message,
+    timestamp,
+    read,
+    recipientId,
+    attachments,
+    relatedEventId,
+  ];
 }
 
 class NotificationInclude extends _i1.IncludeObject {
@@ -439,6 +487,46 @@ class NotificationRepository {
     return session.db.updateRow<Notification>(
       row,
       columns: columns?.call(Notification.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [Notification] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<Notification?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<NotificationUpdateTable> columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<Notification>(
+      id,
+      columnValues: columnValues(Notification.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [Notification]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<Notification>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<NotificationUpdateTable> columnValues,
+    required _i1.WhereExpressionBuilder<NotificationTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<NotificationTable>? orderBy,
+    _i1.OrderByListBuilder<NotificationTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<Notification>(
+      columnValues: columnValues(Notification.t.updateTable),
+      where: where(Notification.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(Notification.t),
+      orderByList: orderByList?.call(Notification.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

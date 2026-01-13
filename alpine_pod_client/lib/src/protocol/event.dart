@@ -7,6 +7,7 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
@@ -86,9 +87,10 @@ abstract class Event implements _i1.SerializableModel {
       id: jsonSerialization['id'] as int?,
       title: jsonSerialization['title'] as String,
       description: jsonSerialization['description'] as String,
-      type: _i2.EventType.fromJson((jsonSerialization['type'] as int)),
-      startTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['startTime']),
+      type: _i2.EventType.fromJson((jsonSerialization['type'] as String)),
+      startTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['startTime'],
+      ),
       endTime: _i1.DateTimeJsonExtension.fromJson(jsonSerialization['endTime']),
       location: jsonSerialization['location'] as String?,
       gpsLatitude: (jsonSerialization['gpsLatitude'] as num?)?.toDouble(),
@@ -97,7 +99,8 @@ abstract class Event implements _i1.SerializableModel {
       carPoolingTime: jsonSerialization['carPoolingTime'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(
-              jsonSerialization['carPoolingTime']),
+              jsonSerialization['carPoolingTime'],
+            ),
       carPoolingPlace: jsonSerialization['carPoolingPlace'] as String?,
       carPoolingDriveOrRide:
           jsonSerialization['carPoolingDriveOrRide'] as String?,
@@ -109,14 +112,16 @@ abstract class Event implements _i1.SerializableModel {
       registrationDeadline: jsonSerialization['registrationDeadline'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(
-              jsonSerialization['registrationDeadline']),
+              jsonSerialization['registrationDeadline'],
+            ),
       registrationStartDate: jsonSerialization['registrationStartDate'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(
-              jsonSerialization['registrationStartDate']),
+              jsonSerialization['registrationStartDate'],
+            ),
       waitlistEnabled: jsonSerialization['waitlistEnabled'] as bool,
-      registrationFee:
-          (jsonSerialization['registrationFee'] as num?)?.toDouble(),
+      registrationFee: (jsonSerialization['registrationFee'] as num?)
+          ?.toDouble(),
       currentRegistrationCount:
           jsonSerialization['currentRegistrationCount'] as int?,
       requiresApproval: jsonSerialization['requiresApproval'] as bool,
@@ -125,11 +130,12 @@ abstract class Event implements _i1.SerializableModel {
       cancellationDeadline: jsonSerialization['cancellationDeadline'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(
-              jsonSerialization['cancellationDeadline']),
+              jsonSerialization['cancellationDeadline'],
+            ),
       registrationNotes: jsonSerialization['registrationNotes'] as String?,
       sectionId: jsonSerialization['sectionId'] as int,
       documentsJson: jsonSerialization['documentsJson'] as String?,
-      published: jsonSerialization['published'] as bool,
+      published: jsonSerialization['published'] as bool?,
     );
   }
 
@@ -237,6 +243,7 @@ abstract class Event implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'Event',
       if (id != null) 'id': id,
       'title': title,
       'description': description,
@@ -319,38 +326,38 @@ class _EventImpl extends Event {
     String? documentsJson,
     bool? published,
   }) : super._(
-          id: id,
-          title: title,
-          description: description,
-          type: type,
-          startTime: startTime,
-          endTime: endTime,
-          location: location,
-          gpsLatitude: gpsLatitude,
-          gpsLongitude: gpsLongitude,
-          mapLink: mapLink,
-          carPoolingTime: carPoolingTime,
-          carPoolingPlace: carPoolingPlace,
-          carPoolingDriveOrRide: carPoolingDriveOrRide,
-          maxParticipants: maxParticipants,
-          difficulty: difficulty,
-          requiredEquipment: requiredEquipment,
-          prerequisites: prerequisites,
-          recurring: recurring,
-          registrationDeadline: registrationDeadline,
-          registrationStartDate: registrationStartDate,
-          waitlistEnabled: waitlistEnabled,
-          registrationFee: registrationFee,
-          currentRegistrationCount: currentRegistrationCount,
-          requiresApproval: requiresApproval,
-          waiverRequired: waiverRequired,
-          minimumParticipants: minimumParticipants,
-          cancellationDeadline: cancellationDeadline,
-          registrationNotes: registrationNotes,
-          sectionId: sectionId,
-          documentsJson: documentsJson,
-          published: published,
-        );
+         id: id,
+         title: title,
+         description: description,
+         type: type,
+         startTime: startTime,
+         endTime: endTime,
+         location: location,
+         gpsLatitude: gpsLatitude,
+         gpsLongitude: gpsLongitude,
+         mapLink: mapLink,
+         carPoolingTime: carPoolingTime,
+         carPoolingPlace: carPoolingPlace,
+         carPoolingDriveOrRide: carPoolingDriveOrRide,
+         maxParticipants: maxParticipants,
+         difficulty: difficulty,
+         requiredEquipment: requiredEquipment,
+         prerequisites: prerequisites,
+         recurring: recurring,
+         registrationDeadline: registrationDeadline,
+         registrationStartDate: registrationStartDate,
+         waitlistEnabled: waitlistEnabled,
+         registrationFee: registrationFee,
+         currentRegistrationCount: currentRegistrationCount,
+         requiresApproval: requiresApproval,
+         waiverRequired: waiverRequired,
+         minimumParticipants: minimumParticipants,
+         cancellationDeadline: cancellationDeadline,
+         registrationNotes: registrationNotes,
+         sectionId: sectionId,
+         documentsJson: documentsJson,
+         published: published,
+       );
 
   /// Returns a shallow copy of this [Event]
   /// with some or all fields replaced by the given arguments.
@@ -400,21 +407,25 @@ class _EventImpl extends Event {
       gpsLatitude: gpsLatitude is double? ? gpsLatitude : this.gpsLatitude,
       gpsLongitude: gpsLongitude is double? ? gpsLongitude : this.gpsLongitude,
       mapLink: mapLink is String? ? mapLink : this.mapLink,
-      carPoolingTime:
-          carPoolingTime is DateTime? ? carPoolingTime : this.carPoolingTime,
-      carPoolingPlace:
-          carPoolingPlace is String? ? carPoolingPlace : this.carPoolingPlace,
+      carPoolingTime: carPoolingTime is DateTime?
+          ? carPoolingTime
+          : this.carPoolingTime,
+      carPoolingPlace: carPoolingPlace is String?
+          ? carPoolingPlace
+          : this.carPoolingPlace,
       carPoolingDriveOrRide: carPoolingDriveOrRide is String?
           ? carPoolingDriveOrRide
           : this.carPoolingDriveOrRide,
-      maxParticipants:
-          maxParticipants is int? ? maxParticipants : this.maxParticipants,
+      maxParticipants: maxParticipants is int?
+          ? maxParticipants
+          : this.maxParticipants,
       difficulty: difficulty is String? ? difficulty : this.difficulty,
       requiredEquipment: requiredEquipment is String?
           ? requiredEquipment
           : this.requiredEquipment,
-      prerequisites:
-          prerequisites is String? ? prerequisites : this.prerequisites,
+      prerequisites: prerequisites is String?
+          ? prerequisites
+          : this.prerequisites,
       recurring: recurring is String? ? recurring : this.recurring,
       registrationDeadline: registrationDeadline is DateTime?
           ? registrationDeadline
@@ -423,8 +434,9 @@ class _EventImpl extends Event {
           ? registrationStartDate
           : this.registrationStartDate,
       waitlistEnabled: waitlistEnabled ?? this.waitlistEnabled,
-      registrationFee:
-          registrationFee is double? ? registrationFee : this.registrationFee,
+      registrationFee: registrationFee is double?
+          ? registrationFee
+          : this.registrationFee,
       currentRegistrationCount: currentRegistrationCount is int?
           ? currentRegistrationCount
           : this.currentRegistrationCount,
@@ -440,8 +452,9 @@ class _EventImpl extends Event {
           ? registrationNotes
           : this.registrationNotes,
       sectionId: sectionId ?? this.sectionId,
-      documentsJson:
-          documentsJson is String? ? documentsJson : this.documentsJson,
+      documentsJson: documentsJson is String?
+          ? documentsJson
+          : this.documentsJson,
       published: published ?? this.published,
     );
   }

@@ -7,6 +7,7 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
@@ -28,9 +29,9 @@ abstract class Member implements _i1.SerializableModel {
     this.certifications,
     DateTime? createdAt,
     DateTime? updatedAt,
-  })  : membershipStatus = membershipStatus ?? 'active',
-        createdAt = createdAt ?? DateTime.now(),
-        updatedAt = updatedAt ?? DateTime.now();
+  }) : membershipStatus = membershipStatus ?? 'active',
+       createdAt = createdAt ?? DateTime.now(),
+       updatedAt = updatedAt ?? DateTime.now();
 
   factory Member({
     int? id,
@@ -59,17 +60,19 @@ abstract class Member implements _i1.SerializableModel {
       bio: jsonSerialization['bio'] as String?,
       email: jsonSerialization['email'] as String,
       phoneNumber: jsonSerialization['phoneNumber'] as String,
-      membershipStatus: jsonSerialization['membershipStatus'] as String,
+      membershipStatus: jsonSerialization['membershipStatus'] as String?,
       profilePictureUrl: jsonSerialization['profilePictureUrl'] as String?,
       emergencyContactName: jsonSerialization['emergencyContactName'] as String,
       emergencyContactPhone:
           jsonSerialization['emergencyContactPhone'] as String,
       medicalConditions: jsonSerialization['medicalConditions'] as String?,
       certifications: jsonSerialization['certifications'] as String?,
-      createdAt:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
-      updatedAt:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
+      createdAt: jsonSerialization['createdAt'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
+      updatedAt: jsonSerialization['updatedAt'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
     );
   }
 
@@ -129,6 +132,7 @@ abstract class Member implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'Member',
       if (id != null) 'id': id,
       'firstName': firstName,
       'lastName': lastName,
@@ -173,22 +177,22 @@ class _MemberImpl extends Member {
     DateTime? createdAt,
     DateTime? updatedAt,
   }) : super._(
-          id: id,
-          firstName: firstName,
-          lastName: lastName,
-          displayName: displayName,
-          bio: bio,
-          email: email,
-          phoneNumber: phoneNumber,
-          membershipStatus: membershipStatus,
-          profilePictureUrl: profilePictureUrl,
-          emergencyContactName: emergencyContactName,
-          emergencyContactPhone: emergencyContactPhone,
-          medicalConditions: medicalConditions,
-          certifications: certifications,
-          createdAt: createdAt,
-          updatedAt: updatedAt,
-        );
+         id: id,
+         firstName: firstName,
+         lastName: lastName,
+         displayName: displayName,
+         bio: bio,
+         email: email,
+         phoneNumber: phoneNumber,
+         membershipStatus: membershipStatus,
+         profilePictureUrl: profilePictureUrl,
+         emergencyContactName: emergencyContactName,
+         emergencyContactPhone: emergencyContactPhone,
+         medicalConditions: medicalConditions,
+         certifications: certifications,
+         createdAt: createdAt,
+         updatedAt: updatedAt,
+       );
 
   /// Returns a shallow copy of this [Member]
   /// with some or all fields replaced by the given arguments.
@@ -229,8 +233,9 @@ class _MemberImpl extends Member {
       medicalConditions: medicalConditions is String?
           ? medicalConditions
           : this.medicalConditions,
-      certifications:
-          certifications is String? ? certifications : this.certifications,
+      certifications: certifications is String?
+          ? certifications
+          : this.certifications,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );

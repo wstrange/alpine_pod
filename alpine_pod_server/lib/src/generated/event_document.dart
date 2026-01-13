@@ -7,6 +7,7 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
@@ -78,6 +79,7 @@ abstract class EventDocument
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'EventDocument',
       if (id != null) 'id': id,
       if (eventId != null) 'eventId': eventId,
       'url': url,
@@ -90,6 +92,7 @@ abstract class EventDocument
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'EventDocument',
       if (id != null) 'id': id,
       if (eventId != null) 'eventId': eventId,
       'url': url,
@@ -140,13 +143,13 @@ class _EventDocumentImpl extends EventDocument {
     String? name,
     DateTime? uploadedAt,
   }) : super._(
-          id: id,
-          eventId: eventId,
-          url: url,
-          type: type,
-          name: name,
-          uploadedAt: uploadedAt,
-        );
+         id: id,
+         eventId: eventId,
+         url: url,
+         type: type,
+         name: name,
+         uploadedAt: uploadedAt,
+       );
 
   /// Returns a shallow copy of this [EventDocument]
   /// with some or all fields replaced by the given arguments.
@@ -171,9 +174,40 @@ class _EventDocumentImpl extends EventDocument {
   }
 }
 
+class EventDocumentUpdateTable extends _i1.UpdateTable<EventDocumentTable> {
+  EventDocumentUpdateTable(super.table);
+
+  _i1.ColumnValue<int, int> eventId(int? value) => _i1.ColumnValue(
+    table.eventId,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> url(String value) => _i1.ColumnValue(
+    table.url,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> type(String? value) => _i1.ColumnValue(
+    table.type,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> name(String? value) => _i1.ColumnValue(
+    table.name,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> uploadedAt(DateTime? value) =>
+      _i1.ColumnValue(
+        table.uploadedAt,
+        value,
+      );
+}
+
 class EventDocumentTable extends _i1.Table<int?> {
   EventDocumentTable({super.tableRelation})
-      : super(tableName: 'event_documents') {
+    : super(tableName: 'event_documents') {
+    updateTable = EventDocumentUpdateTable(this);
     eventId = _i1.ColumnInt(
       'eventId',
       this,
@@ -196,6 +230,8 @@ class EventDocumentTable extends _i1.Table<int?> {
     );
   }
 
+  late final EventDocumentUpdateTable updateTable;
+
   late final _i1.ColumnInt eventId;
 
   late final _i1.ColumnString url;
@@ -208,13 +244,13 @@ class EventDocumentTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        eventId,
-        url,
-        type,
-        name,
-        uploadedAt,
-      ];
+    id,
+    eventId,
+    url,
+    type,
+    name,
+    uploadedAt,
+  ];
 }
 
 class EventDocumentInclude extends _i1.IncludeObject {
@@ -402,6 +438,46 @@ class EventDocumentRepository {
     return session.db.updateRow<EventDocument>(
       row,
       columns: columns?.call(EventDocument.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [EventDocument] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<EventDocument?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<EventDocumentUpdateTable> columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<EventDocument>(
+      id,
+      columnValues: columnValues(EventDocument.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [EventDocument]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<EventDocument>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<EventDocumentUpdateTable> columnValues,
+    required _i1.WhereExpressionBuilder<EventDocumentTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<EventDocumentTable>? orderBy,
+    _i1.OrderByListBuilder<EventDocumentTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<EventDocument>(
+      columnValues: columnValues(EventDocument.t.updateTable),
+      where: where(EventDocument.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(EventDocument.t),
+      orderByList: orderByList?.call(EventDocument.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

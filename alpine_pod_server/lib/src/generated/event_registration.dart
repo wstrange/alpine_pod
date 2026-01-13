@@ -7,6 +7,7 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
@@ -30,10 +31,10 @@ abstract class EventRegistration
     double? paymentAmount,
     required this.modifiedAt,
     bool? noShow,
-  })  : additionalGuests = additionalGuests ?? 0,
-        paymentStatus = paymentStatus ?? 'N/A',
-        paymentAmount = paymentAmount ?? 0.0,
-        noShow = noShow ?? false;
+  }) : additionalGuests = additionalGuests ?? 0,
+       paymentStatus = paymentStatus ?? 'N/A',
+       paymentAmount = paymentAmount ?? 0.0,
+       noShow = noShow ?? false;
 
   factory EventRegistration({
     int? id,
@@ -59,23 +60,27 @@ abstract class EventRegistration
       userId: jsonSerialization['userId'] as int,
       eventId: jsonSerialization['eventId'] as int,
       registrationStatus: _i2.RegistrationStatus.fromJson(
-          (jsonSerialization['registrationStatus'] as int)),
+        (jsonSerialization['registrationStatus'] as String),
+      ),
       registrationDate: _i1.DateTimeJsonExtension.fromJson(
-          jsonSerialization['registrationDate']),
+        jsonSerialization['registrationDate'],
+      ),
       carPoolPreference: jsonSerialization['carPoolPreference'] as String?,
-      additionalGuests: jsonSerialization['additionalGuests'] as int,
+      additionalGuests: jsonSerialization['additionalGuests'] as int?,
       waiverAccepted: jsonSerialization['waiverAccepted'] as bool,
       participantNotes: jsonSerialization['participantNotes'] as String?,
       waitlistPosition: jsonSerialization['waitlistPosition'] as int?,
       waitlistedAt: jsonSerialization['waitlistedAt'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(
-              jsonSerialization['waitlistedAt']),
-      paymentStatus: jsonSerialization['paymentStatus'] as String,
-      paymentAmount: (jsonSerialization['paymentAmount'] as num).toDouble(),
-      modifiedAt:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['modifiedAt']),
-      noShow: jsonSerialization['noShow'] as bool,
+              jsonSerialization['waitlistedAt'],
+            ),
+      paymentStatus: jsonSerialization['paymentStatus'] as String?,
+      paymentAmount: (jsonSerialization['paymentAmount'] as num?)?.toDouble(),
+      modifiedAt: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['modifiedAt'],
+      ),
+      noShow: jsonSerialization['noShow'] as bool?,
     );
   }
 
@@ -140,6 +145,7 @@ abstract class EventRegistration
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'EventRegistration',
       if (id != null) 'id': id,
       'userId': userId,
       'eventId': eventId,
@@ -161,6 +167,7 @@ abstract class EventRegistration
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'EventRegistration',
       if (id != null) 'id': id,
       'userId': userId,
       'eventId': eventId,
@@ -229,22 +236,22 @@ class _EventRegistrationImpl extends EventRegistration {
     required DateTime modifiedAt,
     bool? noShow,
   }) : super._(
-          id: id,
-          userId: userId,
-          eventId: eventId,
-          registrationStatus: registrationStatus,
-          registrationDate: registrationDate,
-          carPoolPreference: carPoolPreference,
-          additionalGuests: additionalGuests,
-          waiverAccepted: waiverAccepted,
-          participantNotes: participantNotes,
-          waitlistPosition: waitlistPosition,
-          waitlistedAt: waitlistedAt,
-          paymentStatus: paymentStatus,
-          paymentAmount: paymentAmount,
-          modifiedAt: modifiedAt,
-          noShow: noShow,
-        );
+         id: id,
+         userId: userId,
+         eventId: eventId,
+         registrationStatus: registrationStatus,
+         registrationDate: registrationDate,
+         carPoolPreference: carPoolPreference,
+         additionalGuests: additionalGuests,
+         waiverAccepted: waiverAccepted,
+         participantNotes: participantNotes,
+         waitlistPosition: waitlistPosition,
+         waitlistedAt: waitlistedAt,
+         paymentStatus: paymentStatus,
+         paymentAmount: paymentAmount,
+         modifiedAt: modifiedAt,
+         noShow: noShow,
+       );
 
   /// Returns a shallow copy of this [EventRegistration]
   /// with some or all fields replaced by the given arguments.
@@ -281,10 +288,12 @@ class _EventRegistrationImpl extends EventRegistration {
       participantNotes: participantNotes is String?
           ? participantNotes
           : this.participantNotes,
-      waitlistPosition:
-          waitlistPosition is int? ? waitlistPosition : this.waitlistPosition,
-      waitlistedAt:
-          waitlistedAt is DateTime? ? waitlistedAt : this.waitlistedAt,
+      waitlistPosition: waitlistPosition is int?
+          ? waitlistPosition
+          : this.waitlistPosition,
+      waitlistedAt: waitlistedAt is DateTime?
+          ? waitlistedAt
+          : this.waitlistedAt,
       paymentStatus: paymentStatus ?? this.paymentStatus,
       paymentAmount: paymentAmount ?? this.paymentAmount,
       modifiedAt: modifiedAt ?? this.modifiedAt,
@@ -293,9 +302,93 @@ class _EventRegistrationImpl extends EventRegistration {
   }
 }
 
+class EventRegistrationUpdateTable
+    extends _i1.UpdateTable<EventRegistrationTable> {
+  EventRegistrationUpdateTable(super.table);
+
+  _i1.ColumnValue<int, int> userId(int value) => _i1.ColumnValue(
+    table.userId,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> eventId(int value) => _i1.ColumnValue(
+    table.eventId,
+    value,
+  );
+
+  _i1.ColumnValue<_i2.RegistrationStatus, _i2.RegistrationStatus>
+  registrationStatus(_i2.RegistrationStatus value) => _i1.ColumnValue(
+    table.registrationStatus,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> registrationDate(DateTime value) =>
+      _i1.ColumnValue(
+        table.registrationDate,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> carPoolPreference(String? value) =>
+      _i1.ColumnValue(
+        table.carPoolPreference,
+        value,
+      );
+
+  _i1.ColumnValue<int, int> additionalGuests(int value) => _i1.ColumnValue(
+    table.additionalGuests,
+    value,
+  );
+
+  _i1.ColumnValue<bool, bool> waiverAccepted(bool value) => _i1.ColumnValue(
+    table.waiverAccepted,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> participantNotes(String? value) =>
+      _i1.ColumnValue(
+        table.participantNotes,
+        value,
+      );
+
+  _i1.ColumnValue<int, int> waitlistPosition(int? value) => _i1.ColumnValue(
+    table.waitlistPosition,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> waitlistedAt(DateTime? value) =>
+      _i1.ColumnValue(
+        table.waitlistedAt,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> paymentStatus(String value) =>
+      _i1.ColumnValue(
+        table.paymentStatus,
+        value,
+      );
+
+  _i1.ColumnValue<double, double> paymentAmount(double value) =>
+      _i1.ColumnValue(
+        table.paymentAmount,
+        value,
+      );
+
+  _i1.ColumnValue<DateTime, DateTime> modifiedAt(DateTime value) =>
+      _i1.ColumnValue(
+        table.modifiedAt,
+        value,
+      );
+
+  _i1.ColumnValue<bool, bool> noShow(bool value) => _i1.ColumnValue(
+    table.noShow,
+    value,
+  );
+}
+
 class EventRegistrationTable extends _i1.Table<int?> {
   EventRegistrationTable({super.tableRelation})
-      : super(tableName: 'event_registrations') {
+    : super(tableName: 'event_registrations') {
+    updateTable = EventRegistrationUpdateTable(this);
     userId = _i1.ColumnInt(
       'userId',
       this,
@@ -307,7 +400,7 @@ class EventRegistrationTable extends _i1.Table<int?> {
     registrationStatus = _i1.ColumnEnum(
       'registrationStatus',
       this,
-      _i1.EnumSerialization.byIndex,
+      _i1.EnumSerialization.byName,
     );
     registrationDate = _i1.ColumnDateTime(
       'registrationDate',
@@ -359,6 +452,8 @@ class EventRegistrationTable extends _i1.Table<int?> {
     );
   }
 
+  late final EventRegistrationUpdateTable updateTable;
+
   late final _i1.ColumnInt userId;
 
   late final _i1.ColumnInt eventId;
@@ -389,22 +484,22 @@ class EventRegistrationTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        userId,
-        eventId,
-        registrationStatus,
-        registrationDate,
-        carPoolPreference,
-        additionalGuests,
-        waiverAccepted,
-        participantNotes,
-        waitlistPosition,
-        waitlistedAt,
-        paymentStatus,
-        paymentAmount,
-        modifiedAt,
-        noShow,
-      ];
+    id,
+    userId,
+    eventId,
+    registrationStatus,
+    registrationDate,
+    carPoolPreference,
+    additionalGuests,
+    waiverAccepted,
+    participantNotes,
+    waitlistPosition,
+    waitlistedAt,
+    paymentStatus,
+    paymentAmount,
+    modifiedAt,
+    noShow,
+  ];
 }
 
 class EventRegistrationInclude extends _i1.IncludeObject {
@@ -592,6 +687,48 @@ class EventRegistrationRepository {
     return session.db.updateRow<EventRegistration>(
       row,
       columns: columns?.call(EventRegistration.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [EventRegistration] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<EventRegistration?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<EventRegistrationUpdateTable>
+    columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<EventRegistration>(
+      id,
+      columnValues: columnValues(EventRegistration.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [EventRegistration]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<EventRegistration>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<EventRegistrationUpdateTable>
+    columnValues,
+    required _i1.WhereExpressionBuilder<EventRegistrationTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<EventRegistrationTable>? orderBy,
+    _i1.OrderByListBuilder<EventRegistrationTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<EventRegistration>(
+      columnValues: columnValues(EventRegistration.t.updateTable),
+      where: where(EventRegistration.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(EventRegistration.t),
+      orderByList: orderByList?.call(EventRegistration.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

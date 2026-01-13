@@ -7,6 +7,7 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
@@ -98,7 +99,7 @@ class Protocol extends _i1.SerializationManagerServer {
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
               definition: 'id',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: true,
@@ -111,7 +112,7 @@ class Protocol extends _i1.SerializationManagerServer {
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
               definition: 'eventId',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: false,
@@ -147,7 +148,7 @@ class Protocol extends _i1.SerializationManagerServer {
         ),
         _i2.ColumnDefinition(
           name: 'registrationStatus',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _i2.ColumnType.text,
           isNullable: false,
           dartType: 'protocol:RegistrationStatus',
         ),
@@ -231,7 +232,7 @@ class Protocol extends _i1.SerializationManagerServer {
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
               definition: 'id',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: true,
@@ -332,7 +333,7 @@ class Protocol extends _i1.SerializationManagerServer {
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
               definition: 'id',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: true,
@@ -385,7 +386,7 @@ class Protocol extends _i1.SerializationManagerServer {
         ),
         _i2.ColumnDefinition(
           name: 'type',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _i2.ColumnType.text,
           isNullable: false,
           dartType: 'protocol:EventType',
         ),
@@ -562,7 +563,7 @@ class Protocol extends _i1.SerializationManagerServer {
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
               definition: 'id',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: true,
@@ -575,7 +576,7 @@ class Protocol extends _i1.SerializationManagerServer {
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
               definition: 'startTime',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: false,
@@ -588,7 +589,7 @@ class Protocol extends _i1.SerializationManagerServer {
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
               definition: 'sectionId',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: false,
@@ -707,7 +708,7 @@ class Protocol extends _i1.SerializationManagerServer {
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
               definition: 'id',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: true,
@@ -720,7 +721,7 @@ class Protocol extends _i1.SerializationManagerServer {
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
               definition: 'email',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: true,
@@ -794,7 +795,7 @@ class Protocol extends _i1.SerializationManagerServer {
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
               definition: 'id',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: true,
@@ -807,7 +808,7 @@ class Protocol extends _i1.SerializationManagerServer {
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
               definition: 'recipientId',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: false,
@@ -897,7 +898,7 @@ class Protocol extends _i1.SerializationManagerServer {
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
               definition: 'id',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: true,
@@ -970,7 +971,7 @@ class Protocol extends _i1.SerializationManagerServer {
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
               definition: 'id',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: true,
@@ -983,7 +984,7 @@ class Protocol extends _i1.SerializationManagerServer {
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
               definition: 'name',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: true,
@@ -996,12 +997,33 @@ class Protocol extends _i1.SerializationManagerServer {
     ..._i2.Protocol.targetTableDefinitions,
   ];
 
+  static String? getClassNameFromObjectJson(dynamic data) {
+    if (data is! Map) return null;
+    final className = data['__className__'] as String?;
+    return className;
+  }
+
   @override
   T deserialize<T>(
     dynamic data, [
     Type? t,
   ]) {
     t ??= T;
+
+    final dataClassName = getClassNameFromObjectJson(data);
+    if (dataClassName != null && dataClassName != getClassNameForType(t)) {
+      try {
+        return deserializeByClassName({
+          'className': dataClassName,
+          'data': data,
+        });
+      } on FormatException catch (_) {
+        // If the className is not recognized (e.g., older client receiving
+        // data with a new subtype), fall back to deserializing without the
+        // className, using the expected type T.
+      }
+    }
+
     if (t == _i4.Event) {
       return _i4.Event.fromJson(data) as T;
     }
@@ -1080,8 +1102,9 @@ class Protocol extends _i1.SerializationManagerServer {
     }
     if (t == List<_i17.EventTripLeader>) {
       return (data as List)
-          .map((e) => deserialize<_i17.EventTripLeader>(e))
-          .toList() as T;
+              .map((e) => deserialize<_i17.EventTripLeader>(e))
+              .toList()
+          as T;
     }
     try {
       return _i3.Protocol().deserialize<T>(data, t);
@@ -1092,39 +1115,52 @@ class Protocol extends _i1.SerializationManagerServer {
     return super.deserialize<T>(data, t);
   }
 
+  static String? getClassNameForType(Type type) {
+    return switch (type) {
+      _i4.Event => 'Event',
+      _i5.EventDocument => 'EventDocument',
+      _i6.EventRegistration => 'EventRegistration',
+      _i7.EventTripLeader => 'EventTripLeader',
+      _i8.EventType => 'EventType',
+      _i9.Member => 'Member',
+      _i10.Notification => 'Notification',
+      _i11.RegistrationStatus => 'RegistrationStatus',
+      _i12.Section => 'Section',
+      _i13.SectionMembership => 'SectionMembership',
+      _ => null,
+    };
+  }
+
   @override
   String? getClassNameForObject(Object? data) {
     String? className = super.getClassNameForObject(data);
     if (className != null) return className;
-    if (data is _i4.Event) {
-      return 'Event';
+
+    if (data is Map<String, dynamic> && data['__className__'] is String) {
+      return (data['__className__'] as String).replaceFirst('alpine_pod.', '');
     }
-    if (data is _i5.EventDocument) {
-      return 'EventDocument';
-    }
-    if (data is _i6.EventRegistration) {
-      return 'EventRegistration';
-    }
-    if (data is _i7.EventTripLeader) {
-      return 'EventTripLeader';
-    }
-    if (data is _i8.EventType) {
-      return 'EventType';
-    }
-    if (data is _i9.Member) {
-      return 'Member';
-    }
-    if (data is _i10.Notification) {
-      return 'Notification';
-    }
-    if (data is _i11.RegistrationStatus) {
-      return 'RegistrationStatus';
-    }
-    if (data is _i12.Section) {
-      return 'Section';
-    }
-    if (data is _i13.SectionMembership) {
-      return 'SectionMembership';
+
+    switch (data) {
+      case _i4.Event():
+        return 'Event';
+      case _i5.EventDocument():
+        return 'EventDocument';
+      case _i6.EventRegistration():
+        return 'EventRegistration';
+      case _i7.EventTripLeader():
+        return 'EventTripLeader';
+      case _i8.EventType():
+        return 'EventType';
+      case _i9.Member():
+        return 'Member';
+      case _i10.Notification():
+        return 'Notification';
+      case _i11.RegistrationStatus():
+        return 'RegistrationStatus';
+      case _i12.Section():
+        return 'Section';
+      case _i13.SectionMembership():
+        return 'SectionMembership';
     }
     className = _i2.Protocol().getClassNameForObject(data);
     if (className != null) {
@@ -1225,4 +1261,19 @@ class Protocol extends _i1.SerializationManagerServer {
 
   @override
   String getModuleName() => 'alpine_pod';
+
+  /// Maps any `Record`s known to this [Protocol] to their JSON representation
+  ///
+  /// Throws in case the record type is not known.
+  ///
+  /// This method will return `null` (only) for `null` inputs.
+  Map<String, dynamic>? mapRecordToJson(Record? record) {
+    if (record == null) {
+      return null;
+    }
+    try {
+      return _i3.Protocol().mapRecordToJson(record);
+    } catch (_) {}
+    throw Exception('Unsupported record type ${record.runtimeType}');
+  }
 }

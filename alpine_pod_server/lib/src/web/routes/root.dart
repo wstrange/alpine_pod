@@ -1,11 +1,12 @@
-import 'dart:io';
-
-import 'package:alpine_pod_server/src/web/widgets/built_with_serverpod_page.dart';
+// TODO: Restore web routes after upgrade verification
+/*
 import 'package:serverpod/serverpod.dart';
+import '../widgets/built_with_serverpod_page.dart';
 
 class RouteRoot extends WidgetRoute {
   @override
-  Future<Widget> build(Session session, HttpRequest request) async {
+  Future<WebWidget> build(Session session, Request request) async {
     return BuiltWithServerpodPage();
   }
 }
+*/

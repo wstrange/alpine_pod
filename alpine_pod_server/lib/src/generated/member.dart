@@ -7,6 +7,7 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
@@ -28,9 +29,9 @@ abstract class Member implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     this.certifications,
     DateTime? createdAt,
     DateTime? updatedAt,
-  })  : membershipStatus = membershipStatus ?? 'active',
-        createdAt = createdAt ?? DateTime.now(),
-        updatedAt = updatedAt ?? DateTime.now();
+  }) : membershipStatus = membershipStatus ?? 'active',
+       createdAt = createdAt ?? DateTime.now(),
+       updatedAt = updatedAt ?? DateTime.now();
 
   factory Member({
     int? id,
@@ -59,17 +60,19 @@ abstract class Member implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       bio: jsonSerialization['bio'] as String?,
       email: jsonSerialization['email'] as String,
       phoneNumber: jsonSerialization['phoneNumber'] as String,
-      membershipStatus: jsonSerialization['membershipStatus'] as String,
+      membershipStatus: jsonSerialization['membershipStatus'] as String?,
       profilePictureUrl: jsonSerialization['profilePictureUrl'] as String?,
       emergencyContactName: jsonSerialization['emergencyContactName'] as String,
       emergencyContactPhone:
           jsonSerialization['emergencyContactPhone'] as String,
       medicalConditions: jsonSerialization['medicalConditions'] as String?,
       certifications: jsonSerialization['certifications'] as String?,
-      createdAt:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
-      updatedAt:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
+      createdAt: jsonSerialization['createdAt'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
+      updatedAt: jsonSerialization['updatedAt'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
     );
   }
 
@@ -134,6 +137,7 @@ abstract class Member implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'Member',
       if (id != null) 'id': id,
       'firstName': firstName,
       'lastName': lastName,
@@ -155,6 +159,7 @@ abstract class Member implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'Member',
       if (id != null) 'id': id,
       'firstName': firstName,
       'lastName': lastName,
@@ -223,22 +228,22 @@ class _MemberImpl extends Member {
     DateTime? createdAt,
     DateTime? updatedAt,
   }) : super._(
-          id: id,
-          firstName: firstName,
-          lastName: lastName,
-          displayName: displayName,
-          bio: bio,
-          email: email,
-          phoneNumber: phoneNumber,
-          membershipStatus: membershipStatus,
-          profilePictureUrl: profilePictureUrl,
-          emergencyContactName: emergencyContactName,
-          emergencyContactPhone: emergencyContactPhone,
-          medicalConditions: medicalConditions,
-          certifications: certifications,
-          createdAt: createdAt,
-          updatedAt: updatedAt,
-        );
+         id: id,
+         firstName: firstName,
+         lastName: lastName,
+         displayName: displayName,
+         bio: bio,
+         email: email,
+         phoneNumber: phoneNumber,
+         membershipStatus: membershipStatus,
+         profilePictureUrl: profilePictureUrl,
+         emergencyContactName: emergencyContactName,
+         emergencyContactPhone: emergencyContactPhone,
+         medicalConditions: medicalConditions,
+         certifications: certifications,
+         createdAt: createdAt,
+         updatedAt: updatedAt,
+       );
 
   /// Returns a shallow copy of this [Member]
   /// with some or all fields replaced by the given arguments.
@@ -279,16 +284,100 @@ class _MemberImpl extends Member {
       medicalConditions: medicalConditions is String?
           ? medicalConditions
           : this.medicalConditions,
-      certifications:
-          certifications is String? ? certifications : this.certifications,
+      certifications: certifications is String?
+          ? certifications
+          : this.certifications,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 }
 
+class MemberUpdateTable extends _i1.UpdateTable<MemberTable> {
+  MemberUpdateTable(super.table);
+
+  _i1.ColumnValue<String, String> firstName(String value) => _i1.ColumnValue(
+    table.firstName,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> lastName(String value) => _i1.ColumnValue(
+    table.lastName,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> displayName(String? value) => _i1.ColumnValue(
+    table.displayName,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> bio(String? value) => _i1.ColumnValue(
+    table.bio,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> email(String value) => _i1.ColumnValue(
+    table.email,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> phoneNumber(String value) => _i1.ColumnValue(
+    table.phoneNumber,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> membershipStatus(String value) =>
+      _i1.ColumnValue(
+        table.membershipStatus,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> profilePictureUrl(String? value) =>
+      _i1.ColumnValue(
+        table.profilePictureUrl,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> emergencyContactName(String value) =>
+      _i1.ColumnValue(
+        table.emergencyContactName,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> emergencyContactPhone(String value) =>
+      _i1.ColumnValue(
+        table.emergencyContactPhone,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> medicalConditions(String? value) =>
+      _i1.ColumnValue(
+        table.medicalConditions,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> certifications(String? value) =>
+      _i1.ColumnValue(
+        table.certifications,
+        value,
+      );
+
+  _i1.ColumnValue<DateTime, DateTime> createdAt(DateTime value) =>
+      _i1.ColumnValue(
+        table.createdAt,
+        value,
+      );
+
+  _i1.ColumnValue<DateTime, DateTime> updatedAt(DateTime value) =>
+      _i1.ColumnValue(
+        table.updatedAt,
+        value,
+      );
+}
+
 class MemberTable extends _i1.Table<int?> {
   MemberTable({super.tableRelation}) : super(tableName: 'members') {
+    updateTable = MemberUpdateTable(this);
     firstName = _i1.ColumnString(
       'firstName',
       this,
@@ -350,6 +439,8 @@ class MemberTable extends _i1.Table<int?> {
     );
   }
 
+  late final MemberUpdateTable updateTable;
+
   late final _i1.ColumnString firstName;
 
   late final _i1.ColumnString lastName;
@@ -380,22 +471,22 @@ class MemberTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        firstName,
-        lastName,
-        displayName,
-        bio,
-        email,
-        phoneNumber,
-        membershipStatus,
-        profilePictureUrl,
-        emergencyContactName,
-        emergencyContactPhone,
-        medicalConditions,
-        certifications,
-        createdAt,
-        updatedAt,
-      ];
+    id,
+    firstName,
+    lastName,
+    displayName,
+    bio,
+    email,
+    phoneNumber,
+    membershipStatus,
+    profilePictureUrl,
+    emergencyContactName,
+    emergencyContactPhone,
+    medicalConditions,
+    certifications,
+    createdAt,
+    updatedAt,
+  ];
 }
 
 class MemberInclude extends _i1.IncludeObject {
@@ -583,6 +674,46 @@ class MemberRepository {
     return session.db.updateRow<Member>(
       row,
       columns: columns?.call(Member.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [Member] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<Member?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<MemberUpdateTable> columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<Member>(
+      id,
+      columnValues: columnValues(Member.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [Member]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<Member>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<MemberUpdateTable> columnValues,
+    required _i1.WhereExpressionBuilder<MemberTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<MemberTable>? orderBy,
+    _i1.OrderByListBuilder<MemberTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<Member>(
+      columnValues: columnValues(Member.t.updateTable),
+      where: where(Member.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(Member.t),
+      orderByList: orderByList?.call(Member.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

@@ -7,6 +7,7 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
@@ -23,36 +24,35 @@ enum EventType implements _i1.SerializableModel {
   presentation,
   other;
 
-  static EventType fromJson(int index) {
-    switch (index) {
-      case 0:
+  static EventType fromJson(String name) {
+    switch (name) {
+      case 'hike':
         return EventType.hike;
-      case 1:
+      case 'ski':
         return EventType.ski;
-      case 2:
+      case 'social':
         return EventType.social;
-      case 3:
+      case 'training':
         return EventType.training;
-      case 4:
+      case 'rock_cragging':
         return EventType.rock_cragging;
-      case 5:
+      case 'mountaineering':
         return EventType.mountaineering;
-      case 6:
+      case 'rock_multi_pitch':
         return EventType.rock_multi_pitch;
-      case 7:
+      case 'ice_climbing':
         return EventType.ice_climbing;
-      case 8:
+      case 'presentation':
         return EventType.presentation;
-      case 9:
+      case 'other':
         return EventType.other;
       default:
-        throw ArgumentError(
-            'Value "$index" cannot be converted to "EventType"');
+        throw ArgumentError('Value "$name" cannot be converted to "EventType"');
     }
   }
 
   @override
-  int toJson() => index;
+  String toJson() => name;
 
   @override
   String toString() => name;

@@ -7,6 +7,7 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
@@ -29,10 +30,10 @@ abstract class EventRegistration implements _i1.SerializableModel {
     double? paymentAmount,
     required this.modifiedAt,
     bool? noShow,
-  })  : additionalGuests = additionalGuests ?? 0,
-        paymentStatus = paymentStatus ?? 'N/A',
-        paymentAmount = paymentAmount ?? 0.0,
-        noShow = noShow ?? false;
+  }) : additionalGuests = additionalGuests ?? 0,
+       paymentStatus = paymentStatus ?? 'N/A',
+       paymentAmount = paymentAmount ?? 0.0,
+       noShow = noShow ?? false;
 
   factory EventRegistration({
     int? id,
@@ -58,23 +59,27 @@ abstract class EventRegistration implements _i1.SerializableModel {
       userId: jsonSerialization['userId'] as int,
       eventId: jsonSerialization['eventId'] as int,
       registrationStatus: _i2.RegistrationStatus.fromJson(
-          (jsonSerialization['registrationStatus'] as int)),
+        (jsonSerialization['registrationStatus'] as String),
+      ),
       registrationDate: _i1.DateTimeJsonExtension.fromJson(
-          jsonSerialization['registrationDate']),
+        jsonSerialization['registrationDate'],
+      ),
       carPoolPreference: jsonSerialization['carPoolPreference'] as String?,
-      additionalGuests: jsonSerialization['additionalGuests'] as int,
+      additionalGuests: jsonSerialization['additionalGuests'] as int?,
       waiverAccepted: jsonSerialization['waiverAccepted'] as bool,
       participantNotes: jsonSerialization['participantNotes'] as String?,
       waitlistPosition: jsonSerialization['waitlistPosition'] as int?,
       waitlistedAt: jsonSerialization['waitlistedAt'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(
-              jsonSerialization['waitlistedAt']),
-      paymentStatus: jsonSerialization['paymentStatus'] as String,
-      paymentAmount: (jsonSerialization['paymentAmount'] as num).toDouble(),
-      modifiedAt:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['modifiedAt']),
-      noShow: jsonSerialization['noShow'] as bool,
+              jsonSerialization['waitlistedAt'],
+            ),
+      paymentStatus: jsonSerialization['paymentStatus'] as String?,
+      paymentAmount: (jsonSerialization['paymentAmount'] as num?)?.toDouble(),
+      modifiedAt: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['modifiedAt'],
+      ),
+      noShow: jsonSerialization['noShow'] as bool?,
     );
   }
 
@@ -134,6 +139,7 @@ abstract class EventRegistration implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'EventRegistration',
       if (id != null) 'id': id,
       'userId': userId,
       'eventId': eventId,
@@ -178,22 +184,22 @@ class _EventRegistrationImpl extends EventRegistration {
     required DateTime modifiedAt,
     bool? noShow,
   }) : super._(
-          id: id,
-          userId: userId,
-          eventId: eventId,
-          registrationStatus: registrationStatus,
-          registrationDate: registrationDate,
-          carPoolPreference: carPoolPreference,
-          additionalGuests: additionalGuests,
-          waiverAccepted: waiverAccepted,
-          participantNotes: participantNotes,
-          waitlistPosition: waitlistPosition,
-          waitlistedAt: waitlistedAt,
-          paymentStatus: paymentStatus,
-          paymentAmount: paymentAmount,
-          modifiedAt: modifiedAt,
-          noShow: noShow,
-        );
+         id: id,
+         userId: userId,
+         eventId: eventId,
+         registrationStatus: registrationStatus,
+         registrationDate: registrationDate,
+         carPoolPreference: carPoolPreference,
+         additionalGuests: additionalGuests,
+         waiverAccepted: waiverAccepted,
+         participantNotes: participantNotes,
+         waitlistPosition: waitlistPosition,
+         waitlistedAt: waitlistedAt,
+         paymentStatus: paymentStatus,
+         paymentAmount: paymentAmount,
+         modifiedAt: modifiedAt,
+         noShow: noShow,
+       );
 
   /// Returns a shallow copy of this [EventRegistration]
   /// with some or all fields replaced by the given arguments.
@@ -230,10 +236,12 @@ class _EventRegistrationImpl extends EventRegistration {
       participantNotes: participantNotes is String?
           ? participantNotes
           : this.participantNotes,
-      waitlistPosition:
-          waitlistPosition is int? ? waitlistPosition : this.waitlistPosition,
-      waitlistedAt:
-          waitlistedAt is DateTime? ? waitlistedAt : this.waitlistedAt,
+      waitlistPosition: waitlistPosition is int?
+          ? waitlistPosition
+          : this.waitlistPosition,
+      waitlistedAt: waitlistedAt is DateTime?
+          ? waitlistedAt
+          : this.waitlistedAt,
       paymentStatus: paymentStatus ?? this.paymentStatus,
       paymentAmount: paymentAmount ?? this.paymentAmount,
       modifiedAt: modifiedAt ?? this.modifiedAt,

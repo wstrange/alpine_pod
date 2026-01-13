@@ -7,6 +7,7 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
@@ -60,6 +61,7 @@ abstract class EventTripLeader implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'EventTripLeader',
       if (id != null) 'id': id,
       if (eventId != null) 'eventId': eventId,
       if (userId != null) 'userId': userId,
@@ -82,11 +84,11 @@ class _EventTripLeaderImpl extends EventTripLeader {
     int? userId,
     DateTime? assignedAt,
   }) : super._(
-          id: id,
-          eventId: eventId,
-          userId: userId,
-          assignedAt: assignedAt,
-        );
+         id: id,
+         eventId: eventId,
+         userId: userId,
+         assignedAt: assignedAt,
+       );
 
   /// Returns a shallow copy of this [EventTripLeader]
   /// with some or all fields replaced by the given arguments.

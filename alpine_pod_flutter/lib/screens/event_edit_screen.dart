@@ -20,10 +20,12 @@ class EventEditScreen extends HookConsumerWidget {
     final isCreating = event == null;
 
     final titleController = useTextEditingController(text: event?.title);
-    final descriptionController = useTextEditingController(text: event?.description);
+    final descriptionController =
+        useTextEditingController(text: event?.description);
     final locationController = useTextEditingController(text: event?.location);
     final startTime = useState(event?.startTime ?? DateTime.now());
-    final endTime = useState(event?.endTime ?? DateTime.now().add(const Duration(hours: 8)));
+    final endTime = useState(
+        event?.endTime ?? DateTime.now().add(const Duration(hours: 8)));
 
     final client = ref.watch(clientProvider);
 
@@ -73,7 +75,7 @@ class EventEditScreen extends HookConsumerWidget {
               ],
             ),
           );
-          GoRouter.of(context).pop();
+          if (context.mounted) GoRouter.of(context).pop();
         }
       } catch (e) {
         if (context.mounted) {
@@ -99,7 +101,8 @@ class EventEditScreen extends HookConsumerWidget {
       descriptionController.text = event?.description ?? '';
       locationController.text = event?.location ?? '';
       startTime.value = event?.startTime ?? DateTime.now();
-      endTime.value = event?.endTime ?? DateTime.now().add(const Duration(hours: 2));
+      endTime.value =
+          event?.endTime ?? DateTime.now().add(const Duration(hours: 2));
     }
 
     return Scaffold(

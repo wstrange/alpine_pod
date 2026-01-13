@@ -6,11 +6,12 @@ import '../generated/protocol.dart';
 ///
 class MemberEndpoint extends Endpoint {
   Future<Member?> getCurrentMember(Session session) async {
-    final authInfo = await session.authenticated;
+    final authInfo = session.authenticated;
     if (authInfo == null) {
       return null;
     }
-    final userInfoId = authInfo.userId;
+    final userInfoId = int.tryParse(authInfo.authId);
+    if (userInfoId == null) return null;
     return await Member.db.findById(session, userInfoId);
   }
 
@@ -33,18 +34,21 @@ class MemberEndpoint extends Endpoint {
     if (member.firstName.isEmpty) throw Exception('First Name is required');
     if (member.lastName.isEmpty) throw Exception('Last Name is required');
 
-    final authInfo = await session.authenticated;
+    final authInfo = session.authenticated;
     if (authInfo == null) {
       throw Exception('User not authenticated');
     }
-    final userInfoId = authInfo.userId;
+    final userInfoId = int.tryParse(authInfo.authId);
+    if (userInfoId == null) throw Exception('User not authenticated');
 
     // Ensure the email is unique
     final existing = await Member.db.findFirstRow(
       session,
       where: (t) => t.email.equals(member.email),
     );
-    if (existing != null) throw Exception('A member with that email already exists');
+    if (existing != null) {
+      throw Exception('A member with that email already exists');
+    }
 
     // Ensure createdAt is set to now
     final toInsert = member.copyWith(
@@ -66,7 +70,8 @@ class MemberEndpoint extends Endpoint {
       syncedAt: DateTime.now(),
     );
 
-    final result = await SectionMembership.db.insertRow(session, validatedMembership);
+    final result =
+        await SectionMembership.db.insertRow(session, validatedMembership);
 
     return result;
   }
@@ -77,7 +82,9 @@ class MemberEndpoint extends Endpoint {
   ) async {
     await SectionMembership.db.deleteWhere(
       session,
-      where: (t) => t.memberId.equals(membership.memberId) & t.sectionId.equals(membership.sectionId),
+      where: (t) =>
+          t.memberId.equals(membership.memberId) &
+          t.sectionId.equals(membership.sectionId),
     );
   }
 

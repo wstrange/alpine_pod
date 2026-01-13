@@ -17,17 +17,20 @@ class MemberCache {
 
   /// Updates the cache for a member
   Future<void> updateCache(Session session) async {
-    final authInfo = await session.authenticated;
+    final authInfo = session.authenticated;
     if (authInfo == null) {
       return;
     }
 
-    var id = authInfo.userId;
+    var idString = authInfo.authId;
+    var id = int.tryParse(idString);
+    if (id == null) return;
 
-    final member = await Member.db.findFirstRow(session, where: (t) => t.id.equals(id));
+    final member =
+        await Member.db.findFirstRow(session, where: (t) => t.id.equals(id));
 
     if (member == null) {
-      session.log('No member found for userInfoId ${authInfo.userId}');
+      session.log('No member found for userInfoId $idString');
       return;
     }
 
@@ -38,24 +41,28 @@ class MemberCache {
 
     final sectionIds = memberships.map((m) => m.sectionId).toSet();
 
-    _cache[authInfo.userId] = MemberInfo(
+    _cache[id] = MemberInfo(
       member: member,
       sectionIds: sectionIds,
       timestamp: DateTime.now(),
     );
   }
 
-  void invalidateCache(Session session) async {
-    final authInfo = await session.authenticated;
+  void invalidateCache(Session session) {
+    final authInfo = session.authenticated;
     if (authInfo == null) {
       return;
     }
-    _cache.remove(authInfo.userId);
+    final userId = int.tryParse(authInfo.authId);
+    if (userId != null) {
+      _cache.remove(userId);
+    }
   }
 
   /// Gets or refreshes a cache entry for a member
   Future<MemberInfo?> _getCacheEntry(Session session, int userInfoId) async {
-    final member = await Member.db.findFirstRow(session, where: (t) => t.id.equals(userInfoId));
+    final member = await Member.db
+        .findFirstRow(session, where: (t) => t.id.equals(userInfoId));
     if (member == null) {
       return null;
     }
@@ -74,11 +81,15 @@ class MemberCache {
   }
 
   Future<MemberInfo?> getMemberInfo(Session session) async {
-    final authInfo = await session.authenticated;
+    final authInfo = session.authenticated;
     if (authInfo == null) {
       return null;
     }
-    final entry = await cache._getCacheEntry(session, authInfo.userId);
+    final userId = int.tryParse(authInfo.authId);
+    if (userId == null) {
+      return null;
+    }
+    final entry = await cache._getCacheEntry(session, userId);
     return entry;
   }
 
@@ -102,5 +113,7 @@ class MemberInfo {
     required this.timestamp,
   });
 
-  bool get isStale => DateTime.now().difference(timestamp).inMinutes > MemberCache._maxAgeMinutes;
+  bool get isStale =>
+      DateTime.now().difference(timestamp).inMinutes >
+      MemberCache._maxAgeMinutes;
 }

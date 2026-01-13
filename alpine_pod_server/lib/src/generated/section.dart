@@ -7,6 +7,7 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
@@ -70,6 +71,7 @@ abstract class Section
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'Section',
       if (id != null) 'id': id,
       'name': name,
       'description': description,
@@ -81,6 +83,7 @@ abstract class Section
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'Section',
       if (id != null) 'id': id,
       'name': name,
       'description': description,
@@ -129,12 +132,12 @@ class _SectionImpl extends Section {
     String? location,
     String? contactInfo,
   }) : super._(
-          id: id,
-          name: name,
-          description: description,
-          location: location,
-          contactInfo: contactInfo,
-        );
+         id: id,
+         name: name,
+         description: description,
+         location: location,
+         contactInfo: contactInfo,
+       );
 
   /// Returns a shallow copy of this [Section]
   /// with some or all fields replaced by the given arguments.
@@ -157,8 +160,33 @@ class _SectionImpl extends Section {
   }
 }
 
+class SectionUpdateTable extends _i1.UpdateTable<SectionTable> {
+  SectionUpdateTable(super.table);
+
+  _i1.ColumnValue<String, String> name(String value) => _i1.ColumnValue(
+    table.name,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> description(String value) => _i1.ColumnValue(
+    table.description,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> location(String? value) => _i1.ColumnValue(
+    table.location,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> contactInfo(String? value) => _i1.ColumnValue(
+    table.contactInfo,
+    value,
+  );
+}
+
 class SectionTable extends _i1.Table<int?> {
   SectionTable({super.tableRelation}) : super(tableName: 'sections') {
+    updateTable = SectionUpdateTable(this);
     name = _i1.ColumnString(
       'name',
       this,
@@ -177,6 +205,8 @@ class SectionTable extends _i1.Table<int?> {
     );
   }
 
+  late final SectionUpdateTable updateTable;
+
   late final _i1.ColumnString name;
 
   late final _i1.ColumnString description;
@@ -187,12 +217,12 @@ class SectionTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        name,
-        description,
-        location,
-        contactInfo,
-      ];
+    id,
+    name,
+    description,
+    location,
+    contactInfo,
+  ];
 }
 
 class SectionInclude extends _i1.IncludeObject {
@@ -380,6 +410,46 @@ class SectionRepository {
     return session.db.updateRow<Section>(
       row,
       columns: columns?.call(Section.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [Section] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<Section?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<SectionUpdateTable> columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<Section>(
+      id,
+      columnValues: columnValues(Section.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [Section]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<Section>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<SectionUpdateTable> columnValues,
+    required _i1.WhereExpressionBuilder<SectionTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<SectionTable>? orderBy,
+    _i1.OrderByListBuilder<SectionTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<Section>(
+      columnValues: columnValues(Section.t.updateTable),
+      where: where(Section.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(Section.t),
+      orderByList: orderByList?.call(Section.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

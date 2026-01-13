@@ -7,6 +7,7 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
@@ -39,8 +40,9 @@ abstract class Notification implements _i1.SerializableModel {
       id: jsonSerialization['id'] as int?,
       title: jsonSerialization['title'] as String,
       message: jsonSerialization['message'] as String,
-      timestamp:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['timestamp']),
+      timestamp: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['timestamp'],
+      ),
       read: jsonSerialization['read'] as bool,
       recipientId: jsonSerialization['recipientId'] as int?,
       attachments: jsonSerialization['attachments'] as String?,
@@ -83,6 +85,7 @@ abstract class Notification implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'Notification',
       if (id != null) 'id': id,
       'title': title,
       'message': message,
@@ -113,15 +116,15 @@ class _NotificationImpl extends Notification {
     String? attachments,
     int? relatedEventId,
   }) : super._(
-          id: id,
-          title: title,
-          message: message,
-          timestamp: timestamp,
-          read: read,
-          recipientId: recipientId,
-          attachments: attachments,
-          relatedEventId: relatedEventId,
-        );
+         id: id,
+         title: title,
+         message: message,
+         timestamp: timestamp,
+         read: read,
+         recipientId: recipientId,
+         attachments: attachments,
+         relatedEventId: relatedEventId,
+       );
 
   /// Returns a shallow copy of this [Notification]
   /// with some or all fields replaced by the given arguments.
@@ -145,8 +148,9 @@ class _NotificationImpl extends Notification {
       read: read ?? this.read,
       recipientId: recipientId is int? ? recipientId : this.recipientId,
       attachments: attachments is String? ? attachments : this.attachments,
-      relatedEventId:
-          relatedEventId is int? ? relatedEventId : this.relatedEventId,
+      relatedEventId: relatedEventId is int?
+          ? relatedEventId
+          : this.relatedEventId,
     );
   }
 }
