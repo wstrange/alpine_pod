@@ -32,7 +32,9 @@ class TripLeaderEndpoint extends Endpoint {
     // Check if assignment already exists
     final existing = await EventTripLeader.db.findFirstRow(
       session,
-      where: (t) => t.eventId.equals(tripLeader.eventId!) & t.userId.equals(tripLeader.userId!),
+      where: (t) =>
+          t.eventId.equals(tripLeader.eventId!) &
+          t.userId.equals(tripLeader.userId!),
     );
     if (existing != null) {
       throw Exception('Member is already a trip leader for this event');
@@ -47,10 +49,12 @@ class TripLeaderEndpoint extends Endpoint {
   }
 
   /// Check if an event has any trip leaders assigned
-  Future<bool> _hasOtherTripLeaders(Session session, int eventId, int excludeMemberId) async {
+  Future<bool> _hasOtherTripLeaders(
+      Session session, int eventId, UuidValue excludeMemberId) async {
     final otherLeader = await EventTripLeader.db.findFirstRow(
       session,
-      where: (t) => t.eventId.equals(eventId) & t.userId.notEquals(excludeMemberId),
+      where: (t) =>
+          t.eventId.equals(eventId) & t.userId.notEquals(excludeMemberId),
     );
     return otherLeader != null;
   }
@@ -72,8 +76,8 @@ class TripLeaderEndpoint extends Endpoint {
     Session session,
     EventTripLeader tripLeader,
   ) async {
-    if (tripLeader.eventId == null || tripLeader.userId == null) {
-      throw Exception('Event ID and Member ID are required');
+    if (tripLeader.eventId == null) {
+      throw Exception('Event ID is required');
     }
 
     // Get the event to check section
@@ -83,14 +87,18 @@ class TripLeaderEndpoint extends Endpoint {
     // Find the assignment
     final existing = await EventTripLeader.db.findFirstRow(
       session,
-      where: (t) => t.eventId.equals(tripLeader.eventId!) & t.userId.equals(tripLeader.userId!),
+      where: (t) =>
+          t.eventId.equals(tripLeader.eventId!) &
+          t.userId.equals(tripLeader.userId!),
     );
     if (existing == null) return;
 
     // Check if this is the last trip leader and there are active registrations
-    if (!await _hasOtherTripLeaders(session, tripLeader.eventId!, tripLeader.userId!) &&
+    if (!await _hasOtherTripLeaders(
+            session, tripLeader.eventId!, tripLeader.userId!) &&
         await _hasActiveRegistrations(session, tripLeader.eventId!)) {
-      throw Exception('Cannot remove the last trip leader while the event has active registrations');
+      throw Exception(
+          'Cannot remove the last trip leader while the event has active registrations');
     }
 
     await EventTripLeader.db.deleteRow(session, existing);
@@ -108,7 +116,7 @@ class TripLeaderEndpoint extends Endpoint {
 
   Future<List<Event>> listTripLeaderEvents(
     Session session,
-    int memberId,
+    UuidValue memberId,
   ) async {
     // Get all events where this member is a trip leader
     final tripLeaderAssignments = await EventTripLeader.db.find(
@@ -177,7 +185,8 @@ class TripLeaderEndpoint extends Endpoint {
     final eventIds = sectionEvents.map((e) => e.id!).toList();
 
     // Build query for all trip leaders of these events
-    final eventConditions = eventIds.map((id) => EventTripLeader.t.eventId.equals(id));
+    final eventConditions =
+        eventIds.map((id) => EventTripLeader.t.eventId.equals(id));
     final whereClause = eventConditions.reduce((acc, e) => acc | e);
 
     return await EventTripLeader.db.find(

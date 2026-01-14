@@ -30,7 +30,7 @@ abstract class Notification implements _i1.SerializableModel {
     required String message,
     required DateTime timestamp,
     required bool read,
-    int? recipientId,
+    String? recipientId,
     String? attachments,
     int? relatedEventId,
   }) = _NotificationImpl;
@@ -44,7 +44,7 @@ abstract class Notification implements _i1.SerializableModel {
         jsonSerialization['timestamp'],
       ),
       read: jsonSerialization['read'] as bool,
-      recipientId: jsonSerialization['recipientId'] as int?,
+      recipientId: jsonSerialization['recipientId'] as String?,
       attachments: jsonSerialization['attachments'] as String?,
       relatedEventId: jsonSerialization['relatedEventId'] as int?,
     );
@@ -63,7 +63,7 @@ abstract class Notification implements _i1.SerializableModel {
 
   bool read;
 
-  int? recipientId;
+  String? recipientId;
 
   String? attachments;
 
@@ -78,7 +78,7 @@ abstract class Notification implements _i1.SerializableModel {
     String? message,
     DateTime? timestamp,
     bool? read,
-    int? recipientId,
+    String? recipientId,
     String? attachments,
     int? relatedEventId,
   });
@@ -112,7 +112,7 @@ class _NotificationImpl extends Notification {
     required String message,
     required DateTime timestamp,
     required bool read,
-    int? recipientId,
+    String? recipientId,
     String? attachments,
     int? relatedEventId,
   }) : super._(
@@ -146,7 +146,7 @@ class _NotificationImpl extends Notification {
       message: message ?? this.message,
       timestamp: timestamp ?? this.timestamp,
       read: read ?? this.read,
-      recipientId: recipientId is int? ? recipientId : this.recipientId,
+      recipientId: recipientId is String? ? recipientId : this.recipientId,
       attachments: attachments is String? ? attachments : this.attachments,
       relatedEventId: relatedEventId is int?
           ? relatedEventId

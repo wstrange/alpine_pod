@@ -1,7 +1,7 @@
 class: EventRegistration
 table: event_registrations
 fields:
-  userId: int
+  userId: UuidValue
   eventId: int
   registrationStatus: RegistrationStatus
   registrationDate: DateTime

@@ -10,9 +10,13 @@ class RegistrationEndpoint extends Endpoint {
     required bool isFull,
   }) {
     if (isFull) {
-      return waitlistEnabled ? RegistrationStatus.waitlisted : RegistrationStatus.cancelled;
+      return waitlistEnabled
+          ? RegistrationStatus.waitlisted
+          : RegistrationStatus.cancelled;
     }
-    return requiresApproval ? RegistrationStatus.pending : RegistrationStatus.confirmed;
+    return requiresApproval
+        ? RegistrationStatus.pending
+        : RegistrationStatus.confirmed;
   }
 
   /// Gets the next available waitlist position for an event
@@ -43,10 +47,13 @@ class RegistrationEndpoint extends Endpoint {
 
       final currentConfirmed = await EventRegistration.db.count(
         session,
-        where: (t) => t.eventId.equals(reg.eventId) & t.registrationStatus.equals(RegistrationStatus.confirmed),
+        where: (t) =>
+            t.eventId.equals(reg.eventId) &
+            t.registrationStatus.equals(RegistrationStatus.confirmed),
       );
 
-      if (event.maxParticipants != null && currentConfirmed >= event.maxParticipants!) {
+      if (event.maxParticipants != null &&
+          currentConfirmed >= event.maxParticipants!) {
         throw Exception('Event is full');
       }
     }
@@ -60,17 +67,20 @@ class RegistrationEndpoint extends Endpoint {
     return await EventRegistration.db.updateRow(session, updated);
   }
 
-  Future<bool> _canRegisterForEvent(Session session, Member member, Event event) async {
+  Future<bool> _canRegisterForEvent(
+      Session session, Member member, Event event) async {
     // Validate required fields
     if (member.id == null) throw Exception('Invalid member');
     if (event.id == null) throw Exception('Invalid event');
 
     // Check registration window
     final now = DateTime.now();
-    if (event.registrationStartDate != null && now.isBefore(event.registrationStartDate!)) {
+    if (event.registrationStartDate != null &&
+        now.isBefore(event.registrationStartDate!)) {
       throw Exception('Registration has not started yet');
     }
-    if (event.registrationDeadline != null && now.isAfter(event.registrationDeadline!)) {
+    if (event.registrationDeadline != null &&
+        now.isAfter(event.registrationDeadline!)) {
       throw Exception('Registration deadline has passed');
     }
 
@@ -87,7 +97,8 @@ class RegistrationEndpoint extends Endpoint {
     return true;
   }
 
-  Future<EventRegistration> registerForEvent(Session session, EventRegistration registration) async {
+  Future<EventRegistration> registerForEvent(
+      Session session, EventRegistration registration) async {
     // Validate session and get member
 
     final memberInfo = await cache.getMemberInfo(session);
@@ -101,7 +112,8 @@ class RegistrationEndpoint extends Endpoint {
     // Check if member is already registered
     final existingReg = await EventRegistration.db.findFirstRow(
       session,
-      where: (t) => t.eventId.equals(event.id) & t.userId.equals(memberInfo.member.id),
+      where: (t) =>
+          t.eventId.equals(event.id) & t.userId.equals(memberInfo.member.id!),
     );
     if (existingReg != null) {
       throw Exception('Already registered for this event');
@@ -130,11 +142,14 @@ class RegistrationEndpoint extends Endpoint {
     // Get current registration count
     final currentConfirmed = await EventRegistration.db.count(
       session,
-      where: (t) => t.eventId.equals(registration.eventId) & t.registrationStatus.equals(RegistrationStatus.confirmed),
+      where: (t) =>
+          t.eventId.equals(registration.eventId) &
+          t.registrationStatus.equals(RegistrationStatus.confirmed),
     );
 
     // Check if event is at capacity
-    final isFull = event.maxParticipants != null && currentConfirmed >= event.maxParticipants!;
+    final isFull = event.maxParticipants != null &&
+        currentConfirmed >= event.maxParticipants!;
 
     // Determine initial registration status
     final status = _determineRegistrationStatus(
@@ -146,7 +161,8 @@ class RegistrationEndpoint extends Endpoint {
     // Get waitlist position if needed
     int? waitlistPosition;
     if (status == RegistrationStatus.waitlisted) {
-      waitlistPosition = await _getNextWaitlistPosition(session, event.id ?? registration.eventId);
+      waitlistPosition = await _getNextWaitlistPosition(
+          session, event.id ?? registration.eventId);
     }
 
     // Create validated registration with computed fields

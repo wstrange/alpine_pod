@@ -1,4 +1,5 @@
 import 'package:serverpod/serverpod.dart';
+import 'package:serverpod_auth_idp_server/core.dart';
 import '../generated/protocol.dart';
 
 /// TODO: Use RBAC to restrict access to these methods
@@ -10,9 +11,7 @@ class MemberEndpoint extends Endpoint {
     if (authInfo == null) {
       return null;
     }
-    final userInfoId = int.tryParse(authInfo.authId);
-    if (userInfoId == null) return null;
-    return await Member.db.findById(session, userInfoId);
+    return await Member.db.findById(session, authInfo.authUserId);
   }
 
   Future<List<Member>> getMembers(Session session) async {
@@ -38,8 +37,6 @@ class MemberEndpoint extends Endpoint {
     if (authInfo == null) {
       throw Exception('User not authenticated');
     }
-    final userInfoId = int.tryParse(authInfo.authId);
-    if (userInfoId == null) throw Exception('User not authenticated');
 
     // Ensure the email is unique
     final existing = await Member.db.findFirstRow(
@@ -52,7 +49,7 @@ class MemberEndpoint extends Endpoint {
 
     // Ensure createdAt is set to now
     final toInsert = member.copyWith(
-      id: userInfoId,
+      id: authInfo.authUserId,
       createdAt: DateTime.now(),
     );
 

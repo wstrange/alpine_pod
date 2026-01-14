@@ -37,7 +37,7 @@ abstract class EventRegistration implements _i1.SerializableModel {
 
   factory EventRegistration({
     int? id,
-    required int userId,
+    required _i1.UuidValue userId,
     required int eventId,
     required _i2.RegistrationStatus registrationStatus,
     required DateTime registrationDate,
@@ -56,7 +56,7 @@ abstract class EventRegistration implements _i1.SerializableModel {
   factory EventRegistration.fromJson(Map<String, dynamic> jsonSerialization) {
     return EventRegistration(
       id: jsonSerialization['id'] as int?,
-      userId: jsonSerialization['userId'] as int,
+      userId: _i1.UuidValueJsonExtension.fromJson(jsonSerialization['userId']),
       eventId: jsonSerialization['eventId'] as int,
       registrationStatus: _i2.RegistrationStatus.fromJson(
         (jsonSerialization['registrationStatus'] as String),
@@ -88,7 +88,7 @@ abstract class EventRegistration implements _i1.SerializableModel {
   /// the id will be null.
   int? id;
 
-  int userId;
+  _i1.UuidValue userId;
 
   int eventId;
 
@@ -121,7 +121,7 @@ abstract class EventRegistration implements _i1.SerializableModel {
   @_i1.useResult
   EventRegistration copyWith({
     int? id,
-    int? userId,
+    _i1.UuidValue? userId,
     int? eventId,
     _i2.RegistrationStatus? registrationStatus,
     DateTime? registrationDate,
@@ -141,7 +141,7 @@ abstract class EventRegistration implements _i1.SerializableModel {
     return {
       '__className__': 'EventRegistration',
       if (id != null) 'id': id,
-      'userId': userId,
+      'userId': userId.toJson(),
       'eventId': eventId,
       'registrationStatus': registrationStatus.toJson(),
       'registrationDate': registrationDate.toJson(),
@@ -169,7 +169,7 @@ class _Undefined {}
 class _EventRegistrationImpl extends EventRegistration {
   _EventRegistrationImpl({
     int? id,
-    required int userId,
+    required _i1.UuidValue userId,
     required int eventId,
     required _i2.RegistrationStatus registrationStatus,
     required DateTime registrationDate,
@@ -207,7 +207,7 @@ class _EventRegistrationImpl extends EventRegistration {
   @override
   EventRegistration copyWith({
     Object? id = _Undefined,
-    int? userId,
+    _i1.UuidValue? userId,
     int? eventId,
     _i2.RegistrationStatus? registrationStatus,
     DateTime? registrationDate,

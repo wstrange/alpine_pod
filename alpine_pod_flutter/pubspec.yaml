@@ -28,9 +28,12 @@ dependencies:
   alpine_pod_client:
     path: ../alpine_pod_client
   go_router: ^16.3.0
-  serverpod_auth_shared_flutter: ^3.2.1
-  serverpod_auth_email_flutter: ^3.2.1
-  serverpod_auth_google_flutter: ^3.2.1
+  # serverpod_auth_shared_flutter: ^3.2.1
+  # serverpod_auth_email_flutter: ^3.2.1
+  # serverpod_auth_google_flutter: ^3.2.1
+  serverpod_auth_idp_flutter: ^3.2.1
+
+  signals: 6.3.0
 
   hooks_riverpod: ^3.0.3
   flutter_hooks: ^0.21.3+1

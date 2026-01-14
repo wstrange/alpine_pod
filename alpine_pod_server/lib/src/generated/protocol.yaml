@@ -1,3 +1,13 @@
+emailIdp:
+  - login:
+  - startRegistration:
+  - verifyRegistrationCode:
+  - finishRegistration:
+  - startPasswordReset:
+  - verifyPasswordResetCode:
+  - finishPasswordReset:
+refreshJwtTokens:
+  - refreshAccessToken:
 admin:
   - createSection:
   - getSection:

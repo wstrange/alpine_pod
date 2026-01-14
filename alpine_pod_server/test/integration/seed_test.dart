@@ -4,25 +4,53 @@
 import 'package:alpine_pod_server/src/custom_scopes.dart';
 import 'package:alpine_pod_server/src/generated/protocol.dart';
 import 'package:serverpod/serverpod.dart';
-import 'package:serverpod_auth_server/serverpod_auth_server.dart';
 import 'package:test/test.dart';
 import 'test_tools/serverpod_test_tools.dart';
+import 'package:serverpod_auth_idp_server/providers/email.dart';
+import 'package:serverpod_auth_idp_server/core.dart';
 
 import 'utils/gen_data.dart';
 
 final genData = GenData();
 
+final uuid = Uuid();
+
 void main() {
-  const id = 1;
+  final adminId = uuid.v4obj();
 
   withServerpod('Seed Data', (sessionBuilder, endpoints) {
+    Serverpod.instance.initializeAuthServices(
+      identityProviderBuilders: [
+        EmailIdpConfig(
+          secretHashPepper:
+              Serverpod.instance.getPassword('emailSecretHashPepper') ??
+                  'test-pepper',
+        )
+      ],
+      tokenManagerBuilders: [
+        JwtConfig(
+            refreshTokenHashPepper:
+                Serverpod.instance.getPassword('jwtRefreshTokenHashPepper') ??
+                    'test-refresh-pepper',
+            algorithm: JwtAlgorithm.hmacSha512(
+              SecretKey(Serverpod.instance
+                      .getPassword('jwtHmacSha512PrivateKey') ??
+                  'test-key-at-least-64-bytes-long-for-hmac-sha512-key-test-key-at-least-64-bytes-long-for-hmac-sha512-key'),
+            )),
+      ],
+    );
+
+    final emailIdp = AuthServices.instance.emailIdp;
+    final admin = emailIdp.admin;
+
     var authSession = sessionBuilder.copyWith(
-        authentication: AuthenticationOverride.authenticationInfo(id, {Scope.admin}), enableLogging: true);
+        authentication: AuthenticationOverride.authenticationInfo(
+            adminId.uuid, {Scope.admin}),
+        enableLogging: true);
 
     var session = authSession.build();
 
     test('Delete sections ', () async {
-      // Assuming member with id=1 is an admin in the test setup
       final m = await endpoints.admin.listSections(authSession);
       for (var section in m) {
         print('deleting section: $section');
@@ -54,26 +82,28 @@ void main() {
     });
 
     test('Create Admin User', () async {
-      var u = await Emails.createUser(session, 'admin', 'admin@acc.ca', 'Passw0rd');
-      expect(u, isNotNull);
-
-      int id = u!.id!;
-
-      u = await Users.updateUserScopes(
+      var auModel = await AuthServices.instance.authUsers.create(
         session,
-        id,
-        {
-          Scope.admin,
-        },
+        scopes: {Scope.admin},
       );
 
-      print('Created UserInfo: $u');
+      final emailAccountId = await admin.createEmailAuthentication(
+        session,
+        authUserId: auModel.id,
+        email: 'admin@acc.ca',
+        password: 'Passw0rd',
+      );
+
+      print('Created Admin: $emailAccountId');
     });
 
     test('Clean up test users', () async {
-      await session.db.unsafeSimpleExecute(r'TRUNCATE serverpod_user_info CASCADE');
-      await session.db.unsafeSimpleExecute(r'TRUNCATE serverpod_email_auth CASCADE');
-      await session.db.unsafeSimpleExecute(r'TRUNCATE public.section_memberships CASCADE');
+      await session.db
+          .unsafeSimpleExecute(r'TRUNCATE serverpod_user_info CASCADE');
+      await session.db
+          .unsafeSimpleExecute(r'TRUNCATE serverpod_email_auth CASCADE');
+      await session.db
+          .unsafeSimpleExecute(r'TRUNCATE public.section_memberships CASCADE');
       await session.db.unsafeSimpleExecute(r'TRUNCATE public.members CASCADE');
     });
 
@@ -86,23 +116,20 @@ void main() {
 
       for (var i = 0; i < 5; i++) {
         var email = 'test$i@acc.ca';
-        UserInfo? u;
 
-        final hash = await Emails.generatePasswordHash('Passw0rd');
-        try {
-          u = await Emails.createUser(session, 'test$i', email, 'Passw0rd', hash);
-        } catch (e) {
-          print('User $email already exists, skipping');
-          continue;
-        }
-
-        var id = u!.id!;
-        u = await Users.updateUserScopes(
+        var au = await AuthServices.instance.authUsers.create(
           session,
-          id,
-          {CustomScope.sectionManager, CustomScope.tripLeader},
+          scopes: {CustomScope.member},
         );
-        print('Created user: $u');
+
+        final emailId = await admin.createEmailAuthentication(
+          session,
+          authUserId: au.id,
+          email: email,
+          password: 'Passw0rd',
+        );
+
+        print('Created user: $emailId');
         // Now assign them to a section
         // create a member profile
         var m = await endpoints.member.createMember(
@@ -113,23 +140,28 @@ void main() {
               displayName: 'testy tester$i',
               email: email,
               phoneNumber: '555-1212',
-              id: id,
+              id: au.id,
               emergencyContactName: 'Santa',
               emergencyContactPhone: '5555555',
             ));
         print('Created member profile: $m');
 
-        var scopes = {CustomScope.sectionManager.toString(), CustomScope.member.toString()};
+        var scopes = {
+          CustomScope.sectionManager.toString(),
+          CustomScope.member.toString()
+        };
 
         // assign to first and second sections
-        var sm = await endpoints.member
-            .addMemberToSection(authSession, SectionMembership(memberId: id, sectionId: s1.id!, scopes: scopes));
+        var sm = await endpoints.member.addMemberToSection(
+            authSession,
+            SectionMembership(
+                memberId: au.id, sectionId: s1.id!, scopes: scopes));
 
         print(sm);
         sm = await endpoints.member.addMemberToSection(
             authSession,
             SectionMembership(
-              memberId: id,
+              memberId: au.id,
               sectionId: s2.id!,
               scopes: scopes,
             ));
@@ -138,5 +170,8 @@ void main() {
     });
 
     // We want to keep the data after tests run
-  }, rollbackDatabase: RollbackDatabase.disabled, applyMigrations: true, enableSessionLogging: true);
+  },
+      rollbackDatabase: RollbackDatabase.disabled,
+      applyMigrations: true,
+      enableSessionLogging: true);
 }

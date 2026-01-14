@@ -11,10 +11,15 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart'
+    as _i2;
+import 'package:alpine_pod_client/src/protocol/protocol.dart' as _i3;
 
 abstract class Member implements _i1.SerializableModel {
   Member._({
-    this.id,
+    _i1.UuidValue? id,
+    required this.authUserId,
+    this.authUser,
     required this.firstName,
     required this.lastName,
     this.displayName,
@@ -29,12 +34,15 @@ abstract class Member implements _i1.SerializableModel {
     this.certifications,
     DateTime? createdAt,
     DateTime? updatedAt,
-  }) : membershipStatus = membershipStatus ?? 'active',
+  }) : id = id ?? _i1.Uuid().v4obj(),
+       membershipStatus = membershipStatus ?? 'active',
        createdAt = createdAt ?? DateTime.now(),
        updatedAt = updatedAt ?? DateTime.now();
 
   factory Member({
-    int? id,
+    _i1.UuidValue? id,
+    required _i1.UuidValue authUserId,
+    _i2.AuthUser? authUser,
     required String firstName,
     required String lastName,
     String? displayName,
@@ -53,7 +61,17 @@ abstract class Member implements _i1.SerializableModel {
 
   factory Member.fromJson(Map<String, dynamic> jsonSerialization) {
     return Member(
-      id: jsonSerialization['id'] as int?,
+      id: jsonSerialization['id'] == null
+          ? null
+          : _i1.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
+      authUserId: _i1.UuidValueJsonExtension.fromJson(
+        jsonSerialization['authUserId'],
+      ),
+      authUser: jsonSerialization['authUser'] == null
+          ? null
+          : _i3.Protocol().deserialize<_i2.AuthUser>(
+              jsonSerialization['authUser'],
+            ),
       firstName: jsonSerialization['firstName'] as String,
       lastName: jsonSerialization['lastName'] as String,
       displayName: jsonSerialization['displayName'] as String?,
@@ -76,10 +94,12 @@ abstract class Member implements _i1.SerializableModel {
     );
   }
 
-  /// The database id, set if the object has been inserted into the
-  /// database or if it has been fetched from the database. Otherwise,
-  /// the id will be null.
-  int? id;
+  /// The id of the object.
+  _i1.UuidValue id;
+
+  _i1.UuidValue authUserId;
+
+  _i2.AuthUser? authUser;
 
   String firstName;
 
@@ -113,7 +133,9 @@ abstract class Member implements _i1.SerializableModel {
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
   Member copyWith({
-    int? id,
+    _i1.UuidValue? id,
+    _i1.UuidValue? authUserId,
+    _i2.AuthUser? authUser,
     String? firstName,
     String? lastName,
     String? displayName,
@@ -133,7 +155,9 @@ abstract class Member implements _i1.SerializableModel {
   Map<String, dynamic> toJson() {
     return {
       '__className__': 'Member',
-      if (id != null) 'id': id,
+      'id': id.toJson(),
+      'authUserId': authUserId.toJson(),
+      if (authUser != null) 'authUser': authUser?.toJson(),
       'firstName': firstName,
       'lastName': lastName,
       if (displayName != null) 'displayName': displayName,
@@ -161,7 +185,9 @@ class _Undefined {}
 
 class _MemberImpl extends Member {
   _MemberImpl({
-    int? id,
+    _i1.UuidValue? id,
+    required _i1.UuidValue authUserId,
+    _i2.AuthUser? authUser,
     required String firstName,
     required String lastName,
     String? displayName,
@@ -178,6 +204,8 @@ class _MemberImpl extends Member {
     DateTime? updatedAt,
   }) : super._(
          id: id,
+         authUserId: authUserId,
+         authUser: authUser,
          firstName: firstName,
          lastName: lastName,
          displayName: displayName,
@@ -199,7 +227,9 @@ class _MemberImpl extends Member {
   @_i1.useResult
   @override
   Member copyWith({
-    Object? id = _Undefined,
+    _i1.UuidValue? id,
+    _i1.UuidValue? authUserId,
+    Object? authUser = _Undefined,
     String? firstName,
     String? lastName,
     Object? displayName = _Undefined,
@@ -216,7 +246,11 @@ class _MemberImpl extends Member {
     DateTime? updatedAt,
   }) {
     return Member(
-      id: id is int? ? id : this.id,
+      id: id ?? this.id,
+      authUserId: authUserId ?? this.authUserId,
+      authUser: authUser is _i2.AuthUser?
+          ? authUser
+          : this.authUser?.copyWith(),
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,
       displayName: displayName is String? ? displayName : this.displayName,

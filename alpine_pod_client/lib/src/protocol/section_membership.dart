@@ -16,7 +16,7 @@ import 'package:alpine_pod_client/src/protocol/protocol.dart' as _i2;
 abstract class SectionMembership implements _i1.SerializableModel {
   SectionMembership._({
     this.id,
-    required this.memberId,
+    this.memberId,
     required this.sectionId,
     this.externalUserId,
     DateTime? syncedAt,
@@ -26,7 +26,7 @@ abstract class SectionMembership implements _i1.SerializableModel {
 
   factory SectionMembership({
     int? id,
-    required int memberId,
+    _i1.UuidValue? memberId,
     required int sectionId,
     String? externalUserId,
     DateTime? syncedAt,
@@ -37,7 +37,9 @@ abstract class SectionMembership implements _i1.SerializableModel {
   factory SectionMembership.fromJson(Map<String, dynamic> jsonSerialization) {
     return SectionMembership(
       id: jsonSerialization['id'] as int?,
-      memberId: jsonSerialization['memberId'] as int,
+      memberId: jsonSerialization['memberId'] == null
+          ? null
+          : _i1.UuidValueJsonExtension.fromJson(jsonSerialization['memberId']),
       sectionId: jsonSerialization['sectionId'] as int,
       externalUserId: jsonSerialization['externalUserId'] as String?,
       syncedAt: jsonSerialization['syncedAt'] == null
@@ -55,7 +57,7 @@ abstract class SectionMembership implements _i1.SerializableModel {
   /// the id will be null.
   int? id;
 
-  int memberId;
+  _i1.UuidValue? memberId;
 
   int sectionId;
 
@@ -72,7 +74,7 @@ abstract class SectionMembership implements _i1.SerializableModel {
   @_i1.useResult
   SectionMembership copyWith({
     int? id,
-    int? memberId,
+    _i1.UuidValue? memberId,
     int? sectionId,
     String? externalUserId,
     DateTime? syncedAt,
@@ -84,7 +86,7 @@ abstract class SectionMembership implements _i1.SerializableModel {
     return {
       '__className__': 'SectionMembership',
       if (id != null) 'id': id,
-      'memberId': memberId,
+      if (memberId != null) 'memberId': memberId?.toJson(),
       'sectionId': sectionId,
       if (externalUserId != null) 'externalUserId': externalUserId,
       'syncedAt': syncedAt.toJson(),
@@ -104,7 +106,7 @@ class _Undefined {}
 class _SectionMembershipImpl extends SectionMembership {
   _SectionMembershipImpl({
     int? id,
-    required int memberId,
+    _i1.UuidValue? memberId,
     required int sectionId,
     String? externalUserId,
     DateTime? syncedAt,
@@ -126,7 +128,7 @@ class _SectionMembershipImpl extends SectionMembership {
   @override
   SectionMembership copyWith({
     Object? id = _Undefined,
-    int? memberId,
+    Object? memberId = _Undefined,
     int? sectionId,
     Object? externalUserId = _Undefined,
     DateTime? syncedAt,
@@ -135,7 +137,7 @@ class _SectionMembershipImpl extends SectionMembership {
   }) {
     return SectionMembership(
       id: id is int? ? id : this.id,
-      memberId: memberId ?? this.memberId,
+      memberId: memberId is _i1.UuidValue? ? memberId : this.memberId,
       sectionId: sectionId ?? this.sectionId,
       externalUserId: externalUserId is String?
           ? externalUserId

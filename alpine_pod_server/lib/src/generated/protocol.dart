@@ -12,21 +12,24 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
 import 'package:serverpod/protocol.dart' as _i2;
-import 'package:serverpod_auth_server/serverpod_auth_server.dart' as _i3;
-import 'event.dart' as _i4;
-import 'event_document.dart' as _i5;
-import 'event_registration.dart' as _i6;
-import 'event_trip_leader.dart' as _i7;
-import 'event_type.dart' as _i8;
-import 'member.dart' as _i9;
-import 'notification.dart' as _i10;
-import 'registration_status.dart' as _i11;
-import 'section.dart' as _i12;
-import 'section_membership.dart' as _i13;
-import 'package:alpine_pod_server/src/generated/section.dart' as _i14;
-import 'package:alpine_pod_server/src/generated/event.dart' as _i15;
-import 'package:alpine_pod_server/src/generated/member.dart' as _i16;
-import 'package:alpine_pod_server/src/generated/event_trip_leader.dart' as _i17;
+import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart'
+    as _i3;
+import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
+    as _i4;
+import 'event.dart' as _i5;
+import 'event_document.dart' as _i6;
+import 'event_registration.dart' as _i7;
+import 'event_trip_leader.dart' as _i8;
+import 'event_type.dart' as _i9;
+import 'member.dart' as _i10;
+import 'notification.dart' as _i11;
+import 'registration_status.dart' as _i12;
+import 'section.dart' as _i13;
+import 'section_membership.dart' as _i14;
+import 'package:alpine_pod_server/src/generated/section.dart' as _i15;
+import 'package:alpine_pod_server/src/generated/event.dart' as _i16;
+import 'package:alpine_pod_server/src/generated/member.dart' as _i17;
+import 'package:alpine_pod_server/src/generated/event_trip_leader.dart' as _i18;
 export 'event.dart';
 export 'event_document.dart';
 export 'event_registration.dart';
@@ -136,9 +139,9 @@ class Protocol extends _i1.SerializationManagerServer {
         ),
         _i2.ColumnDefinition(
           name: 'userId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _i2.ColumnType.uuid,
           isNullable: false,
-          dartType: 'int',
+          dartType: 'UuidValue',
         ),
         _i2.ColumnDefinition(
           name: 'eventId',
@@ -313,9 +316,9 @@ class Protocol extends _i1.SerializationManagerServer {
         ),
         _i2.ColumnDefinition(
           name: 'userId',
-          columnType: _i2.ColumnType.bigint,
-          isNullable: true,
-          dartType: 'int?',
+          columnType: _i2.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
         ),
         _i2.ColumnDefinition(
           name: 'assignedAt',
@@ -606,10 +609,16 @@ class Protocol extends _i1.SerializationManagerServer {
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _i2.ColumnType.uuid,
           isNullable: false,
-          dartType: 'int?',
-          columnDefault: 'nextval(\'members_id_seq\'::regclass)',
+          dartType: 'UuidValue',
+          columnDefault: 'gen_random_uuid()',
+        ),
+        _i2.ColumnDefinition(
+          name: 'authUserId',
+          columnType: _i2.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
         ),
         _i2.ColumnDefinition(
           name: 'firstName',
@@ -699,7 +708,18 @@ class Protocol extends _i1.SerializationManagerServer {
           columnDefault: 'CURRENT_TIMESTAMP',
         ),
       ],
-      foreignKeys: [],
+      foreignKeys: [
+        _i2.ForeignKeyDefinition(
+          constraintName: 'members_fk_0',
+          columns: ['authUserId'],
+          referenceTable: 'serverpod_auth_core_user',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _i2.ForeignKeyAction.noAction,
+          onDelete: _i2.ForeignKeyAction.cascade,
+          matchType: null,
+        ),
+      ],
       indexes: [
         _i2.IndexDefinition(
           indexName: 'members_pkey',
@@ -713,6 +733,19 @@ class Protocol extends _i1.SerializationManagerServer {
           type: 'btree',
           isUnique: true,
           isPrimary: true,
+        ),
+        _i2.IndexDefinition(
+          indexName: 'authuser_idx',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'authUserId',
+            ),
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: false,
         ),
         _i2.IndexDefinition(
           indexName: 'email_idx',
@@ -769,9 +802,9 @@ class Protocol extends _i1.SerializationManagerServer {
         ),
         _i2.ColumnDefinition(
           name: 'recipientId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _i2.ColumnType.text,
           isNullable: true,
-          dartType: 'int?',
+          dartType: 'String?',
         ),
         _i2.ColumnDefinition(
           name: 'attachments',
@@ -832,9 +865,9 @@ class Protocol extends _i1.SerializationManagerServer {
         ),
         _i2.ColumnDefinition(
           name: 'memberId',
-          columnType: _i2.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
+          columnType: _i2.ColumnType.uuid,
+          isNullable: true,
+          dartType: 'UuidValue?',
         ),
         _i2.ColumnDefinition(
           name: 'sectionId',
@@ -871,16 +904,6 @@ class Protocol extends _i1.SerializationManagerServer {
       foreignKeys: [
         _i2.ForeignKeyDefinition(
           constraintName: 'section_memberships_fk_0',
-          columns: ['memberId'],
-          referenceTable: 'members',
-          referenceTableSchema: 'public',
-          referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.cascade,
-          matchType: null,
-        ),
-        _i2.ForeignKeyDefinition(
-          constraintName: 'section_memberships_fk_1',
           columns: ['sectionId'],
           referenceTable: 'sections',
           referenceTableSchema: 'public',
@@ -994,6 +1017,7 @@ class Protocol extends _i1.SerializationManagerServer {
       managed: true,
     ),
     ..._i3.Protocol.targetTableDefinitions,
+    ..._i4.Protocol.targetTableDefinitions,
     ..._i2.Protocol.targetTableDefinitions,
   ];
 
@@ -1024,90 +1048,93 @@ class Protocol extends _i1.SerializationManagerServer {
       }
     }
 
-    if (t == _i4.Event) {
-      return _i4.Event.fromJson(data) as T;
+    if (t == _i5.Event) {
+      return _i5.Event.fromJson(data) as T;
     }
-    if (t == _i5.EventDocument) {
-      return _i5.EventDocument.fromJson(data) as T;
+    if (t == _i6.EventDocument) {
+      return _i6.EventDocument.fromJson(data) as T;
     }
-    if (t == _i6.EventRegistration) {
-      return _i6.EventRegistration.fromJson(data) as T;
+    if (t == _i7.EventRegistration) {
+      return _i7.EventRegistration.fromJson(data) as T;
     }
-    if (t == _i7.EventTripLeader) {
-      return _i7.EventTripLeader.fromJson(data) as T;
+    if (t == _i8.EventTripLeader) {
+      return _i8.EventTripLeader.fromJson(data) as T;
     }
-    if (t == _i8.EventType) {
-      return _i8.EventType.fromJson(data) as T;
+    if (t == _i9.EventType) {
+      return _i9.EventType.fromJson(data) as T;
     }
-    if (t == _i9.Member) {
-      return _i9.Member.fromJson(data) as T;
+    if (t == _i10.Member) {
+      return _i10.Member.fromJson(data) as T;
     }
-    if (t == _i10.Notification) {
-      return _i10.Notification.fromJson(data) as T;
+    if (t == _i11.Notification) {
+      return _i11.Notification.fromJson(data) as T;
     }
-    if (t == _i11.RegistrationStatus) {
-      return _i11.RegistrationStatus.fromJson(data) as T;
+    if (t == _i12.RegistrationStatus) {
+      return _i12.RegistrationStatus.fromJson(data) as T;
     }
-    if (t == _i12.Section) {
-      return _i12.Section.fromJson(data) as T;
+    if (t == _i13.Section) {
+      return _i13.Section.fromJson(data) as T;
     }
-    if (t == _i13.SectionMembership) {
-      return _i13.SectionMembership.fromJson(data) as T;
+    if (t == _i14.SectionMembership) {
+      return _i14.SectionMembership.fromJson(data) as T;
     }
-    if (t == _i1.getType<_i4.Event?>()) {
-      return (data != null ? _i4.Event.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i5.Event?>()) {
+      return (data != null ? _i5.Event.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i5.EventDocument?>()) {
-      return (data != null ? _i5.EventDocument.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i6.EventDocument?>()) {
+      return (data != null ? _i6.EventDocument.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i6.EventRegistration?>()) {
-      return (data != null ? _i6.EventRegistration.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i7.EventRegistration?>()) {
+      return (data != null ? _i7.EventRegistration.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i7.EventTripLeader?>()) {
-      return (data != null ? _i7.EventTripLeader.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i8.EventTripLeader?>()) {
+      return (data != null ? _i8.EventTripLeader.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i8.EventType?>()) {
-      return (data != null ? _i8.EventType.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i9.EventType?>()) {
+      return (data != null ? _i9.EventType.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i9.Member?>()) {
-      return (data != null ? _i9.Member.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i10.Member?>()) {
+      return (data != null ? _i10.Member.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i10.Notification?>()) {
-      return (data != null ? _i10.Notification.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i11.Notification?>()) {
+      return (data != null ? _i11.Notification.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i11.RegistrationStatus?>()) {
-      return (data != null ? _i11.RegistrationStatus.fromJson(data) : null)
+    if (t == _i1.getType<_i12.RegistrationStatus?>()) {
+      return (data != null ? _i12.RegistrationStatus.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i12.Section?>()) {
-      return (data != null ? _i12.Section.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i13.Section?>()) {
+      return (data != null ? _i13.Section.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i13.SectionMembership?>()) {
-      return (data != null ? _i13.SectionMembership.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i14.SectionMembership?>()) {
+      return (data != null ? _i14.SectionMembership.fromJson(data) : null) as T;
     }
     if (t == Set<String>) {
       return (data as List).map((e) => deserialize<String>(e)).toSet() as T;
     }
-    if (t == List<_i14.Section>) {
-      return (data as List).map((e) => deserialize<_i14.Section>(e)).toList()
+    if (t == List<_i15.Section>) {
+      return (data as List).map((e) => deserialize<_i15.Section>(e)).toList()
           as T;
     }
-    if (t == List<_i15.Event>) {
-      return (data as List).map((e) => deserialize<_i15.Event>(e)).toList()
+    if (t == List<_i16.Event>) {
+      return (data as List).map((e) => deserialize<_i16.Event>(e)).toList()
           as T;
     }
-    if (t == List<_i16.Member>) {
-      return (data as List).map((e) => deserialize<_i16.Member>(e)).toList()
+    if (t == List<_i17.Member>) {
+      return (data as List).map((e) => deserialize<_i17.Member>(e)).toList()
           as T;
     }
-    if (t == List<_i17.EventTripLeader>) {
+    if (t == List<_i18.EventTripLeader>) {
       return (data as List)
-              .map((e) => deserialize<_i17.EventTripLeader>(e))
+              .map((e) => deserialize<_i18.EventTripLeader>(e))
               .toList()
           as T;
     }
     try {
       return _i3.Protocol().deserialize<T>(data, t);
+    } on _i1.DeserializationTypeNotFoundException catch (_) {}
+    try {
+      return _i4.Protocol().deserialize<T>(data, t);
     } on _i1.DeserializationTypeNotFoundException catch (_) {}
     try {
       return _i2.Protocol().deserialize<T>(data, t);
@@ -1117,16 +1144,16 @@ class Protocol extends _i1.SerializationManagerServer {
 
   static String? getClassNameForType(Type type) {
     return switch (type) {
-      _i4.Event => 'Event',
-      _i5.EventDocument => 'EventDocument',
-      _i6.EventRegistration => 'EventRegistration',
-      _i7.EventTripLeader => 'EventTripLeader',
-      _i8.EventType => 'EventType',
-      _i9.Member => 'Member',
-      _i10.Notification => 'Notification',
-      _i11.RegistrationStatus => 'RegistrationStatus',
-      _i12.Section => 'Section',
-      _i13.SectionMembership => 'SectionMembership',
+      _i5.Event => 'Event',
+      _i6.EventDocument => 'EventDocument',
+      _i7.EventRegistration => 'EventRegistration',
+      _i8.EventTripLeader => 'EventTripLeader',
+      _i9.EventType => 'EventType',
+      _i10.Member => 'Member',
+      _i11.Notification => 'Notification',
+      _i12.RegistrationStatus => 'RegistrationStatus',
+      _i13.Section => 'Section',
+      _i14.SectionMembership => 'SectionMembership',
       _ => null,
     };
   }
@@ -1141,25 +1168,25 @@ class Protocol extends _i1.SerializationManagerServer {
     }
 
     switch (data) {
-      case _i4.Event():
+      case _i5.Event():
         return 'Event';
-      case _i5.EventDocument():
+      case _i6.EventDocument():
         return 'EventDocument';
-      case _i6.EventRegistration():
+      case _i7.EventRegistration():
         return 'EventRegistration';
-      case _i7.EventTripLeader():
+      case _i8.EventTripLeader():
         return 'EventTripLeader';
-      case _i8.EventType():
+      case _i9.EventType():
         return 'EventType';
-      case _i9.Member():
+      case _i10.Member():
         return 'Member';
-      case _i10.Notification():
+      case _i11.Notification():
         return 'Notification';
-      case _i11.RegistrationStatus():
+      case _i12.RegistrationStatus():
         return 'RegistrationStatus';
-      case _i12.Section():
+      case _i13.Section():
         return 'Section';
-      case _i13.SectionMembership():
+      case _i14.SectionMembership():
         return 'SectionMembership';
     }
     className = _i2.Protocol().getClassNameForObject(data);
@@ -1168,7 +1195,11 @@ class Protocol extends _i1.SerializationManagerServer {
     }
     className = _i3.Protocol().getClassNameForObject(data);
     if (className != null) {
-      return 'serverpod_auth.$className';
+      return 'serverpod_auth_idp.$className';
+    }
+    className = _i4.Protocol().getClassNameForObject(data);
+    if (className != null) {
+      return 'serverpod_auth_core.$className';
     }
     return null;
   }
@@ -1180,42 +1211,46 @@ class Protocol extends _i1.SerializationManagerServer {
       return super.deserializeByClassName(data);
     }
     if (dataClassName == 'Event') {
-      return deserialize<_i4.Event>(data['data']);
+      return deserialize<_i5.Event>(data['data']);
     }
     if (dataClassName == 'EventDocument') {
-      return deserialize<_i5.EventDocument>(data['data']);
+      return deserialize<_i6.EventDocument>(data['data']);
     }
     if (dataClassName == 'EventRegistration') {
-      return deserialize<_i6.EventRegistration>(data['data']);
+      return deserialize<_i7.EventRegistration>(data['data']);
     }
     if (dataClassName == 'EventTripLeader') {
-      return deserialize<_i7.EventTripLeader>(data['data']);
+      return deserialize<_i8.EventTripLeader>(data['data']);
     }
     if (dataClassName == 'EventType') {
-      return deserialize<_i8.EventType>(data['data']);
+      return deserialize<_i9.EventType>(data['data']);
     }
     if (dataClassName == 'Member') {
-      return deserialize<_i9.Member>(data['data']);
+      return deserialize<_i10.Member>(data['data']);
     }
     if (dataClassName == 'Notification') {
-      return deserialize<_i10.Notification>(data['data']);
+      return deserialize<_i11.Notification>(data['data']);
     }
     if (dataClassName == 'RegistrationStatus') {
-      return deserialize<_i11.RegistrationStatus>(data['data']);
+      return deserialize<_i12.RegistrationStatus>(data['data']);
     }
     if (dataClassName == 'Section') {
-      return deserialize<_i12.Section>(data['data']);
+      return deserialize<_i13.Section>(data['data']);
     }
     if (dataClassName == 'SectionMembership') {
-      return deserialize<_i13.SectionMembership>(data['data']);
+      return deserialize<_i14.SectionMembership>(data['data']);
     }
     if (dataClassName.startsWith('serverpod.')) {
       data['className'] = dataClassName.substring(10);
       return _i2.Protocol().deserializeByClassName(data);
     }
-    if (dataClassName.startsWith('serverpod_auth.')) {
-      data['className'] = dataClassName.substring(15);
+    if (dataClassName.startsWith('serverpod_auth_idp.')) {
+      data['className'] = dataClassName.substring(19);
       return _i3.Protocol().deserializeByClassName(data);
+    }
+    if (dataClassName.startsWith('serverpod_auth_core.')) {
+      data['className'] = dataClassName.substring(20);
+      return _i4.Protocol().deserializeByClassName(data);
     }
     return super.deserializeByClassName(data);
   }
@@ -1229,28 +1264,34 @@ class Protocol extends _i1.SerializationManagerServer {
       }
     }
     {
+      var table = _i4.Protocol().getTableForType(t);
+      if (table != null) {
+        return table;
+      }
+    }
+    {
       var table = _i2.Protocol().getTableForType(t);
       if (table != null) {
         return table;
       }
     }
     switch (t) {
-      case _i4.Event:
-        return _i4.Event.t;
-      case _i5.EventDocument:
-        return _i5.EventDocument.t;
-      case _i6.EventRegistration:
-        return _i6.EventRegistration.t;
-      case _i7.EventTripLeader:
-        return _i7.EventTripLeader.t;
-      case _i9.Member:
-        return _i9.Member.t;
-      case _i10.Notification:
-        return _i10.Notification.t;
-      case _i12.Section:
-        return _i12.Section.t;
-      case _i13.SectionMembership:
-        return _i13.SectionMembership.t;
+      case _i5.Event:
+        return _i5.Event.t;
+      case _i6.EventDocument:
+        return _i6.EventDocument.t;
+      case _i7.EventRegistration:
+        return _i7.EventRegistration.t;
+      case _i8.EventTripLeader:
+        return _i8.EventTripLeader.t;
+      case _i10.Member:
+        return _i10.Member.t;
+      case _i11.Notification:
+        return _i11.Notification.t;
+      case _i13.Section:
+        return _i13.Section.t;
+      case _i14.SectionMembership:
+        return _i14.SectionMembership.t;
     }
     return null;
   }
@@ -1273,6 +1314,9 @@ class Protocol extends _i1.SerializationManagerServer {
     }
     try {
       return _i3.Protocol().mapRecordToJson(record);
+    } catch (_) {}
+    try {
+      return _i4.Protocol().mapRecordToJson(record);
     } catch (_) {}
     throw Exception('Unsupported record type ${record.runtimeType}');
   }

@@ -38,7 +38,7 @@ abstract class EventRegistration
 
   factory EventRegistration({
     int? id,
-    required int userId,
+    required _i1.UuidValue userId,
     required int eventId,
     required _i2.RegistrationStatus registrationStatus,
     required DateTime registrationDate,
@@ -57,7 +57,7 @@ abstract class EventRegistration
   factory EventRegistration.fromJson(Map<String, dynamic> jsonSerialization) {
     return EventRegistration(
       id: jsonSerialization['id'] as int?,
-      userId: jsonSerialization['userId'] as int,
+      userId: _i1.UuidValueJsonExtension.fromJson(jsonSerialization['userId']),
       eventId: jsonSerialization['eventId'] as int,
       registrationStatus: _i2.RegistrationStatus.fromJson(
         (jsonSerialization['registrationStatus'] as String),
@@ -91,7 +91,7 @@ abstract class EventRegistration
   @override
   int? id;
 
-  int userId;
+  _i1.UuidValue userId;
 
   int eventId;
 
@@ -127,7 +127,7 @@ abstract class EventRegistration
   @_i1.useResult
   EventRegistration copyWith({
     int? id,
-    int? userId,
+    _i1.UuidValue? userId,
     int? eventId,
     _i2.RegistrationStatus? registrationStatus,
     DateTime? registrationDate,
@@ -147,7 +147,7 @@ abstract class EventRegistration
     return {
       '__className__': 'EventRegistration',
       if (id != null) 'id': id,
-      'userId': userId,
+      'userId': userId.toJson(),
       'eventId': eventId,
       'registrationStatus': registrationStatus.toJson(),
       'registrationDate': registrationDate.toJson(),
@@ -169,7 +169,7 @@ abstract class EventRegistration
     return {
       '__className__': 'EventRegistration',
       if (id != null) 'id': id,
-      'userId': userId,
+      'userId': userId.toJson(),
       'eventId': eventId,
       'registrationStatus': registrationStatus.toJson(),
       'registrationDate': registrationDate.toJson(),
@@ -221,7 +221,7 @@ class _Undefined {}
 class _EventRegistrationImpl extends EventRegistration {
   _EventRegistrationImpl({
     int? id,
-    required int userId,
+    required _i1.UuidValue userId,
     required int eventId,
     required _i2.RegistrationStatus registrationStatus,
     required DateTime registrationDate,
@@ -259,7 +259,7 @@ class _EventRegistrationImpl extends EventRegistration {
   @override
   EventRegistration copyWith({
     Object? id = _Undefined,
-    int? userId,
+    _i1.UuidValue? userId,
     int? eventId,
     _i2.RegistrationStatus? registrationStatus,
     DateTime? registrationDate,
@@ -306,10 +306,11 @@ class EventRegistrationUpdateTable
     extends _i1.UpdateTable<EventRegistrationTable> {
   EventRegistrationUpdateTable(super.table);
 
-  _i1.ColumnValue<int, int> userId(int value) => _i1.ColumnValue(
-    table.userId,
-    value,
-  );
+  _i1.ColumnValue<_i1.UuidValue, _i1.UuidValue> userId(_i1.UuidValue value) =>
+      _i1.ColumnValue(
+        table.userId,
+        value,
+      );
 
   _i1.ColumnValue<int, int> eventId(int value) => _i1.ColumnValue(
     table.eventId,
@@ -389,7 +390,7 @@ class EventRegistrationTable extends _i1.Table<int?> {
   EventRegistrationTable({super.tableRelation})
     : super(tableName: 'event_registrations') {
     updateTable = EventRegistrationUpdateTable(this);
-    userId = _i1.ColumnInt(
+    userId = _i1.ColumnUuid(
       'userId',
       this,
     );
@@ -454,7 +455,7 @@ class EventRegistrationTable extends _i1.Table<int?> {
 
   late final EventRegistrationUpdateTable updateTable;
 
-  late final _i1.ColumnInt userId;
+  late final _i1.ColumnUuid userId;
 
   late final _i1.ColumnInt eventId;
 

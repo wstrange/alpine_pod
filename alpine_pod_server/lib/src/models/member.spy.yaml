@@ -1,7 +1,8 @@
 class: Member
 table: members
 fields:
-  id: int? # We set the id to be the same as the Users UserInfo.id field
+  id: UuidValue, defaultModel=random
+  authUser: module:serverpod_auth_core:AuthUser?, relation(onDelete=Cascade)
   firstName: String
   lastName: String
   displayName: String?
@@ -18,9 +19,9 @@ fields:
   createdAt: DateTime, default=now
   updatedAt: DateTime, default=now
 indexes:
-  # userinfo_idx:
-  #   fields: userInfoId
-  #   unique: true
+  authuser_idx:
+    fields: authUserId
+    unique: true
   email_idx:
     fields: email
     unique: true

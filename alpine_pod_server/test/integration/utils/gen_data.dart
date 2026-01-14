@@ -7,6 +7,9 @@ import 'dart:math';
 
 import 'package:faker/faker.dart';
 import 'package:alpine_pod_server/src/generated/protocol.dart';
+import 'package:serverpod/serverpod.dart';
+
+final uuid = Uuid();
 
 class GenData {
   final Faker faker;
@@ -21,7 +24,7 @@ class GenData {
   // NOTE: Update the named parameters / field names if your generated Member
   // class uses different fields.
   Member member({
-    int? id,
+    UuidValue? id,
     String? firstName,
     String? lastName,
     String? email,
@@ -40,13 +43,14 @@ class GenData {
       emergencyContactName: f.person.name(),
       emergencyContactPhone: f.phoneNumber.us(),
       medicalConditions: f.lorem.sentence(),
-      id: id ?? _rnd.nextInt(100000),
+      id: id ?? uuid.v4obj(),
       firstName: fn,
       lastName: ln,
       email: email ?? f.internet.email(),
       displayName: displayName ?? '$fn $ln',
       bio: bio ?? f.lorem.sentence(),
-      createdAt: createdAt ?? DateTime.now().subtract(Duration(days: _rnd.nextInt(365))),
+      createdAt: createdAt ??
+          DateTime.now().subtract(Duration(days: _rnd.nextInt(365))),
       updatedAt: updatedAt ?? DateTime.now(),
     );
   }

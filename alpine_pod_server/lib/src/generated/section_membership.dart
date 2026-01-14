@@ -17,7 +17,7 @@ abstract class SectionMembership
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   SectionMembership._({
     this.id,
-    required this.memberId,
+    this.memberId,
     required this.sectionId,
     this.externalUserId,
     DateTime? syncedAt,
@@ -27,7 +27,7 @@ abstract class SectionMembership
 
   factory SectionMembership({
     int? id,
-    required int memberId,
+    _i1.UuidValue? memberId,
     required int sectionId,
     String? externalUserId,
     DateTime? syncedAt,
@@ -38,7 +38,9 @@ abstract class SectionMembership
   factory SectionMembership.fromJson(Map<String, dynamic> jsonSerialization) {
     return SectionMembership(
       id: jsonSerialization['id'] as int?,
-      memberId: jsonSerialization['memberId'] as int,
+      memberId: jsonSerialization['memberId'] == null
+          ? null
+          : _i1.UuidValueJsonExtension.fromJson(jsonSerialization['memberId']),
       sectionId: jsonSerialization['sectionId'] as int,
       externalUserId: jsonSerialization['externalUserId'] as String?,
       syncedAt: jsonSerialization['syncedAt'] == null
@@ -58,7 +60,7 @@ abstract class SectionMembership
   @override
   int? id;
 
-  int memberId;
+  _i1.UuidValue? memberId;
 
   int sectionId;
 
@@ -78,7 +80,7 @@ abstract class SectionMembership
   @_i1.useResult
   SectionMembership copyWith({
     int? id,
-    int? memberId,
+    _i1.UuidValue? memberId,
     int? sectionId,
     String? externalUserId,
     DateTime? syncedAt,
@@ -90,7 +92,7 @@ abstract class SectionMembership
     return {
       '__className__': 'SectionMembership',
       if (id != null) 'id': id,
-      'memberId': memberId,
+      if (memberId != null) 'memberId': memberId?.toJson(),
       'sectionId': sectionId,
       if (externalUserId != null) 'externalUserId': externalUserId,
       'syncedAt': syncedAt.toJson(),
@@ -104,7 +106,7 @@ abstract class SectionMembership
     return {
       '__className__': 'SectionMembership',
       if (id != null) 'id': id,
-      'memberId': memberId,
+      if (memberId != null) 'memberId': memberId?.toJson(),
       'sectionId': sectionId,
       if (externalUserId != null) 'externalUserId': externalUserId,
       'syncedAt': syncedAt.toJson(),
@@ -148,7 +150,7 @@ class _Undefined {}
 class _SectionMembershipImpl extends SectionMembership {
   _SectionMembershipImpl({
     int? id,
-    required int memberId,
+    _i1.UuidValue? memberId,
     required int sectionId,
     String? externalUserId,
     DateTime? syncedAt,
@@ -170,7 +172,7 @@ class _SectionMembershipImpl extends SectionMembership {
   @override
   SectionMembership copyWith({
     Object? id = _Undefined,
-    int? memberId,
+    Object? memberId = _Undefined,
     int? sectionId,
     Object? externalUserId = _Undefined,
     DateTime? syncedAt,
@@ -179,7 +181,7 @@ class _SectionMembershipImpl extends SectionMembership {
   }) {
     return SectionMembership(
       id: id is int? ? id : this.id,
-      memberId: memberId ?? this.memberId,
+      memberId: memberId is _i1.UuidValue? ? memberId : this.memberId,
       sectionId: sectionId ?? this.sectionId,
       externalUserId: externalUserId is String?
           ? externalUserId
@@ -195,7 +197,9 @@ class SectionMembershipUpdateTable
     extends _i1.UpdateTable<SectionMembershipTable> {
   SectionMembershipUpdateTable(super.table);
 
-  _i1.ColumnValue<int, int> memberId(int value) => _i1.ColumnValue(
+  _i1.ColumnValue<_i1.UuidValue, _i1.UuidValue> memberId(
+    _i1.UuidValue? value,
+  ) => _i1.ColumnValue(
     table.memberId,
     value,
   );
@@ -234,7 +238,7 @@ class SectionMembershipTable extends _i1.Table<int?> {
   SectionMembershipTable({super.tableRelation})
     : super(tableName: 'section_memberships') {
     updateTable = SectionMembershipUpdateTable(this);
-    memberId = _i1.ColumnInt(
+    memberId = _i1.ColumnUuid(
       'memberId',
       this,
     );
@@ -263,7 +267,7 @@ class SectionMembershipTable extends _i1.Table<int?> {
 
   late final SectionMembershipUpdateTable updateTable;
 
-  late final _i1.ColumnInt memberId;
+  late final _i1.ColumnUuid memberId;
 
   late final _i1.ColumnInt sectionId;
 

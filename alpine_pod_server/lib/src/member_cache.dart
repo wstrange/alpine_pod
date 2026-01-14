@@ -1,4 +1,5 @@
 import 'package:serverpod/serverpod.dart';
+import 'package:serverpod_auth_idp_server/core.dart';
 import 'generated/protocol.dart';
 
 final cache = MemberCache();
@@ -10,7 +11,7 @@ class MemberCache {
   factory MemberCache() => _instance;
   MemberCache._internal();
 
-  final _cache = <int, MemberInfo>{};
+  final _cache = <UuidValue, MemberInfo>{};
 
   /// Maximum age of cache entries before they need to be refreshed
   static const _maxAgeMinutes = 10;
@@ -22,15 +23,13 @@ class MemberCache {
       return;
     }
 
-    var idString = authInfo.authId;
-    var id = int.tryParse(idString);
-    if (id == null) return;
+    var id = authInfo.authUserId;
 
     final member =
         await Member.db.findFirstRow(session, where: (t) => t.id.equals(id));
 
     if (member == null) {
-      session.log('No member found for userInfoId $idString');
+      session.log('No member found for userInfoId $id');
       return;
     }
 
@@ -53,14 +52,13 @@ class MemberCache {
     if (authInfo == null) {
       return;
     }
-    final userId = int.tryParse(authInfo.authId);
-    if (userId != null) {
-      _cache.remove(userId);
-    }
+    final userId = authInfo.authId;
+    _cache.remove(userId);
   }
 
   /// Gets or refreshes a cache entry for a member
-  Future<MemberInfo?> _getCacheEntry(Session session, int userInfoId) async {
+  Future<MemberInfo?> _getCacheEntry(
+      Session session, UuidValue userInfoId) async {
     final member = await Member.db
         .findFirstRow(session, where: (t) => t.id.equals(userInfoId));
     if (member == null) {
@@ -77,7 +75,7 @@ class MemberCache {
 
     // Entry doesn't exist or is stale, refresh it
     await updateCache(session);
-    return _cache[memberId];
+    return _cache[userInfoId];
   }
 
   Future<MemberInfo?> getMemberInfo(Session session) async {
@@ -85,10 +83,7 @@ class MemberCache {
     if (authInfo == null) {
       return null;
     }
-    final userId = int.tryParse(authInfo.authId);
-    if (userId == null) {
-      return null;
-    }
+    final userId = authInfo.authUserId;
     final entry = await cache._getCacheEntry(session, userId);
     return entry;
   }

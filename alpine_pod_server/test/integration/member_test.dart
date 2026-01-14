@@ -10,17 +10,19 @@ import 'utils/gen_data.dart';
 final genData = GenData();
 
 void main() {
-  const id = 1;
+  final id = Uuid().v4();
 
   withServerpod('Given TestDataGenerator', (sessionBuilder, endpoints) {
     group('auth member endpoint tests', () {
       var authenticatedSessionBuilder = sessionBuilder.copyWith(
-        authentication: AuthenticationOverride.authenticationInfo(id, {Scope('admin')}),
+        authentication:
+            AuthenticationOverride.authenticationInfo(id, {Scope('admin')}),
       );
 
       test('getMembers returns list of members for admin', () async {
         // Assuming member with id=1 is an admin in the test setup
-        final members = await endpoints.member.getMembers(authenticatedSessionBuilder);
+        final members =
+            await endpoints.member.getMembers(authenticatedSessionBuilder);
         expect(members, isA<List<Member>>());
         expect(members.length, equals(0));
       });
@@ -29,7 +31,8 @@ void main() {
         final m = genData.member();
         print(m);
 
-        final member = await endpoints.member.createMember(authenticatedSessionBuilder, m);
+        final member =
+            await endpoints.member.createMember(authenticatedSessionBuilder, m);
 
         print('Created $member');
 
@@ -37,7 +40,8 @@ void main() {
         // try to insert again with same email / id should fail
 
         try {
-          await endpoints.member.createMember(authenticatedSessionBuilder, member);
+          await endpoints.member
+              .createMember(authenticatedSessionBuilder, member);
           fail('Expected exception for duplicate member creation');
         } catch (e) {
           expect(e, isA<Exception>());

@@ -4,17 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:logging/logging.dart';
-import 'package:serverpod_auth_shared_flutter/serverpod_auth_shared_flutter.dart';
+import 'package:serverpod_auth_idp_flutter/serverpod_auth_idp_flutter.dart';
 import 'package:serverpod_flutter/serverpod_flutter.dart';
 
 import 'screens/event_edit_screen.dart';
 import 'screens/home_screen.dart';
-import 'screens/login_screen.dart';
 import 'screens/member_edit_screen.dart';
 import 'screens/section_selection_screen.dart';
+import 'screens/sign_in_screen.dart';
 import 'widgets/scaffold_with_nav_bar.dart';
 import 'provider.dart';
 
+late Client client;
 void main() async {
   Logger.root.level = Level.ALL;
   Logger.root.onRecord.listen((record) {
@@ -25,20 +26,18 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   const serverUrlFromEnv = String.fromEnvironment('SERVER_URL');
-  final serverUrl = serverUrlFromEnv.isEmpty ? 'http://$localhost:8080/' : serverUrlFromEnv;
+  final serverUrl =
+      serverUrlFromEnv.isEmpty ? 'http://$localhost:8080/' : serverUrlFromEnv;
 
-  client = Client(serverUrl, authenticationKeyManager: FlutterAuthenticationKeyManager())
-    ..connectivityMonitor = FlutterConnectivityMonitor();
+  client = Client(serverUrl)
+    ..connectivityMonitor = FlutterConnectivityMonitor()
+    ..authSessionManager = FlutterAuthSessionManager();
 
-  sessionManager = SessionManager(
-    caller: client.modules.auth,
-  );
-  await sessionManager.initialize();
+  await client.auth.initialize();
 
   runApp(
     ProviderScope(
       overrides: [
-        sessionManagerProvider.overrideWithValue(sessionManager),
         clientProvider.overrideWithValue(client),
       ],
       observers: [LoggerProvider()],
@@ -72,7 +71,7 @@ final routerProvider = Provider<GoRouter>((ref) {
     routes: [
       GoRoute(
         path: '/login',
-        builder: (context, state) => const LoginScreen(),
+        builder: (context, state) => SignInScreen(client: client),
       ),
       GoRoute(
         path: '/section-selection',

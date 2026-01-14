@@ -104,9 +104,9 @@
         {
           "__className__": "serverpod.ColumnDefinition",
           "name": "userId",
-          "columnType": 6,
+          "columnType": 7,
           "isNullable": false,
-          "dartType": "int"
+          "dartType": "UuidValue"
         },
         {
           "__className__": "serverpod.ColumnDefinition",
@@ -305,9 +305,9 @@
         {
           "__className__": "serverpod.ColumnDefinition",
           "name": "userId",
-          "columnType": 6,
-          "isNullable": true,
-          "dartType": "int?"
+          "columnType": 7,
+          "isNullable": false,
+          "dartType": "UuidValue"
         },
         {
           "__className__": "serverpod.ColumnDefinition",
@@ -639,10 +639,10 @@
         {
           "__className__": "serverpod.ColumnDefinition",
           "name": "id",
-          "columnType": 6,
+          "columnType": 7,
           "isNullable": false,
-          "columnDefault": "nextval('members_id_seq'::regclass)",
-          "dartType": "int?"
+          "columnDefault": "gen_random_uuid()",
+          "dartType": "UuidValue"
         },
         {
           "__className__": "serverpod.ColumnDefinition",
@@ -825,9 +825,9 @@
         {
           "__className__": "serverpod.ColumnDefinition",
           "name": "recipientId",
-          "columnType": 6,
+          "columnType": 0,
           "isNullable": true,
-          "dartType": "int?"
+          "dartType": "String?"
         },
         {
           "__className__": "serverpod.ColumnDefinition",
@@ -895,9 +895,9 @@
         {
           "__className__": "serverpod.ColumnDefinition",
           "name": "memberId",
-          "columnType": 6,
-          "isNullable": false,
-          "dartType": "int"
+          "columnType": 0,
+          "isNullable": true,
+          "dartType": "String?"
         },
         {
           "__className__": "serverpod.ColumnDefinition",
@@ -940,20 +940,6 @@
         {
           "__className__": "serverpod.ForeignKeyDefinition",
           "constraintName": "section_memberships_fk_0",
-          "columns": [
-            "memberId"
-          ],
-          "referenceTable": "members",
-          "referenceTableSchema": "public",
-          "referenceColumns": [
-            "id"
-          ],
-          "onUpdate": 3,
-          "onDelete": 4
-        },
-        {
-          "__className__": "serverpod.ForeignKeyDefinition",
-          "constraintName": "section_memberships_fk_1",
           "columns": [
             "sectionId"
           ],
@@ -1089,8 +1075,13 @@
     },
     {
       "__className__": "serverpod.DatabaseMigrationVersion",
-      "module": "serverpod_auth",
-      "version": "20250825102351908-v3-0-0"
+      "module": "serverpod_auth_idp",
+      "version": "20260109031533194"
+    },
+    {
+      "__className__": "serverpod.DatabaseMigrationVersion",
+      "module": "serverpod_auth_core",
+      "version": "20251208110412389-v3-0-0"
     }
   ],
   "migrationApiVersion": 1

@@ -1,4 +1,5 @@
 import 'package:serverpod/serverpod.dart';
+import 'package:serverpod_auth_idp_server/core.dart';
 import '../generated/protocol.dart';
 
 // Section methods for users. Admins should use AdminEndpoint.
@@ -21,8 +22,7 @@ class SectionEndpoint extends Endpoint {
     if (authInfo == null) {
       return [];
     }
-    final userId = int.tryParse(authInfo.authId);
-    if (userId == null) return [];
+    final userId = authInfo.authUserId;
 
     final memberships = await SectionMembership.db.find(
       session,

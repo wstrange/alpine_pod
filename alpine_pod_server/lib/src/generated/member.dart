@@ -8,13 +8,20 @@
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
 // ignore_for_file: invalid_use_of_internal_member
+// ignore_for_file: unnecessary_null_comparison
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
+import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
+    as _i2;
+import 'package:alpine_pod_server/src/generated/protocol.dart' as _i3;
 
-abstract class Member implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
+abstract class Member
+    implements _i1.TableRow<_i1.UuidValue>, _i1.ProtocolSerialization {
   Member._({
-    this.id,
+    _i1.UuidValue? id,
+    required this.authUserId,
+    this.authUser,
     required this.firstName,
     required this.lastName,
     this.displayName,
@@ -29,12 +36,15 @@ abstract class Member implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     this.certifications,
     DateTime? createdAt,
     DateTime? updatedAt,
-  }) : membershipStatus = membershipStatus ?? 'active',
+  }) : id = id ?? _i1.Uuid().v4obj(),
+       membershipStatus = membershipStatus ?? 'active',
        createdAt = createdAt ?? DateTime.now(),
        updatedAt = updatedAt ?? DateTime.now();
 
   factory Member({
-    int? id,
+    _i1.UuidValue? id,
+    required _i1.UuidValue authUserId,
+    _i2.AuthUser? authUser,
     required String firstName,
     required String lastName,
     String? displayName,
@@ -53,7 +63,17 @@ abstract class Member implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
 
   factory Member.fromJson(Map<String, dynamic> jsonSerialization) {
     return Member(
-      id: jsonSerialization['id'] as int?,
+      id: jsonSerialization['id'] == null
+          ? null
+          : _i1.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
+      authUserId: _i1.UuidValueJsonExtension.fromJson(
+        jsonSerialization['authUserId'],
+      ),
+      authUser: jsonSerialization['authUser'] == null
+          ? null
+          : _i3.Protocol().deserialize<_i2.AuthUser>(
+              jsonSerialization['authUser'],
+            ),
       firstName: jsonSerialization['firstName'] as String,
       lastName: jsonSerialization['lastName'] as String,
       displayName: jsonSerialization['displayName'] as String?,
@@ -81,7 +101,11 @@ abstract class Member implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   static const db = MemberRepository._();
 
   @override
-  int? id;
+  _i1.UuidValue id;
+
+  _i1.UuidValue authUserId;
+
+  _i2.AuthUser? authUser;
 
   String firstName;
 
@@ -112,13 +136,15 @@ abstract class Member implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   DateTime updatedAt;
 
   @override
-  _i1.Table<int?> get table => t;
+  _i1.Table<_i1.UuidValue> get table => t;
 
   /// Returns a shallow copy of this [Member]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
   Member copyWith({
-    int? id,
+    _i1.UuidValue? id,
+    _i1.UuidValue? authUserId,
+    _i2.AuthUser? authUser,
     String? firstName,
     String? lastName,
     String? displayName,
@@ -138,7 +164,9 @@ abstract class Member implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   Map<String, dynamic> toJson() {
     return {
       '__className__': 'Member',
-      if (id != null) 'id': id,
+      'id': id.toJson(),
+      'authUserId': authUserId.toJson(),
+      if (authUser != null) 'authUser': authUser?.toJson(),
       'firstName': firstName,
       'lastName': lastName,
       if (displayName != null) 'displayName': displayName,
@@ -160,7 +188,9 @@ abstract class Member implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   Map<String, dynamic> toJsonForProtocol() {
     return {
       '__className__': 'Member',
-      if (id != null) 'id': id,
+      'id': id.toJson(),
+      'authUserId': authUserId.toJson(),
+      if (authUser != null) 'authUser': authUser?.toJsonForProtocol(),
       'firstName': firstName,
       'lastName': lastName,
       if (displayName != null) 'displayName': displayName,
@@ -178,8 +208,8 @@ abstract class Member implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     };
   }
 
-  static MemberInclude include() {
-    return MemberInclude._();
+  static MemberInclude include({_i2.AuthUserInclude? authUser}) {
+    return MemberInclude._(authUser: authUser);
   }
 
   static MemberIncludeList includeList({
@@ -212,7 +242,9 @@ class _Undefined {}
 
 class _MemberImpl extends Member {
   _MemberImpl({
-    int? id,
+    _i1.UuidValue? id,
+    required _i1.UuidValue authUserId,
+    _i2.AuthUser? authUser,
     required String firstName,
     required String lastName,
     String? displayName,
@@ -229,6 +261,8 @@ class _MemberImpl extends Member {
     DateTime? updatedAt,
   }) : super._(
          id: id,
+         authUserId: authUserId,
+         authUser: authUser,
          firstName: firstName,
          lastName: lastName,
          displayName: displayName,
@@ -250,7 +284,9 @@ class _MemberImpl extends Member {
   @_i1.useResult
   @override
   Member copyWith({
-    Object? id = _Undefined,
+    _i1.UuidValue? id,
+    _i1.UuidValue? authUserId,
+    Object? authUser = _Undefined,
     String? firstName,
     String? lastName,
     Object? displayName = _Undefined,
@@ -267,7 +303,11 @@ class _MemberImpl extends Member {
     DateTime? updatedAt,
   }) {
     return Member(
-      id: id is int? ? id : this.id,
+      id: id ?? this.id,
+      authUserId: authUserId ?? this.authUserId,
+      authUser: authUser is _i2.AuthUser?
+          ? authUser
+          : this.authUser?.copyWith(),
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,
       displayName: displayName is String? ? displayName : this.displayName,
@@ -295,6 +335,13 @@ class _MemberImpl extends Member {
 
 class MemberUpdateTable extends _i1.UpdateTable<MemberTable> {
   MemberUpdateTable(super.table);
+
+  _i1.ColumnValue<_i1.UuidValue, _i1.UuidValue> authUserId(
+    _i1.UuidValue value,
+  ) => _i1.ColumnValue(
+    table.authUserId,
+    value,
+  );
 
   _i1.ColumnValue<String, String> firstName(String value) => _i1.ColumnValue(
     table.firstName,
@@ -375,9 +422,13 @@ class MemberUpdateTable extends _i1.UpdateTable<MemberTable> {
       );
 }
 
-class MemberTable extends _i1.Table<int?> {
+class MemberTable extends _i1.Table<_i1.UuidValue> {
   MemberTable({super.tableRelation}) : super(tableName: 'members') {
     updateTable = MemberUpdateTable(this);
+    authUserId = _i1.ColumnUuid(
+      'authUserId',
+      this,
+    );
     firstName = _i1.ColumnString(
       'firstName',
       this,
@@ -441,6 +492,10 @@ class MemberTable extends _i1.Table<int?> {
 
   late final MemberUpdateTable updateTable;
 
+  late final _i1.ColumnUuid authUserId;
+
+  _i2.AuthUserTable? _authUser;
+
   late final _i1.ColumnString firstName;
 
   late final _i1.ColumnString lastName;
@@ -469,9 +524,23 @@ class MemberTable extends _i1.Table<int?> {
 
   late final _i1.ColumnDateTime updatedAt;
 
+  _i2.AuthUserTable get authUser {
+    if (_authUser != null) return _authUser!;
+    _authUser = _i1.createRelationTable(
+      relationFieldName: 'authUser',
+      field: Member.t.authUserId,
+      foreignField: _i2.AuthUser.t.id,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i2.AuthUserTable(tableRelation: foreignTableRelation),
+    );
+    return _authUser!;
+  }
+
   @override
   List<_i1.Column> get columns => [
     id,
+    authUserId,
     firstName,
     lastName,
     displayName,
@@ -487,16 +556,28 @@ class MemberTable extends _i1.Table<int?> {
     createdAt,
     updatedAt,
   ];
+
+  @override
+  _i1.Table? getRelationTable(String relationField) {
+    if (relationField == 'authUser') {
+      return authUser;
+    }
+    return null;
+  }
 }
 
 class MemberInclude extends _i1.IncludeObject {
-  MemberInclude._();
+  MemberInclude._({_i2.AuthUserInclude? authUser}) {
+    _authUser = authUser;
+  }
+
+  _i2.AuthUserInclude? _authUser;
 
   @override
-  Map<String, _i1.Include?> get includes => {};
+  Map<String, _i1.Include?> get includes => {'authUser': _authUser};
 
   @override
-  _i1.Table<int?> get table => Member.t;
+  _i1.Table<_i1.UuidValue> get table => Member.t;
 }
 
 class MemberIncludeList extends _i1.IncludeList {
@@ -516,11 +597,13 @@ class MemberIncludeList extends _i1.IncludeList {
   Map<String, _i1.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<int?> get table => Member.t;
+  _i1.Table<_i1.UuidValue> get table => Member.t;
 }
 
 class MemberRepository {
   const MemberRepository._();
+
+  final attachRow = const MemberAttachRowRepository._();
 
   /// Returns a list of [Member]s matching the given query parameters.
   ///
@@ -553,6 +636,7 @@ class MemberRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<MemberTable>? orderByList,
     _i1.Transaction? transaction,
+    MemberInclude? include,
   }) async {
     return session.db.find<Member>(
       where: where?.call(Member.t),
@@ -562,6 +646,7 @@ class MemberRepository {
       limit: limit,
       offset: offset,
       transaction: transaction,
+      include: include,
     );
   }
 
@@ -590,6 +675,7 @@ class MemberRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<MemberTable>? orderByList,
     _i1.Transaction? transaction,
+    MemberInclude? include,
   }) async {
     return session.db.findFirstRow<Member>(
       where: where?.call(Member.t),
@@ -598,18 +684,21 @@ class MemberRepository {
       orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
+      include: include,
     );
   }
 
   /// Finds a single [Member] by its [id] or null if no such row exists.
   Future<Member?> findById(
     _i1.Session session,
-    int id, {
+    _i1.UuidValue id, {
     _i1.Transaction? transaction,
+    MemberInclude? include,
   }) async {
     return session.db.findById<Member>(
       id,
       transaction: transaction,
+      include: include,
     );
   }
 
@@ -682,7 +771,7 @@ class MemberRepository {
   /// Returns the updated row or null if no row with the given id exists.
   Future<Member?> updateById(
     _i1.Session session,
-    int id, {
+    _i1.UuidValue id, {
     required _i1.ColumnValueListBuilder<MemberUpdateTable> columnValues,
     _i1.Transaction? transaction,
   }) async {
@@ -767,6 +856,33 @@ class MemberRepository {
     return session.db.count<Member>(
       where: where?.call(Member.t),
       limit: limit,
+      transaction: transaction,
+    );
+  }
+}
+
+class MemberAttachRowRepository {
+  const MemberAttachRowRepository._();
+
+  /// Creates a relation between the given [Member] and [AuthUser]
+  /// by setting the [Member]'s foreign key `authUserId` to refer to the [AuthUser].
+  Future<void> authUser(
+    _i1.Session session,
+    Member member,
+    _i2.AuthUser authUser, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (member.id == null) {
+      throw ArgumentError.notNull('member.id');
+    }
+    if (authUser.id == null) {
+      throw ArgumentError.notNull('authUser.id');
+    }
+
+    var $member = member.copyWith(authUserId: authUser.id);
+    await session.db.updateRow<Member>(
+      $member,
+      columns: [Member.t.authUserId],
       transaction: transaction,
     );
   }

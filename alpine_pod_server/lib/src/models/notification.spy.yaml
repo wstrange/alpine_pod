@@ -5,7 +5,7 @@ fields:
   message: String
   timestamp: DateTime
   read: bool
-  recipientId: int?
+  recipientId: String?
   attachments: String?
   relatedEventId: int?
 indexes:

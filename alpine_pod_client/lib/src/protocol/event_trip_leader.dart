@@ -16,14 +16,14 @@ abstract class EventTripLeader implements _i1.SerializableModel {
   EventTripLeader._({
     this.id,
     this.eventId,
-    this.userId,
+    required this.userId,
     this.assignedAt,
   });
 
   factory EventTripLeader({
     int? id,
     int? eventId,
-    int? userId,
+    required _i1.UuidValue userId,
     DateTime? assignedAt,
   }) = _EventTripLeaderImpl;
 
@@ -31,7 +31,7 @@ abstract class EventTripLeader implements _i1.SerializableModel {
     return EventTripLeader(
       id: jsonSerialization['id'] as int?,
       eventId: jsonSerialization['eventId'] as int?,
-      userId: jsonSerialization['userId'] as int?,
+      userId: _i1.UuidValueJsonExtension.fromJson(jsonSerialization['userId']),
       assignedAt: jsonSerialization['assignedAt'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['assignedAt']),
@@ -45,7 +45,7 @@ abstract class EventTripLeader implements _i1.SerializableModel {
 
   int? eventId;
 
-  int? userId;
+  _i1.UuidValue userId;
 
   DateTime? assignedAt;
 
@@ -55,7 +55,7 @@ abstract class EventTripLeader implements _i1.SerializableModel {
   EventTripLeader copyWith({
     int? id,
     int? eventId,
-    int? userId,
+    _i1.UuidValue? userId,
     DateTime? assignedAt,
   });
   @override
@@ -64,7 +64,7 @@ abstract class EventTripLeader implements _i1.SerializableModel {
       '__className__': 'EventTripLeader',
       if (id != null) 'id': id,
       if (eventId != null) 'eventId': eventId,
-      if (userId != null) 'userId': userId,
+      'userId': userId.toJson(),
       if (assignedAt != null) 'assignedAt': assignedAt?.toJson(),
     };
   }
@@ -81,7 +81,7 @@ class _EventTripLeaderImpl extends EventTripLeader {
   _EventTripLeaderImpl({
     int? id,
     int? eventId,
-    int? userId,
+    required _i1.UuidValue userId,
     DateTime? assignedAt,
   }) : super._(
          id: id,
@@ -97,13 +97,13 @@ class _EventTripLeaderImpl extends EventTripLeader {
   EventTripLeader copyWith({
     Object? id = _Undefined,
     Object? eventId = _Undefined,
-    Object? userId = _Undefined,
+    _i1.UuidValue? userId,
     Object? assignedAt = _Undefined,
   }) {
     return EventTripLeader(
       id: id is int? ? id : this.id,
       eventId: eventId is int? ? eventId : this.eventId,
-      userId: userId is int? ? userId : this.userId,
+      userId: userId ?? this.userId,
       assignedAt: assignedAt is DateTime? ? assignedAt : this.assignedAt,
     );
   }
