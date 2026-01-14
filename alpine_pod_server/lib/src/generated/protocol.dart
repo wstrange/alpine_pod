@@ -138,10 +138,10 @@ class Protocol extends _i1.SerializationManagerServer {
           columnDefault: 'nextval(\'event_registrations_id_seq\'::regclass)',
         ),
         _i2.ColumnDefinition(
-          name: 'userId',
-          columnType: _i2.ColumnType.uuid,
+          name: 'memberId',
+          columnType: _i2.ColumnType.bigint,
           isNullable: false,
-          dartType: 'UuidValue',
+          dartType: 'int',
         ),
         _i2.ColumnDefinition(
           name: 'eventId',
@@ -247,7 +247,7 @@ class Protocol extends _i1.SerializationManagerServer {
           elements: [
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
-              definition: 'userId',
+              definition: 'memberId',
             ),
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
@@ -327,7 +327,18 @@ class Protocol extends _i1.SerializationManagerServer {
           dartType: 'DateTime?',
         ),
       ],
-      foreignKeys: [],
+      foreignKeys: [
+        _i2.ForeignKeyDefinition(
+          constraintName: 'event_trip_leaders_fk_0',
+          columns: ['userId'],
+          referenceTable: 'serverpod_auth_core_user',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _i2.ForeignKeyAction.noAction,
+          onDelete: _i2.ForeignKeyAction.cascade,
+          matchType: null,
+        ),
+      ],
       indexes: [
         _i2.IndexDefinition(
           indexName: 'event_trip_leaders_pkey',
@@ -609,10 +620,10 @@ class Protocol extends _i1.SerializationManagerServer {
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.uuid,
+          columnType: _i2.ColumnType.bigint,
           isNullable: false,
-          dartType: 'UuidValue',
-          columnDefault: 'gen_random_uuid()',
+          dartType: 'int?',
+          columnDefault: 'nextval(\'members_id_seq\'::regclass)',
         ),
         _i2.ColumnDefinition(
           name: 'authUserId',
@@ -865,9 +876,9 @@ class Protocol extends _i1.SerializationManagerServer {
         ),
         _i2.ColumnDefinition(
           name: 'memberId',
-          columnType: _i2.ColumnType.uuid,
+          columnType: _i2.ColumnType.bigint,
           isNullable: true,
-          dartType: 'UuidValue?',
+          dartType: 'int?',
         ),
         _i2.ColumnDefinition(
           name: 'sectionId',

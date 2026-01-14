@@ -113,7 +113,7 @@ class RegistrationEndpoint extends Endpoint {
     final existingReg = await EventRegistration.db.findFirstRow(
       session,
       where: (t) =>
-          t.eventId.equals(event.id) & t.userId.equals(memberInfo.member.id!),
+          t.eventId.equals(event.id) & t.memberId.equals(memberInfo.member.id!),
     );
     if (existingReg != null) {
       throw Exception('Already registered for this event');
@@ -125,7 +125,7 @@ class RegistrationEndpoint extends Endpoint {
     }
 
     final validatedReg = registration.copyWith(
-      userId: memberInfo.member.id,
+      memberId: memberInfo.member.id,
       eventId: event.id,
       registrationDate: DateTime.now(),
       modifiedAt: DateTime.now(),

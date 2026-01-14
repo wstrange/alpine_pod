@@ -1,8 +1,7 @@
 class: Member
 table: members
 fields:
-  id: UuidValue, defaultModel=random
-  authUser: module:serverpod_auth_core:AuthUser?, relation(onDelete=Cascade)
+  user: module:serverpod_auth_core:AuthUser?, relation(onDelete=Cascade)
   firstName: String
   lastName: String
   displayName: String?
@@ -20,7 +19,7 @@ fields:
   updatedAt: DateTime, default=now
 indexes:
   authuser_idx:
-    fields: authUserId
+    fields: userId
     unique: true
   email_idx:
     fields: email

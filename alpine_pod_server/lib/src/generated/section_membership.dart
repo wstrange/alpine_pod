@@ -27,7 +27,7 @@ abstract class SectionMembership
 
   factory SectionMembership({
     int? id,
-    _i1.UuidValue? memberId,
+    int? memberId,
     required int sectionId,
     String? externalUserId,
     DateTime? syncedAt,
@@ -38,9 +38,7 @@ abstract class SectionMembership
   factory SectionMembership.fromJson(Map<String, dynamic> jsonSerialization) {
     return SectionMembership(
       id: jsonSerialization['id'] as int?,
-      memberId: jsonSerialization['memberId'] == null
-          ? null
-          : _i1.UuidValueJsonExtension.fromJson(jsonSerialization['memberId']),
+      memberId: jsonSerialization['memberId'] as int?,
       sectionId: jsonSerialization['sectionId'] as int,
       externalUserId: jsonSerialization['externalUserId'] as String?,
       syncedAt: jsonSerialization['syncedAt'] == null
@@ -60,7 +58,7 @@ abstract class SectionMembership
   @override
   int? id;
 
-  _i1.UuidValue? memberId;
+  int? memberId;
 
   int sectionId;
 
@@ -80,7 +78,7 @@ abstract class SectionMembership
   @_i1.useResult
   SectionMembership copyWith({
     int? id,
-    _i1.UuidValue? memberId,
+    int? memberId,
     int? sectionId,
     String? externalUserId,
     DateTime? syncedAt,
@@ -92,7 +90,7 @@ abstract class SectionMembership
     return {
       '__className__': 'SectionMembership',
       if (id != null) 'id': id,
-      if (memberId != null) 'memberId': memberId?.toJson(),
+      if (memberId != null) 'memberId': memberId,
       'sectionId': sectionId,
       if (externalUserId != null) 'externalUserId': externalUserId,
       'syncedAt': syncedAt.toJson(),
@@ -106,7 +104,7 @@ abstract class SectionMembership
     return {
       '__className__': 'SectionMembership',
       if (id != null) 'id': id,
-      if (memberId != null) 'memberId': memberId?.toJson(),
+      if (memberId != null) 'memberId': memberId,
       'sectionId': sectionId,
       if (externalUserId != null) 'externalUserId': externalUserId,
       'syncedAt': syncedAt.toJson(),
@@ -150,7 +148,7 @@ class _Undefined {}
 class _SectionMembershipImpl extends SectionMembership {
   _SectionMembershipImpl({
     int? id,
-    _i1.UuidValue? memberId,
+    int? memberId,
     required int sectionId,
     String? externalUserId,
     DateTime? syncedAt,
@@ -181,7 +179,7 @@ class _SectionMembershipImpl extends SectionMembership {
   }) {
     return SectionMembership(
       id: id is int? ? id : this.id,
-      memberId: memberId is _i1.UuidValue? ? memberId : this.memberId,
+      memberId: memberId is int? ? memberId : this.memberId,
       sectionId: sectionId ?? this.sectionId,
       externalUserId: externalUserId is String?
           ? externalUserId
@@ -197,9 +195,7 @@ class SectionMembershipUpdateTable
     extends _i1.UpdateTable<SectionMembershipTable> {
   SectionMembershipUpdateTable(super.table);
 
-  _i1.ColumnValue<_i1.UuidValue, _i1.UuidValue> memberId(
-    _i1.UuidValue? value,
-  ) => _i1.ColumnValue(
+  _i1.ColumnValue<int, int> memberId(int? value) => _i1.ColumnValue(
     table.memberId,
     value,
   );
@@ -238,7 +234,7 @@ class SectionMembershipTable extends _i1.Table<int?> {
   SectionMembershipTable({super.tableRelation})
     : super(tableName: 'section_memberships') {
     updateTable = SectionMembershipUpdateTable(this);
-    memberId = _i1.ColumnUuid(
+    memberId = _i1.ColumnInt(
       'memberId',
       this,
     );
@@ -267,7 +263,7 @@ class SectionMembershipTable extends _i1.Table<int?> {
 
   late final SectionMembershipUpdateTable updateTable;
 
-  late final _i1.ColumnUuid memberId;
+  late final _i1.ColumnInt memberId;
 
   late final _i1.ColumnInt sectionId;
 

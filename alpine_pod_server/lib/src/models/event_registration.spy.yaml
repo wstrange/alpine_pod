@@ -1,7 +1,8 @@
 class: EventRegistration
 table: event_registrations
 fields:
-  userId: UuidValue
+  # user: module:serverpod_auth_core:AuthUser?, relation(onDelete=Cascade)
+  memberId: int
   eventId: int
   registrationStatus: RegistrationStatus
   registrationDate: DateTime
@@ -18,7 +19,7 @@ fields:
   noShow: bool, default=false
 indexes:
   user_event_idx:
-    fields: userId, eventId
+    fields: memberId, eventId
     unique: true
   event_status_idx:
     fields: eventId, registrationStatus

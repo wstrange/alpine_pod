@@ -17,7 +17,7 @@ import 'package:alpine_pod_client/src/protocol/protocol.dart' as _i3;
 
 abstract class Member implements _i1.SerializableModel {
   Member._({
-    _i1.UuidValue? id,
+    this.id,
     required this.authUserId,
     this.authUser,
     required this.firstName,
@@ -34,13 +34,12 @@ abstract class Member implements _i1.SerializableModel {
     this.certifications,
     DateTime? createdAt,
     DateTime? updatedAt,
-  }) : id = id ?? _i1.Uuid().v4obj(),
-       membershipStatus = membershipStatus ?? 'active',
+  }) : membershipStatus = membershipStatus ?? 'active',
        createdAt = createdAt ?? DateTime.now(),
        updatedAt = updatedAt ?? DateTime.now();
 
   factory Member({
-    _i1.UuidValue? id,
+    int? id,
     required _i1.UuidValue authUserId,
     _i2.AuthUser? authUser,
     required String firstName,
@@ -61,9 +60,7 @@ abstract class Member implements _i1.SerializableModel {
 
   factory Member.fromJson(Map<String, dynamic> jsonSerialization) {
     return Member(
-      id: jsonSerialization['id'] == null
-          ? null
-          : _i1.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
+      id: jsonSerialization['id'] as int?,
       authUserId: _i1.UuidValueJsonExtension.fromJson(
         jsonSerialization['authUserId'],
       ),
@@ -94,8 +91,10 @@ abstract class Member implements _i1.SerializableModel {
     );
   }
 
-  /// The id of the object.
-  _i1.UuidValue id;
+  /// The database id, set if the object has been inserted into the
+  /// database or if it has been fetched from the database. Otherwise,
+  /// the id will be null.
+  int? id;
 
   _i1.UuidValue authUserId;
 
@@ -133,7 +132,7 @@ abstract class Member implements _i1.SerializableModel {
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
   Member copyWith({
-    _i1.UuidValue? id,
+    int? id,
     _i1.UuidValue? authUserId,
     _i2.AuthUser? authUser,
     String? firstName,
@@ -155,7 +154,7 @@ abstract class Member implements _i1.SerializableModel {
   Map<String, dynamic> toJson() {
     return {
       '__className__': 'Member',
-      'id': id.toJson(),
+      if (id != null) 'id': id,
       'authUserId': authUserId.toJson(),
       if (authUser != null) 'authUser': authUser?.toJson(),
       'firstName': firstName,
@@ -185,7 +184,7 @@ class _Undefined {}
 
 class _MemberImpl extends Member {
   _MemberImpl({
-    _i1.UuidValue? id,
+    int? id,
     required _i1.UuidValue authUserId,
     _i2.AuthUser? authUser,
     required String firstName,
@@ -227,7 +226,7 @@ class _MemberImpl extends Member {
   @_i1.useResult
   @override
   Member copyWith({
-    _i1.UuidValue? id,
+    Object? id = _Undefined,
     _i1.UuidValue? authUserId,
     Object? authUser = _Undefined,
     String? firstName,
@@ -246,7 +245,7 @@ class _MemberImpl extends Member {
     DateTime? updatedAt,
   }) {
     return Member(
-      id: id ?? this.id,
+      id: id is int? ? id : this.id,
       authUserId: authUserId ?? this.authUserId,
       authUser: authUser is _i2.AuthUser?
           ? authUser

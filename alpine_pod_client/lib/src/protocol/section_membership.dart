@@ -26,7 +26,7 @@ abstract class SectionMembership implements _i1.SerializableModel {
 
   factory SectionMembership({
     int? id,
-    _i1.UuidValue? memberId,
+    int? memberId,
     required int sectionId,
     String? externalUserId,
     DateTime? syncedAt,
@@ -37,9 +37,7 @@ abstract class SectionMembership implements _i1.SerializableModel {
   factory SectionMembership.fromJson(Map<String, dynamic> jsonSerialization) {
     return SectionMembership(
       id: jsonSerialization['id'] as int?,
-      memberId: jsonSerialization['memberId'] == null
-          ? null
-          : _i1.UuidValueJsonExtension.fromJson(jsonSerialization['memberId']),
+      memberId: jsonSerialization['memberId'] as int?,
       sectionId: jsonSerialization['sectionId'] as int,
       externalUserId: jsonSerialization['externalUserId'] as String?,
       syncedAt: jsonSerialization['syncedAt'] == null
@@ -57,7 +55,7 @@ abstract class SectionMembership implements _i1.SerializableModel {
   /// the id will be null.
   int? id;
 
-  _i1.UuidValue? memberId;
+  int? memberId;
 
   int sectionId;
 
@@ -74,7 +72,7 @@ abstract class SectionMembership implements _i1.SerializableModel {
   @_i1.useResult
   SectionMembership copyWith({
     int? id,
-    _i1.UuidValue? memberId,
+    int? memberId,
     int? sectionId,
     String? externalUserId,
     DateTime? syncedAt,
@@ -86,7 +84,7 @@ abstract class SectionMembership implements _i1.SerializableModel {
     return {
       '__className__': 'SectionMembership',
       if (id != null) 'id': id,
-      if (memberId != null) 'memberId': memberId?.toJson(),
+      if (memberId != null) 'memberId': memberId,
       'sectionId': sectionId,
       if (externalUserId != null) 'externalUserId': externalUserId,
       'syncedAt': syncedAt.toJson(),
@@ -106,7 +104,7 @@ class _Undefined {}
 class _SectionMembershipImpl extends SectionMembership {
   _SectionMembershipImpl({
     int? id,
-    _i1.UuidValue? memberId,
+    int? memberId,
     required int sectionId,
     String? externalUserId,
     DateTime? syncedAt,
@@ -137,7 +135,7 @@ class _SectionMembershipImpl extends SectionMembership {
   }) {
     return SectionMembership(
       id: id is int? ? id : this.id,
-      memberId: memberId is _i1.UuidValue? ? memberId : this.memberId,
+      memberId: memberId is int? ? memberId : this.memberId,
       sectionId: sectionId ?? this.sectionId,
       externalUserId: externalUserId is String?
           ? externalUserId

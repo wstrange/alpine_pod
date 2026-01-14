@@ -16,10 +16,9 @@ import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
     as _i2;
 import 'package:alpine_pod_server/src/generated/protocol.dart' as _i3;
 
-abstract class Member
-    implements _i1.TableRow<_i1.UuidValue>, _i1.ProtocolSerialization {
+abstract class Member implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   Member._({
-    _i1.UuidValue? id,
+    this.id,
     required this.authUserId,
     this.authUser,
     required this.firstName,
@@ -36,13 +35,12 @@ abstract class Member
     this.certifications,
     DateTime? createdAt,
     DateTime? updatedAt,
-  }) : id = id ?? _i1.Uuid().v4obj(),
-       membershipStatus = membershipStatus ?? 'active',
+  }) : membershipStatus = membershipStatus ?? 'active',
        createdAt = createdAt ?? DateTime.now(),
        updatedAt = updatedAt ?? DateTime.now();
 
   factory Member({
-    _i1.UuidValue? id,
+    int? id,
     required _i1.UuidValue authUserId,
     _i2.AuthUser? authUser,
     required String firstName,
@@ -63,9 +61,7 @@ abstract class Member
 
   factory Member.fromJson(Map<String, dynamic> jsonSerialization) {
     return Member(
-      id: jsonSerialization['id'] == null
-          ? null
-          : _i1.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
+      id: jsonSerialization['id'] as int?,
       authUserId: _i1.UuidValueJsonExtension.fromJson(
         jsonSerialization['authUserId'],
       ),
@@ -101,7 +97,7 @@ abstract class Member
   static const db = MemberRepository._();
 
   @override
-  _i1.UuidValue id;
+  int? id;
 
   _i1.UuidValue authUserId;
 
@@ -136,13 +132,13 @@ abstract class Member
   DateTime updatedAt;
 
   @override
-  _i1.Table<_i1.UuidValue> get table => t;
+  _i1.Table<int?> get table => t;
 
   /// Returns a shallow copy of this [Member]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
   Member copyWith({
-    _i1.UuidValue? id,
+    int? id,
     _i1.UuidValue? authUserId,
     _i2.AuthUser? authUser,
     String? firstName,
@@ -164,7 +160,7 @@ abstract class Member
   Map<String, dynamic> toJson() {
     return {
       '__className__': 'Member',
-      'id': id.toJson(),
+      if (id != null) 'id': id,
       'authUserId': authUserId.toJson(),
       if (authUser != null) 'authUser': authUser?.toJson(),
       'firstName': firstName,
@@ -188,7 +184,7 @@ abstract class Member
   Map<String, dynamic> toJsonForProtocol() {
     return {
       '__className__': 'Member',
-      'id': id.toJson(),
+      if (id != null) 'id': id,
       'authUserId': authUserId.toJson(),
       if (authUser != null) 'authUser': authUser?.toJsonForProtocol(),
       'firstName': firstName,
@@ -242,7 +238,7 @@ class _Undefined {}
 
 class _MemberImpl extends Member {
   _MemberImpl({
-    _i1.UuidValue? id,
+    int? id,
     required _i1.UuidValue authUserId,
     _i2.AuthUser? authUser,
     required String firstName,
@@ -284,7 +280,7 @@ class _MemberImpl extends Member {
   @_i1.useResult
   @override
   Member copyWith({
-    _i1.UuidValue? id,
+    Object? id = _Undefined,
     _i1.UuidValue? authUserId,
     Object? authUser = _Undefined,
     String? firstName,
@@ -303,7 +299,7 @@ class _MemberImpl extends Member {
     DateTime? updatedAt,
   }) {
     return Member(
-      id: id ?? this.id,
+      id: id is int? ? id : this.id,
       authUserId: authUserId ?? this.authUserId,
       authUser: authUser is _i2.AuthUser?
           ? authUser
@@ -422,7 +418,7 @@ class MemberUpdateTable extends _i1.UpdateTable<MemberTable> {
       );
 }
 
-class MemberTable extends _i1.Table<_i1.UuidValue> {
+class MemberTable extends _i1.Table<int?> {
   MemberTable({super.tableRelation}) : super(tableName: 'members') {
     updateTable = MemberUpdateTable(this);
     authUserId = _i1.ColumnUuid(
@@ -577,7 +573,7 @@ class MemberInclude extends _i1.IncludeObject {
   Map<String, _i1.Include?> get includes => {'authUser': _authUser};
 
   @override
-  _i1.Table<_i1.UuidValue> get table => Member.t;
+  _i1.Table<int?> get table => Member.t;
 }
 
 class MemberIncludeList extends _i1.IncludeList {
@@ -597,7 +593,7 @@ class MemberIncludeList extends _i1.IncludeList {
   Map<String, _i1.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<_i1.UuidValue> get table => Member.t;
+  _i1.Table<int?> get table => Member.t;
 }
 
 class MemberRepository {
@@ -691,7 +687,7 @@ class MemberRepository {
   /// Finds a single [Member] by its [id] or null if no such row exists.
   Future<Member?> findById(
     _i1.Session session,
-    _i1.UuidValue id, {
+    int id, {
     _i1.Transaction? transaction,
     MemberInclude? include,
   }) async {
@@ -771,7 +767,7 @@ class MemberRepository {
   /// Returns the updated row or null if no row with the given id exists.
   Future<Member?> updateById(
     _i1.Session session,
-    _i1.UuidValue id, {
+    int id, {
     required _i1.ColumnValueListBuilder<MemberUpdateTable> columnValues,
     _i1.Transaction? transaction,
   }) async {

@@ -11,12 +11,16 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart'
+    as _i2;
+import 'package:alpine_pod_client/src/protocol/protocol.dart' as _i3;
 
 abstract class EventTripLeader implements _i1.SerializableModel {
   EventTripLeader._({
     this.id,
     this.eventId,
     required this.userId,
+    this.user,
     this.assignedAt,
   });
 
@@ -24,6 +28,7 @@ abstract class EventTripLeader implements _i1.SerializableModel {
     int? id,
     int? eventId,
     required _i1.UuidValue userId,
+    _i2.AuthUser? user,
     DateTime? assignedAt,
   }) = _EventTripLeaderImpl;
 
@@ -32,6 +37,9 @@ abstract class EventTripLeader implements _i1.SerializableModel {
       id: jsonSerialization['id'] as int?,
       eventId: jsonSerialization['eventId'] as int?,
       userId: _i1.UuidValueJsonExtension.fromJson(jsonSerialization['userId']),
+      user: jsonSerialization['user'] == null
+          ? null
+          : _i3.Protocol().deserialize<_i2.AuthUser>(jsonSerialization['user']),
       assignedAt: jsonSerialization['assignedAt'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['assignedAt']),
@@ -47,6 +55,8 @@ abstract class EventTripLeader implements _i1.SerializableModel {
 
   _i1.UuidValue userId;
 
+  _i2.AuthUser? user;
+
   DateTime? assignedAt;
 
   /// Returns a shallow copy of this [EventTripLeader]
@@ -56,6 +66,7 @@ abstract class EventTripLeader implements _i1.SerializableModel {
     int? id,
     int? eventId,
     _i1.UuidValue? userId,
+    _i2.AuthUser? user,
     DateTime? assignedAt,
   });
   @override
@@ -65,6 +76,7 @@ abstract class EventTripLeader implements _i1.SerializableModel {
       if (id != null) 'id': id,
       if (eventId != null) 'eventId': eventId,
       'userId': userId.toJson(),
+      if (user != null) 'user': user?.toJson(),
       if (assignedAt != null) 'assignedAt': assignedAt?.toJson(),
     };
   }
@@ -82,11 +94,13 @@ class _EventTripLeaderImpl extends EventTripLeader {
     int? id,
     int? eventId,
     required _i1.UuidValue userId,
+    _i2.AuthUser? user,
     DateTime? assignedAt,
   }) : super._(
          id: id,
          eventId: eventId,
          userId: userId,
+         user: user,
          assignedAt: assignedAt,
        );
 
@@ -98,12 +112,14 @@ class _EventTripLeaderImpl extends EventTripLeader {
     Object? id = _Undefined,
     Object? eventId = _Undefined,
     _i1.UuidValue? userId,
+    Object? user = _Undefined,
     Object? assignedAt = _Undefined,
   }) {
     return EventTripLeader(
       id: id is int? ? id : this.id,
       eventId: eventId is int? ? eventId : this.eventId,
       userId: userId ?? this.userId,
+      user: user is _i2.AuthUser? ? user : this.user?.copyWith(),
       assignedAt: assignedAt is DateTime? ? assignedAt : this.assignedAt,
     );
   }

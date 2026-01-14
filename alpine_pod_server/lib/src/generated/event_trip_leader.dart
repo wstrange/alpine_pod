@@ -8,9 +8,13 @@
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
 // ignore_for_file: invalid_use_of_internal_member
+// ignore_for_file: unnecessary_null_comparison
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
+import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
+    as _i2;
+import 'package:alpine_pod_server/src/generated/protocol.dart' as _i3;
 
 abstract class EventTripLeader
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -18,6 +22,7 @@ abstract class EventTripLeader
     this.id,
     this.eventId,
     required this.userId,
+    this.user,
     this.assignedAt,
   });
 
@@ -25,6 +30,7 @@ abstract class EventTripLeader
     int? id,
     int? eventId,
     required _i1.UuidValue userId,
+    _i2.AuthUser? user,
     DateTime? assignedAt,
   }) = _EventTripLeaderImpl;
 
@@ -33,6 +39,9 @@ abstract class EventTripLeader
       id: jsonSerialization['id'] as int?,
       eventId: jsonSerialization['eventId'] as int?,
       userId: _i1.UuidValueJsonExtension.fromJson(jsonSerialization['userId']),
+      user: jsonSerialization['user'] == null
+          ? null
+          : _i3.Protocol().deserialize<_i2.AuthUser>(jsonSerialization['user']),
       assignedAt: jsonSerialization['assignedAt'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['assignedAt']),
@@ -50,6 +59,8 @@ abstract class EventTripLeader
 
   _i1.UuidValue userId;
 
+  _i2.AuthUser? user;
+
   DateTime? assignedAt;
 
   @override
@@ -62,6 +73,7 @@ abstract class EventTripLeader
     int? id,
     int? eventId,
     _i1.UuidValue? userId,
+    _i2.AuthUser? user,
     DateTime? assignedAt,
   });
   @override
@@ -71,6 +83,7 @@ abstract class EventTripLeader
       if (id != null) 'id': id,
       if (eventId != null) 'eventId': eventId,
       'userId': userId.toJson(),
+      if (user != null) 'user': user?.toJson(),
       if (assignedAt != null) 'assignedAt': assignedAt?.toJson(),
     };
   }
@@ -82,12 +95,13 @@ abstract class EventTripLeader
       if (id != null) 'id': id,
       if (eventId != null) 'eventId': eventId,
       'userId': userId.toJson(),
+      if (user != null) 'user': user?.toJsonForProtocol(),
       if (assignedAt != null) 'assignedAt': assignedAt?.toJson(),
     };
   }
 
-  static EventTripLeaderInclude include() {
-    return EventTripLeaderInclude._();
+  static EventTripLeaderInclude include({_i2.AuthUserInclude? user}) {
+    return EventTripLeaderInclude._(user: user);
   }
 
   static EventTripLeaderIncludeList includeList({
@@ -123,11 +137,13 @@ class _EventTripLeaderImpl extends EventTripLeader {
     int? id,
     int? eventId,
     required _i1.UuidValue userId,
+    _i2.AuthUser? user,
     DateTime? assignedAt,
   }) : super._(
          id: id,
          eventId: eventId,
          userId: userId,
+         user: user,
          assignedAt: assignedAt,
        );
 
@@ -139,12 +155,14 @@ class _EventTripLeaderImpl extends EventTripLeader {
     Object? id = _Undefined,
     Object? eventId = _Undefined,
     _i1.UuidValue? userId,
+    Object? user = _Undefined,
     Object? assignedAt = _Undefined,
   }) {
     return EventTripLeader(
       id: id is int? ? id : this.id,
       eventId: eventId is int? ? eventId : this.eventId,
       userId: userId ?? this.userId,
+      user: user is _i2.AuthUser? ? user : this.user?.copyWith(),
       assignedAt: assignedAt is DateTime? ? assignedAt : this.assignedAt,
     );
   }
@@ -195,7 +213,22 @@ class EventTripLeaderTable extends _i1.Table<int?> {
 
   late final _i1.ColumnUuid userId;
 
+  _i2.AuthUserTable? _user;
+
   late final _i1.ColumnDateTime assignedAt;
+
+  _i2.AuthUserTable get user {
+    if (_user != null) return _user!;
+    _user = _i1.createRelationTable(
+      relationFieldName: 'user',
+      field: EventTripLeader.t.userId,
+      foreignField: _i2.AuthUser.t.id,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i2.AuthUserTable(tableRelation: foreignTableRelation),
+    );
+    return _user!;
+  }
 
   @override
   List<_i1.Column> get columns => [
@@ -204,13 +237,25 @@ class EventTripLeaderTable extends _i1.Table<int?> {
     userId,
     assignedAt,
   ];
+
+  @override
+  _i1.Table? getRelationTable(String relationField) {
+    if (relationField == 'user') {
+      return user;
+    }
+    return null;
+  }
 }
 
 class EventTripLeaderInclude extends _i1.IncludeObject {
-  EventTripLeaderInclude._();
+  EventTripLeaderInclude._({_i2.AuthUserInclude? user}) {
+    _user = user;
+  }
+
+  _i2.AuthUserInclude? _user;
 
   @override
-  Map<String, _i1.Include?> get includes => {};
+  Map<String, _i1.Include?> get includes => {'user': _user};
 
   @override
   _i1.Table<int?> get table => EventTripLeader.t;
@@ -238,6 +283,8 @@ class EventTripLeaderIncludeList extends _i1.IncludeList {
 
 class EventTripLeaderRepository {
   const EventTripLeaderRepository._();
+
+  final attachRow = const EventTripLeaderAttachRowRepository._();
 
   /// Returns a list of [EventTripLeader]s matching the given query parameters.
   ///
@@ -270,6 +317,7 @@ class EventTripLeaderRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<EventTripLeaderTable>? orderByList,
     _i1.Transaction? transaction,
+    EventTripLeaderInclude? include,
   }) async {
     return session.db.find<EventTripLeader>(
       where: where?.call(EventTripLeader.t),
@@ -279,6 +327,7 @@ class EventTripLeaderRepository {
       limit: limit,
       offset: offset,
       transaction: transaction,
+      include: include,
     );
   }
 
@@ -307,6 +356,7 @@ class EventTripLeaderRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<EventTripLeaderTable>? orderByList,
     _i1.Transaction? transaction,
+    EventTripLeaderInclude? include,
   }) async {
     return session.db.findFirstRow<EventTripLeader>(
       where: where?.call(EventTripLeader.t),
@@ -315,6 +365,7 @@ class EventTripLeaderRepository {
       orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
+      include: include,
     );
   }
 
@@ -323,10 +374,12 @@ class EventTripLeaderRepository {
     _i1.Session session,
     int id, {
     _i1.Transaction? transaction,
+    EventTripLeaderInclude? include,
   }) async {
     return session.db.findById<EventTripLeader>(
       id,
       transaction: transaction,
+      include: include,
     );
   }
 
@@ -486,6 +539,33 @@ class EventTripLeaderRepository {
     return session.db.count<EventTripLeader>(
       where: where?.call(EventTripLeader.t),
       limit: limit,
+      transaction: transaction,
+    );
+  }
+}
+
+class EventTripLeaderAttachRowRepository {
+  const EventTripLeaderAttachRowRepository._();
+
+  /// Creates a relation between the given [EventTripLeader] and [AuthUser]
+  /// by setting the [EventTripLeader]'s foreign key `userId` to refer to the [AuthUser].
+  Future<void> user(
+    _i1.Session session,
+    EventTripLeader eventTripLeader,
+    _i2.AuthUser user, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (eventTripLeader.id == null) {
+      throw ArgumentError.notNull('eventTripLeader.id');
+    }
+    if (user.id == null) {
+      throw ArgumentError.notNull('user.id');
+    }
+
+    var $eventTripLeader = eventTripLeader.copyWith(userId: user.id);
+    await session.db.updateRow<EventTripLeader>(
+      $eventTripLeader,
+      columns: [EventTripLeader.t.userId],
       transaction: transaction,
     );
   }

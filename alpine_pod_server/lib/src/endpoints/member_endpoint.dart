@@ -11,7 +11,10 @@ class MemberEndpoint extends Endpoint {
     if (authInfo == null) {
       return null;
     }
-    return await Member.db.findById(session, authInfo.authUserId);
+
+    var m = await Member.db.findFirstRow(session,
+        where: (t) => t.authUserId.equals(authInfo.authUserId));
+    return m;
   }
 
   Future<List<Member>> getMembers(Session session) async {
@@ -49,7 +52,6 @@ class MemberEndpoint extends Endpoint {
 
     // Ensure createdAt is set to now
     final toInsert = member.copyWith(
-      id: authInfo.authUserId,
       createdAt: DateTime.now(),
     );
 
