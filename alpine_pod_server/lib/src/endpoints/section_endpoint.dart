@@ -25,7 +25,7 @@ class SectionEndpoint extends Endpoint {
     final userId = authInfo.authUserId;
     // get the memberId
     final member = await Member.db
-        .findFirstRow(session, where: (t) => t.authUserId.equals(userId));
+        .findFirstRow(session, where: (t) => t.user.id.equals(userId));
     if (member == null) {
       return [];
     }

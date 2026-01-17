@@ -109,10 +109,10 @@
           },
           {
             "__className__": "serverpod.ColumnDefinition",
-            "name": "userId",
-            "columnType": 7,
+            "name": "memberId",
+            "columnType": 6,
             "isNullable": false,
-            "dartType": "UuidValue"
+            "dartType": "int"
           },
           {
             "__className__": "serverpod.ColumnDefinition",
@@ -233,7 +233,7 @@
               {
                 "__className__": "serverpod.IndexElementDefinition",
                 "type": 0,
-                "definition": "userId"
+                "definition": "memberId"
               },
               {
                 "__className__": "serverpod.IndexElementDefinition",
@@ -327,7 +327,22 @@
             "dartType": "DateTime?"
           }
         ],
-        "foreignKeys": [],
+        "foreignKeys": [
+          {
+            "__className__": "serverpod.ForeignKeyDefinition",
+            "constraintName": "event_trip_leaders_fk_0",
+            "columns": [
+              "userId"
+            ],
+            "referenceTable": "serverpod_auth_core_user",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 4
+          }
+        ],
         "indexes": [
           {
             "__className__": "serverpod.IndexDefinition",
@@ -657,9 +672,16 @@
           {
             "__className__": "serverpod.ColumnDefinition",
             "name": "id",
+            "columnType": 6,
+            "isNullable": false,
+            "columnDefault": "nextval('members_id_seq'::regclass)",
+            "dartType": "int?"
+          },
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "userId",
             "columnType": 7,
             "isNullable": false,
-            "columnDefault": "gen_random_uuid()",
             "dartType": "UuidValue"
           },
           {
@@ -764,7 +786,22 @@
             "dartType": "DateTime"
           }
         ],
-        "foreignKeys": [],
+        "foreignKeys": [
+          {
+            "__className__": "serverpod.ForeignKeyDefinition",
+            "constraintName": "members_fk_0",
+            "columns": [
+              "userId"
+            ],
+            "referenceTable": "serverpod_auth_core_user",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 4
+          }
+        ],
         "indexes": [
           {
             "__className__": "serverpod.IndexDefinition",
@@ -779,6 +816,20 @@
             "type": "btree",
             "isUnique": true,
             "isPrimary": true
+          },
+          {
+            "__className__": "serverpod.IndexDefinition",
+            "indexName": "authuser_idx",
+            "elements": [
+              {
+                "__className__": "serverpod.IndexElementDefinition",
+                "type": 0,
+                "definition": "userId"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": false
           },
           {
             "__className__": "serverpod.IndexDefinition",
@@ -921,9 +972,9 @@
           {
             "__className__": "serverpod.ColumnDefinition",
             "name": "memberId",
-            "columnType": 0,
+            "columnType": 6,
             "isNullable": true,
-            "dartType": "String?"
+            "dartType": "int?"
           },
           {
             "__className__": "serverpod.ColumnDefinition",

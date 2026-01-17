@@ -626,7 +626,7 @@ class Protocol extends _i1.SerializationManagerServer {
           columnDefault: 'nextval(\'members_id_seq\'::regclass)',
         ),
         _i2.ColumnDefinition(
-          name: 'authUserId',
+          name: 'userId',
           columnType: _i2.ColumnType.uuid,
           isNullable: false,
           dartType: 'UuidValue',
@@ -722,7 +722,7 @@ class Protocol extends _i1.SerializationManagerServer {
       foreignKeys: [
         _i2.ForeignKeyDefinition(
           constraintName: 'members_fk_0',
-          columns: ['authUserId'],
+          columns: ['userId'],
           referenceTable: 'serverpod_auth_core_user',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
@@ -751,7 +751,7 @@ class Protocol extends _i1.SerializationManagerServer {
           elements: [
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
-              definition: 'authUserId',
+              definition: 'userId',
             ),
           ],
           type: 'btree',

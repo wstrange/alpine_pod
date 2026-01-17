@@ -49,7 +49,7 @@ CREATE INDEX "event_document_idx" ON "event_documents" USING btree ("eventId");
 --
 CREATE TABLE "event_registrations" (
     "id" bigserial PRIMARY KEY,
-    "userId" uuid NOT NULL,
+    "memberId" bigint NOT NULL,
     "eventId" bigint NOT NULL,
     "registrationStatus" text NOT NULL,
     "registrationDate" timestamp without time zone NOT NULL,
@@ -66,7 +66,7 @@ CREATE TABLE "event_registrations" (
 );
 
 -- Indexes
-CREATE UNIQUE INDEX "user_event_idx" ON "event_registrations" USING btree ("userId", "eventId");
+CREATE UNIQUE INDEX "user_event_idx" ON "event_registrations" USING btree ("memberId", "eventId");
 CREATE INDEX "event_status_idx" ON "event_registrations" USING btree ("eventId", "registrationStatus");
 CREATE INDEX "waitlist_idx" ON "event_registrations" USING btree ("eventId", "waitlistPosition");
 
@@ -128,7 +128,8 @@ CREATE INDEX "section_idx" ON "events" USING btree ("sectionId");
 -- Class Member as table members
 --
 CREATE TABLE "members" (
-    "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    "id" bigserial PRIMARY KEY,
+    "userId" uuid NOT NULL,
     "firstName" text NOT NULL,
     "lastName" text NOT NULL,
     "displayName" text,
@@ -146,6 +147,7 @@ CREATE TABLE "members" (
 );
 
 -- Indexes
+CREATE UNIQUE INDEX "authuser_idx" ON "members" USING btree ("userId");
 CREATE UNIQUE INDEX "email_idx" ON "members" USING btree ("email");
 
 --
@@ -170,7 +172,7 @@ CREATE INDEX "recipient_idx" ON "notifications" USING btree ("recipientId");
 --
 CREATE TABLE "section_memberships" (
     "id" bigserial PRIMARY KEY,
-    "memberId" uuid,
+    "memberId" bigint,
     "sectionId" bigint NOT NULL,
     "externalUserId" text,
     "syncedAt" timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -614,6 +616,26 @@ CREATE TABLE "serverpod_auth_core_user" (
 );
 
 --
+-- Foreign relations for "event_trip_leaders" table
+--
+ALTER TABLE ONLY "event_trip_leaders"
+    ADD CONSTRAINT "event_trip_leaders_fk_0"
+    FOREIGN KEY("userId")
+    REFERENCES "serverpod_auth_core_user"("id")
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION;
+
+--
+-- Foreign relations for "members" table
+--
+ALTER TABLE ONLY "members"
+    ADD CONSTRAINT "members_fk_0"
+    FOREIGN KEY("userId")
+    REFERENCES "serverpod_auth_core_user"("id")
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION;
+
+--
 -- Foreign relations for "section_memberships" table
 --
 ALTER TABLE ONLY "section_memberships"
@@ -792,9 +814,9 @@ ALTER TABLE ONLY "serverpod_auth_core_session"
 -- MIGRATION VERSION FOR alpine_pod
 --
 INSERT INTO "serverpod_migrations" ("module", "version", "timestamp")
-    VALUES ('alpine_pod', '20260114000547446', now())
+    VALUES ('alpine_pod', '20260116233633348', now())
     ON CONFLICT ("module")
-    DO UPDATE SET "version" = '20260114000547446', "timestamp" = now();
+    DO UPDATE SET "version" = '20260116233633348', "timestamp" = now();
 
 --
 -- MIGRATION VERSION FOR serverpod

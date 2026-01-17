@@ -2,21 +2,20 @@ import 'package:alpine_pod_client/alpine_pod_client.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:logging/logging.dart';
+import 'package:state_beacon/state_beacon.dart';
 
-import '../provider.dart';
 import '../util.dart';
 
 final log = Logger('EventEditScreen');
 
-class EventEditScreen extends HookConsumerWidget {
+class EventEditScreen extends HookWidget {
   const EventEditScreen({this.event, super.key});
 
   final Event? event;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final isCreating = event == null;
 
     final titleController = useTextEditingController(text: event?.title);
@@ -27,9 +26,7 @@ class EventEditScreen extends HookConsumerWidget {
     final endTime = useState(
         event?.endTime ?? DateTime.now().add(const Duration(hours: 8)));
 
-    final client = ref.watch(clientProvider);
-
-    var section = ref.watch(sectionProvider);
+    var section = sectionBeacon.watch(context);
     var sid = section?.id;
 
     void save() async {
@@ -60,7 +57,7 @@ class EventEditScreen extends HookConsumerWidget {
         } else {
           await client.event.updateEvent(eventToSave);
         }
-        ref.invalidate(currentEventsProvider);
+        currentEventsBeacon.reset();
         if (context.mounted) {
           await showDialog(
             context: context,
@@ -110,7 +107,7 @@ class EventEditScreen extends HookConsumerWidget {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            ref.invalidate(currentEventsProvider);
+            currentEventsBeacon.reset();
             GoRouter.of(context).pop();
           },
         ),

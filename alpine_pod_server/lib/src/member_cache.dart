@@ -25,8 +25,8 @@ class MemberCache {
 
     var id = authInfo.authUserId;
 
-    final member =
-        await Member.db.findFirstRow(session, where: (t) => t.id.equals(id));
+    final member = await Member.db.findFirstRow(session,
+        where: (t) => t.user.id.equals(authInfo.authUserId));
 
     if (member == null) {
       session.log('No member found for userInfoId $id');
@@ -52,7 +52,7 @@ class MemberCache {
     if (authInfo == null) {
       return;
     }
-    final userId = authInfo.authId;
+    final userId = authInfo.authUserId;
     _cache.remove(userId);
   }
 
@@ -60,7 +60,7 @@ class MemberCache {
   Future<MemberInfo?> _getCacheEntry(
       Session session, UuidValue userInfoId) async {
     final member = await Member.db
-        .findFirstRow(session, where: (t) => t.id.equals(userInfoId));
+        .findFirstRow(session, where: (t) => t.user.id.equals(userInfoId));
     if (member == null) {
       return null;
     }

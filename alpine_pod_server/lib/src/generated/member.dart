@@ -19,8 +19,8 @@ import 'package:alpine_pod_server/src/generated/protocol.dart' as _i3;
 abstract class Member implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   Member._({
     this.id,
-    required this.authUserId,
-    this.authUser,
+    required this.userId,
+    this.user,
     required this.firstName,
     required this.lastName,
     this.displayName,
@@ -41,8 +41,8 @@ abstract class Member implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
 
   factory Member({
     int? id,
-    required _i1.UuidValue authUserId,
-    _i2.AuthUser? authUser,
+    required _i1.UuidValue userId,
+    _i2.AuthUser? user,
     required String firstName,
     required String lastName,
     String? displayName,
@@ -62,14 +62,10 @@ abstract class Member implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   factory Member.fromJson(Map<String, dynamic> jsonSerialization) {
     return Member(
       id: jsonSerialization['id'] as int?,
-      authUserId: _i1.UuidValueJsonExtension.fromJson(
-        jsonSerialization['authUserId'],
-      ),
-      authUser: jsonSerialization['authUser'] == null
+      userId: _i1.UuidValueJsonExtension.fromJson(jsonSerialization['userId']),
+      user: jsonSerialization['user'] == null
           ? null
-          : _i3.Protocol().deserialize<_i2.AuthUser>(
-              jsonSerialization['authUser'],
-            ),
+          : _i3.Protocol().deserialize<_i2.AuthUser>(jsonSerialization['user']),
       firstName: jsonSerialization['firstName'] as String,
       lastName: jsonSerialization['lastName'] as String,
       displayName: jsonSerialization['displayName'] as String?,
@@ -99,9 +95,9 @@ abstract class Member implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   @override
   int? id;
 
-  _i1.UuidValue authUserId;
+  _i1.UuidValue userId;
 
-  _i2.AuthUser? authUser;
+  _i2.AuthUser? user;
 
   String firstName;
 
@@ -139,8 +135,8 @@ abstract class Member implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   @_i1.useResult
   Member copyWith({
     int? id,
-    _i1.UuidValue? authUserId,
-    _i2.AuthUser? authUser,
+    _i1.UuidValue? userId,
+    _i2.AuthUser? user,
     String? firstName,
     String? lastName,
     String? displayName,
@@ -161,8 +157,8 @@ abstract class Member implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     return {
       '__className__': 'Member',
       if (id != null) 'id': id,
-      'authUserId': authUserId.toJson(),
-      if (authUser != null) 'authUser': authUser?.toJson(),
+      'userId': userId.toJson(),
+      if (user != null) 'user': user?.toJson(),
       'firstName': firstName,
       'lastName': lastName,
       if (displayName != null) 'displayName': displayName,
@@ -185,8 +181,8 @@ abstract class Member implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     return {
       '__className__': 'Member',
       if (id != null) 'id': id,
-      'authUserId': authUserId.toJson(),
-      if (authUser != null) 'authUser': authUser?.toJsonForProtocol(),
+      'userId': userId.toJson(),
+      if (user != null) 'user': user?.toJsonForProtocol(),
       'firstName': firstName,
       'lastName': lastName,
       if (displayName != null) 'displayName': displayName,
@@ -204,8 +200,8 @@ abstract class Member implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     };
   }
 
-  static MemberInclude include({_i2.AuthUserInclude? authUser}) {
-    return MemberInclude._(authUser: authUser);
+  static MemberInclude include({_i2.AuthUserInclude? user}) {
+    return MemberInclude._(user: user);
   }
 
   static MemberIncludeList includeList({
@@ -239,8 +235,8 @@ class _Undefined {}
 class _MemberImpl extends Member {
   _MemberImpl({
     int? id,
-    required _i1.UuidValue authUserId,
-    _i2.AuthUser? authUser,
+    required _i1.UuidValue userId,
+    _i2.AuthUser? user,
     required String firstName,
     required String lastName,
     String? displayName,
@@ -257,8 +253,8 @@ class _MemberImpl extends Member {
     DateTime? updatedAt,
   }) : super._(
          id: id,
-         authUserId: authUserId,
-         authUser: authUser,
+         userId: userId,
+         user: user,
          firstName: firstName,
          lastName: lastName,
          displayName: displayName,
@@ -281,8 +277,8 @@ class _MemberImpl extends Member {
   @override
   Member copyWith({
     Object? id = _Undefined,
-    _i1.UuidValue? authUserId,
-    Object? authUser = _Undefined,
+    _i1.UuidValue? userId,
+    Object? user = _Undefined,
     String? firstName,
     String? lastName,
     Object? displayName = _Undefined,
@@ -300,10 +296,8 @@ class _MemberImpl extends Member {
   }) {
     return Member(
       id: id is int? ? id : this.id,
-      authUserId: authUserId ?? this.authUserId,
-      authUser: authUser is _i2.AuthUser?
-          ? authUser
-          : this.authUser?.copyWith(),
+      userId: userId ?? this.userId,
+      user: user is _i2.AuthUser? ? user : this.user?.copyWith(),
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,
       displayName: displayName is String? ? displayName : this.displayName,
@@ -332,12 +326,11 @@ class _MemberImpl extends Member {
 class MemberUpdateTable extends _i1.UpdateTable<MemberTable> {
   MemberUpdateTable(super.table);
 
-  _i1.ColumnValue<_i1.UuidValue, _i1.UuidValue> authUserId(
-    _i1.UuidValue value,
-  ) => _i1.ColumnValue(
-    table.authUserId,
-    value,
-  );
+  _i1.ColumnValue<_i1.UuidValue, _i1.UuidValue> userId(_i1.UuidValue value) =>
+      _i1.ColumnValue(
+        table.userId,
+        value,
+      );
 
   _i1.ColumnValue<String, String> firstName(String value) => _i1.ColumnValue(
     table.firstName,
@@ -421,8 +414,8 @@ class MemberUpdateTable extends _i1.UpdateTable<MemberTable> {
 class MemberTable extends _i1.Table<int?> {
   MemberTable({super.tableRelation}) : super(tableName: 'members') {
     updateTable = MemberUpdateTable(this);
-    authUserId = _i1.ColumnUuid(
-      'authUserId',
+    userId = _i1.ColumnUuid(
+      'userId',
       this,
     );
     firstName = _i1.ColumnString(
@@ -488,9 +481,9 @@ class MemberTable extends _i1.Table<int?> {
 
   late final MemberUpdateTable updateTable;
 
-  late final _i1.ColumnUuid authUserId;
+  late final _i1.ColumnUuid userId;
 
-  _i2.AuthUserTable? _authUser;
+  _i2.AuthUserTable? _user;
 
   late final _i1.ColumnString firstName;
 
@@ -520,23 +513,23 @@ class MemberTable extends _i1.Table<int?> {
 
   late final _i1.ColumnDateTime updatedAt;
 
-  _i2.AuthUserTable get authUser {
-    if (_authUser != null) return _authUser!;
-    _authUser = _i1.createRelationTable(
-      relationFieldName: 'authUser',
-      field: Member.t.authUserId,
+  _i2.AuthUserTable get user {
+    if (_user != null) return _user!;
+    _user = _i1.createRelationTable(
+      relationFieldName: 'user',
+      field: Member.t.userId,
       foreignField: _i2.AuthUser.t.id,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
           _i2.AuthUserTable(tableRelation: foreignTableRelation),
     );
-    return _authUser!;
+    return _user!;
   }
 
   @override
   List<_i1.Column> get columns => [
     id,
-    authUserId,
+    userId,
     firstName,
     lastName,
     displayName,
@@ -555,22 +548,22 @@ class MemberTable extends _i1.Table<int?> {
 
   @override
   _i1.Table? getRelationTable(String relationField) {
-    if (relationField == 'authUser') {
-      return authUser;
+    if (relationField == 'user') {
+      return user;
     }
     return null;
   }
 }
 
 class MemberInclude extends _i1.IncludeObject {
-  MemberInclude._({_i2.AuthUserInclude? authUser}) {
-    _authUser = authUser;
+  MemberInclude._({_i2.AuthUserInclude? user}) {
+    _user = user;
   }
 
-  _i2.AuthUserInclude? _authUser;
+  _i2.AuthUserInclude? _user;
 
   @override
-  Map<String, _i1.Include?> get includes => {'authUser': _authUser};
+  Map<String, _i1.Include?> get includes => {'user': _user};
 
   @override
   _i1.Table<int?> get table => Member.t;
@@ -861,24 +854,24 @@ class MemberAttachRowRepository {
   const MemberAttachRowRepository._();
 
   /// Creates a relation between the given [Member] and [AuthUser]
-  /// by setting the [Member]'s foreign key `authUserId` to refer to the [AuthUser].
-  Future<void> authUser(
+  /// by setting the [Member]'s foreign key `userId` to refer to the [AuthUser].
+  Future<void> user(
     _i1.Session session,
     Member member,
-    _i2.AuthUser authUser, {
+    _i2.AuthUser user, {
     _i1.Transaction? transaction,
   }) async {
     if (member.id == null) {
       throw ArgumentError.notNull('member.id');
     }
-    if (authUser.id == null) {
-      throw ArgumentError.notNull('authUser.id');
+    if (user.id == null) {
+      throw ArgumentError.notNull('user.id');
     }
 
-    var $member = member.copyWith(authUserId: authUser.id);
+    var $member = member.copyWith(userId: user.id);
     await session.db.updateRow<Member>(
       $member,
-      columns: [Member.t.authUserId],
+      columns: [Member.t.userId],
       transaction: transaction,
     );
   }

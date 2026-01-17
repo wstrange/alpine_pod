@@ -2,17 +2,17 @@ import '../provider.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:state_beacon/state_beacon.dart';
 
-class MemberEditScreen extends HookConsumerWidget {
+class MemberEditScreen extends HookWidget {
   const MemberEditScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final memberAsync = ref.watch(currentMemberProvider);
+  Widget build(BuildContext context) {
+    final memberValue = currentMemberBeacon.watch(context);
 
-    return memberAsync.when(
-      data: (member) {
+    return memberValue.toWidget(
+      onData: (member) {
         if (member == null) {
           return const Scaffold(
             body: Center(
@@ -20,8 +20,6 @@ class MemberEditScreen extends HookConsumerWidget {
             ),
           );
         }
-
-        final client = ref.watch(clientProvider);
 
         final firstNameController = useTextEditingController(text: member.firstName);
         final lastNameController = useTextEditingController(text: member.lastName);
@@ -48,7 +46,7 @@ class MemberEditScreen extends HookConsumerWidget {
             certifications: certificationsController.text,
           );
           client.member.updateMember(updatedMember).then((_) {
-            final newVal = ref.refresh(currentMemberProvider);
+            currentMemberBeacon.reset();
           });
         }
 
@@ -135,12 +133,12 @@ class MemberEditScreen extends HookConsumerWidget {
           ],
         );
       },
-      loading: () => const Scaffold(
+      onLoading: () => const Scaffold(
         body: Center(
           child: CircularProgressIndicator(),
         ),
       ),
-      error: (err, stack) => Scaffold(
+      onError: (err, stack) => Scaffold(
         body: Center(
           child: Text('Error: $err'),
         ),

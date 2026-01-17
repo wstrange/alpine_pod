@@ -18,8 +18,8 @@ import 'package:alpine_pod_client/src/protocol/protocol.dart' as _i3;
 abstract class Member implements _i1.SerializableModel {
   Member._({
     this.id,
-    required this.authUserId,
-    this.authUser,
+    required this.userId,
+    this.user,
     required this.firstName,
     required this.lastName,
     this.displayName,
@@ -40,8 +40,8 @@ abstract class Member implements _i1.SerializableModel {
 
   factory Member({
     int? id,
-    required _i1.UuidValue authUserId,
-    _i2.AuthUser? authUser,
+    required _i1.UuidValue userId,
+    _i2.AuthUser? user,
     required String firstName,
     required String lastName,
     String? displayName,
@@ -61,14 +61,10 @@ abstract class Member implements _i1.SerializableModel {
   factory Member.fromJson(Map<String, dynamic> jsonSerialization) {
     return Member(
       id: jsonSerialization['id'] as int?,
-      authUserId: _i1.UuidValueJsonExtension.fromJson(
-        jsonSerialization['authUserId'],
-      ),
-      authUser: jsonSerialization['authUser'] == null
+      userId: _i1.UuidValueJsonExtension.fromJson(jsonSerialization['userId']),
+      user: jsonSerialization['user'] == null
           ? null
-          : _i3.Protocol().deserialize<_i2.AuthUser>(
-              jsonSerialization['authUser'],
-            ),
+          : _i3.Protocol().deserialize<_i2.AuthUser>(jsonSerialization['user']),
       firstName: jsonSerialization['firstName'] as String,
       lastName: jsonSerialization['lastName'] as String,
       displayName: jsonSerialization['displayName'] as String?,
@@ -96,9 +92,9 @@ abstract class Member implements _i1.SerializableModel {
   /// the id will be null.
   int? id;
 
-  _i1.UuidValue authUserId;
+  _i1.UuidValue userId;
 
-  _i2.AuthUser? authUser;
+  _i2.AuthUser? user;
 
   String firstName;
 
@@ -133,8 +129,8 @@ abstract class Member implements _i1.SerializableModel {
   @_i1.useResult
   Member copyWith({
     int? id,
-    _i1.UuidValue? authUserId,
-    _i2.AuthUser? authUser,
+    _i1.UuidValue? userId,
+    _i2.AuthUser? user,
     String? firstName,
     String? lastName,
     String? displayName,
@@ -155,8 +151,8 @@ abstract class Member implements _i1.SerializableModel {
     return {
       '__className__': 'Member',
       if (id != null) 'id': id,
-      'authUserId': authUserId.toJson(),
-      if (authUser != null) 'authUser': authUser?.toJson(),
+      'userId': userId.toJson(),
+      if (user != null) 'user': user?.toJson(),
       'firstName': firstName,
       'lastName': lastName,
       if (displayName != null) 'displayName': displayName,
@@ -185,8 +181,8 @@ class _Undefined {}
 class _MemberImpl extends Member {
   _MemberImpl({
     int? id,
-    required _i1.UuidValue authUserId,
-    _i2.AuthUser? authUser,
+    required _i1.UuidValue userId,
+    _i2.AuthUser? user,
     required String firstName,
     required String lastName,
     String? displayName,
@@ -203,8 +199,8 @@ class _MemberImpl extends Member {
     DateTime? updatedAt,
   }) : super._(
          id: id,
-         authUserId: authUserId,
-         authUser: authUser,
+         userId: userId,
+         user: user,
          firstName: firstName,
          lastName: lastName,
          displayName: displayName,
@@ -227,8 +223,8 @@ class _MemberImpl extends Member {
   @override
   Member copyWith({
     Object? id = _Undefined,
-    _i1.UuidValue? authUserId,
-    Object? authUser = _Undefined,
+    _i1.UuidValue? userId,
+    Object? user = _Undefined,
     String? firstName,
     String? lastName,
     Object? displayName = _Undefined,
@@ -246,10 +242,8 @@ class _MemberImpl extends Member {
   }) {
     return Member(
       id: id is int? ? id : this.id,
-      authUserId: authUserId ?? this.authUserId,
-      authUser: authUser is _i2.AuthUser?
-          ? authUser
-          : this.authUser?.copyWith(),
+      userId: userId ?? this.userId,
+      user: user is _i2.AuthUser? ? user : this.user?.copyWith(),
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,
       displayName: displayName is String? ? displayName : this.displayName,

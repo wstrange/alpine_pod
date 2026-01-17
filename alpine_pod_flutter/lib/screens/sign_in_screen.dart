@@ -13,6 +13,7 @@ class SignInScreen extends StatelessWidget {
       body: SignInWidget(
         client: client,
         onAuthenticated: () {
+          print('Authenticated');
           // Do something when the user is authenticated.
           //
           // NOTE: You should not navigate to the home screen here, otherwise

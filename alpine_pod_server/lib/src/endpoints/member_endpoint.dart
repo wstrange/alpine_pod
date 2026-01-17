@@ -13,7 +13,7 @@ class MemberEndpoint extends Endpoint {
     }
 
     var m = await Member.db.findFirstRow(session,
-        where: (t) => t.authUserId.equals(authInfo.authUserId));
+        where: (t) => t.user.id.equals(authInfo.authUserId));
     return m;
   }
 

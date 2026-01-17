@@ -1,20 +1,18 @@
 import 'package:alpine_pod_client/alpine_pod_client.dart';
-import 'package:alpine_pod_flutter/widgets/event_view.dart';
+import '../widgets/event_view.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:state_beacon/state_beacon.dart';
 import '../provider.dart';
 
-class HomeScreen extends ConsumerWidget {
+class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    var section = ref.watch(sectionProvider);
-
+  Widget build(BuildContext context) {
+    var section = sectionBeacon.watch(context);
     var sectionName = section?.name;
-
-    var events = ref.watch(currentEventsProvider);
+    var eventsValue = currentEventsBeacon.watch(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -33,7 +31,7 @@ class HomeScreen extends ConsumerWidget {
             ListTile(
               title: const Text('Logout'),
               onTap: () {
-                ref.read(sectionProvider.notifier).setValue(null);
+                sectionBeacon.value = null;
                 sessionManager.signOutDevice();
                 Navigator.pop(context); // Close the drawer
               },
@@ -41,15 +39,15 @@ class HomeScreen extends ConsumerWidget {
           ],
         ),
       ),
-      body: switch (events) {
-        AsyncData(:final value) => EventListDisplay(value),
-        AsyncError(:final error, :final stackTrace) => Center(
-            child: Text('Error: $error\nStack: $stackTrace'),
-          ),
-        AsyncLoading() => const Center(
-            child: CircularProgressIndicator(),
-          ),
-      },
+      body: eventsValue.toWidget(
+        onData: (events) => EventListDisplay(events),
+        onError: (error, stackTrace) => Center(
+          child: Text('Error: $error\nStack: $stackTrace'),
+        ),
+        onLoading: () => const Center(
+          child: CircularProgressIndicator(),
+        ),
+      ),
     );
   }
 }
