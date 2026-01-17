@@ -6,6 +6,7 @@ import 'package:logging/logging.dart';
 import 'package:serverpod_auth_idp_flutter/serverpod_auth_idp_flutter.dart';
 import 'package:serverpod_flutter/serverpod_flutter.dart';
 import 'package:state_beacon/state_beacon.dart';
+import 'beacon.dart';
 import 'screens/event_edit_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/member_edit_screen.dart';
@@ -13,9 +14,9 @@ import 'screens/section_selection_screen.dart';
 import 'screens/sign_in_screen.dart';
 import 'widgets/scaffold_with_nav_bar.dart';
 
-late Client client;
-late FlutterAuthSessionManager sessionManager;
 void main() async {
+  BeaconObserver.useLogging();
+  //Beacon.setObserver(const BeaconLoggingObserver());
   Logger.root.level = Level.ALL;
   Logger.root.onRecord.listen((record) {
     // ignore: avoid_print
@@ -106,7 +107,7 @@ final router = GoRouter(
     ),
   ],
   redirect: (BuildContext context, GoRouterState state) async {
-    final bool loggedIn = sessionManager.isSignedIn;
+    final bool loggedIn = sessionManager.isAuthenticated;
     final bool loggingIn = state.matchedLocation == '/login';
 
     if (!loggedIn) {
@@ -131,5 +132,5 @@ final router = GoRouter(
 
     return null;
   },
-  refreshListenable: sessionManager,
+  refreshListenable: sessionManager.authInfoListenable,
 );

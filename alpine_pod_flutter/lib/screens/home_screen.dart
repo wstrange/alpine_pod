@@ -3,7 +3,7 @@ import '../widgets/event_view.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:state_beacon/state_beacon.dart';
-import '../provider.dart';
+import '../beacon.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -39,15 +39,7 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
       ),
-      body: eventsValue.toWidget(
-        onData: (events) => EventListDisplay(events),
-        onError: (error, stackTrace) => Center(
-          child: Text('Error: $error\nStack: $stackTrace'),
-        ),
-        onLoading: () => const Center(
-          child: CircularProgressIndicator(),
-        ),
-      ),
+      body: EventListDisplay(eventsValue),
     );
   }
 }
@@ -64,28 +56,29 @@ class EventListDisplay extends StatelessWidget {
         itemBuilder: (context, i) {
           return ListTile(
             title: Text(events[i].title),
-          onTap: () {
-            showDialog(
-              context: context,
-              builder: (context) => AlertDialog(
-                title: Text(events[i].title),
-                content: EventView(event: events[i]),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: const Text('Close'),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                      GoRouter.of(context).push('/event-details', extra: events[i]);
-                    },
-                    child: const Text('Edit'),
-                  ),
-                ],
-              ),
-            );
-          },
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: Text(events[i].title),
+                  content: EventView(event: events[i]),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: const Text('Close'),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        GoRouter.of(context)
+                            .push('/event-details', extra: events[i]);
+                      },
+                      child: const Text('Edit'),
+                    ),
+                  ],
+                ),
+              );
+            },
           );
         });
   }

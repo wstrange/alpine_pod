@@ -12,7 +12,7 @@
 	<true/>
 	<key>keychain-access-groups</key>
 	<array>
-		<string>$(AppIdentifierPrefix)com.wstrange.alpinePodFlutter</string>
+		<string>$(AppIdentifierPrefix)com.alpinepod.app</string>
 	</array>
 </dict>
 </plist>

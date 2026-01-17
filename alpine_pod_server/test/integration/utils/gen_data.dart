@@ -25,6 +25,7 @@ class GenData {
   // class uses different fields.
   Member member({
     UuidValue? id,
+    UuidValue? userId,
     String? firstName,
     String? lastName,
     String? email,
@@ -43,7 +44,6 @@ class GenData {
       emergencyContactName: f.person.name(),
       emergencyContactPhone: f.phoneNumber.us(),
       medicalConditions: f.lorem.sentence(),
-      id: id ?? uuid.v4obj(),
       firstName: fn,
       lastName: ln,
       email: email ?? f.internet.email(),
@@ -52,6 +52,7 @@ class GenData {
       createdAt: createdAt ??
           DateTime.now().subtract(Duration(days: _rnd.nextInt(365))),
       updatedAt: updatedAt ?? DateTime.now(),
+      userId: userId ?? Uuid().v4obj(),
     );
   }
 

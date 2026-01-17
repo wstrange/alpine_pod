@@ -1,73 +1,129 @@
-import '../provider.dart';
+import '../beacon.dart';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:state_beacon/state_beacon.dart';
+import 'package:alpine_pod_client/alpine_pod_client.dart';
 
-class MemberEditScreen extends HookWidget {
+class MemberEditScreen extends StatelessWidget {
   const MemberEditScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     final memberValue = currentMemberBeacon.watch(context);
 
-    return memberValue.toWidget(
-      onData: (member) {
-        if (member == null) {
-          return const Scaffold(
-            body: Center(
-              child: Text('Not logged in.'),
-            ),
-          );
-        }
-
-        final firstNameController = useTextEditingController(text: member.firstName);
-        final lastNameController = useTextEditingController(text: member.lastName);
-        final displayNameController = useTextEditingController(text: member.displayName);
-        final bioController = useTextEditingController(text: member.bio);
-        final emailController = useTextEditingController(text: member.email);
-        final phoneNumberController = useTextEditingController(text: member.phoneNumber);
-        final emergencyContactNameController = useTextEditingController(text: member.emergencyContactName);
-        final emergencyContactPhoneController = useTextEditingController(text: member.emergencyContactPhone);
-        final medicalConditionsController = useTextEditingController(text: member.medicalConditions);
-        final certificationsController = useTextEditingController(text: member.certifications);
-
-        void save() {
-          final updatedMember = member.copyWith(
-            firstName: firstNameController.text,
-            lastName: lastNameController.text,
-            displayName: displayNameController.text,
-            bio: bioController.text,
-            email: emailController.text,
-            phoneNumber: phoneNumberController.text,
-            emergencyContactName: emergencyContactNameController.text,
-            emergencyContactPhone: emergencyContactPhoneController.text,
-            medicalConditions: medicalConditionsController.text,
-            certifications: certificationsController.text,
-          );
-          client.member.updateMember(updatedMember).then((_) {
-            currentMemberBeacon.reset();
-          });
-        }
-
-        void reset() {
-          firstNameController.text = member.firstName;
-          lastNameController.text = member.lastName;
-          displayNameController.text = member.displayName ?? '';
-          bioController.text = member.bio ?? '';
-          emailController.text = member.email;
-          phoneNumberController.text = member.phoneNumber;
-          emergencyContactNameController.text = member.emergencyContactName;
-          emergencyContactPhoneController.text = member.emergencyContactPhone;
-          medicalConditionsController.text = member.medicalConditions ?? '';
-          certificationsController.text = member.certifications ?? '';
-        }
-
-        return Scaffold(
-          appBar: AppBar(
-            title: const Text('Edit Profile'),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Edit Profile'),
+      ),
+      body: switch (memberValue) {
+        AsyncError(error: final e) => Center(child: Text('Error: $e')),
+        AsyncLoading() || AsyncIdle() => const Center(
+            child: CircularProgressIndicator(),
           ),
-          body: SingleChildScrollView(
+        AsyncData(value: final member) => member == null
+            ? const Center(child: Text('Not logged in.'))
+            : _MemberEditForm(member: member),
+      },
+    );
+  }
+}
+
+class _MemberEditForm extends StatefulWidget {
+  final Member member;
+  const _MemberEditForm({required this.member});
+
+  @override
+  State<_MemberEditForm> createState() => _MemberEditFormState();
+}
+
+class _MemberEditFormState extends State<_MemberEditForm> {
+  late final TextEditingController firstNameController;
+  late final TextEditingController lastNameController;
+  late final TextEditingController displayNameController;
+  late final TextEditingController bioController;
+  late final TextEditingController emailController;
+  late final TextEditingController phoneNumberController;
+  late final TextEditingController emergencyContactNameController;
+  late final TextEditingController emergencyContactPhoneController;
+  late final TextEditingController medicalConditionsController;
+  late final TextEditingController certificationsController;
+
+  @override
+  void initState() {
+    super.initState();
+    firstNameController = TextEditingController(text: widget.member.firstName);
+    lastNameController = TextEditingController(text: widget.member.lastName);
+    displayNameController =
+        TextEditingController(text: widget.member.displayName);
+    bioController = TextEditingController(text: widget.member.bio);
+    emailController = TextEditingController(text: widget.member.email);
+    phoneNumberController =
+        TextEditingController(text: widget.member.phoneNumber);
+    emergencyContactNameController =
+        TextEditingController(text: widget.member.emergencyContactName);
+    emergencyContactPhoneController =
+        TextEditingController(text: widget.member.emergencyContactPhone);
+    medicalConditionsController =
+        TextEditingController(text: widget.member.medicalConditions);
+    certificationsController =
+        TextEditingController(text: widget.member.certifications);
+  }
+
+  @override
+  void dispose() {
+    firstNameController.dispose();
+    lastNameController.dispose();
+    displayNameController.dispose();
+    bioController.dispose();
+    emailController.dispose();
+    phoneNumberController.dispose();
+    emergencyContactNameController.dispose();
+    emergencyContactPhoneController.dispose();
+    medicalConditionsController.dispose();
+    certificationsController.dispose();
+    super.dispose();
+  }
+
+  void save() {
+    final updatedMember = widget.member.copyWith(
+      firstName: firstNameController.text,
+      lastName: lastNameController.text,
+      displayName: displayNameController.text,
+      bio: bioController.text,
+      email: emailController.text,
+      phoneNumber: phoneNumberController.text,
+      emergencyContactName: emergencyContactNameController.text,
+      emergencyContactPhone: emergencyContactPhoneController.text,
+      medicalConditions: medicalConditionsController.text,
+      certifications: certificationsController.text,
+    );
+    client.member.updateMember(updatedMember).then((_) {
+      currentMemberBeacon.reset();
+    });
+  }
+
+  void reset() {
+    setState(() {
+      firstNameController.text = widget.member.firstName;
+      lastNameController.text = widget.member.lastName;
+      displayNameController.text = widget.member.displayName ?? '';
+      bioController.text = widget.member.bio ?? '';
+      emailController.text = widget.member.email;
+      phoneNumberController.text = widget.member.phoneNumber;
+      emergencyContactNameController.text = widget.member.emergencyContactName;
+      emergencyContactPhoneController.text =
+          widget.member.emergencyContactPhone;
+      medicalConditionsController.text = widget.member.medicalConditions ?? '';
+      certificationsController.text = widget.member.certifications ?? '';
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Expanded(
+          child: SingleChildScrollView(
             padding: const EdgeInsets.all(16.0),
             child: Column(
               children: [
@@ -97,52 +153,47 @@ class MemberEditScreen extends HookWidget {
                 ),
                 TextFormField(
                   controller: emergencyContactNameController,
-                  decoration: const InputDecoration(labelText: 'Emergency Contact Name'),
+                  decoration: const InputDecoration(
+                      labelText: 'Emergency Contact Name'),
                 ),
                 TextFormField(
                   controller: emergencyContactPhoneController,
-                  decoration: const InputDecoration(labelText: 'Emergency Contact Phone'),
+                  decoration: const InputDecoration(
+                      labelText: 'Emergency Contact Phone'),
                 ),
                 TextFormField(
                   controller: medicalConditionsController,
-                  decoration: const InputDecoration(labelText: 'Medical Conditions'),
+                  decoration:
+                      const InputDecoration(labelText: 'Medical Conditions'),
                 ),
                 TextFormField(
                   controller: certificationsController,
-                  decoration: const InputDecoration(labelText: 'Certifications'),
+                  decoration:
+                      const InputDecoration(labelText: 'Certifications'),
                 ),
               ],
             ),
           ),
-          persistentFooterButtons: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton.icon(
-                  onPressed: reset,
-                  icon: const Icon(Icons.refresh),
-                  label: const Text('Reset'),
-                ),
-                ElevatedButton.icon(
-                  onPressed: save,
-                  icon: const Icon(Icons.save),
-                  label: const Text('Save'),
-                ),
-              ],
-            ),
-          ],
-        );
-      },
-      onLoading: () => const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
         ),
-      ),
-      onError: (err, stack) => Scaffold(
-        body: Center(
-          child: Text('Error: $err'),
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              ElevatedButton.icon(
+                onPressed: reset,
+                icon: const Icon(Icons.refresh),
+                label: const Text('Reset'),
+              ),
+              ElevatedButton.icon(
+                onPressed: save,
+                icon: const Icon(Icons.save),
+                label: const Text('Save'),
+              ),
+            ],
+          ),
         ),
-      ),
+      ],
     );
   }
 }

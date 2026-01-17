@@ -1,13 +1,13 @@
-import 'dart:async';
-
 import 'package:alpine_pod_client/alpine_pod_client.dart';
 import 'package:logging/logging.dart';
 import 'package:serverpod_auth_idp_flutter/serverpod_auth_idp_flutter.dart';
 import 'package:state_beacon/state_beacon.dart';
 
-final log = Logger('provider');
+late Client client;
+late FlutterAuthSessionManager sessionManager;
 
-late final Client client;
+final log = Logger('beacon');
+
 // late SessionManager sessionManager;
 
 // Beacons
@@ -35,3 +35,5 @@ final sectionBeacon = Beacon.writable<Section?>(null);
 //   var e = await client.event.listEvents(s?.id);
 //   return e;
 // });
+
+final currentEventsBeacon = Beacon.list<Event>([]);

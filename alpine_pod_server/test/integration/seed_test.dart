@@ -22,20 +22,16 @@ void main() {
     Serverpod.instance.initializeAuthServices(
       identityProviderBuilders: [
         EmailIdpConfig(
-          secretHashPepper:
-              Serverpod.instance.getPassword('emailSecretHashPepper') ??
-                  'test-pepper',
-        )
+            secretHashPepper:
+                Serverpod.instance.getPassword('emailSecretHashPepper')!),
       ],
       tokenManagerBuilders: [
         JwtConfig(
             refreshTokenHashPepper:
-                Serverpod.instance.getPassword('jwtRefreshTokenHashPepper') ??
-                    'test-refresh-pepper',
+                Serverpod.instance.getPassword('jwtRefreshTokenHashPepper')!,
             algorithm: JwtAlgorithm.hmacSha512(
-              SecretKey(Serverpod.instance
-                      .getPassword('jwtHmacSha512PrivateKey') ??
-                  'test-key-at-least-64-bytes-long-for-hmac-sha512-key-test-key-at-least-64-bytes-long-for-hmac-sha512-key'),
+              SecretKey(
+                  Serverpod.instance.getPassword('jwtHmacSha512PrivateKey')!),
             )),
       ],
     );
@@ -140,9 +136,9 @@ void main() {
               displayName: 'testy tester$i',
               email: email,
               phoneNumber: '555-1212',
-              id: au.id,
               emergencyContactName: 'Santa',
               emergencyContactPhone: '5555555',
+              userId: au.id,
             ));
         print('Created member profile: $m');
 
@@ -155,13 +151,13 @@ void main() {
         var sm = await endpoints.member.addMemberToSection(
             authSession,
             SectionMembership(
-                memberId: au.id, sectionId: s1.id!, scopes: scopes));
+                memberId: m.id, sectionId: s1.id!, scopes: scopes));
 
         print(sm);
         sm = await endpoints.member.addMemberToSection(
             authSession,
             SectionMembership(
-              memberId: au.id,
+              memberId: m.id,
               sectionId: s2.id!,
               scopes: scopes,
             ));
@@ -173,5 +169,6 @@ void main() {
   },
       rollbackDatabase: RollbackDatabase.disabled,
       applyMigrations: true,
+      runMode: 'development',
       enableSessionLogging: true);
 }

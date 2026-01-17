@@ -38,6 +38,10 @@ void run(List<String> args) async {
   pod.initializeAuthServices(identityProviderBuilders: [
     EmailIdpConfig(
       secretHashPepper: pod.getPassword('emailSecretHashPepper')!,
+      // Callback to send the registration verification code to the user.
+      sendRegistrationVerificationCode: _sendRegistrationCode,
+      // Callback to send the password reset verification code to the user.
+      sendPasswordResetVerificationCode: _sendPasswordResetCode,
     )
   ], tokenManagerBuilders: [
     JwtConfig(
@@ -61,4 +65,28 @@ void run(List<String> args) async {
 
   // Start the server.
   await pod.start();
+}
+
+void _sendRegistrationCode(
+  Session session, {
+  required String email,
+  required UuidValue accountRequestId,
+  required String verificationCode,
+  required Transaction? transaction,
+}) {
+  // NOTE: Here you call your mail service to send the verification code to
+  // the user. For testing, we will just log the verification code.
+  session.log('[EmailIDP] Registration code ($email): $verificationCode');
+}
+
+void _sendPasswordResetCode(
+  Session session, {
+  required String email,
+  required UuidValue passwordResetRequestId,
+  required String verificationCode,
+  required Transaction? transaction,
+}) {
+  // NOTE: Here you call your mail service to send the verification code to
+  // the user. For testing, we will just log the verification code.
+  session.log('[EmailIDP] Password reset code ($email): $verificationCode');
 }
