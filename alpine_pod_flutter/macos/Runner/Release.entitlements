@@ -6,5 +6,10 @@
 	<true/>
 	<key>com.apple.security.network.client</key>
 	<true/>
+	<key>keychain-access-groups</key>
+	<array>
+		<string>$(AppIdentifierPrefix)com.alpinepod.app</string>
+		<string>$(AppIdentifierPrefix)com.wstrange.alpine</string>
+	</array>
 </dict>
 </plist>

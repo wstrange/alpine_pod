@@ -42,4 +42,15 @@ post_install do |installer|
       config.build_settings['MACOSX_DEPLOYMENT_TARGET'] = '10.15'
     end
   end
+  
+  # Fix for macOS keychain error -34018
+  # Remove code signing for debug builds to allow keychain access
+  installer.pods_project.targets.each do |target|
+    target.build_configurations.each do |config|
+      if config.name == 'Debug' || config.name == 'Profile'
+        config.build_settings.delete 'CODE_SIGN_IDENTITY'
+        config.build_settings.delete 'CODE_SIGN_ENTITLEMENTS'
+      end
+    end
+  end
 end
