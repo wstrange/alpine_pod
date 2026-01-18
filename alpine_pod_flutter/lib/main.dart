@@ -110,6 +110,8 @@ final router = GoRouter(
     final bool loggedIn = sessionManager.isAuthenticated;
     final bool loggingIn = state.matchedLocation == '/login';
 
+    print(
+        'loggedIn: $loggedIn, loggingIn: $loggingIn authInfo=${sessionManager.authInfo}');
     if (!loggedIn) {
       return loggingIn ? null : '/login';
     }
