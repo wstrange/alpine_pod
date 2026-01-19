@@ -11,8 +11,8 @@ class TripLeaderEndpoint extends Endpoint {
     Session session,
     EventTripLeader tripLeader,
   ) async {
-    if (tripLeader.eventId == null || tripLeader.userId == null) {
-      throw Exception('Event ID and Member ID are required');
+    if (tripLeader.eventId == null) {
+      throw Exception('Event ID is required');
     }
 
     // Get the event to check section

@@ -77,6 +77,7 @@ class _EventEditScreenState extends State<EventEditScreen> {
       } else {
         await client.event.updateEvent(eventToSave);
       }
+      currentEventsBeacon.reset();
       if (mounted) {
         await showDialog(
           context: context,

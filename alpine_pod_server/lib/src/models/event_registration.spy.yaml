@@ -2,8 +2,8 @@ class: EventRegistration
 table: event_registrations
 fields:
   # user: module:serverpod_auth_core:AuthUser?, relation(onDelete=Cascade)
-  memberId: int
-  eventId: int
+  member: Member?, relation
+  event: Event?, relation
   registrationStatus: RegistrationStatus
   registrationDate: DateTime
   carPoolPreference: String? # drive, ride, none, number of passengers,

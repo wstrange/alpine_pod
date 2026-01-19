@@ -67,36 +67,6 @@ class RegistrationEndpoint extends Endpoint {
     return await EventRegistration.db.updateRow(session, updated);
   }
 
-  Future<bool> _canRegisterForEvent(
-      Session session, Member member, Event event) async {
-    // Validate required fields
-    if (member.id == null) throw Exception('Invalid member');
-    if (event.id == null) throw Exception('Invalid event');
-
-    // Check registration window
-    final now = DateTime.now();
-    if (event.registrationStartDate != null &&
-        now.isBefore(event.registrationStartDate!)) {
-      throw Exception('Registration has not started yet');
-    }
-    if (event.registrationDeadline != null &&
-        now.isAfter(event.registrationDeadline!)) {
-      throw Exception('Registration deadline has passed');
-    }
-
-    // Check if event has started
-    if (now.isAfter(event.startTime)) {
-      throw Exception('Cannot register for an event that has already started');
-    }
-
-    // Check if event is cancelled (add this field to Event model if needed)
-    // if (event.isCancelled) {
-    //   throw Exception('Cannot register for a cancelled event');
-    // }
-
-    return true;
-  }
-
   Future<EventRegistration> registerForEvent(
       Session session, EventRegistration registration) async {
     // Validate session and get member
@@ -183,5 +153,19 @@ class RegistrationEndpoint extends Endpoint {
 
     await EventRegistration.db.deleteRow(session, reg);
     session.log('Deleted Registration $reg');
+  }
+
+  Future<List<EventRegistration>> getRegistrationsForEvent(
+    Session session,
+    int eventId,
+  ) async {
+    return await EventRegistration.db.find(
+      session,
+      where: (t) => t.eventId.equals(eventId),
+      include: EventRegistration.include(
+        member: Member.include(),
+      ),
+      orderBy: (t) => t.registrationDate,
+    );
   }
 }

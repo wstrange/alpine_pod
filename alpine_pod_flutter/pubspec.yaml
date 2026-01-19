@@ -24,14 +24,14 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  serverpod_flutter: 3.2.2
+  serverpod_flutter: 3.2.3
   alpine_pod_client:
     path: ../alpine_pod_client
   go_router: ^16.3.0
  
-  serverpod_auth_idp_flutter: ^3.2.2
-  serverpod_auth_client: ^3.2.2
-  serverpod_auth_core_flutter: ^3.2.2
+  serverpod_auth_idp_flutter: ^3.2.3
+  serverpod_auth_client: ^3.2.3
+  serverpod_auth_core_flutter: ^3.2.3
 
   state_beacon: ^1.1.1
   state_beacon_flutter: ^1.1.1

@@ -31,6 +31,7 @@ registration:
   - updateRegistrationStatus:
   - registerForEvent:
   - cancelRegistration:
+  - getRegistrationsForEvent:
 section:
   - getSection:
   - listSections:

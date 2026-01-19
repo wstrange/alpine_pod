@@ -8,17 +8,23 @@
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
 // ignore_for_file: invalid_use_of_internal_member
+// ignore_for_file: unnecessary_null_comparison
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
-import 'registration_status.dart' as _i2;
+import 'member.dart' as _i2;
+import 'event.dart' as _i3;
+import 'registration_status.dart' as _i4;
+import 'package:alpine_pod_server/src/generated/protocol.dart' as _i5;
 
 abstract class EventRegistration
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   EventRegistration._({
     this.id,
     required this.memberId,
+    this.member,
     required this.eventId,
+    this.event,
     required this.registrationStatus,
     required this.registrationDate,
     this.carPoolPreference,
@@ -39,8 +45,10 @@ abstract class EventRegistration
   factory EventRegistration({
     int? id,
     required int memberId,
+    _i2.Member? member,
     required int eventId,
-    required _i2.RegistrationStatus registrationStatus,
+    _i3.Event? event,
+    required _i4.RegistrationStatus registrationStatus,
     required DateTime registrationDate,
     String? carPoolPreference,
     int? additionalGuests,
@@ -58,8 +66,14 @@ abstract class EventRegistration
     return EventRegistration(
       id: jsonSerialization['id'] as int?,
       memberId: jsonSerialization['memberId'] as int,
+      member: jsonSerialization['member'] == null
+          ? null
+          : _i5.Protocol().deserialize<_i2.Member>(jsonSerialization['member']),
       eventId: jsonSerialization['eventId'] as int,
-      registrationStatus: _i2.RegistrationStatus.fromJson(
+      event: jsonSerialization['event'] == null
+          ? null
+          : _i5.Protocol().deserialize<_i3.Event>(jsonSerialization['event']),
+      registrationStatus: _i4.RegistrationStatus.fromJson(
         (jsonSerialization['registrationStatus'] as String),
       ),
       registrationDate: _i1.DateTimeJsonExtension.fromJson(
@@ -93,9 +107,13 @@ abstract class EventRegistration
 
   int memberId;
 
+  _i2.Member? member;
+
   int eventId;
 
-  _i2.RegistrationStatus registrationStatus;
+  _i3.Event? event;
+
+  _i4.RegistrationStatus registrationStatus;
 
   DateTime registrationDate;
 
@@ -128,8 +146,10 @@ abstract class EventRegistration
   EventRegistration copyWith({
     int? id,
     int? memberId,
+    _i2.Member? member,
     int? eventId,
-    _i2.RegistrationStatus? registrationStatus,
+    _i3.Event? event,
+    _i4.RegistrationStatus? registrationStatus,
     DateTime? registrationDate,
     String? carPoolPreference,
     int? additionalGuests,
@@ -148,7 +168,9 @@ abstract class EventRegistration
       '__className__': 'EventRegistration',
       if (id != null) 'id': id,
       'memberId': memberId,
+      if (member != null) 'member': member?.toJson(),
       'eventId': eventId,
+      if (event != null) 'event': event?.toJson(),
       'registrationStatus': registrationStatus.toJson(),
       'registrationDate': registrationDate.toJson(),
       if (carPoolPreference != null) 'carPoolPreference': carPoolPreference,
@@ -170,7 +192,9 @@ abstract class EventRegistration
       '__className__': 'EventRegistration',
       if (id != null) 'id': id,
       'memberId': memberId,
+      if (member != null) 'member': member?.toJsonForProtocol(),
       'eventId': eventId,
+      if (event != null) 'event': event?.toJsonForProtocol(),
       'registrationStatus': registrationStatus.toJson(),
       'registrationDate': registrationDate.toJson(),
       if (carPoolPreference != null) 'carPoolPreference': carPoolPreference,
@@ -186,8 +210,14 @@ abstract class EventRegistration
     };
   }
 
-  static EventRegistrationInclude include() {
-    return EventRegistrationInclude._();
+  static EventRegistrationInclude include({
+    _i2.MemberInclude? member,
+    _i3.EventInclude? event,
+  }) {
+    return EventRegistrationInclude._(
+      member: member,
+      event: event,
+    );
   }
 
   static EventRegistrationIncludeList includeList({
@@ -222,8 +252,10 @@ class _EventRegistrationImpl extends EventRegistration {
   _EventRegistrationImpl({
     int? id,
     required int memberId,
+    _i2.Member? member,
     required int eventId,
-    required _i2.RegistrationStatus registrationStatus,
+    _i3.Event? event,
+    required _i4.RegistrationStatus registrationStatus,
     required DateTime registrationDate,
     String? carPoolPreference,
     int? additionalGuests,
@@ -238,7 +270,9 @@ class _EventRegistrationImpl extends EventRegistration {
   }) : super._(
          id: id,
          memberId: memberId,
+         member: member,
          eventId: eventId,
+         event: event,
          registrationStatus: registrationStatus,
          registrationDate: registrationDate,
          carPoolPreference: carPoolPreference,
@@ -260,8 +294,10 @@ class _EventRegistrationImpl extends EventRegistration {
   EventRegistration copyWith({
     Object? id = _Undefined,
     int? memberId,
+    Object? member = _Undefined,
     int? eventId,
-    _i2.RegistrationStatus? registrationStatus,
+    Object? event = _Undefined,
+    _i4.RegistrationStatus? registrationStatus,
     DateTime? registrationDate,
     Object? carPoolPreference = _Undefined,
     int? additionalGuests,
@@ -277,7 +313,9 @@ class _EventRegistrationImpl extends EventRegistration {
     return EventRegistration(
       id: id is int? ? id : this.id,
       memberId: memberId ?? this.memberId,
+      member: member is _i2.Member? ? member : this.member?.copyWith(),
       eventId: eventId ?? this.eventId,
+      event: event is _i3.Event? ? event : this.event?.copyWith(),
       registrationStatus: registrationStatus ?? this.registrationStatus,
       registrationDate: registrationDate ?? this.registrationDate,
       carPoolPreference: carPoolPreference is String?
@@ -316,8 +354,8 @@ class EventRegistrationUpdateTable
     value,
   );
 
-  _i1.ColumnValue<_i2.RegistrationStatus, _i2.RegistrationStatus>
-  registrationStatus(_i2.RegistrationStatus value) => _i1.ColumnValue(
+  _i1.ColumnValue<_i4.RegistrationStatus, _i4.RegistrationStatus>
+  registrationStatus(_i4.RegistrationStatus value) => _i1.ColumnValue(
     table.registrationStatus,
     value,
   );
@@ -456,9 +494,13 @@ class EventRegistrationTable extends _i1.Table<int?> {
 
   late final _i1.ColumnInt memberId;
 
+  _i2.MemberTable? _member;
+
   late final _i1.ColumnInt eventId;
 
-  late final _i1.ColumnEnum<_i2.RegistrationStatus> registrationStatus;
+  _i3.EventTable? _event;
+
+  late final _i1.ColumnEnum<_i4.RegistrationStatus> registrationStatus;
 
   late final _i1.ColumnDateTime registrationDate;
 
@@ -482,6 +524,32 @@ class EventRegistrationTable extends _i1.Table<int?> {
 
   late final _i1.ColumnBool noShow;
 
+  _i2.MemberTable get member {
+    if (_member != null) return _member!;
+    _member = _i1.createRelationTable(
+      relationFieldName: 'member',
+      field: EventRegistration.t.memberId,
+      foreignField: _i2.Member.t.id,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i2.MemberTable(tableRelation: foreignTableRelation),
+    );
+    return _member!;
+  }
+
+  _i3.EventTable get event {
+    if (_event != null) return _event!;
+    _event = _i1.createRelationTable(
+      relationFieldName: 'event',
+      field: EventRegistration.t.eventId,
+      foreignField: _i3.Event.t.id,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i3.EventTable(tableRelation: foreignTableRelation),
+    );
+    return _event!;
+  }
+
   @override
   List<_i1.Column> get columns => [
     id,
@@ -500,13 +568,37 @@ class EventRegistrationTable extends _i1.Table<int?> {
     modifiedAt,
     noShow,
   ];
+
+  @override
+  _i1.Table? getRelationTable(String relationField) {
+    if (relationField == 'member') {
+      return member;
+    }
+    if (relationField == 'event') {
+      return event;
+    }
+    return null;
+  }
 }
 
 class EventRegistrationInclude extends _i1.IncludeObject {
-  EventRegistrationInclude._();
+  EventRegistrationInclude._({
+    _i2.MemberInclude? member,
+    _i3.EventInclude? event,
+  }) {
+    _member = member;
+    _event = event;
+  }
+
+  _i2.MemberInclude? _member;
+
+  _i3.EventInclude? _event;
 
   @override
-  Map<String, _i1.Include?> get includes => {};
+  Map<String, _i1.Include?> get includes => {
+    'member': _member,
+    'event': _event,
+  };
 
   @override
   _i1.Table<int?> get table => EventRegistration.t;
@@ -534,6 +626,8 @@ class EventRegistrationIncludeList extends _i1.IncludeList {
 
 class EventRegistrationRepository {
   const EventRegistrationRepository._();
+
+  final attachRow = const EventRegistrationAttachRowRepository._();
 
   /// Returns a list of [EventRegistration]s matching the given query parameters.
   ///
@@ -566,6 +660,7 @@ class EventRegistrationRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<EventRegistrationTable>? orderByList,
     _i1.Transaction? transaction,
+    EventRegistrationInclude? include,
   }) async {
     return session.db.find<EventRegistration>(
       where: where?.call(EventRegistration.t),
@@ -575,6 +670,7 @@ class EventRegistrationRepository {
       limit: limit,
       offset: offset,
       transaction: transaction,
+      include: include,
     );
   }
 
@@ -603,6 +699,7 @@ class EventRegistrationRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<EventRegistrationTable>? orderByList,
     _i1.Transaction? transaction,
+    EventRegistrationInclude? include,
   }) async {
     return session.db.findFirstRow<EventRegistration>(
       where: where?.call(EventRegistration.t),
@@ -611,6 +708,7 @@ class EventRegistrationRepository {
       orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
+      include: include,
     );
   }
 
@@ -619,10 +717,12 @@ class EventRegistrationRepository {
     _i1.Session session,
     int id, {
     _i1.Transaction? transaction,
+    EventRegistrationInclude? include,
   }) async {
     return session.db.findById<EventRegistration>(
       id,
       transaction: transaction,
+      include: include,
     );
   }
 
@@ -782,6 +882,56 @@ class EventRegistrationRepository {
     return session.db.count<EventRegistration>(
       where: where?.call(EventRegistration.t),
       limit: limit,
+      transaction: transaction,
+    );
+  }
+}
+
+class EventRegistrationAttachRowRepository {
+  const EventRegistrationAttachRowRepository._();
+
+  /// Creates a relation between the given [EventRegistration] and [Member]
+  /// by setting the [EventRegistration]'s foreign key `memberId` to refer to the [Member].
+  Future<void> member(
+    _i1.Session session,
+    EventRegistration eventRegistration,
+    _i2.Member member, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (eventRegistration.id == null) {
+      throw ArgumentError.notNull('eventRegistration.id');
+    }
+    if (member.id == null) {
+      throw ArgumentError.notNull('member.id');
+    }
+
+    var $eventRegistration = eventRegistration.copyWith(memberId: member.id);
+    await session.db.updateRow<EventRegistration>(
+      $eventRegistration,
+      columns: [EventRegistration.t.memberId],
+      transaction: transaction,
+    );
+  }
+
+  /// Creates a relation between the given [EventRegistration] and [Event]
+  /// by setting the [EventRegistration]'s foreign key `eventId` to refer to the [Event].
+  Future<void> event(
+    _i1.Session session,
+    EventRegistration eventRegistration,
+    _i3.Event event, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (eventRegistration.id == null) {
+      throw ArgumentError.notNull('eventRegistration.id');
+    }
+    if (event.id == null) {
+      throw ArgumentError.notNull('event.id');
+    }
+
+    var $eventRegistration = eventRegistration.copyWith(eventId: event.id);
+    await session.db.updateRow<EventRegistration>(
+      $eventRegistration,
+      columns: [EventRegistration.t.eventId],
       transaction: transaction,
     );
   }

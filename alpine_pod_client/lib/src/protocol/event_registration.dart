@@ -11,13 +11,18 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
-import 'registration_status.dart' as _i2;
+import 'member.dart' as _i2;
+import 'event.dart' as _i3;
+import 'registration_status.dart' as _i4;
+import 'package:alpine_pod_client/src/protocol/protocol.dart' as _i5;
 
 abstract class EventRegistration implements _i1.SerializableModel {
   EventRegistration._({
     this.id,
     required this.memberId,
+    this.member,
     required this.eventId,
+    this.event,
     required this.registrationStatus,
     required this.registrationDate,
     this.carPoolPreference,
@@ -38,8 +43,10 @@ abstract class EventRegistration implements _i1.SerializableModel {
   factory EventRegistration({
     int? id,
     required int memberId,
+    _i2.Member? member,
     required int eventId,
-    required _i2.RegistrationStatus registrationStatus,
+    _i3.Event? event,
+    required _i4.RegistrationStatus registrationStatus,
     required DateTime registrationDate,
     String? carPoolPreference,
     int? additionalGuests,
@@ -57,8 +64,14 @@ abstract class EventRegistration implements _i1.SerializableModel {
     return EventRegistration(
       id: jsonSerialization['id'] as int?,
       memberId: jsonSerialization['memberId'] as int,
+      member: jsonSerialization['member'] == null
+          ? null
+          : _i5.Protocol().deserialize<_i2.Member>(jsonSerialization['member']),
       eventId: jsonSerialization['eventId'] as int,
-      registrationStatus: _i2.RegistrationStatus.fromJson(
+      event: jsonSerialization['event'] == null
+          ? null
+          : _i5.Protocol().deserialize<_i3.Event>(jsonSerialization['event']),
+      registrationStatus: _i4.RegistrationStatus.fromJson(
         (jsonSerialization['registrationStatus'] as String),
       ),
       registrationDate: _i1.DateTimeJsonExtension.fromJson(
@@ -90,9 +103,13 @@ abstract class EventRegistration implements _i1.SerializableModel {
 
   int memberId;
 
+  _i2.Member? member;
+
   int eventId;
 
-  _i2.RegistrationStatus registrationStatus;
+  _i3.Event? event;
+
+  _i4.RegistrationStatus registrationStatus;
 
   DateTime registrationDate;
 
@@ -122,8 +139,10 @@ abstract class EventRegistration implements _i1.SerializableModel {
   EventRegistration copyWith({
     int? id,
     int? memberId,
+    _i2.Member? member,
     int? eventId,
-    _i2.RegistrationStatus? registrationStatus,
+    _i3.Event? event,
+    _i4.RegistrationStatus? registrationStatus,
     DateTime? registrationDate,
     String? carPoolPreference,
     int? additionalGuests,
@@ -142,7 +161,9 @@ abstract class EventRegistration implements _i1.SerializableModel {
       '__className__': 'EventRegistration',
       if (id != null) 'id': id,
       'memberId': memberId,
+      if (member != null) 'member': member?.toJson(),
       'eventId': eventId,
+      if (event != null) 'event': event?.toJson(),
       'registrationStatus': registrationStatus.toJson(),
       'registrationDate': registrationDate.toJson(),
       if (carPoolPreference != null) 'carPoolPreference': carPoolPreference,
@@ -170,8 +191,10 @@ class _EventRegistrationImpl extends EventRegistration {
   _EventRegistrationImpl({
     int? id,
     required int memberId,
+    _i2.Member? member,
     required int eventId,
-    required _i2.RegistrationStatus registrationStatus,
+    _i3.Event? event,
+    required _i4.RegistrationStatus registrationStatus,
     required DateTime registrationDate,
     String? carPoolPreference,
     int? additionalGuests,
@@ -186,7 +209,9 @@ class _EventRegistrationImpl extends EventRegistration {
   }) : super._(
          id: id,
          memberId: memberId,
+         member: member,
          eventId: eventId,
+         event: event,
          registrationStatus: registrationStatus,
          registrationDate: registrationDate,
          carPoolPreference: carPoolPreference,
@@ -208,8 +233,10 @@ class _EventRegistrationImpl extends EventRegistration {
   EventRegistration copyWith({
     Object? id = _Undefined,
     int? memberId,
+    Object? member = _Undefined,
     int? eventId,
-    _i2.RegistrationStatus? registrationStatus,
+    Object? event = _Undefined,
+    _i4.RegistrationStatus? registrationStatus,
     DateTime? registrationDate,
     Object? carPoolPreference = _Undefined,
     int? additionalGuests,
@@ -225,7 +252,9 @@ class _EventRegistrationImpl extends EventRegistration {
     return EventRegistration(
       id: id is int? ? id : this.id,
       memberId: memberId ?? this.memberId,
+      member: member is _i2.Member? ? member : this.member?.copyWith(),
       eventId: eventId ?? this.eventId,
+      event: event is _i3.Event? ? event : this.event?.copyWith(),
       registrationStatus: registrationStatus ?? this.registrationStatus,
       registrationDate: registrationDate ?? this.registrationDate,
       carPoolPreference: carPoolPreference is String?

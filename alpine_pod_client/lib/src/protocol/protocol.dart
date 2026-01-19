@@ -24,11 +24,12 @@ import 'section_membership.dart' as _i11;
 import 'package:alpine_pod_client/src/protocol/section.dart' as _i12;
 import 'package:alpine_pod_client/src/protocol/event.dart' as _i13;
 import 'package:alpine_pod_client/src/protocol/member.dart' as _i14;
-import 'package:alpine_pod_client/src/protocol/event_trip_leader.dart' as _i15;
+import 'package:alpine_pod_client/src/protocol/event_registration.dart' as _i15;
+import 'package:alpine_pod_client/src/protocol/event_trip_leader.dart' as _i16;
 import 'package:serverpod_auth_idp_client/serverpod_auth_idp_client.dart'
-    as _i16;
-import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart'
     as _i17;
+import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart'
+    as _i18;
 export 'event.dart';
 export 'event_document.dart';
 export 'event_registration.dart';
@@ -150,17 +151,23 @@ class Protocol extends _i1.SerializationManager {
       return (data as List).map((e) => deserialize<_i14.Member>(e)).toList()
           as T;
     }
-    if (t == List<_i15.EventTripLeader>) {
+    if (t == List<_i15.EventRegistration>) {
       return (data as List)
-              .map((e) => deserialize<_i15.EventTripLeader>(e))
+              .map((e) => deserialize<_i15.EventRegistration>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_i16.EventTripLeader>) {
+      return (data as List)
+              .map((e) => deserialize<_i16.EventTripLeader>(e))
               .toList()
           as T;
     }
     try {
-      return _i16.Protocol().deserialize<T>(data, t);
+      return _i17.Protocol().deserialize<T>(data, t);
     } on _i1.DeserializationTypeNotFoundException catch (_) {}
     try {
-      return _i17.Protocol().deserialize<T>(data, t);
+      return _i18.Protocol().deserialize<T>(data, t);
     } on _i1.DeserializationTypeNotFoundException catch (_) {}
     return super.deserialize<T>(data, t);
   }
@@ -212,11 +219,11 @@ class Protocol extends _i1.SerializationManager {
       case _i11.SectionMembership():
         return 'SectionMembership';
     }
-    className = _i16.Protocol().getClassNameForObject(data);
+    className = _i17.Protocol().getClassNameForObject(data);
     if (className != null) {
       return 'serverpod_auth_idp.$className';
     }
-    className = _i17.Protocol().getClassNameForObject(data);
+    className = _i18.Protocol().getClassNameForObject(data);
     if (className != null) {
       return 'serverpod_auth_core.$className';
     }
@@ -261,11 +268,11 @@ class Protocol extends _i1.SerializationManager {
     }
     if (dataClassName.startsWith('serverpod_auth_idp.')) {
       data['className'] = dataClassName.substring(19);
-      return _i16.Protocol().deserializeByClassName(data);
+      return _i17.Protocol().deserializeByClassName(data);
     }
     if (dataClassName.startsWith('serverpod_auth_core.')) {
       data['className'] = dataClassName.substring(20);
-      return _i17.Protocol().deserializeByClassName(data);
+      return _i18.Protocol().deserializeByClassName(data);
     }
     return super.deserializeByClassName(data);
   }
@@ -280,10 +287,10 @@ class Protocol extends _i1.SerializationManager {
       return null;
     }
     try {
-      return _i16.Protocol().mapRecordToJson(record);
+      return _i17.Protocol().mapRecordToJson(record);
     } catch (_) {}
     try {
-      return _i17.Protocol().mapRecordToJson(record);
+      return _i18.Protocol().mapRecordToJson(record);
     } catch (_) {}
     throw Exception('Unsupported record type ${record.runtimeType}');
   }

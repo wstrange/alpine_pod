@@ -29,7 +29,9 @@ import 'section_membership.dart' as _i14;
 import 'package:alpine_pod_server/src/generated/section.dart' as _i15;
 import 'package:alpine_pod_server/src/generated/event.dart' as _i16;
 import 'package:alpine_pod_server/src/generated/member.dart' as _i17;
-import 'package:alpine_pod_server/src/generated/event_trip_leader.dart' as _i18;
+import 'package:alpine_pod_server/src/generated/event_registration.dart'
+    as _i18;
+import 'package:alpine_pod_server/src/generated/event_trip_leader.dart' as _i19;
 export 'event.dart';
 export 'event_document.dart';
 export 'event_registration.dart';
@@ -226,7 +228,28 @@ class Protocol extends _i1.SerializationManagerServer {
           columnDefault: 'false',
         ),
       ],
-      foreignKeys: [],
+      foreignKeys: [
+        _i2.ForeignKeyDefinition(
+          constraintName: 'event_registrations_fk_0',
+          columns: ['memberId'],
+          referenceTable: 'members',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _i2.ForeignKeyAction.noAction,
+          onDelete: _i2.ForeignKeyAction.noAction,
+          matchType: null,
+        ),
+        _i2.ForeignKeyDefinition(
+          constraintName: 'event_registrations_fk_1',
+          columns: ['eventId'],
+          referenceTable: 'events',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _i2.ForeignKeyAction.noAction,
+          onDelete: _i2.ForeignKeyAction.noAction,
+          matchType: null,
+        ),
+      ],
       indexes: [
         _i2.IndexDefinition(
           indexName: 'event_registrations_pkey',
@@ -1135,9 +1158,15 @@ class Protocol extends _i1.SerializationManagerServer {
       return (data as List).map((e) => deserialize<_i17.Member>(e)).toList()
           as T;
     }
-    if (t == List<_i18.EventTripLeader>) {
+    if (t == List<_i18.EventRegistration>) {
       return (data as List)
-              .map((e) => deserialize<_i18.EventTripLeader>(e))
+              .map((e) => deserialize<_i18.EventRegistration>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_i19.EventTripLeader>) {
+      return (data as List)
+              .map((e) => deserialize<_i19.EventTripLeader>(e))
               .toList()
           as T;
     }

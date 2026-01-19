@@ -406,6 +406,14 @@ class EndpointRegistration extends _i2.EndpointRef {
         'cancelRegistration',
         {'registrationId': registrationId},
       );
+
+  _i3.Future<List<_i9.EventRegistration>> getRegistrationsForEvent(
+    int eventId,
+  ) => caller.callServerEndpoint<List<_i9.EventRegistration>>(
+    'registration',
+    'getRegistrationsForEvent',
+    {'eventId': eventId},
+  );
 }
 
 /// {@category Endpoint}

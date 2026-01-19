@@ -36,4 +36,7 @@ final sectionBeacon = Beacon.writable<Section?>(null);
 //   return e;
 // });
 
-final currentEventsBeacon = Beacon.list<Event>([]);
+final currentEventsBeacon = Beacon.future(() async {
+  final s = sectionBeacon.value;
+  return await client.event.listEvents(s?.id);
+});

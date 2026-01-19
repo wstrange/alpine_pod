@@ -1,5 +1,6 @@
 import 'package:alpine_pod_client/alpine_pod_client.dart';
 import 'package:flutter/material.dart';
+import '../beacon.dart';
 import '../util.dart';
 
 class EventView extends StatelessWidget {
@@ -10,12 +11,14 @@ class EventView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(8.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(event.title, style: Theme.of(context).textTheme.headlineSmall),
           const SizedBox(height: 8),
+          Text('Starts: ${eventDateFormat(event.startTime)}'),
+          Text('Ends: ${eventDateFormat(event.endTime)}'),
           const SizedBox(height: 8),
           Builder(
             builder: (context) {
@@ -23,8 +26,8 @@ class EventView extends StatelessWidget {
               final lineHeight = style.fontSize! * (style.height ?? 1.2);
               return ConstrainedBox(
                 constraints: BoxConstraints(
-                  maxHeight: 30 * lineHeight,
-                  minHeight: 5 * lineHeight,
+                  maxHeight: 15 * lineHeight,
+                  minHeight: 3 * lineHeight,
                 ),
                 child: SingleChildScrollView(
                   child: Text(event.description),
@@ -32,11 +35,57 @@ class EventView extends StatelessWidget {
               );
             },
           ),
-          const SizedBox(height: 8),
-          Text('Starts: ${eventDateFormat(event.startTime)}'),
-          Text('Ends: ${eventDateFormat(event.endTime)}'),
-          const SizedBox(height: 8),
+          const SizedBox(height: 16),
           Text('Location: ${event.location}'),
+          const Divider(),
+          FutureBuilder<List<EventRegistration>>(
+            future: client.registration.getRegistrationsForEvent(event.id!),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              if (snapshot.hasError) {
+                return Text('Error loading registrations: ${snapshot.error}');
+              }
+              final registrations = snapshot.data ?? [];
+              final confirmed = registrations
+                  .where((r) =>
+                      r.registrationStatus == RegistrationStatus.confirmed)
+                  .toList();
+              final waitlisted = registrations
+                  .where((r) =>
+                      r.registrationStatus == RegistrationStatus.waitlisted)
+                  .toList();
+
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (confirmed.isNotEmpty) ...[
+                    Text('Confirmed Participants (${confirmed.length})',
+                        style: Theme.of(context).textTheme.titleMedium),
+                    ...confirmed.map((r) => ListTile(
+                          title: Text(r.member?.displayName ??
+                              '${r.member?.firstName} ${r.member?.lastName}'),
+                          dense: true,
+                        )),
+                    const SizedBox(height: 8),
+                  ],
+                  if (waitlisted.isNotEmpty) ...[
+                    Text('Waitlist (${waitlisted.length})',
+                        style: Theme.of(context).textTheme.titleMedium),
+                    ...waitlisted.map((r) => ListTile(
+                          title: Text(r.member?.displayName ??
+                              '${r.member?.firstName} ${r.member?.lastName}'),
+                          subtitle: Text('Position: ${r.waitlistPosition}'),
+                          dense: true,
+                        )),
+                  ],
+                  if (confirmed.isEmpty && waitlisted.isEmpty)
+                    const Text('No registrations yet.'),
+                ],
+              );
+            },
+          ),
         ],
       ),
     );

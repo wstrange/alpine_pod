@@ -39,7 +39,18 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
       ),
-      body: EventListDisplay(eventsValue),
+      body: switch (eventsValue) {
+        AsyncData(:final value) => EventListDisplay(value),
+        AsyncError(:final error) => Center(
+            child: Text('Error loading events: $error'),
+          ),
+        AsyncLoading() => const Center(
+            child: CircularProgressIndicator(),
+          ),
+        AsyncIdle() => const Center(
+            child: Text('Select a section to view events'),
+          ),
+      },
     );
   }
 }
@@ -54,13 +65,36 @@ class EventListDisplay extends StatelessWidget {
     return ListView.builder(
         itemCount: events.length,
         itemBuilder: (context, i) {
+          final event = events[i];
+          final startDate = event.startTime.toLocal();
+          final endDate = event.endTime.toLocal();
+          final description = event.description;
+          final truncatedDesc = description.length > 30
+              ? '${description.substring(0, 30)}...'
+              : description;
+
           return ListTile(
-            title: Text(events[i].title),
+            title: Text(event.title),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '${_formatDateTime(startDate)} - ${_formatDateTime(endDate)}',
+                  style: const TextStyle(fontSize: 12),
+                ),
+                if (truncatedDesc.isNotEmpty)
+                  Text(
+                    truncatedDesc,
+                    style: const TextStyle(
+                        fontSize: 12, fontStyle: FontStyle.italic),
+                  ),
+              ],
+            ),
             onTap: () {
               showDialog(
                 context: context,
                 builder: (context) => AlertDialog(
-                  title: Text(events[i].title),
+                  // title: Text(events[i].title),
                   content: EventView(event: events[i]),
                   actions: [
                     TextButton(
@@ -75,6 +109,50 @@ class EventListDisplay extends StatelessWidget {
                       },
                       child: const Text('Edit'),
                     ),
+                    TextButton(
+                      onPressed: () async {
+                        try {
+                          final member = await client.member.getCurrentMember();
+                          if (member == null) {
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text('User member not found')),
+                              );
+                            }
+                            return;
+                          }
+
+                          final registration = EventRegistration(
+                            memberId: member.id!,
+                            eventId: event.id!,
+                            registrationStatus: RegistrationStatus.pending,
+                            registrationDate: DateTime.now(),
+                            waiverAccepted: true, // Assuming true for now
+                            modifiedAt: DateTime.now(),
+                          );
+
+                          await client.registration
+                              .registerForEvent(registration);
+
+                          if (context.mounted) {
+                            Navigator.of(context).pop();
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                  content: Text(
+                                      'Successfully registered for ${event.title}')),
+                            );
+                          }
+                        } catch (e) {
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Failed to register: $e')),
+                            );
+                          }
+                        }
+                      },
+                      child: const Text('Register'),
+                    ),
                   ],
                 ),
               );
@@ -82,4 +160,8 @@ class EventListDisplay extends StatelessWidget {
           );
         });
   }
+}
+
+String _formatDateTime(DateTime dt) {
+  return '${dt.month}/${dt.day}/${dt.year} ${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
 }
