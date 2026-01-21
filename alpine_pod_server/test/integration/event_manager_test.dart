@@ -88,9 +88,28 @@ void main() {
     });
 
     test('Assign and list event managers', () async {
+      // Creator is already assigned as a manager
+      final initialManagers = await endpoints.eventManager.listEventManagers(
+        adminAuth,
+        event.id!,
+      );
+      expect(initialManagers.length, equals(1));
+
+      // Create another member to assign
+      final session = sessionBuilder.build();
+      final otherAuthUser = await AuthServices.instance.authUsers.create(
+        session,
+      );
+      final otherMember = await endpoints.member.createMember(
+        adminAuth,
+        genData.member(
+            userId: otherAuthUser.id,
+            email: 'other-${Uuid().v4()}@example.com'),
+      );
+
       final manager = EventManager(
         eventId: event.id!,
-        memberId: member.id!,
+        memberId: otherMember.id!,
       );
 
       final assigned = await endpoints.eventManager.assignEventManager(
@@ -100,15 +119,14 @@ void main() {
 
       expect(assigned.id, isNotNull);
       expect(assigned.eventId, equals(event.id));
-      expect(assigned.memberId, equals(member.id));
+      expect(assigned.memberId, equals(otherMember.id));
 
       final managers = await endpoints.eventManager.listEventManagers(
         adminAuth,
         event.id!,
       );
 
-      expect(managers.length, equals(1));
-      expect(managers.first.memberId, equals(member.id));
+      expect(managers.length, equals(2));
     });
 
     test('Remove event manager', () async {

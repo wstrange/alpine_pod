@@ -1,0 +1,6 @@
+class: EventDetails
+fields:
+  event: Event
+  registrants: List<EventRegistration>
+  waitlist: List<EventRegistration>
+  managers: List<EventManager>

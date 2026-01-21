@@ -38,28 +38,34 @@ class EventView extends StatelessWidget {
           const SizedBox(height: 16),
           Text('Location: ${event.location}'),
           const Divider(),
-          FutureBuilder<List<EventRegistration>>(
-            future: client.registration.getRegistrationsForEvent(event.id!),
+          FutureBuilder<EventDetails>(
+            future: client.event.getEventDetails(event.id!),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
               }
               if (snapshot.hasError) {
-                return Text('Error loading registrations: ${snapshot.error}');
+                return Text('Error loading event details: ${snapshot.error}');
               }
-              final registrations = snapshot.data ?? [];
-              final confirmed = registrations
-                  .where((r) =>
-                      r.registrationStatus == RegistrationStatus.confirmed)
-                  .toList();
-              final waitlisted = registrations
-                  .where((r) =>
-                      r.registrationStatus == RegistrationStatus.waitlisted)
-                  .toList();
+              final details = snapshot.data!;
+              final confirmed = details.registrants;
+              final waitlisted = details.waitlist;
+              final managers = details.managers;
 
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  if (managers.isNotEmpty) ...[
+                    Text('Event Managers',
+                        style: Theme.of(context).textTheme.titleMedium),
+                    ...managers.map((m) => ListTile(
+                          leading: const Icon(Icons.stars, color: Colors.blue),
+                          title: Text(m.member?.displayName ??
+                              '${m.member?.firstName} ${m.member?.lastName}'),
+                          dense: true,
+                        )),
+                    const SizedBox(height: 8),
+                  ],
                   if (confirmed.isNotEmpty) ...[
                     Text('Confirmed Participants (${confirmed.length})',
                         style: Theme.of(context).textTheme.titleMedium),
@@ -80,8 +86,10 @@ class EventView extends StatelessWidget {
                           dense: true,
                         )),
                   ],
-                  if (confirmed.isEmpty && waitlisted.isEmpty)
-                    const Text('No registrations yet.'),
+                  if (confirmed.isEmpty &&
+                      waitlisted.isEmpty &&
+                      managers.isEmpty)
+                    const Text('No registrations or managers yet.'),
                 ],
               );
             },

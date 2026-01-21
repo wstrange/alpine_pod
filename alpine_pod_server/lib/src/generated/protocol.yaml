@@ -20,6 +20,7 @@ event:
   - updateEvent:
   - deleteEvent:
   - listEvents:
+  - getEventDetails:
 eventManager:
   - assignEventManager:
   - removeEventManager:
