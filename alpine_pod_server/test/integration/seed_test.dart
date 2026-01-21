@@ -46,15 +46,27 @@ void main() {
 
     var session = authSession.build();
 
-    test('Delete sections ', () async {
-      final m = await endpoints.admin.listSections(authSession);
-      for (var section in m) {
-        print('deleting section: $section');
-        await endpoints.admin.deleteSection(authSession, section.id!);
-      }
-      final postDeleteMembers = await endpoints.admin.listSections(authSession);
-      expect(postDeleteMembers.length, equals(0));
-    }, skip: false);
+    test('Clean up database', () async {
+      await session.db.unsafeSimpleExecute(
+          r'TRUNCATE public.serverpod_auth_core_user CASCADE');
+      await session.db.unsafeSimpleExecute(
+          r'TRUNCATE public.serverpod_auth_idp_email_account CASCADE');
+      await session.db
+          .unsafeSimpleExecute(r'TRUNCATE public.section_memberships CASCADE');
+      await session.db.unsafeSimpleExecute(r'TRUNCATE public.members CASCADE');
+      await session.db.unsafeSimpleExecute(r'TRUNCATE public.events CASCADE');
+      await session.db.unsafeSimpleExecute(r'TRUNCATE public.sections CASCADE');
+    });
+
+    test('Clean up test users', () async {
+      await session.db.unsafeSimpleExecute(
+          r'TRUNCATE public.serverpod_auth_core_user CASCADE');
+      await session.db.unsafeSimpleExecute(
+          r'TRUNCATE public.serverpod_auth_idp_email_account CASCADE');
+      await session.db
+          .unsafeSimpleExecute(r'TRUNCATE public.section_memberships CASCADE');
+      await session.db.unsafeSimpleExecute(r'TRUNCATE public.members CASCADE');
+    }, skip: true); // we only run this as needed
 
     test('Create Default Sections', () async {
       for (final s in [
@@ -91,16 +103,6 @@ void main() {
       );
 
       print('Created Admin: $emailAccountId');
-    });
-
-    test('Clean up test users', () async {
-      await session.db
-          .unsafeSimpleExecute(r'TRUNCATE serverpod_user_info CASCADE');
-      await session.db
-          .unsafeSimpleExecute(r'TRUNCATE serverpod_email_auth CASCADE');
-      await session.db
-          .unsafeSimpleExecute(r'TRUNCATE public.section_memberships CASCADE');
-      await session.db.unsafeSimpleExecute(r'TRUNCATE public.members CASCADE');
     });
 
     test('Create Some test users', () async {

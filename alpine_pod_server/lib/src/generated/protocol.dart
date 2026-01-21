@@ -18,8 +18,8 @@ import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
     as _i4;
 import 'event.dart' as _i5;
 import 'event_document.dart' as _i6;
-import 'event_registration.dart' as _i7;
-import 'event_trip_leader.dart' as _i8;
+import 'event_manager.dart' as _i7;
+import 'event_registration.dart' as _i8;
 import 'event_type.dart' as _i9;
 import 'member.dart' as _i10;
 import 'notification.dart' as _i11;
@@ -28,14 +28,14 @@ import 'section.dart' as _i13;
 import 'section_membership.dart' as _i14;
 import 'package:alpine_pod_server/src/generated/section.dart' as _i15;
 import 'package:alpine_pod_server/src/generated/event.dart' as _i16;
-import 'package:alpine_pod_server/src/generated/member.dart' as _i17;
+import 'package:alpine_pod_server/src/generated/event_manager.dart' as _i17;
+import 'package:alpine_pod_server/src/generated/member.dart' as _i18;
 import 'package:alpine_pod_server/src/generated/event_registration.dart'
-    as _i18;
-import 'package:alpine_pod_server/src/generated/event_trip_leader.dart' as _i19;
+    as _i19;
 export 'event.dart';
 export 'event_document.dart';
+export 'event_manager.dart';
 export 'event_registration.dart';
-export 'event_trip_leader.dart';
 export 'event_type.dart';
 export 'member.dart';
 export 'notification.dart';
@@ -121,6 +121,94 @@ class Protocol extends _i1.SerializationManagerServer {
           ],
           type: 'btree',
           isUnique: false,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _i2.TableDefinition(
+      name: 'event_managers',
+      dartName: 'EventManager',
+      schema: 'public',
+      module: 'alpine_pod',
+      columns: [
+        _i2.ColumnDefinition(
+          name: 'id',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'nextval(\'event_managers_id_seq\'::regclass)',
+        ),
+        _i2.ColumnDefinition(
+          name: 'eventId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'memberId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'assignedAt',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: true,
+          dartType: 'DateTime?',
+        ),
+      ],
+      foreignKeys: [
+        _i2.ForeignKeyDefinition(
+          constraintName: 'event_managers_fk_0',
+          columns: ['eventId'],
+          referenceTable: 'events',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _i2.ForeignKeyAction.noAction,
+          onDelete: _i2.ForeignKeyAction.cascade,
+          matchType: null,
+        ),
+        _i2.ForeignKeyDefinition(
+          constraintName: 'event_managers_fk_1',
+          columns: ['memberId'],
+          referenceTable: 'members',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _i2.ForeignKeyAction.noAction,
+          onDelete: _i2.ForeignKeyAction.cascade,
+          matchType: null,
+        ),
+      ],
+      indexes: [
+        _i2.IndexDefinition(
+          indexName: 'event_managers_pkey',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'id',
+            ),
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: true,
+        ),
+        _i2.IndexDefinition(
+          indexName: 'event_manager_idx',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'eventId',
+            ),
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'memberId',
+            ),
+          ],
+          type: 'btree',
+          isUnique: true,
           isPrimary: false,
         ),
       ],
@@ -313,84 +401,6 @@ class Protocol extends _i1.SerializationManagerServer {
           ],
           type: 'btree',
           isUnique: false,
-          isPrimary: false,
-        ),
-      ],
-      managed: true,
-    ),
-    _i2.TableDefinition(
-      name: 'event_trip_leaders',
-      dartName: 'EventTripLeader',
-      schema: 'public',
-      module: 'alpine_pod',
-      columns: [
-        _i2.ColumnDefinition(
-          name: 'id',
-          columnType: _i2.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int?',
-          columnDefault: 'nextval(\'event_trip_leaders_id_seq\'::regclass)',
-        ),
-        _i2.ColumnDefinition(
-          name: 'eventId',
-          columnType: _i2.ColumnType.bigint,
-          isNullable: true,
-          dartType: 'int?',
-        ),
-        _i2.ColumnDefinition(
-          name: 'userId',
-          columnType: _i2.ColumnType.uuid,
-          isNullable: false,
-          dartType: 'UuidValue',
-        ),
-        _i2.ColumnDefinition(
-          name: 'assignedAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
-          isNullable: true,
-          dartType: 'DateTime?',
-        ),
-      ],
-      foreignKeys: [
-        _i2.ForeignKeyDefinition(
-          constraintName: 'event_trip_leaders_fk_0',
-          columns: ['userId'],
-          referenceTable: 'serverpod_auth_core_user',
-          referenceTableSchema: 'public',
-          referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.cascade,
-          matchType: null,
-        ),
-      ],
-      indexes: [
-        _i2.IndexDefinition(
-          indexName: 'event_trip_leaders_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            ),
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        ),
-        _i2.IndexDefinition(
-          indexName: 'event_leader_idx',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'eventId',
-            ),
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'userId',
-            ),
-          ],
-          type: 'btree',
-          isUnique: true,
           isPrimary: false,
         ),
       ],
@@ -1088,11 +1098,11 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i6.EventDocument) {
       return _i6.EventDocument.fromJson(data) as T;
     }
-    if (t == _i7.EventRegistration) {
-      return _i7.EventRegistration.fromJson(data) as T;
+    if (t == _i7.EventManager) {
+      return _i7.EventManager.fromJson(data) as T;
     }
-    if (t == _i8.EventTripLeader) {
-      return _i8.EventTripLeader.fromJson(data) as T;
+    if (t == _i8.EventRegistration) {
+      return _i8.EventRegistration.fromJson(data) as T;
     }
     if (t == _i9.EventType) {
       return _i9.EventType.fromJson(data) as T;
@@ -1118,11 +1128,11 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i1.getType<_i6.EventDocument?>()) {
       return (data != null ? _i6.EventDocument.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i7.EventRegistration?>()) {
-      return (data != null ? _i7.EventRegistration.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i7.EventManager?>()) {
+      return (data != null ? _i7.EventManager.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i8.EventTripLeader?>()) {
-      return (data != null ? _i8.EventTripLeader.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i8.EventRegistration?>()) {
+      return (data != null ? _i8.EventRegistration.fromJson(data) : null) as T;
     }
     if (t == _i1.getType<_i9.EventType?>()) {
       return (data != null ? _i9.EventType.fromJson(data) : null) as T;
@@ -1154,19 +1164,19 @@ class Protocol extends _i1.SerializationManagerServer {
       return (data as List).map((e) => deserialize<_i16.Event>(e)).toList()
           as T;
     }
-    if (t == List<_i17.Member>) {
-      return (data as List).map((e) => deserialize<_i17.Member>(e)).toList()
-          as T;
-    }
-    if (t == List<_i18.EventRegistration>) {
+    if (t == List<_i17.EventManager>) {
       return (data as List)
-              .map((e) => deserialize<_i18.EventRegistration>(e))
+              .map((e) => deserialize<_i17.EventManager>(e))
               .toList()
           as T;
     }
-    if (t == List<_i19.EventTripLeader>) {
+    if (t == List<_i18.Member>) {
+      return (data as List).map((e) => deserialize<_i18.Member>(e)).toList()
+          as T;
+    }
+    if (t == List<_i19.EventRegistration>) {
       return (data as List)
-              .map((e) => deserialize<_i19.EventTripLeader>(e))
+              .map((e) => deserialize<_i19.EventRegistration>(e))
               .toList()
           as T;
     }
@@ -1186,8 +1196,8 @@ class Protocol extends _i1.SerializationManagerServer {
     return switch (type) {
       _i5.Event => 'Event',
       _i6.EventDocument => 'EventDocument',
-      _i7.EventRegistration => 'EventRegistration',
-      _i8.EventTripLeader => 'EventTripLeader',
+      _i7.EventManager => 'EventManager',
+      _i8.EventRegistration => 'EventRegistration',
       _i9.EventType => 'EventType',
       _i10.Member => 'Member',
       _i11.Notification => 'Notification',
@@ -1212,10 +1222,10 @@ class Protocol extends _i1.SerializationManagerServer {
         return 'Event';
       case _i6.EventDocument():
         return 'EventDocument';
-      case _i7.EventRegistration():
+      case _i7.EventManager():
+        return 'EventManager';
+      case _i8.EventRegistration():
         return 'EventRegistration';
-      case _i8.EventTripLeader():
-        return 'EventTripLeader';
       case _i9.EventType():
         return 'EventType';
       case _i10.Member():
@@ -1256,11 +1266,11 @@ class Protocol extends _i1.SerializationManagerServer {
     if (dataClassName == 'EventDocument') {
       return deserialize<_i6.EventDocument>(data['data']);
     }
-    if (dataClassName == 'EventRegistration') {
-      return deserialize<_i7.EventRegistration>(data['data']);
+    if (dataClassName == 'EventManager') {
+      return deserialize<_i7.EventManager>(data['data']);
     }
-    if (dataClassName == 'EventTripLeader') {
-      return deserialize<_i8.EventTripLeader>(data['data']);
+    if (dataClassName == 'EventRegistration') {
+      return deserialize<_i8.EventRegistration>(data['data']);
     }
     if (dataClassName == 'EventType') {
       return deserialize<_i9.EventType>(data['data']);
@@ -1320,10 +1330,10 @@ class Protocol extends _i1.SerializationManagerServer {
         return _i5.Event.t;
       case _i6.EventDocument:
         return _i6.EventDocument.t;
-      case _i7.EventRegistration:
-        return _i7.EventRegistration.t;
-      case _i8.EventTripLeader:
-        return _i8.EventTripLeader.t;
+      case _i7.EventManager:
+        return _i7.EventManager.t;
+      case _i8.EventRegistration:
+        return _i8.EventRegistration.t;
       case _i10.Member:
         return _i10.Member.t;
       case _i11.Notification:

@@ -1,11 +1,14 @@
 import 'package:serverpod/serverpod.dart';
+import 'package:serverpod_auth_idp_server/core.dart';
 import '../generated/protocol.dart';
 
 class EventEndpoint extends Endpoint {
   void _validateEvent(Event event) {
     // Validate required fields
     if (event.title.isEmpty) throw Exception('Event title is required');
-    if (event.description.isEmpty) throw Exception('Event description is required');
+    if (event.description.isEmpty) {
+      throw Exception('Event description is required');
+    }
 
     // Validate dates
     if (event.endTime.isBefore(event.startTime)) {
@@ -13,7 +16,8 @@ class EventEndpoint extends Endpoint {
     }
 
     // Validate registration settings
-    if (event.registrationDeadline != null && event.registrationDeadline!.isAfter(event.startTime)) {
+    if (event.registrationDeadline != null &&
+        event.registrationDeadline!.isAfter(event.startTime)) {
       throw Exception('Registration deadline must be before event start time');
     }
     if (event.maxParticipants != null && event.maxParticipants! <= 0) {
@@ -25,7 +29,8 @@ class EventEndpoint extends Endpoint {
     if (event.minimumParticipants != null &&
         event.maxParticipants != null &&
         event.minimumParticipants! > event.maxParticipants!) {
-      throw Exception('Minimum participants cannot be greater than maximum participants');
+      throw Exception(
+          'Minimum participants cannot be greater than maximum participants');
     }
 
     // Validate GPS coordinates if provided
@@ -33,25 +38,54 @@ class EventEndpoint extends Endpoint {
         (event.gpsLatitude == null && event.gpsLongitude != null)) {
       throw Exception('Both latitude and longitude must be provided together');
     }
-    if (event.gpsLatitude != null && (event.gpsLatitude! < -90 || event.gpsLatitude! > 90)) {
+    if (event.gpsLatitude != null &&
+        (event.gpsLatitude! < -90 || event.gpsLatitude! > 90)) {
       throw Exception('Invalid latitude value');
     }
-    if (event.gpsLongitude != null && (event.gpsLongitude! < -180 || event.gpsLongitude! > 180)) {
+    if (event.gpsLongitude != null &&
+        (event.gpsLongitude! < -180 || event.gpsLongitude! > 180)) {
       throw Exception('Invalid longitude value');
     }
   }
 
   Future<Event> createEvent(Session session, Event event) async {
     session.log('Creating Event $event ', level: LogLevel.info);
-    // Validate section ID is provided
-    // Cant be null, so this check is void.. todo: validate sections exists?
-    // if (event.sectionId == null) {
-    //   throw Exception('Events must be associated with a section');
-    // }
+
+    final authInfo = session.authenticated;
+    if (authInfo == null) {
+      throw Exception('User must be authenticated to create an event');
+    }
 
     // Validate event fields
     _validateEvent(event);
-    return await Event.db.insertRow(session, event);
+
+    return await session.db.transaction((transaction) async {
+      final createdEvent =
+          await Event.db.insertRow(session, event, transaction: transaction);
+
+      // Find the member for this user
+      final member = await Member.db.findFirstRow(
+        session,
+        where: (t) => t.user.id.equals(authInfo.authUserId),
+        transaction: transaction,
+      );
+
+      if (member == null) {
+        throw Exception('No member profile found for authenticated user');
+      }
+
+      // Assign as default manager
+      await EventManager.db.insertRow(
+        session,
+        EventManager(
+          eventId: createdEvent.id!,
+          memberId: member.id!,
+        ),
+        transaction: transaction,
+      );
+
+      return createdEvent;
+    });
   }
 
   Future<Event?> getEvent(Session session, int id) async {
@@ -76,7 +110,8 @@ class EventEndpoint extends Endpoint {
           ) >
           0;
       if (hasRegistrations) {
-        throw Exception('Cannot change section for an event with registrations');
+        throw Exception(
+            'Cannot change section for an event with registrations');
       }
     }
 

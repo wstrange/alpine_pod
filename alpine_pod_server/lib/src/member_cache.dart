@@ -59,16 +59,8 @@ class MemberCache {
   /// Gets or refreshes a cache entry for a member
   Future<MemberInfo?> _getCacheEntry(
       Session session, UuidValue userInfoId) async {
-    final member = await Member.db
-        .findFirstRow(session, where: (t) => t.user.id.equals(userInfoId));
-    if (member == null) {
-      return null;
-    }
-    final memberId = member.id!;
-
-    var entry = _cache[memberId];
-
     // Check if entry exists and is fresh
+    var entry = _cache[userInfoId];
     if (entry != null && !entry.isStale) {
       return entry;
     }
@@ -84,7 +76,7 @@ class MemberCache {
       return null;
     }
     final userId = authInfo.authUserId;
-    final entry = await cache._getCacheEntry(session, userId);
+    final entry = await _getCacheEntry(session, userId);
     return entry;
   }
 
@@ -93,7 +85,11 @@ class MemberCache {
     _cache.clear();
   }
 
-  Future<dynamic> isSectionMember(Session session, int sectionId) async {}
+  Future<bool> isSectionMember(Session session, int sectionId) async {
+    final info = await getMemberInfo(session);
+    if (info == null) return false;
+    return info.sectionIds.contains(sectionId);
+  }
 }
 
 /// Internal class to store cached member data with timestamp

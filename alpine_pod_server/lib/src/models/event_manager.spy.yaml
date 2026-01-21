@@ -1,0 +1,10 @@
+class: EventManager
+table: event_managers
+fields:
+  event: Event?, relation(onDelete=Cascade)
+  member: Member?, relation(onDelete=Cascade)
+  assignedAt: DateTime?
+indexes:
+  event_manager_idx:
+    fields: eventId, memberId
+    unique: true

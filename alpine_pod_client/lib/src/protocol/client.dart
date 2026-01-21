@@ -18,12 +18,12 @@ import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart'
     as _i4;
 import 'package:alpine_pod_client/src/protocol/section.dart' as _i5;
 import 'package:alpine_pod_client/src/protocol/event.dart' as _i6;
-import 'package:alpine_pod_client/src/protocol/member.dart' as _i7;
-import 'package:alpine_pod_client/src/protocol/section_membership.dart' as _i8;
-import 'package:alpine_pod_client/src/protocol/event_registration.dart' as _i9;
+import 'package:alpine_pod_client/src/protocol/event_manager.dart' as _i7;
+import 'package:alpine_pod_client/src/protocol/member.dart' as _i8;
+import 'package:alpine_pod_client/src/protocol/section_membership.dart' as _i9;
+import 'package:alpine_pod_client/src/protocol/event_registration.dart' as _i10;
 import 'package:alpine_pod_client/src/protocol/registration_status.dart'
-    as _i10;
-import 'package:alpine_pod_client/src/protocol/event_trip_leader.dart' as _i11;
+    as _i11;
 import 'protocol.dart' as _i12;
 
 /// {@category Endpoint}
@@ -311,6 +311,59 @@ class EndpointEvent extends _i2.EndpointRef {
       );
 }
 
+/// {@category Endpoint}
+class EndpointEventManager extends _i2.EndpointRef {
+  EndpointEventManager(_i2.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'eventManager';
+
+  _i3.Future<_i7.EventManager> assignEventManager(
+    _i7.EventManager eventManager,
+  ) => caller.callServerEndpoint<_i7.EventManager>(
+    'eventManager',
+    'assignEventManager',
+    {'eventManager': eventManager},
+  );
+
+  _i3.Future<void> removeEventManager(_i7.EventManager eventManager) =>
+      caller.callServerEndpoint<void>(
+        'eventManager',
+        'removeEventManager',
+        {'eventManager': eventManager},
+      );
+
+  _i3.Future<List<_i7.EventManager>> listEventManagers(int eventId) =>
+      caller.callServerEndpoint<List<_i7.EventManager>>(
+        'eventManager',
+        'listEventManagers',
+        {'eventId': eventId},
+      );
+
+  _i3.Future<List<_i6.Event>> listEventManagerEvents(int memberId) =>
+      caller.callServerEndpoint<List<_i6.Event>>(
+        'eventManager',
+        'listEventManagerEvents',
+        {'memberId': memberId},
+      );
+
+  /// List events in a section that have no event managers assigned
+  _i3.Future<List<_i6.Event>> listEventsWithoutEventManager(int sectionId) =>
+      caller.callServerEndpoint<List<_i6.Event>>(
+        'eventManager',
+        'listEventsWithoutEventManager',
+        {'sectionId': sectionId},
+      );
+
+  /// List all event managers for events in a section
+  _i3.Future<List<_i7.EventManager>> listSectionEventManagers(int sectionId) =>
+      caller.callServerEndpoint<List<_i7.EventManager>>(
+        'eventManager',
+        'listSectionEventManagers',
+        {'sectionId': sectionId},
+      );
+}
+
 /// TODO: Use RBAC to restrict access to these methods
 ///
 ///
@@ -321,15 +374,15 @@ class EndpointMember extends _i2.EndpointRef {
   @override
   String get name => 'member';
 
-  _i3.Future<_i7.Member?> getCurrentMember() =>
-      caller.callServerEndpoint<_i7.Member?>(
+  _i3.Future<_i8.Member?> getCurrentMember() =>
+      caller.callServerEndpoint<_i8.Member?>(
         'member',
         'getCurrentMember',
         {},
       );
 
-  _i3.Future<List<_i7.Member>> getMembers() =>
-      caller.callServerEndpoint<List<_i7.Member>>(
+  _i3.Future<List<_i8.Member>> getMembers() =>
+      caller.callServerEndpoint<List<_i8.Member>>(
         'member',
         'getMembers',
         {},
@@ -340,30 +393,30 @@ class EndpointMember extends _i2.EndpointRef {
   /// - Validates that the email is not already in use.
   /// - Sets `createdAt` to now.
   /// - Inserts the member row and invalidates the member cache.
-  _i3.Future<_i7.Member> createMember(_i7.Member member) =>
-      caller.callServerEndpoint<_i7.Member>(
+  _i3.Future<_i8.Member> createMember(_i8.Member member) =>
+      caller.callServerEndpoint<_i8.Member>(
         'member',
         'createMember',
         {'member': member},
       );
 
-  _i3.Future<_i8.SectionMembership> addMemberToSection(
-    _i8.SectionMembership membership,
-  ) => caller.callServerEndpoint<_i8.SectionMembership>(
+  _i3.Future<_i9.SectionMembership> addMemberToSection(
+    _i9.SectionMembership membership,
+  ) => caller.callServerEndpoint<_i9.SectionMembership>(
     'member',
     'addMemberToSection',
     {'membership': membership},
   );
 
-  _i3.Future<void> removeMemberFromSection(_i8.SectionMembership membership) =>
+  _i3.Future<void> removeMemberFromSection(_i9.SectionMembership membership) =>
       caller.callServerEndpoint<void>(
         'member',
         'removeMemberFromSection',
         {'membership': membership},
       );
 
-  _i3.Future<_i7.Member> updateMember(_i7.Member member) =>
-      caller.callServerEndpoint<_i7.Member>(
+  _i3.Future<_i8.Member> updateMember(_i8.Member member) =>
+      caller.callServerEndpoint<_i8.Member>(
         'member',
         'updateMember',
         {'member': member},
@@ -378,11 +431,11 @@ class EndpointRegistration extends _i2.EndpointRef {
   String get name => 'registration';
 
   /// Approve or reject a registration
-  _i3.Future<_i9.EventRegistration> updateRegistrationStatus(
+  _i3.Future<_i10.EventRegistration> updateRegistrationStatus(
     int registrationId,
-    _i10.RegistrationStatus newStatus, {
+    _i11.RegistrationStatus newStatus, {
     String? notes,
-  }) => caller.callServerEndpoint<_i9.EventRegistration>(
+  }) => caller.callServerEndpoint<_i10.EventRegistration>(
     'registration',
     'updateRegistrationStatus',
     {
@@ -392,9 +445,9 @@ class EndpointRegistration extends _i2.EndpointRef {
     },
   );
 
-  _i3.Future<_i9.EventRegistration> registerForEvent(
-    _i9.EventRegistration registration,
-  ) => caller.callServerEndpoint<_i9.EventRegistration>(
+  _i3.Future<_i10.EventRegistration> registerForEvent(
+    _i10.EventRegistration registration,
+  ) => caller.callServerEndpoint<_i10.EventRegistration>(
     'registration',
     'registerForEvent',
     {'registration': registration},
@@ -407,9 +460,9 @@ class EndpointRegistration extends _i2.EndpointRef {
         {'registrationId': registrationId},
       );
 
-  _i3.Future<List<_i9.EventRegistration>> getRegistrationsForEvent(
+  _i3.Future<List<_i10.EventRegistration>> getRegistrationsForEvent(
     int eventId,
-  ) => caller.callServerEndpoint<List<_i9.EventRegistration>>(
+  ) => caller.callServerEndpoint<List<_i10.EventRegistration>>(
     'registration',
     'getRegistrationsForEvent',
     {'eventId': eventId},
@@ -443,60 +496,6 @@ class EndpointSection extends _i2.EndpointRef {
         'getSectionsForCurrentUser',
         {},
       );
-}
-
-/// {@category Endpoint}
-class EndpointTripLeader extends _i2.EndpointRef {
-  EndpointTripLeader(_i2.EndpointCaller caller) : super(caller);
-
-  @override
-  String get name => 'tripLeader';
-
-  _i3.Future<_i11.EventTripLeader> assignTripLeader(
-    _i11.EventTripLeader tripLeader,
-  ) => caller.callServerEndpoint<_i11.EventTripLeader>(
-    'tripLeader',
-    'assignTripLeader',
-    {'tripLeader': tripLeader},
-  );
-
-  _i3.Future<void> removeTripLeader(_i11.EventTripLeader tripLeader) =>
-      caller.callServerEndpoint<void>(
-        'tripLeader',
-        'removeTripLeader',
-        {'tripLeader': tripLeader},
-      );
-
-  _i3.Future<List<_i11.EventTripLeader>> listEventTripLeaders(int eventId) =>
-      caller.callServerEndpoint<List<_i11.EventTripLeader>>(
-        'tripLeader',
-        'listEventTripLeaders',
-        {'eventId': eventId},
-      );
-
-  _i3.Future<List<_i6.Event>> listTripLeaderEvents(_i2.UuidValue memberId) =>
-      caller.callServerEndpoint<List<_i6.Event>>(
-        'tripLeader',
-        'listTripLeaderEvents',
-        {'memberId': memberId},
-      );
-
-  /// List events in a section that have no trip leaders assigned
-  _i3.Future<List<_i6.Event>> listEventsWithoutTripLeader(int sectionId) =>
-      caller.callServerEndpoint<List<_i6.Event>>(
-        'tripLeader',
-        'listEventsWithoutTripLeader',
-        {'sectionId': sectionId},
-      );
-
-  /// List all trip leaders for events in a section
-  _i3.Future<List<_i11.EventTripLeader>> listSectionTripLeaders(
-    int sectionId,
-  ) => caller.callServerEndpoint<List<_i11.EventTripLeader>>(
-    'tripLeader',
-    'listSectionTripLeaders',
-    {'sectionId': sectionId},
-  );
 }
 
 class Modules {
@@ -543,10 +542,10 @@ class Client extends _i2.ServerpodClientShared {
     refreshJwtTokens = EndpointRefreshJwtTokens(this);
     admin = EndpointAdmin(this);
     event = EndpointEvent(this);
+    eventManager = EndpointEventManager(this);
     member = EndpointMember(this);
     registration = EndpointRegistration(this);
     section = EndpointSection(this);
-    tripLeader = EndpointTripLeader(this);
     modules = Modules(this);
   }
 
@@ -558,13 +557,13 @@ class Client extends _i2.ServerpodClientShared {
 
   late final EndpointEvent event;
 
+  late final EndpointEventManager eventManager;
+
   late final EndpointMember member;
 
   late final EndpointRegistration registration;
 
   late final EndpointSection section;
-
-  late final EndpointTripLeader tripLeader;
 
   late final Modules modules;
 
@@ -574,10 +573,10 @@ class Client extends _i2.ServerpodClientShared {
     'refreshJwtTokens': refreshJwtTokens,
     'admin': admin,
     'event': event,
+    'eventManager': eventManager,
     'member': member,
     'registration': registration,
     'section': section,
-    'tripLeader': tripLeader,
   };
 
   @override

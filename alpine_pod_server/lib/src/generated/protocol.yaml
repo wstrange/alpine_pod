@@ -20,6 +20,13 @@ event:
   - updateEvent:
   - deleteEvent:
   - listEvents:
+eventManager:
+  - assignEventManager:
+  - removeEventManager:
+  - listEventManagers:
+  - listEventManagerEvents:
+  - listEventsWithoutEventManager:
+  - listSectionEventManagers:
 member:
   - getCurrentMember:
   - getMembers:
@@ -36,10 +43,3 @@ section:
   - getSection:
   - listSections:
   - getSectionsForCurrentUser:
-tripLeader:
-  - assignTripLeader:
-  - removeTripLeader:
-  - listEventTripLeaders:
-  - listTripLeaderEvents:
-  - listEventsWithoutTripLeader:
-  - listSectionTripLeaders:

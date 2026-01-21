@@ -3,58 +3,58 @@ import 'package:serverpod/serverpod.dart';
 import '../generated/protocol.dart';
 import '../member_cache.dart';
 
-class TripLeaderEndpoint extends Endpoint {
+class EventManagerEndpoint extends Endpoint {
   @override
-  Set<Scope> get requiredScopes => {CustomScope.tripLeader};
+  Set<Scope> get requiredScopes => {CustomScope.eventManager};
 
-  Future<EventTripLeader> assignTripLeader(
+  Future<EventManager> assignEventManager(
     Session session,
-    EventTripLeader tripLeader,
+    EventManager eventManager,
   ) async {
-    if (tripLeader.eventId == null) {
+    if (eventManager.eventId == null) {
       throw Exception('Event ID is required');
     }
 
     // Get the event to check section
-    final event = await Event.db.findById(session, tripLeader.eventId!);
+    final event = await Event.db.findById(session, eventManager.eventId!);
     if (event == null) throw Exception('Event not found');
 
     // Check if event has already ended
     if (event.endTime.isBefore(DateTime.now())) {
-      throw Exception('Cannot assign trip leaders to past events');
+      throw Exception('Cannot assign event managers to past events');
     }
 
     // Check if member is already a member of the section
     if (!await cache.isSectionMember(session, event.sectionId)) {
-      throw Exception('Trip leader must be a member of the section');
+      throw Exception('Event manager must be a member of the section');
     }
 
     // Check if assignment already exists
-    final existing = await EventTripLeader.db.findFirstRow(
+    final existing = await EventManager.db.findFirstRow(
       session,
       where: (t) =>
-          t.eventId.equals(tripLeader.eventId!) &
-          t.userId.equals(tripLeader.userId!),
+          t.eventId.equals(eventManager.eventId!) &
+          t.memberId.equals(eventManager.memberId!),
     );
     if (existing != null) {
-      throw Exception('Member is already a trip leader for this event');
+      throw Exception('Member is already an event manager for this event');
     }
 
     // Create new assignment with timestamp
-    final assignment = tripLeader.copyWith(
+    final assignment = eventManager.copyWith(
       assignedAt: DateTime.now(),
     );
 
-    return await EventTripLeader.db.insertRow(session, assignment);
+    return await EventManager.db.insertRow(session, assignment);
   }
 
-  /// Check if an event has any trip leaders assigned
-  Future<bool> _hasOtherTripLeaders(
-      Session session, int eventId, UuidValue excludeMemberId) async {
-    final otherLeader = await EventTripLeader.db.findFirstRow(
+  /// Check if an event has any event managers assigned
+  Future<bool> _hasOtherEventManagers(
+      Session session, int eventId, int excludeMemberId) async {
+    final otherLeader = await EventManager.db.findFirstRow(
       session,
       where: (t) =>
-          t.eventId.equals(eventId) & t.userId.notEquals(excludeMemberId),
+          t.eventId.equals(eventId) & t.memberId.notEquals(excludeMemberId),
     );
     return otherLeader != null;
   }
@@ -72,62 +72,62 @@ class TripLeaderEndpoint extends Endpoint {
     return registrationCount > 0;
   }
 
-  Future<void> removeTripLeader(
+  Future<void> removeEventManager(
     Session session,
-    EventTripLeader tripLeader,
+    EventManager eventManager,
   ) async {
-    if (tripLeader.eventId == null) {
+    if (eventManager.eventId == null) {
       throw Exception('Event ID is required');
     }
 
     // Get the event to check section
-    final event = await Event.db.findById(session, tripLeader.eventId!);
+    final event = await Event.db.findById(session, eventManager.eventId!);
     if (event == null) throw Exception('Event not found');
 
     // Find the assignment
-    final existing = await EventTripLeader.db.findFirstRow(
+    final existing = await EventManager.db.findFirstRow(
       session,
       where: (t) =>
-          t.eventId.equals(tripLeader.eventId!) &
-          t.userId.equals(tripLeader.userId!),
+          t.eventId.equals(eventManager.eventId!) &
+          t.memberId.equals(eventManager.memberId!),
     );
     if (existing == null) return;
 
-    // Check if this is the last trip leader and there are active registrations
-    if (!await _hasOtherTripLeaders(
-            session, tripLeader.eventId!, tripLeader.userId!) &&
-        await _hasActiveRegistrations(session, tripLeader.eventId!)) {
+    // Check if this is the last event manager and there are active registrations
+    if (!await _hasOtherEventManagers(
+            session, eventManager.eventId!, eventManager.memberId!) &&
+        await _hasActiveRegistrations(session, eventManager.eventId!)) {
       throw Exception(
-          'Cannot remove the last trip leader while the event has active registrations');
+          'Cannot remove the last event manager while the event has active registrations');
     }
 
-    await EventTripLeader.db.deleteRow(session, existing);
+    await EventManager.db.deleteRow(session, existing);
   }
 
-  Future<List<EventTripLeader>> listEventTripLeaders(
+  Future<List<EventManager>> listEventManagers(
     Session session,
     int eventId,
   ) async {
-    return await EventTripLeader.db.find(
+    return await EventManager.db.find(
       session,
       where: (t) => t.eventId.equals(eventId),
     );
   }
 
-  Future<List<Event>> listTripLeaderEvents(
+  Future<List<Event>> listEventManagerEvents(
     Session session,
-    UuidValue memberId,
+    int memberId,
   ) async {
-    // Get all events where this member is a trip leader
-    final tripLeaderAssignments = await EventTripLeader.db.find(
+    // Get all events where this member is an event manager
+    final eventManagerAssignments = await EventManager.db.find(
       session,
-      where: (t) => t.userId.equals(memberId),
+      where: (t) => t.memberId.equals(memberId),
     );
 
-    if (tripLeaderAssignments.isEmpty) return [];
+    if (eventManagerAssignments.isEmpty) return [];
 
     // Get the corresponding events
-    final eventIds = tripLeaderAssignments.map((t) => t.eventId!).toList();
+    final eventIds = eventManagerAssignments.map((t) => t.eventId!).toList();
     // Build a condition for multiple event IDs using OR
     final eventConditions = eventIds.map((id) => Event.t.id.equals(id));
     final whereClause = eventConditions.reduce((acc, e) => acc | e);
@@ -138,8 +138,8 @@ class TripLeaderEndpoint extends Endpoint {
     );
   }
 
-  /// List events in a section that have no trip leaders assigned
-  Future<List<Event>> listEventsWithoutTripLeader(
+  /// List events in a section that have no event managers assigned
+  Future<List<Event>> listEventsWithoutEventManager(
     Session session,
     int sectionId,
   ) async {
@@ -151,10 +151,10 @@ class TripLeaderEndpoint extends Endpoint {
       where: (e) => e.sectionId.equals(sectionId),
     );
 
-    // For each event, check if it has any trip leaders
+    // For each event, check if it has any event managers
     final result = <Event>[];
     for (final event in sectionEvents) {
-      final hasLeader = await EventTripLeader.db.findFirstRow(
+      final hasLeader = await EventManager.db.findFirstRow(
         session,
         where: (t) => t.eventId.equals(event.id!),
       );
@@ -166,8 +166,8 @@ class TripLeaderEndpoint extends Endpoint {
     return result;
   }
 
-  /// List all trip leaders for events in a section
-  Future<List<EventTripLeader>> listSectionTripLeaders(
+  /// List all event managers for events in a section
+  Future<List<EventManager>> listSectionEventManagers(
     Session session,
     int sectionId,
   ) async {
@@ -184,12 +184,12 @@ class TripLeaderEndpoint extends Endpoint {
     // Get event IDs
     final eventIds = sectionEvents.map((e) => e.id!).toList();
 
-    // Build query for all trip leaders of these events
+    // Build query for all event managers of these events
     final eventConditions =
-        eventIds.map((id) => EventTripLeader.t.eventId.equals(id));
+        eventIds.map((id) => EventManager.t.eventId.equals(id));
     final whereClause = eventConditions.reduce((acc, e) => acc | e);
 
-    return await EventTripLeader.db.find(
+    return await EventManager.db.find(
       session,
       where: (_) => whereClause,
     );
