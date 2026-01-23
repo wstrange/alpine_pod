@@ -785,6 +785,8 @@ class _EventEndpoint {
   _i3.Future<List<_i6.Event>> listEvents(
     _i1.TestSessionBuilder sessionBuilder,
     int? sectionId,
+    DateTime? startTime,
+    DateTime? endTime,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -797,7 +799,11 @@ class _EventEndpoint {
           createSessionCallback: (_) => _localUniqueSession,
           endpointPath: 'event',
           methodName: 'listEvents',
-          parameters: _i1.testObjectToJson({'sectionId': sectionId}),
+          parameters: _i1.testObjectToJson({
+            'sectionId': sectionId,
+            'startTime': startTime,
+            'endTime': endTime,
+          }),
           serializationManager: _serializationManager,
         );
         var _localReturnValue =

@@ -30,13 +30,20 @@ final currentMemberBeacon = Beacon.future(() async {
 
 final sectionBeacon = Beacon.writable<Section?>(null);
 
-// final currentEventsBeacon = Beacon.derivedFuture(() async {
-//   final s = sectionBeacon.watch();
-//   var e = await client.event.listEvents(s?.id);
-//   return e;
-// });
+final selectedDateBeacon = Beacon.writable<DateTime>(DateTime.now());
 
-final currentEventsBeacon = Beacon.future(() async {
+final currentEventsBeacon = Beacon.derivedFuture(() async {
   final s = sectionBeacon.value;
-  return await client.event.listEvents(s?.id);
+  final date = selectedDateBeacon.value;
+
+  // Calculate start and end of week (Monday to Sunday)
+  final startOfWeek = date.subtract(Duration(days: date.weekday - 1));
+  final start = DateTime(startOfWeek.year, startOfWeek.month, startOfWeek.day);
+  final end = start.add(const Duration(days: 7)); // Up to start of next week
+
+  return await client.event.listEvents(
+    s?.id,
+    start,
+    end,
+  );
 });

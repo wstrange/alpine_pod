@@ -304,12 +304,19 @@ class EndpointEvent extends _i2.EndpointRef {
     {'id': id},
   );
 
-  _i3.Future<List<_i6.Event>> listEvents(int? sectionId) =>
-      caller.callServerEndpoint<List<_i6.Event>>(
-        'event',
-        'listEvents',
-        {'sectionId': sectionId},
-      );
+  _i3.Future<List<_i6.Event>> listEvents(
+    int? sectionId,
+    DateTime? startTime,
+    DateTime? endTime,
+  ) => caller.callServerEndpoint<List<_i6.Event>>(
+    'event',
+    'listEvents',
+    {
+      'sectionId': sectionId,
+      'startTime': startTime,
+      'endTime': endTime,
+    },
+  );
 
   _i3.Future<_i7.EventDetails> getEventDetails(int eventId) =>
       caller.callServerEndpoint<_i7.EventDetails>(

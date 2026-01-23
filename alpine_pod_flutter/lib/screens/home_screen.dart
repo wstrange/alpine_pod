@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:state_beacon/state_beacon.dart';
 import '../beacon.dart';
+import '../widgets/calendar_view.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -12,11 +13,10 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     var section = sectionBeacon.watch(context);
     var sectionName = section?.name;
-    var eventsValue = currentEventsBeacon.watch(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Section: $sectionName'),
+        title: Text('$sectionName Section', style: TextStyle(fontSize: 16)),
       ),
       drawer: Drawer(
         child: ListView(
@@ -29,6 +29,24 @@ class HomeScreen extends StatelessWidget {
               child: Text('Menu'),
             ),
             ListTile(
+              leading: const Icon(Icons.person),
+              title: const Text('Profile'),
+              onTap: () {
+                Navigator.pop(context); // Close the drawer
+                GoRouter.of(context).push('/profile');
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.add),
+              title: const Text('Create Event'),
+              onTap: () {
+                Navigator.pop(context); // Close the drawer
+                GoRouter.of(context).push('/create-event');
+              },
+            ),
+            const Divider(),
+            ListTile(
+              leading: const Icon(Icons.logout),
               title: const Text('Logout'),
               onTap: () {
                 sectionBeacon.value = null;
@@ -39,18 +57,7 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
       ),
-      body: switch (eventsValue) {
-        AsyncData(:final value) => EventListDisplay(value),
-        AsyncError(:final error) => Center(
-            child: Text('Error loading events: $error'),
-          ),
-        AsyncLoading() => const Center(
-            child: CircularProgressIndicator(),
-          ),
-        AsyncIdle() => const Center(
-            child: Text('Select a section to view events'),
-          ),
-      },
+      body: const CalendarView(),
     );
   }
 }

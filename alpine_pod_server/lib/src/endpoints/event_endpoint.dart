@@ -136,15 +136,30 @@ class EventEndpoint extends Endpoint {
     await Event.db.deleteRow(session, existing);
   }
 
-  Future<List<Event>> listEvents(Session session, int? sectionId) async {
+  Future<List<Event>> listEvents(
+    Session session,
+    int? sectionId,
+    DateTime? startTime,
+    DateTime? endTime,
+  ) async {
     // Return all events for the section or all events for admin
-    if (sectionId != null) {
-      return await Event.db.find(
-        session,
-        where: (t) => t.sectionId.equals(sectionId),
-      );
-    }
-    return await Event.db.find(session);
+    return await Event.db.find(
+      session,
+      where: (t) {
+        Expression where = Constant.bool(true);
+        if (sectionId != null) {
+          where = where & t.sectionId.equals(sectionId);
+        }
+        if (startTime != null) {
+          where = where & (t.startTime >= startTime);
+        }
+        if (endTime != null) {
+          where = where & (t.startTime <= endTime);
+        }
+        return where;
+      },
+      orderBy: (t) => t.startTime,
+    );
   }
 
   Future<EventDetails> getEventDetails(Session session, int eventId) async {

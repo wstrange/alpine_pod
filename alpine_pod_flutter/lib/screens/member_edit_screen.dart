@@ -1,3 +1,4 @@
+import 'package:go_router/go_router.dart';
 import '../beacon.dart';
 
 import 'package:flutter/material.dart';
@@ -13,6 +14,17 @@ class MemberEditScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            final router = GoRouter.of(context);
+            if (router.canPop()) {
+              router.pop();
+            } else {
+              router.go('/');
+            }
+          },
+        ),
         title: const Text('Edit Profile'),
       ),
       body: switch (memberValue) {

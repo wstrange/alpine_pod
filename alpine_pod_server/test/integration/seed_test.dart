@@ -112,7 +112,7 @@ void main() {
       final s1 = sections[0];
       final s2 = sections[1];
 
-      for (var i = 0; i < 5; i++) {
+      for (var i = 1; i <= 5; i++) {
         var email = 'test$i@acc.ca';
 
         var au = await AuthServices.instance.authUsers.create(
@@ -165,6 +165,55 @@ void main() {
             ));
         print(sm);
       }
+    });
+
+    test('Create 100 sample events', () async {
+      final sections = await endpoints.admin.listSections(authSession);
+      final calgary = sections.firstWhere((s) => s.name == 'Calgary');
+      final edmonton = sections.firstWhere((s) => s.name == 'Edmonton');
+
+      // Get the test users we just created
+      final members = await endpoints.member.getMembers(authSession);
+      final testMembers =
+          members.where((m) => m.email.startsWith('test')).toList();
+
+      for (var i = 0; i < 100; i++) {
+        final section = i % 2 == 0 ? calgary : edmonton;
+        final directRegistration = i % 4 == 0; // 25%
+
+        // Cycle through test1-test5 as "authors" (authenticating as them)
+        final memberIndex = i % testMembers.length;
+        final member = testMembers[memberIndex];
+
+        final userAuthSession = sessionBuilder.copyWith(
+          authentication: AuthenticationOverride.authenticationInfo(
+            member.userId.toString(),
+            {CustomScope.member},
+          ),
+        );
+
+        final startTime = DateTime.now().add(Duration(days: i + 1));
+        final endTime = startTime.add(const Duration(hours: 4));
+
+        await endpoints.event.createEvent(
+          userAuthSession,
+          Event(
+            title: 'Sample Event #${i + 1} (${section.name})',
+            description:
+                'This is a sample event generated for testing purposes.',
+            type: EventType.hike,
+            startTime: startTime,
+            endTime: endTime,
+            location: 'Various Locations',
+            sectionId: section.id!,
+            waitlistEnabled: !directRegistration,
+            requiresApproval: !directRegistration,
+            waiverRequired: true,
+            published: true,
+          ),
+        );
+      }
+      print('Created 100 sample events.');
     });
 
     // We want to keep the data after tests run

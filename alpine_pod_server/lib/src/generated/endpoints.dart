@@ -458,6 +458,16 @@ class Endpoints extends _i1.EndpointDispatch {
               type: _i1.getType<int?>(),
               nullable: true,
             ),
+            'startTime': _i1.ParameterDescription(
+              name: 'startTime',
+              type: _i1.getType<DateTime?>(),
+              nullable: true,
+            ),
+            'endTime': _i1.ParameterDescription(
+              name: 'endTime',
+              type: _i1.getType<DateTime?>(),
+              nullable: true,
+            ),
           },
           call:
               (
@@ -466,6 +476,8 @@ class Endpoints extends _i1.EndpointDispatch {
               ) async => (endpoints['event'] as _i4.EventEndpoint).listEvents(
                 session,
                 params['sectionId'],
+                params['startTime'],
+                params['endTime'],
               ),
         ),
         'getEventDetails': _i1.MethodConnector(

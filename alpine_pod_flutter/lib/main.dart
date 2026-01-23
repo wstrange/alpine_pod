@@ -12,7 +12,6 @@ import 'screens/home_screen.dart';
 import 'screens/member_edit_screen.dart';
 import 'screens/section_selection_screen.dart';
 import 'screens/sign_in_screen.dart';
-import 'widgets/scaffold_with_nav_bar.dart';
 
 void main() async {
   BeaconObserver.useLogging();
@@ -82,28 +81,13 @@ final router = GoRouter(
         return EventEditScreen(event: event);
       },
     ),
-    StatefulShellRoute.indexedStack(
-      builder: (context, state, navigationShell) {
-        return ScaffoldWithNavBar(navigationShell: navigationShell);
-      },
-      branches: [
-        StatefulShellBranch(
-          routes: [
-            GoRoute(
-              path: '/',
-              builder: (context, state) => const HomeScreen(),
-            ),
-          ],
-        ),
-        StatefulShellBranch(
-          routes: [
-            GoRoute(
-              path: '/profile',
-              builder: (context, state) => const MemberEditScreen(),
-            ),
-          ],
-        ),
-      ],
+    GoRoute(
+      path: '/',
+      builder: (context, state) => const HomeScreen(),
+    ),
+    GoRoute(
+      path: '/profile',
+      builder: (context, state) => const MemberEditScreen(),
     ),
   ],
   redirect: (BuildContext context, GoRouterState state) async {
