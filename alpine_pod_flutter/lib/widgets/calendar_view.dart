@@ -19,13 +19,47 @@ class _CalendarViewState extends State<CalendarView> {
   final double _itemPadding = 8.0;
   late final DateTime _startDate;
 
+  String _formatRange(DateTime start, DateTime end) {
+    return '${DateFormat('MMM d').format(start)} - ${DateFormat('MMM d').format(end)}';
+  }
+
+  void _onScroll() {
+    if (!_scrollController.hasClients) return;
+
+    // Calculate which date is at the start of the visible area
+    final offset = _scrollController.offset - 16.0; // padding
+    final totalItemWidth = _itemWidth + _itemPadding;
+    var index =
+        (offset / totalItemWidth).round() + 1; // +1 to get the Monday-ish area
+
+    // Clamp index to valid items
+    if (index < 0) index = 0;
+    if (index >= 180) index = 179;
+
+    final dateAtCenter = _startDate.add(Duration(days: index));
+    final startOfVisibleWeek = _getStartOfWeek(dateAtCenter);
+
+    if (!startOfVisibleWeek
+        .isAtSameMomentAs(_getStartOfWeek(selectedDateBeacon.peek()))) {
+      // Use peek() and then update
+      selectedDateBeacon.value = startOfVisibleWeek;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    final now = selectedDateBeacon.value;
+    final now = selectedDateBeacon.value.copyWith(
+      hour: 0,
+      minute: 0,
+      second: 0,
+      millisecond: 0,
+      microsecond: 0,
+    );
     // Start strip 2 weeks before current selected day
     _startDate = now.subtract(const Duration(days: 14));
     _scrollController = ScrollController();
+    _scrollController.addListener(_onScroll);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) _scrollToDate(selectedDateBeacon.value);
@@ -34,13 +68,16 @@ class _CalendarViewState extends State<CalendarView> {
 
   @override
   void dispose() {
+    _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
     super.dispose();
   }
 
   // Week starts on Monday
   DateTime _getStartOfWeek(DateTime date) {
-    return date.subtract(Duration(days: date.weekday - 1));
+    // Neutralize to midnight for safe subtraction
+    final day = DateTime(date.year, date.month, date.day);
+    return day.subtract(Duration(days: day.weekday - 1));
   }
 
   DateTime _getEndOfWeek(DateTime date) {
@@ -55,23 +92,29 @@ class _CalendarViewState extends State<CalendarView> {
     final startOfWeek = _getStartOfWeek(date);
     final sundayBefore = startOfWeek.subtract(const Duration(days: 1));
 
+    // difference().inDays is safe because we neutralized to midnight
     final daysSinceStart = sundayBefore.difference(_startDate).inDays;
     final totalItemWidth = _itemWidth + _itemPadding;
 
     // Aligns the Sunday to the left corner, accounting for the 16px ListView padding
     final scrollPosition = 16.0 + (daysSinceStart * totalItemWidth);
 
-    _scrollController.animateTo(
-      scrollPosition,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
-    );
+    // Only scroll if we are not already close (prevents scroll fighting with listener)
+    if ((_scrollController.offset - scrollPosition).abs() > 10) {
+      _scrollController.animateTo(
+        scrollPosition,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    }
   }
 
   void _updateSelectedDate(DateTime newDate) {
     if (!mounted) return;
-    selectedDateBeacon.value = newDate;
-    _scrollToDate(newDate);
+    // Neutralize incoming date
+    final neutralized = DateTime(newDate.year, newDate.month, newDate.day);
+    selectedDateBeacon.value = neutralized;
+    _scrollToDate(neutralized);
   }
 
   @override
@@ -127,7 +170,7 @@ class _CalendarViewState extends State<CalendarView> {
                             color: Colors.blueGrey),
                       ),
                       Text(
-                        '${DateFormat('MMM d').format(startOfWeek)} - ${DateFormat('MMM d').format(endOfWeek)}',
+                        _formatRange(startOfWeek, endOfWeek),
                         style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
@@ -169,7 +212,7 @@ class _CalendarViewState extends State<CalendarView> {
                 selectedDate.subtract(const Duration(days: 7))),
           ),
           Text(
-            '${DateFormat('MMM d').format(start)} - ${DateFormat('MMM d').format(end)}',
+            _formatRange(start, end),
             style: const TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w700,

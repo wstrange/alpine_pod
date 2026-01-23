@@ -192,8 +192,9 @@ void main() {
           ),
         );
 
-        final startTime = DateTime.now().add(Duration(days: i + 1));
-        final endTime = startTime.add(const Duration(hours: 4));
+        final s = DateTime.now().add(Duration(days: i + 1));
+        final startTime = s.copyWith(hour: 8, minute: 0, second: 0);
+        final endTime = startTime.add(const Duration(hours: 8));
 
         await endpoints.event.createEvent(
           userAuthSession,

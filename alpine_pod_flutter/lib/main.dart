@@ -13,6 +13,7 @@ import 'screens/member_edit_screen.dart';
 import 'screens/section_selection_screen.dart';
 import 'screens/sign_in_screen.dart';
 
+final host = 'Warrens-MacBook-Air.local';
 void main() async {
   BeaconObserver.useLogging();
   //Beacon.setObserver(const BeaconLoggingObserver());
@@ -26,7 +27,7 @@ void main() async {
 
   const serverUrlFromEnv = String.fromEnvironment('SERVER_URL');
   final serverUrl =
-      serverUrlFromEnv.isEmpty ? 'http://$localhost:8080/' : serverUrlFromEnv;
+      serverUrlFromEnv.isEmpty ? 'http://$host:8080/' : serverUrlFromEnv;
 
   client = Client(serverUrl)
     ..connectivityMonitor = FlutterConnectivityMonitor()
