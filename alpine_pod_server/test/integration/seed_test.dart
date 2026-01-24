@@ -207,10 +207,10 @@ void main() {
             endTime: endTime,
             location: 'Various Locations',
             sectionId: section.id!,
-            waitlistEnabled: !directRegistration,
             requiresApproval: !directRegistration,
-            waiverRequired: true,
             published: true,
+            minimumParticipants: 1,
+            maxParticipants: 10,
           ),
         );
       }

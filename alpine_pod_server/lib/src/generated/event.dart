@@ -28,25 +28,27 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     this.carPoolingTime,
     this.carPoolingPlace,
     this.carPoolingDriveOrRide,
-    this.maxParticipants,
     this.difficulty,
     this.requiredEquipment,
     this.prerequisites,
     this.recurring,
     this.registrationDeadline,
     this.registrationStartDate,
-    required this.waitlistEnabled,
     this.registrationFee,
-    this.currentRegistrationCount,
-    required this.requiresApproval,
-    required this.waiverRequired,
-    this.minimumParticipants,
+    int? currentRegistrationCount,
+    bool? requiresApproval,
+    int? minimumParticipants,
+    int? maxParticipants,
     this.cancellationDeadline,
     this.registrationNotes,
     required this.sectionId,
     this.documentsJson,
     bool? published,
-  }) : published = published ?? false;
+  }) : currentRegistrationCount = currentRegistrationCount ?? 0,
+       requiresApproval = requiresApproval ?? true,
+       minimumParticipants = minimumParticipants ?? 0,
+       maxParticipants = maxParticipants ?? 8,
+       published = published ?? false;
 
   factory Event({
     int? id,
@@ -62,19 +64,17 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     DateTime? carPoolingTime,
     String? carPoolingPlace,
     String? carPoolingDriveOrRide,
-    int? maxParticipants,
     String? difficulty,
     String? requiredEquipment,
     String? prerequisites,
     String? recurring,
     DateTime? registrationDeadline,
     DateTime? registrationStartDate,
-    required bool waitlistEnabled,
     double? registrationFee,
     int? currentRegistrationCount,
-    required bool requiresApproval,
-    required bool waiverRequired,
+    bool? requiresApproval,
     int? minimumParticipants,
+    int? maxParticipants,
     DateTime? cancellationDeadline,
     String? registrationNotes,
     required int sectionId,
@@ -104,7 +104,6 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       carPoolingPlace: jsonSerialization['carPoolingPlace'] as String?,
       carPoolingDriveOrRide:
           jsonSerialization['carPoolingDriveOrRide'] as String?,
-      maxParticipants: jsonSerialization['maxParticipants'] as int?,
       difficulty: jsonSerialization['difficulty'] as String?,
       requiredEquipment: jsonSerialization['requiredEquipment'] as String?,
       prerequisites: jsonSerialization['prerequisites'] as String?,
@@ -119,14 +118,13 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
           : _i1.DateTimeJsonExtension.fromJson(
               jsonSerialization['registrationStartDate'],
             ),
-      waitlistEnabled: jsonSerialization['waitlistEnabled'] as bool,
       registrationFee: (jsonSerialization['registrationFee'] as num?)
           ?.toDouble(),
       currentRegistrationCount:
           jsonSerialization['currentRegistrationCount'] as int?,
-      requiresApproval: jsonSerialization['requiresApproval'] as bool,
-      waiverRequired: jsonSerialization['waiverRequired'] as bool,
+      requiresApproval: jsonSerialization['requiresApproval'] as bool?,
       minimumParticipants: jsonSerialization['minimumParticipants'] as int?,
+      maxParticipants: jsonSerialization['maxParticipants'] as int?,
       cancellationDeadline: jsonSerialization['cancellationDeadline'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(
@@ -170,8 +168,6 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
 
   String? carPoolingDriveOrRide;
 
-  int? maxParticipants;
-
   String? difficulty;
 
   String? requiredEquipment;
@@ -184,17 +180,15 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
 
   DateTime? registrationStartDate;
 
-  bool waitlistEnabled;
-
   double? registrationFee;
 
-  int? currentRegistrationCount;
+  int currentRegistrationCount;
 
   bool requiresApproval;
 
-  bool waiverRequired;
+  int minimumParticipants;
 
-  int? minimumParticipants;
+  int maxParticipants;
 
   DateTime? cancellationDeadline;
 
@@ -226,19 +220,17 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     DateTime? carPoolingTime,
     String? carPoolingPlace,
     String? carPoolingDriveOrRide,
-    int? maxParticipants,
     String? difficulty,
     String? requiredEquipment,
     String? prerequisites,
     String? recurring,
     DateTime? registrationDeadline,
     DateTime? registrationStartDate,
-    bool? waitlistEnabled,
     double? registrationFee,
     int? currentRegistrationCount,
     bool? requiresApproval,
-    bool? waiverRequired,
     int? minimumParticipants,
+    int? maxParticipants,
     DateTime? cancellationDeadline,
     String? registrationNotes,
     int? sectionId,
@@ -263,7 +255,6 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       if (carPoolingPlace != null) 'carPoolingPlace': carPoolingPlace,
       if (carPoolingDriveOrRide != null)
         'carPoolingDriveOrRide': carPoolingDriveOrRide,
-      if (maxParticipants != null) 'maxParticipants': maxParticipants,
       if (difficulty != null) 'difficulty': difficulty,
       if (requiredEquipment != null) 'requiredEquipment': requiredEquipment,
       if (prerequisites != null) 'prerequisites': prerequisites,
@@ -272,14 +263,11 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
         'registrationDeadline': registrationDeadline?.toJson(),
       if (registrationStartDate != null)
         'registrationStartDate': registrationStartDate?.toJson(),
-      'waitlistEnabled': waitlistEnabled,
       if (registrationFee != null) 'registrationFee': registrationFee,
-      if (currentRegistrationCount != null)
-        'currentRegistrationCount': currentRegistrationCount,
+      'currentRegistrationCount': currentRegistrationCount,
       'requiresApproval': requiresApproval,
-      'waiverRequired': waiverRequired,
-      if (minimumParticipants != null)
-        'minimumParticipants': minimumParticipants,
+      'minimumParticipants': minimumParticipants,
+      'maxParticipants': maxParticipants,
       if (cancellationDeadline != null)
         'cancellationDeadline': cancellationDeadline?.toJson(),
       if (registrationNotes != null) 'registrationNotes': registrationNotes,
@@ -307,7 +295,6 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       if (carPoolingPlace != null) 'carPoolingPlace': carPoolingPlace,
       if (carPoolingDriveOrRide != null)
         'carPoolingDriveOrRide': carPoolingDriveOrRide,
-      if (maxParticipants != null) 'maxParticipants': maxParticipants,
       if (difficulty != null) 'difficulty': difficulty,
       if (requiredEquipment != null) 'requiredEquipment': requiredEquipment,
       if (prerequisites != null) 'prerequisites': prerequisites,
@@ -316,14 +303,11 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
         'registrationDeadline': registrationDeadline?.toJson(),
       if (registrationStartDate != null)
         'registrationStartDate': registrationStartDate?.toJson(),
-      'waitlistEnabled': waitlistEnabled,
       if (registrationFee != null) 'registrationFee': registrationFee,
-      if (currentRegistrationCount != null)
-        'currentRegistrationCount': currentRegistrationCount,
+      'currentRegistrationCount': currentRegistrationCount,
       'requiresApproval': requiresApproval,
-      'waiverRequired': waiverRequired,
-      if (minimumParticipants != null)
-        'minimumParticipants': minimumParticipants,
+      'minimumParticipants': minimumParticipants,
+      'maxParticipants': maxParticipants,
       if (cancellationDeadline != null)
         'cancellationDeadline': cancellationDeadline?.toJson(),
       if (registrationNotes != null) 'registrationNotes': registrationNotes,
@@ -380,19 +364,17 @@ class _EventImpl extends Event {
     DateTime? carPoolingTime,
     String? carPoolingPlace,
     String? carPoolingDriveOrRide,
-    int? maxParticipants,
     String? difficulty,
     String? requiredEquipment,
     String? prerequisites,
     String? recurring,
     DateTime? registrationDeadline,
     DateTime? registrationStartDate,
-    required bool waitlistEnabled,
     double? registrationFee,
     int? currentRegistrationCount,
-    required bool requiresApproval,
-    required bool waiverRequired,
+    bool? requiresApproval,
     int? minimumParticipants,
+    int? maxParticipants,
     DateTime? cancellationDeadline,
     String? registrationNotes,
     required int sectionId,
@@ -412,19 +394,17 @@ class _EventImpl extends Event {
          carPoolingTime: carPoolingTime,
          carPoolingPlace: carPoolingPlace,
          carPoolingDriveOrRide: carPoolingDriveOrRide,
-         maxParticipants: maxParticipants,
          difficulty: difficulty,
          requiredEquipment: requiredEquipment,
          prerequisites: prerequisites,
          recurring: recurring,
          registrationDeadline: registrationDeadline,
          registrationStartDate: registrationStartDate,
-         waitlistEnabled: waitlistEnabled,
          registrationFee: registrationFee,
          currentRegistrationCount: currentRegistrationCount,
          requiresApproval: requiresApproval,
-         waiverRequired: waiverRequired,
          minimumParticipants: minimumParticipants,
+         maxParticipants: maxParticipants,
          cancellationDeadline: cancellationDeadline,
          registrationNotes: registrationNotes,
          sectionId: sectionId,
@@ -450,19 +430,17 @@ class _EventImpl extends Event {
     Object? carPoolingTime = _Undefined,
     Object? carPoolingPlace = _Undefined,
     Object? carPoolingDriveOrRide = _Undefined,
-    Object? maxParticipants = _Undefined,
     Object? difficulty = _Undefined,
     Object? requiredEquipment = _Undefined,
     Object? prerequisites = _Undefined,
     Object? recurring = _Undefined,
     Object? registrationDeadline = _Undefined,
     Object? registrationStartDate = _Undefined,
-    bool? waitlistEnabled,
     Object? registrationFee = _Undefined,
-    Object? currentRegistrationCount = _Undefined,
+    int? currentRegistrationCount,
     bool? requiresApproval,
-    bool? waiverRequired,
-    Object? minimumParticipants = _Undefined,
+    int? minimumParticipants,
+    int? maxParticipants,
     Object? cancellationDeadline = _Undefined,
     Object? registrationNotes = _Undefined,
     int? sectionId,
@@ -489,9 +467,6 @@ class _EventImpl extends Event {
       carPoolingDriveOrRide: carPoolingDriveOrRide is String?
           ? carPoolingDriveOrRide
           : this.carPoolingDriveOrRide,
-      maxParticipants: maxParticipants is int?
-          ? maxParticipants
-          : this.maxParticipants,
       difficulty: difficulty is String? ? difficulty : this.difficulty,
       requiredEquipment: requiredEquipment is String?
           ? requiredEquipment
@@ -506,18 +481,14 @@ class _EventImpl extends Event {
       registrationStartDate: registrationStartDate is DateTime?
           ? registrationStartDate
           : this.registrationStartDate,
-      waitlistEnabled: waitlistEnabled ?? this.waitlistEnabled,
       registrationFee: registrationFee is double?
           ? registrationFee
           : this.registrationFee,
-      currentRegistrationCount: currentRegistrationCount is int?
-          ? currentRegistrationCount
-          : this.currentRegistrationCount,
+      currentRegistrationCount:
+          currentRegistrationCount ?? this.currentRegistrationCount,
       requiresApproval: requiresApproval ?? this.requiresApproval,
-      waiverRequired: waiverRequired ?? this.waiverRequired,
-      minimumParticipants: minimumParticipants is int?
-          ? minimumParticipants
-          : this.minimumParticipants,
+      minimumParticipants: minimumParticipants ?? this.minimumParticipants,
+      maxParticipants: maxParticipants ?? this.maxParticipants,
       cancellationDeadline: cancellationDeadline is DateTime?
           ? cancellationDeadline
           : this.cancellationDeadline,
@@ -603,11 +574,6 @@ class EventUpdateTable extends _i1.UpdateTable<EventTable> {
         value,
       );
 
-  _i1.ColumnValue<int, int> maxParticipants(int? value) => _i1.ColumnValue(
-    table.maxParticipants,
-    value,
-  );
-
   _i1.ColumnValue<String, String> difficulty(String? value) => _i1.ColumnValue(
     table.difficulty,
     value,
@@ -642,18 +608,13 @@ class EventUpdateTable extends _i1.UpdateTable<EventTable> {
         value,
       );
 
-  _i1.ColumnValue<bool, bool> waitlistEnabled(bool value) => _i1.ColumnValue(
-    table.waitlistEnabled,
-    value,
-  );
-
   _i1.ColumnValue<double, double> registrationFee(double? value) =>
       _i1.ColumnValue(
         table.registrationFee,
         value,
       );
 
-  _i1.ColumnValue<int, int> currentRegistrationCount(int? value) =>
+  _i1.ColumnValue<int, int> currentRegistrationCount(int value) =>
       _i1.ColumnValue(
         table.currentRegistrationCount,
         value,
@@ -664,13 +625,13 @@ class EventUpdateTable extends _i1.UpdateTable<EventTable> {
     value,
   );
 
-  _i1.ColumnValue<bool, bool> waiverRequired(bool value) => _i1.ColumnValue(
-    table.waiverRequired,
+  _i1.ColumnValue<int, int> minimumParticipants(int value) => _i1.ColumnValue(
+    table.minimumParticipants,
     value,
   );
 
-  _i1.ColumnValue<int, int> minimumParticipants(int? value) => _i1.ColumnValue(
-    table.minimumParticipants,
+  _i1.ColumnValue<int, int> maxParticipants(int value) => _i1.ColumnValue(
+    table.maxParticipants,
     value,
   );
 
@@ -755,10 +716,6 @@ class EventTable extends _i1.Table<int?> {
       'carPoolingDriveOrRide',
       this,
     );
-    maxParticipants = _i1.ColumnInt(
-      'maxParticipants',
-      this,
-    );
     difficulty = _i1.ColumnString(
       'difficulty',
       this,
@@ -783,10 +740,6 @@ class EventTable extends _i1.Table<int?> {
       'registrationStartDate',
       this,
     );
-    waitlistEnabled = _i1.ColumnBool(
-      'waitlistEnabled',
-      this,
-    );
     registrationFee = _i1.ColumnDouble(
       'registrationFee',
       this,
@@ -794,18 +747,22 @@ class EventTable extends _i1.Table<int?> {
     currentRegistrationCount = _i1.ColumnInt(
       'currentRegistrationCount',
       this,
+      hasDefault: true,
     );
     requiresApproval = _i1.ColumnBool(
       'requiresApproval',
       this,
-    );
-    waiverRequired = _i1.ColumnBool(
-      'waiverRequired',
-      this,
+      hasDefault: true,
     );
     minimumParticipants = _i1.ColumnInt(
       'minimumParticipants',
       this,
+      hasDefault: true,
+    );
+    maxParticipants = _i1.ColumnInt(
+      'maxParticipants',
+      this,
+      hasDefault: true,
     );
     cancellationDeadline = _i1.ColumnDateTime(
       'cancellationDeadline',
@@ -856,8 +813,6 @@ class EventTable extends _i1.Table<int?> {
 
   late final _i1.ColumnString carPoolingDriveOrRide;
 
-  late final _i1.ColumnInt maxParticipants;
-
   late final _i1.ColumnString difficulty;
 
   late final _i1.ColumnString requiredEquipment;
@@ -870,17 +825,15 @@ class EventTable extends _i1.Table<int?> {
 
   late final _i1.ColumnDateTime registrationStartDate;
 
-  late final _i1.ColumnBool waitlistEnabled;
-
   late final _i1.ColumnDouble registrationFee;
 
   late final _i1.ColumnInt currentRegistrationCount;
 
   late final _i1.ColumnBool requiresApproval;
 
-  late final _i1.ColumnBool waiverRequired;
-
   late final _i1.ColumnInt minimumParticipants;
+
+  late final _i1.ColumnInt maxParticipants;
 
   late final _i1.ColumnDateTime cancellationDeadline;
 
@@ -907,19 +860,17 @@ class EventTable extends _i1.Table<int?> {
     carPoolingTime,
     carPoolingPlace,
     carPoolingDriveOrRide,
-    maxParticipants,
     difficulty,
     requiredEquipment,
     prerequisites,
     recurring,
     registrationDeadline,
     registrationStartDate,
-    waitlistEnabled,
     registrationFee,
     currentRegistrationCount,
     requiresApproval,
-    waiverRequired,
     minimumParticipants,
+    maxParticipants,
     cancellationDeadline,
     registrationNotes,
     sectionId,

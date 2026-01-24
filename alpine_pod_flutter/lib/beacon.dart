@@ -38,7 +38,7 @@ final selectedDateBeacon = Beacon.writable<DateTime>(DateTime.now().copyWith(
   microsecond: 0,
 ));
 
-final currentEventsBeacon = Beacon.derivedFuture(() async {
+final currentEventsBeacon = Beacon.future(() async {
   final s = sectionBeacon.value;
   final date = selectedDateBeacon.value;
 

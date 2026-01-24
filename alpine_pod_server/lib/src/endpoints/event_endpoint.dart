@@ -1,3 +1,5 @@
+// ignore_for_file: dead_null_aware_expression, unnecessary_null_comparison, unnecessary_non_null_assertion
+
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_auth_idp_server/core.dart';
 import '../generated/protocol.dart';
@@ -195,5 +197,102 @@ class EventEndpoint extends Endpoint {
       waitlist: waitlist,
       managers: managers,
     );
+  }
+
+  Future<EventRegistration> registerForEvent(
+      Session session, int eventId) async {
+    final authInfo = session.authenticated;
+    if (authInfo == null) {
+      throw Exception('User must be authenticated to register');
+    }
+
+    return await session.db.transaction((transaction) async {
+      // Find the member
+      final member = await Member.db.findFirstRow(
+        session,
+        where: (t) => t.user.id.equals(authInfo.authUserId),
+        transaction: transaction,
+      );
+
+      if (member == null) {
+        throw Exception('Member profile not found');
+      }
+
+      // Check if already registered
+      final existing = await EventRegistration.db.findFirstRow(
+        session,
+        where: (t) => t.eventId.equals(eventId) & t.memberId.equals(member.id!),
+        transaction: transaction,
+      );
+
+      if (existing != null) {
+        throw Exception('Already registered for this event');
+      }
+
+      // Get event
+      final event =
+          await Event.db.findById(session, eventId, transaction: transaction);
+      if (event == null) {
+        throw Exception('Event not found');
+      }
+
+      // Check registration dates
+      final now = DateTime.now();
+      if (event.registrationStartDate != null &&
+          now.isBefore(event.registrationStartDate!)) {
+        throw Exception('Registration has not started yet');
+      }
+      if (event.registrationDeadline != null &&
+          now.isAfter(event.registrationDeadline!)) {
+        throw Exception('Registration deadline has passed');
+      }
+
+      // Determine status
+      var status = RegistrationStatus.confirmed;
+      int? waitlistPosition;
+
+      if (event.requiresApproval) {
+        status = RegistrationStatus.pending;
+      } else if (event.currentRegistrationCount >= event.maxParticipants) {
+        if (event.requiresApproval) {
+          status = RegistrationStatus.waitlisted;
+          // Calculate waitlist position
+          final waitlistCount = await EventRegistration.db.count(
+            session,
+            where: (t) =>
+                t.eventId.equals(eventId) &
+                t.registrationStatus.equals(RegistrationStatus.waitlisted),
+            transaction: transaction,
+          );
+          waitlistPosition = waitlistCount + 1;
+        } else {
+          throw Exception('Event is full and waitlist is disabled');
+        }
+      }
+
+      // Create registration
+      final registration = EventRegistration(
+        memberId: member.id!,
+        eventId: eventId,
+        registrationStatus: status,
+        registrationDate: now,
+        modifiedAt: now,
+        waitlistPosition: waitlistPosition,
+        waitlistedAt: status == RegistrationStatus.waitlisted ? now : null,
+        waiverAccepted: false, // Default
+      );
+
+      final created = await EventRegistration.db
+          .insertRow(session, registration, transaction: transaction);
+
+      // Increment count if confirmed
+      if (status == RegistrationStatus.confirmed) {
+        event.currentRegistrationCount =
+            (event.currentRegistrationCount ?? 0) + 1;
+        await Event.db.updateRow(session, event, transaction: transaction);
+      }
+
+      return created;
+    });
   }
 }

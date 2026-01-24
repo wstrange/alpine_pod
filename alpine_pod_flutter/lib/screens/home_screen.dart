@@ -1,5 +1,4 @@
 import 'package:alpine_pod_client/alpine_pod_client.dart';
-import '../widgets/event_view.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:state_beacon/state_beacon.dart';
@@ -98,71 +97,7 @@ class EventListDisplay extends StatelessWidget {
               ],
             ),
             onTap: () {
-              showDialog(
-                context: context,
-                builder: (context) => AlertDialog(
-                  // title: Text(events[i].title),
-                  content: EventView(event: events[i]),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      child: const Text('Close'),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        GoRouter.of(context)
-                            .push('/event-details', extra: events[i]);
-                      },
-                      child: const Text('Edit'),
-                    ),
-                    TextButton(
-                      onPressed: () async {
-                        try {
-                          final member = await client.member.getCurrentMember();
-                          if (member == null) {
-                            if (context.mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text('User member not found')),
-                              );
-                            }
-                            return;
-                          }
-
-                          final registration = EventRegistration(
-                            memberId: member.id!,
-                            eventId: event.id!,
-                            registrationStatus: RegistrationStatus.pending,
-                            registrationDate: DateTime.now(),
-                            waiverAccepted: true, // Assuming true for now
-                            modifiedAt: DateTime.now(),
-                          );
-
-                          await client.registration
-                              .registerForEvent(registration);
-
-                          if (context.mounted) {
-                            Navigator.of(context).pop();
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                  content: Text(
-                                      'Successfully registered for ${event.title}')),
-                            );
-                          }
-                        } catch (e) {
-                          if (context.mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('Failed to register: $e')),
-                            );
-                          }
-                        }
-                      },
-                      child: const Text('Register'),
-                    ),
-                  ],
-                ),
-              );
+              GoRouter.of(context).push('/event-view', extra: event);
             },
           );
         });

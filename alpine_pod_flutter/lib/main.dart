@@ -7,6 +7,7 @@ import 'package:serverpod_auth_idp_flutter/serverpod_auth_idp_flutter.dart';
 import 'package:serverpod_flutter/serverpod_flutter.dart';
 import 'package:state_beacon/state_beacon.dart';
 import 'beacon.dart';
+import 'screens/event_details_screen.dart';
 import 'screens/event_edit_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/member_edit_screen.dart';
@@ -76,6 +77,13 @@ final router = GoRouter(
       builder: (context, state) => const EventEditScreen(),
     ),
     GoRoute(
+      path: '/event-view',
+      builder: (context, state) {
+        final event = state.extra as Event;
+        return EventDetailsScreen(event: event);
+      },
+    ),
+    GoRoute(
       path: '/event-details',
       builder: (context, state) {
         final event = state.extra as Event;
@@ -95,8 +103,8 @@ final router = GoRouter(
     final bool loggedIn = sessionManager.isAuthenticated;
     final bool loggingIn = state.matchedLocation == '/login';
 
-    print(
-        'loggedIn: $loggedIn, loggingIn: $loggingIn authInfo=${sessionManager.authInfo}');
+    // print(
+    //     'loggedIn: $loggedIn, loggingIn: $loggingIn authInfo=${sessionManager.authInfo}');
     if (!loggedIn) {
       return loggingIn ? null : '/login';
     }

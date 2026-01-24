@@ -1,7 +1,6 @@
 import 'package:alpine_pod_client/alpine_pod_client.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'event_view.dart';
 import 'package:go_router/go_router.dart';
 import 'package:state_beacon/state_beacon.dart';
 import '../beacon.dart';
@@ -137,7 +136,7 @@ class _CalendarViewState extends State<CalendarView> {
                   const BorderRadius.vertical(top: Radius.circular(32)),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
+                  color: Colors.black.withValues(alpha: 0.05),
                   blurRadius: 10,
                   offset: const Offset(0, -5),
                 ),
@@ -211,12 +210,25 @@ class _CalendarViewState extends State<CalendarView> {
             onPressed: () => _updateSelectedDate(
                 selectedDate.subtract(const Duration(days: 7))),
           ),
-          Text(
-            _formatRange(start, end),
-            style: const TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w700,
-                color: Colors.blueGrey),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                _formatRange(start, end),
+                style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.blueGrey),
+              ),
+              const SizedBox(width: 8),
+              IconButton(
+                visualDensity: VisualDensity.compact,
+                onPressed: () => _updateSelectedDate(DateTime.now()),
+                icon: const Icon(Icons.today_rounded, size: 18),
+                color: Colors.blue,
+                tooltip: 'Go to today',
+              ),
+            ],
           ),
           IconButton(
             visualDensity: VisualDensity.compact,
@@ -272,12 +284,14 @@ class _CalendarViewState extends State<CalendarView> {
               decoration: BoxDecoration(
                 color: isInSelectedWeek
                     ? Colors.blue
-                    : (isToday ? Colors.blue.withOpacity(0.05) : Colors.white),
+                    : (isToday
+                        ? Colors.blue.withValues(alpha: 0.05)
+                        : Colors.white),
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: isInSelectedWeek
                     ? [
                         BoxShadow(
-                          color: Colors.blue.withOpacity(0.3),
+                          color: Colors.blue.withValues(alpha: 0.3),
                           blurRadius: 4,
                           offset: const Offset(0, 2),
                         )
@@ -390,7 +404,7 @@ class _CalendarViewState extends State<CalendarView> {
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: Colors.grey.withOpacity(0.15)),
+        side: BorderSide(color: Colors.grey.withValues(alpha: 0.15)),
       ),
       child: InkWell(
         onTap: () => _showEventDetails(context, event),
@@ -404,7 +418,7 @@ class _CalendarViewState extends State<CalendarView> {
                 children: [
                   CircleAvatar(
                     radius: 20,
-                    backgroundColor: Colors.blue.withOpacity(0.1),
+                    backgroundColor: Colors.blue.withValues(alpha: 0.1),
                     child: const Icon(Icons.campaign,
                         color: Colors.blue, size: 20),
                   ),
@@ -452,7 +466,7 @@ class _CalendarViewState extends State<CalendarView> {
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
-                    fontSize: 13, color: Colors.black.withOpacity(0.6)),
+                    fontSize: 13, color: Colors.black.withValues(alpha: 0.6)),
               ),
             ],
           ),
@@ -462,24 +476,6 @@ class _CalendarViewState extends State<CalendarView> {
   }
 
   void _showEventDetails(BuildContext context, Event event) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        content: EventView(event: event),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Close'),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              GoRouter.of(context).push('/event-details', extra: event);
-            },
-            child: const Text('Edit'),
-          ),
-        ],
-      ),
-    );
+    context.push('/event-view', extra: event);
   }
 }

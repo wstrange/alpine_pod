@@ -6,6 +6,7 @@ fields:
   type: EventType
   startTime: DateTime
   endTime: DateTime
+  # Todo: Consider location data model
   location: String?
   gpsLatitude: double?
   gpsLongitude: double?
@@ -13,7 +14,6 @@ fields:
   carPoolingTime: DateTime?
   carPoolingPlace: String?
   carPoolingDriveOrRide: String?
-  maxParticipants: int?
   difficulty: String?
   requiredEquipment: String?
   prerequisites: String?
@@ -21,17 +21,17 @@ fields:
   # Registration management
   registrationDeadline: DateTime?
   registrationStartDate: DateTime?
-  waitlistEnabled: bool
   registrationFee: double?
-  currentRegistrationCount: int?
-  requiresApproval: bool
-  waiverRequired: bool
-  minimumParticipants: int?
+  currentRegistrationCount: int, default=0
+  requiresApproval: bool, default=true
+  minimumParticipants: int, default=0
+  maxParticipants: int, default=8
   cancellationDeadline: DateTime?
   registrationNotes: String?
   sectionId: int # Associated section
   # JSON list of documents (e.g. [{"type":"waiver","url":"..."}])
   documentsJson: String?
+  # Wheter is is visible on the public event list
   published: bool, default=false
 indexes:
   upcoming_events_idx:

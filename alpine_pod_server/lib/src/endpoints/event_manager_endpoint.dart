@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_non_null_assertion, unnecessary_null_comparison
+
 import 'package:alpine_pod_server/src/custom_scopes.dart';
 import 'package:serverpod/serverpod.dart';
 import '../generated/protocol.dart';

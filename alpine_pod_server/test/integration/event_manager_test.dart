@@ -80,9 +80,7 @@ void main() {
           sectionId: section.id!,
           type: EventType.hike,
           published: true,
-          waitlistEnabled: false,
           requiresApproval: false,
-          waiverRequired: false,
         ),
       );
     });

@@ -18,7 +18,7 @@ include: package:lints/recommended.yaml
 linter:
   rules:
     unawaited_futures: true
-    avoid_print: true
+    avoid_print: false
 
 analyzer:
   exclude:

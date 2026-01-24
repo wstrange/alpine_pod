@@ -66,9 +66,7 @@ class _EventEditScreenState extends State<EventEditScreen> {
           startTime: startTime,
           endTime: endTime,
           type: EventType.hike, // TODO: Let user choose
-          waitlistEnabled: false,
-          requiresApproval: false,
-          waiverRequired: false,
+          requiresApproval: true,
         );
 
     try {

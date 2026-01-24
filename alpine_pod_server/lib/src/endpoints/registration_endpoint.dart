@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_non_null_assertion, unnecessary_null_comparison
+
 import 'package:serverpod/serverpod.dart';
 import '../generated/protocol.dart';
 import '../member_cache.dart';
@@ -124,7 +126,7 @@ class RegistrationEndpoint extends Endpoint {
     // Determine initial registration status
     final status = _determineRegistrationStatus(
       requiresApproval: event.requiresApproval,
-      waitlistEnabled: event.waitlistEnabled,
+      waitlistEnabled: event.requiresApproval,
       isFull: isFull,
     );
 
