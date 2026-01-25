@@ -26,6 +26,10 @@ class SignInScreen extends StatelessWidget {
             SnackBar(content: Text('Error: $error')),
           );
         },
+        emailSignInWidget: EmailSignInWidget(
+          client: client,
+          startScreen: EmailFlowScreen.login,
+        ),
       ),
     );
   }

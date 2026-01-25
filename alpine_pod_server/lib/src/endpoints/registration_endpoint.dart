@@ -8,13 +8,10 @@ class RegistrationEndpoint extends Endpoint {
   /// Determines the initial registration status based on event settings and capacity
   RegistrationStatus _determineRegistrationStatus({
     required bool requiresApproval,
-    required bool waitlistEnabled,
     required bool isFull,
   }) {
     if (isFull) {
-      return waitlistEnabled
-          ? RegistrationStatus.waitlisted
-          : RegistrationStatus.cancelled;
+      return RegistrationStatus.waitlisted;
     }
     return requiresApproval
         ? RegistrationStatus.pending
@@ -91,11 +88,6 @@ class RegistrationEndpoint extends Endpoint {
       throw Exception('Already registered for this event');
     }
 
-    // Validate registration fields
-    if (!registration.waiverAccepted) {
-      throw Exception('Waiver must be accepted');
-    }
-
     final validatedReg = registration.copyWith(
       memberId: memberInfo.member.id,
       eventId: event.id,
@@ -120,13 +112,11 @@ class RegistrationEndpoint extends Endpoint {
     );
 
     // Check if event is at capacity
-    final isFull = event.maxParticipants != null &&
-        currentConfirmed >= event.maxParticipants!;
+    final isFull = currentConfirmed >= event.maxParticipants!;
 
     // Determine initial registration status
     final status = _determineRegistrationStatus(
       requiresApproval: event.requiresApproval,
-      waitlistEnabled: event.requiresApproval,
       isFull: isFull,
     );
 
