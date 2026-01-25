@@ -387,8 +387,6 @@ class EndpointEventManager extends _i2.EndpointRef {
 }
 
 /// TODO: Use RBAC to restrict access to these methods
-///
-///
 /// {@category Endpoint}
 class EndpointMember extends _i2.EndpointRef {
   EndpointMember(_i2.EndpointCaller caller) : super(caller);
@@ -443,6 +441,18 @@ class EndpointMember extends _i2.EndpointRef {
         'updateMember',
         {'member': member},
       );
+
+  _i3.Future<List<_i10.Member>> getSectionMembers(
+    int sectionId, {
+    String? filter,
+  }) => caller.callServerEndpoint<List<_i10.Member>>(
+    'member',
+    'getSectionMembers',
+    {
+      'sectionId': sectionId,
+      'filter': filter,
+    },
+  );
 }
 
 /// {@category Endpoint}

@@ -741,6 +741,31 @@ class Endpoints extends _i1.EndpointDispatch {
                     params['member'],
                   ),
         ),
+        'getSectionMembers': _i1.MethodConnector(
+          name: 'getSectionMembers',
+          params: {
+            'sectionId': _i1.ParameterDescription(
+              name: 'sectionId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+            'filter': _i1.ParameterDescription(
+              name: 'filter',
+              type: _i1.getType<String?>(),
+              nullable: true,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['member'] as _i6.MemberEndpoint).getSectionMembers(
+                    session,
+                    params['sectionId'],
+                    filter: params['filter'],
+                  ),
+        ),
       },
     );
     connectors['registration'] = _i1.EndpointConnector(

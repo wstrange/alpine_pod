@@ -8,16 +8,19 @@
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
 // ignore_for_file: invalid_use_of_internal_member
+// ignore_for_file: unnecessary_null_comparison
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
-import 'package:alpine_pod_server/src/generated/protocol.dart' as _i2;
+import 'member.dart' as _i2;
+import 'package:alpine_pod_server/src/generated/protocol.dart' as _i3;
 
 abstract class SectionMembership
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   SectionMembership._({
     this.id,
-    this.memberId,
+    required this.memberId,
+    this.member,
     required this.sectionId,
     this.externalUserId,
     DateTime? syncedAt,
@@ -27,7 +30,8 @@ abstract class SectionMembership
 
   factory SectionMembership({
     int? id,
-    int? memberId,
+    required int memberId,
+    _i2.Member? member,
     required int sectionId,
     String? externalUserId,
     DateTime? syncedAt,
@@ -38,14 +42,17 @@ abstract class SectionMembership
   factory SectionMembership.fromJson(Map<String, dynamic> jsonSerialization) {
     return SectionMembership(
       id: jsonSerialization['id'] as int?,
-      memberId: jsonSerialization['memberId'] as int?,
+      memberId: jsonSerialization['memberId'] as int,
+      member: jsonSerialization['member'] == null
+          ? null
+          : _i3.Protocol().deserialize<_i2.Member>(jsonSerialization['member']),
       sectionId: jsonSerialization['sectionId'] as int,
       externalUserId: jsonSerialization['externalUserId'] as String?,
       syncedAt: jsonSerialization['syncedAt'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['syncedAt']),
       sourceSystem: jsonSerialization['sourceSystem'] as String?,
-      scopes: _i2.Protocol().deserialize<Set<String>>(
+      scopes: _i3.Protocol().deserialize<Set<String>>(
         jsonSerialization['scopes'],
       ),
     );
@@ -58,7 +65,9 @@ abstract class SectionMembership
   @override
   int? id;
 
-  int? memberId;
+  int memberId;
+
+  _i2.Member? member;
 
   int sectionId;
 
@@ -79,6 +88,7 @@ abstract class SectionMembership
   SectionMembership copyWith({
     int? id,
     int? memberId,
+    _i2.Member? member,
     int? sectionId,
     String? externalUserId,
     DateTime? syncedAt,
@@ -90,7 +100,8 @@ abstract class SectionMembership
     return {
       '__className__': 'SectionMembership',
       if (id != null) 'id': id,
-      if (memberId != null) 'memberId': memberId,
+      'memberId': memberId,
+      if (member != null) 'member': member?.toJson(),
       'sectionId': sectionId,
       if (externalUserId != null) 'externalUserId': externalUserId,
       'syncedAt': syncedAt.toJson(),
@@ -104,7 +115,8 @@ abstract class SectionMembership
     return {
       '__className__': 'SectionMembership',
       if (id != null) 'id': id,
-      if (memberId != null) 'memberId': memberId,
+      'memberId': memberId,
+      if (member != null) 'member': member?.toJsonForProtocol(),
       'sectionId': sectionId,
       if (externalUserId != null) 'externalUserId': externalUserId,
       'syncedAt': syncedAt.toJson(),
@@ -113,8 +125,8 @@ abstract class SectionMembership
     };
   }
 
-  static SectionMembershipInclude include() {
-    return SectionMembershipInclude._();
+  static SectionMembershipInclude include({_i2.MemberInclude? member}) {
+    return SectionMembershipInclude._(member: member);
   }
 
   static SectionMembershipIncludeList includeList({
@@ -148,7 +160,8 @@ class _Undefined {}
 class _SectionMembershipImpl extends SectionMembership {
   _SectionMembershipImpl({
     int? id,
-    int? memberId,
+    required int memberId,
+    _i2.Member? member,
     required int sectionId,
     String? externalUserId,
     DateTime? syncedAt,
@@ -157,6 +170,7 @@ class _SectionMembershipImpl extends SectionMembership {
   }) : super._(
          id: id,
          memberId: memberId,
+         member: member,
          sectionId: sectionId,
          externalUserId: externalUserId,
          syncedAt: syncedAt,
@@ -170,7 +184,8 @@ class _SectionMembershipImpl extends SectionMembership {
   @override
   SectionMembership copyWith({
     Object? id = _Undefined,
-    Object? memberId = _Undefined,
+    int? memberId,
+    Object? member = _Undefined,
     int? sectionId,
     Object? externalUserId = _Undefined,
     DateTime? syncedAt,
@@ -179,7 +194,8 @@ class _SectionMembershipImpl extends SectionMembership {
   }) {
     return SectionMembership(
       id: id is int? ? id : this.id,
-      memberId: memberId is int? ? memberId : this.memberId,
+      memberId: memberId ?? this.memberId,
+      member: member is _i2.Member? ? member : this.member?.copyWith(),
       sectionId: sectionId ?? this.sectionId,
       externalUserId: externalUserId is String?
           ? externalUserId
@@ -195,7 +211,7 @@ class SectionMembershipUpdateTable
     extends _i1.UpdateTable<SectionMembershipTable> {
   SectionMembershipUpdateTable(super.table);
 
-  _i1.ColumnValue<int, int> memberId(int? value) => _i1.ColumnValue(
+  _i1.ColumnValue<int, int> memberId(int value) => _i1.ColumnValue(
     table.memberId,
     value,
   );
@@ -265,6 +281,8 @@ class SectionMembershipTable extends _i1.Table<int?> {
 
   late final _i1.ColumnInt memberId;
 
+  _i2.MemberTable? _member;
+
   late final _i1.ColumnInt sectionId;
 
   late final _i1.ColumnString externalUserId;
@@ -274,6 +292,19 @@ class SectionMembershipTable extends _i1.Table<int?> {
   late final _i1.ColumnString sourceSystem;
 
   late final _i1.ColumnSerializable<Set<String>> scopes;
+
+  _i2.MemberTable get member {
+    if (_member != null) return _member!;
+    _member = _i1.createRelationTable(
+      relationFieldName: 'member',
+      field: SectionMembership.t.memberId,
+      foreignField: _i2.Member.t.id,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i2.MemberTable(tableRelation: foreignTableRelation),
+    );
+    return _member!;
+  }
 
   @override
   List<_i1.Column> get columns => [
@@ -285,13 +316,25 @@ class SectionMembershipTable extends _i1.Table<int?> {
     sourceSystem,
     scopes,
   ];
+
+  @override
+  _i1.Table? getRelationTable(String relationField) {
+    if (relationField == 'member') {
+      return member;
+    }
+    return null;
+  }
 }
 
 class SectionMembershipInclude extends _i1.IncludeObject {
-  SectionMembershipInclude._();
+  SectionMembershipInclude._({_i2.MemberInclude? member}) {
+    _member = member;
+  }
+
+  _i2.MemberInclude? _member;
 
   @override
-  Map<String, _i1.Include?> get includes => {};
+  Map<String, _i1.Include?> get includes => {'member': _member};
 
   @override
   _i1.Table<int?> get table => SectionMembership.t;
@@ -319,6 +362,8 @@ class SectionMembershipIncludeList extends _i1.IncludeList {
 
 class SectionMembershipRepository {
   const SectionMembershipRepository._();
+
+  final attachRow = const SectionMembershipAttachRowRepository._();
 
   /// Returns a list of [SectionMembership]s matching the given query parameters.
   ///
@@ -351,6 +396,7 @@ class SectionMembershipRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<SectionMembershipTable>? orderByList,
     _i1.Transaction? transaction,
+    SectionMembershipInclude? include,
   }) async {
     return session.db.find<SectionMembership>(
       where: where?.call(SectionMembership.t),
@@ -360,6 +406,7 @@ class SectionMembershipRepository {
       limit: limit,
       offset: offset,
       transaction: transaction,
+      include: include,
     );
   }
 
@@ -388,6 +435,7 @@ class SectionMembershipRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<SectionMembershipTable>? orderByList,
     _i1.Transaction? transaction,
+    SectionMembershipInclude? include,
   }) async {
     return session.db.findFirstRow<SectionMembership>(
       where: where?.call(SectionMembership.t),
@@ -396,6 +444,7 @@ class SectionMembershipRepository {
       orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
+      include: include,
     );
   }
 
@@ -404,10 +453,12 @@ class SectionMembershipRepository {
     _i1.Session session,
     int id, {
     _i1.Transaction? transaction,
+    SectionMembershipInclude? include,
   }) async {
     return session.db.findById<SectionMembership>(
       id,
       transaction: transaction,
+      include: include,
     );
   }
 
@@ -567,6 +618,33 @@ class SectionMembershipRepository {
     return session.db.count<SectionMembership>(
       where: where?.call(SectionMembership.t),
       limit: limit,
+      transaction: transaction,
+    );
+  }
+}
+
+class SectionMembershipAttachRowRepository {
+  const SectionMembershipAttachRowRepository._();
+
+  /// Creates a relation between the given [SectionMembership] and [Member]
+  /// by setting the [SectionMembership]'s foreign key `memberId` to refer to the [Member].
+  Future<void> member(
+    _i1.Session session,
+    SectionMembership sectionMembership,
+    _i2.Member member, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (sectionMembership.id == null) {
+      throw ArgumentError.notNull('sectionMembership.id');
+    }
+    if (member.id == null) {
+      throw ArgumentError.notNull('member.id');
+    }
+
+    var $sectionMembership = sectionMembership.copyWith(memberId: member.id);
+    await session.db.updateRow<SectionMembership>(
+      $sectionMembership,
+      columns: [SectionMembership.t.memberId],
       transaction: transaction,
     );
   }

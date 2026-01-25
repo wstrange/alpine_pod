@@ -36,6 +36,7 @@ member:
   - addMemberToSection:
   - removeMemberFromSection:
   - updateMember:
+  - getSectionMembers:
 registration:
   - updateRegistrationStatus:
   - registerForEvent:

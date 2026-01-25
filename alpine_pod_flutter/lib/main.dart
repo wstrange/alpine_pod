@@ -10,6 +10,7 @@ import 'beacon.dart';
 import 'screens/event_details_screen.dart';
 import 'screens/event_edit_screen.dart';
 import 'screens/home_screen.dart';
+import 'screens/member_directory_screen.dart';
 import 'screens/member_edit_screen.dart';
 import 'screens/section_selection_screen.dart';
 import 'screens/sign_in_screen.dart';
@@ -97,6 +98,10 @@ final router = GoRouter(
     GoRoute(
       path: '/profile',
       builder: (context, state) => const MemberEditScreen(),
+    ),
+    GoRoute(
+      path: '/directory',
+      builder: (context, state) => const MemberDirectoryScreen(),
     ),
   ],
   redirect: (BuildContext context, GoRouterState state) async {

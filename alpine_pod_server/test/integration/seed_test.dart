@@ -153,13 +153,13 @@ void main() {
         var sm = await endpoints.member.addMemberToSection(
             authSession,
             SectionMembership(
-                memberId: m.id, sectionId: s1.id!, scopes: scopes));
+                memberId: m.id!, sectionId: s1.id!, scopes: scopes));
 
         print(sm);
         sm = await endpoints.member.addMemberToSection(
             authSession,
             SectionMembership(
-              memberId: m.id,
+              memberId: m.id!,
               sectionId: s2.id!,
               scopes: scopes,
             ));

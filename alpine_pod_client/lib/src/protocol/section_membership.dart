@@ -11,12 +11,14 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
-import 'package:alpine_pod_client/src/protocol/protocol.dart' as _i2;
+import 'member.dart' as _i2;
+import 'package:alpine_pod_client/src/protocol/protocol.dart' as _i3;
 
 abstract class SectionMembership implements _i1.SerializableModel {
   SectionMembership._({
     this.id,
-    this.memberId,
+    required this.memberId,
+    this.member,
     required this.sectionId,
     this.externalUserId,
     DateTime? syncedAt,
@@ -26,7 +28,8 @@ abstract class SectionMembership implements _i1.SerializableModel {
 
   factory SectionMembership({
     int? id,
-    int? memberId,
+    required int memberId,
+    _i2.Member? member,
     required int sectionId,
     String? externalUserId,
     DateTime? syncedAt,
@@ -37,14 +40,17 @@ abstract class SectionMembership implements _i1.SerializableModel {
   factory SectionMembership.fromJson(Map<String, dynamic> jsonSerialization) {
     return SectionMembership(
       id: jsonSerialization['id'] as int?,
-      memberId: jsonSerialization['memberId'] as int?,
+      memberId: jsonSerialization['memberId'] as int,
+      member: jsonSerialization['member'] == null
+          ? null
+          : _i3.Protocol().deserialize<_i2.Member>(jsonSerialization['member']),
       sectionId: jsonSerialization['sectionId'] as int,
       externalUserId: jsonSerialization['externalUserId'] as String?,
       syncedAt: jsonSerialization['syncedAt'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['syncedAt']),
       sourceSystem: jsonSerialization['sourceSystem'] as String?,
-      scopes: _i2.Protocol().deserialize<Set<String>>(
+      scopes: _i3.Protocol().deserialize<Set<String>>(
         jsonSerialization['scopes'],
       ),
     );
@@ -55,7 +61,9 @@ abstract class SectionMembership implements _i1.SerializableModel {
   /// the id will be null.
   int? id;
 
-  int? memberId;
+  int memberId;
+
+  _i2.Member? member;
 
   int sectionId;
 
@@ -73,6 +81,7 @@ abstract class SectionMembership implements _i1.SerializableModel {
   SectionMembership copyWith({
     int? id,
     int? memberId,
+    _i2.Member? member,
     int? sectionId,
     String? externalUserId,
     DateTime? syncedAt,
@@ -84,7 +93,8 @@ abstract class SectionMembership implements _i1.SerializableModel {
     return {
       '__className__': 'SectionMembership',
       if (id != null) 'id': id,
-      if (memberId != null) 'memberId': memberId,
+      'memberId': memberId,
+      if (member != null) 'member': member?.toJson(),
       'sectionId': sectionId,
       if (externalUserId != null) 'externalUserId': externalUserId,
       'syncedAt': syncedAt.toJson(),
@@ -104,7 +114,8 @@ class _Undefined {}
 class _SectionMembershipImpl extends SectionMembership {
   _SectionMembershipImpl({
     int? id,
-    int? memberId,
+    required int memberId,
+    _i2.Member? member,
     required int sectionId,
     String? externalUserId,
     DateTime? syncedAt,
@@ -113,6 +124,7 @@ class _SectionMembershipImpl extends SectionMembership {
   }) : super._(
          id: id,
          memberId: memberId,
+         member: member,
          sectionId: sectionId,
          externalUserId: externalUserId,
          syncedAt: syncedAt,
@@ -126,7 +138,8 @@ class _SectionMembershipImpl extends SectionMembership {
   @override
   SectionMembership copyWith({
     Object? id = _Undefined,
-    Object? memberId = _Undefined,
+    int? memberId,
+    Object? member = _Undefined,
     int? sectionId,
     Object? externalUserId = _Undefined,
     DateTime? syncedAt,
@@ -135,7 +148,8 @@ class _SectionMembershipImpl extends SectionMembership {
   }) {
     return SectionMembership(
       id: id is int? ? id : this.id,
-      memberId: memberId is int? ? memberId : this.memberId,
+      memberId: memberId ?? this.memberId,
+      member: member is _i2.Member? ? member : this.member?.copyWith(),
       sectionId: sectionId ?? this.sectionId,
       externalUserId: externalUserId is String?
           ? externalUserId

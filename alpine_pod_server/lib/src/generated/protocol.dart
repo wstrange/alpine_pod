@@ -911,8 +911,8 @@ class Protocol extends _i1.SerializationManagerServer {
         _i2.ColumnDefinition(
           name: 'memberId',
           columnType: _i2.ColumnType.bigint,
-          isNullable: true,
-          dartType: 'int?',
+          isNullable: false,
+          dartType: 'int',
         ),
         _i2.ColumnDefinition(
           name: 'sectionId',
@@ -949,6 +949,16 @@ class Protocol extends _i1.SerializationManagerServer {
       foreignKeys: [
         _i2.ForeignKeyDefinition(
           constraintName: 'section_memberships_fk_0',
+          columns: ['memberId'],
+          referenceTable: 'members',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _i2.ForeignKeyAction.noAction,
+          onDelete: _i2.ForeignKeyAction.noAction,
+          matchType: null,
+        ),
+        _i2.ForeignKeyDefinition(
+          constraintName: 'section_memberships_fk_1',
           columns: ['sectionId'],
           referenceTable: 'sections',
           referenceTableSchema: 'public',

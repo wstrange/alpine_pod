@@ -43,6 +43,14 @@ class HomeScreen extends StatelessWidget {
                 GoRouter.of(context).push('/create-event');
               },
             ),
+            ListTile(
+              leading: const Icon(Icons.people_alt),
+              title: const Text('Member Directory'),
+              onTap: () {
+                Navigator.pop(context); // Close the drawer
+                GoRouter.of(context).push('/directory');
+              },
+            ),
             const Divider(),
             ListTile(
               leading: const Icon(Icons.logout),

@@ -1,7 +1,7 @@
 class: SectionMembership
 table: section_memberships
 fields:
-  memberId: int?
+  member: Member?, relation
   sectionId: int, relation(parent=sections, onDelete=cascade)
   externalUserId: String?
   syncedAt: DateTime, default=now

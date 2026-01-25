@@ -3,8 +3,6 @@ import 'package:serverpod_auth_idp_server/core.dart';
 import '../generated/protocol.dart';
 
 /// TODO: Use RBAC to restrict access to these methods
-///
-///
 class MemberEndpoint extends Endpoint {
   Future<Member?> getCurrentMember(Session session) async {
     final authInfo = session.authenticated;
@@ -90,5 +88,35 @@ class MemberEndpoint extends Endpoint {
   Future<Member> updateMember(Session session, Member member) async {
     final updated = await Member.db.updateRow(session, member);
     return updated;
+  }
+
+  // New method for Member Directory
+  Future<List<Member>> getSectionMembers(
+    Session session,
+    int sectionId, {
+    String? filter,
+  }) async {
+    // We fetch SectionMemberships and include the Member relation
+    final memberships = await SectionMembership.db.find(
+      session,
+      where: (t) {
+        var expr = t.sectionId.equals(sectionId);
+        if (filter != null && filter.isNotEmpty) {
+          // Filter on member fields.
+          expr = expr &
+              (t.member.firstName.ilike('%$filter%') |
+                  t.member.lastName.ilike('%$filter%') |
+                  t.member.email.ilike('%$filter%'));
+        }
+        return expr;
+      },
+      include: SectionMembership.include(
+        member: Member.include(),
+      ),
+      orderBy: (t) => t.member.lastName,
+    );
+
+    // Extract members from memberships
+    return memberships.map((m) => m.member!).toList();
   }
 }
