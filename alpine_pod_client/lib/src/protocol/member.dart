@@ -31,10 +31,12 @@ abstract class Member implements _i1.SerializableModel {
     required this.emergencyContactName,
     required this.emergencyContactPhone,
     this.medicalConditions,
+    bool? isTripAdmin,
     this.certifications,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) : membershipStatus = membershipStatus ?? 'active',
+       isTripAdmin = isTripAdmin ?? false,
        createdAt = createdAt ?? DateTime.now(),
        updatedAt = updatedAt ?? DateTime.now();
 
@@ -53,6 +55,7 @@ abstract class Member implements _i1.SerializableModel {
     required String emergencyContactName,
     required String emergencyContactPhone,
     String? medicalConditions,
+    bool? isTripAdmin,
     String? certifications,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -77,6 +80,7 @@ abstract class Member implements _i1.SerializableModel {
       emergencyContactPhone:
           jsonSerialization['emergencyContactPhone'] as String,
       medicalConditions: jsonSerialization['medicalConditions'] as String?,
+      isTripAdmin: jsonSerialization['isTripAdmin'] as bool?,
       certifications: jsonSerialization['certifications'] as String?,
       createdAt: jsonSerialization['createdAt'] == null
           ? null
@@ -118,6 +122,8 @@ abstract class Member implements _i1.SerializableModel {
 
   String? medicalConditions;
 
+  bool isTripAdmin;
+
   String? certifications;
 
   DateTime createdAt;
@@ -142,6 +148,7 @@ abstract class Member implements _i1.SerializableModel {
     String? emergencyContactName,
     String? emergencyContactPhone,
     String? medicalConditions,
+    bool? isTripAdmin,
     String? certifications,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -164,6 +171,7 @@ abstract class Member implements _i1.SerializableModel {
       'emergencyContactName': emergencyContactName,
       'emergencyContactPhone': emergencyContactPhone,
       if (medicalConditions != null) 'medicalConditions': medicalConditions,
+      'isTripAdmin': isTripAdmin,
       if (certifications != null) 'certifications': certifications,
       'createdAt': createdAt.toJson(),
       'updatedAt': updatedAt.toJson(),
@@ -194,6 +202,7 @@ class _MemberImpl extends Member {
     required String emergencyContactName,
     required String emergencyContactPhone,
     String? medicalConditions,
+    bool? isTripAdmin,
     String? certifications,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -212,6 +221,7 @@ class _MemberImpl extends Member {
          emergencyContactName: emergencyContactName,
          emergencyContactPhone: emergencyContactPhone,
          medicalConditions: medicalConditions,
+         isTripAdmin: isTripAdmin,
          certifications: certifications,
          createdAt: createdAt,
          updatedAt: updatedAt,
@@ -236,6 +246,7 @@ class _MemberImpl extends Member {
     String? emergencyContactName,
     String? emergencyContactPhone,
     Object? medicalConditions = _Undefined,
+    bool? isTripAdmin,
     Object? certifications = _Undefined,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -260,6 +271,7 @@ class _MemberImpl extends Member {
       medicalConditions: medicalConditions is String?
           ? medicalConditions
           : this.medicalConditions,
+      isTripAdmin: isTripAdmin ?? this.isTripAdmin,
       certifications: certifications is String?
           ? certifications
           : this.certifications,

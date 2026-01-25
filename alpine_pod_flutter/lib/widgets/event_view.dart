@@ -1,10 +1,9 @@
-// ignore_for_file: unnecessary_non_null_assertion, unnecessary_null_comparison, dead_null_aware_expression
-
 import 'package:alpine_pod_client/alpine_pod_client.dart';
 import 'package:flutter/material.dart';
 import 'package:state_beacon/state_beacon.dart';
 import '../beacon.dart';
 import '../util.dart';
+import 'user_list_widget.dart';
 
 class EventView extends StatefulWidget {
   const EventView({required this.event, super.key});
@@ -116,7 +115,7 @@ class _EventViewState extends State<EventView> {
                               const Icon(Icons.people, color: Colors.blue),
                               const SizedBox(height: 4),
                               Text(
-                                '${details.registrants.length} / ${widget.event.maxParticipants ?? '∞'}',
+                                '${details.registrants.length} / ${widget.event.maxParticipants}',
                                 style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16,
@@ -143,9 +142,8 @@ class _EventViewState extends State<EventView> {
                                     style: TextStyle(fontSize: 12)),
                               ],
                             ),
-                          if (widget.event.maxParticipants != null &&
-                              details.registrants.length >=
-                                  widget.event.maxParticipants!)
+                          if (details.registrants.length >=
+                              widget.event.maxParticipants)
                             Column(
                               children: [
                                 Icon(Icons.warning, color: Colors.red.shade400),
@@ -186,33 +184,34 @@ class _EventViewState extends State<EventView> {
                   if (managers.isNotEmpty) ...[
                     Text('Event Managers',
                         style: Theme.of(context).textTheme.titleMedium),
-                    ...managers.map((m) => ListTile(
-                          leading: const Icon(Icons.stars, color: Colors.blue),
-                          title: Text(m.member?.displayName ??
-                              '${m.member?.firstName} ${m.member?.lastName}'),
-                          dense: true,
-                        )),
+                    UserListWidget(
+                      members: managers.map((m) => m.member!).toList(),
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                    ),
                     const SizedBox(height: 8),
                   ],
                   if (confirmed.isNotEmpty) ...[
                     Text('Confirmed Participants (${confirmed.length})',
                         style: Theme.of(context).textTheme.titleMedium),
-                    ...confirmed.map((r) => ListTile(
-                          title: Text(r.member?.displayName ??
-                              '${r.member?.firstName} ${r.member?.lastName}'),
-                          dense: true,
-                        )),
+                    UserListWidget(
+                      members: confirmed.map((r) => r.member!).toList(),
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                    ),
                     const SizedBox(height: 8),
                   ],
                   if (waitlisted.isNotEmpty) ...[
                     Text('Waitlist (${waitlisted.length})',
                         style: Theme.of(context).textTheme.titleMedium),
-                    ...waitlisted.map((r) => ListTile(
-                          title: Text(r.member?.displayName ??
-                              '${r.member?.firstName} ${r.member?.lastName}'),
-                          subtitle: Text('Position: ${r.waitlistPosition}'),
-                          dense: true,
-                        )),
+                    // Note: UserListWidget doesn't currently show waitlist position.
+                    // Ideally we should update it or use a custom builder,
+                    // but for now we simply list them.
+                    UserListWidget(
+                      members: waitlisted.map((r) => r.member!).toList(),
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                    ),
                   ],
                   if (confirmed.isEmpty &&
                       waitlisted.isEmpty &&

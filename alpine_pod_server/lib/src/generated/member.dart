@@ -32,10 +32,12 @@ abstract class Member implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     required this.emergencyContactName,
     required this.emergencyContactPhone,
     this.medicalConditions,
+    bool? isTripAdmin,
     this.certifications,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) : membershipStatus = membershipStatus ?? 'active',
+       isTripAdmin = isTripAdmin ?? false,
        createdAt = createdAt ?? DateTime.now(),
        updatedAt = updatedAt ?? DateTime.now();
 
@@ -54,6 +56,7 @@ abstract class Member implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     required String emergencyContactName,
     required String emergencyContactPhone,
     String? medicalConditions,
+    bool? isTripAdmin,
     String? certifications,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -78,6 +81,7 @@ abstract class Member implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       emergencyContactPhone:
           jsonSerialization['emergencyContactPhone'] as String,
       medicalConditions: jsonSerialization['medicalConditions'] as String?,
+      isTripAdmin: jsonSerialization['isTripAdmin'] as bool?,
       certifications: jsonSerialization['certifications'] as String?,
       createdAt: jsonSerialization['createdAt'] == null
           ? null
@@ -121,6 +125,8 @@ abstract class Member implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
 
   String? medicalConditions;
 
+  bool isTripAdmin;
+
   String? certifications;
 
   DateTime createdAt;
@@ -148,6 +154,7 @@ abstract class Member implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     String? emergencyContactName,
     String? emergencyContactPhone,
     String? medicalConditions,
+    bool? isTripAdmin,
     String? certifications,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -170,6 +177,7 @@ abstract class Member implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       'emergencyContactName': emergencyContactName,
       'emergencyContactPhone': emergencyContactPhone,
       if (medicalConditions != null) 'medicalConditions': medicalConditions,
+      'isTripAdmin': isTripAdmin,
       if (certifications != null) 'certifications': certifications,
       'createdAt': createdAt.toJson(),
       'updatedAt': updatedAt.toJson(),
@@ -194,6 +202,7 @@ abstract class Member implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       'emergencyContactName': emergencyContactName,
       'emergencyContactPhone': emergencyContactPhone,
       if (medicalConditions != null) 'medicalConditions': medicalConditions,
+      'isTripAdmin': isTripAdmin,
       if (certifications != null) 'certifications': certifications,
       'createdAt': createdAt.toJson(),
       'updatedAt': updatedAt.toJson(),
@@ -248,6 +257,7 @@ class _MemberImpl extends Member {
     required String emergencyContactName,
     required String emergencyContactPhone,
     String? medicalConditions,
+    bool? isTripAdmin,
     String? certifications,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -266,6 +276,7 @@ class _MemberImpl extends Member {
          emergencyContactName: emergencyContactName,
          emergencyContactPhone: emergencyContactPhone,
          medicalConditions: medicalConditions,
+         isTripAdmin: isTripAdmin,
          certifications: certifications,
          createdAt: createdAt,
          updatedAt: updatedAt,
@@ -290,6 +301,7 @@ class _MemberImpl extends Member {
     String? emergencyContactName,
     String? emergencyContactPhone,
     Object? medicalConditions = _Undefined,
+    bool? isTripAdmin,
     Object? certifications = _Undefined,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -314,6 +326,7 @@ class _MemberImpl extends Member {
       medicalConditions: medicalConditions is String?
           ? medicalConditions
           : this.medicalConditions,
+      isTripAdmin: isTripAdmin ?? this.isTripAdmin,
       certifications: certifications is String?
           ? certifications
           : this.certifications,
@@ -392,6 +405,11 @@ class MemberUpdateTable extends _i1.UpdateTable<MemberTable> {
         value,
       );
 
+  _i1.ColumnValue<bool, bool> isTripAdmin(bool value) => _i1.ColumnValue(
+    table.isTripAdmin,
+    value,
+  );
+
   _i1.ColumnValue<String, String> certifications(String? value) =>
       _i1.ColumnValue(
         table.certifications,
@@ -463,6 +481,11 @@ class MemberTable extends _i1.Table<int?> {
       'medicalConditions',
       this,
     );
+    isTripAdmin = _i1.ColumnBool(
+      'isTripAdmin',
+      this,
+      hasDefault: true,
+    );
     certifications = _i1.ColumnString(
       'certifications',
       this,
@@ -507,6 +530,8 @@ class MemberTable extends _i1.Table<int?> {
 
   late final _i1.ColumnString medicalConditions;
 
+  late final _i1.ColumnBool isTripAdmin;
+
   late final _i1.ColumnString certifications;
 
   late final _i1.ColumnDateTime createdAt;
@@ -541,6 +566,7 @@ class MemberTable extends _i1.Table<int?> {
     emergencyContactName,
     emergencyContactPhone,
     medicalConditions,
+    isTripAdmin,
     certifications,
     createdAt,
     updatedAt,

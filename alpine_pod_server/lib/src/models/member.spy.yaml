@@ -13,6 +13,7 @@ fields:
   emergencyContactName: String
   emergencyContactPhone: String
   medicalConditions: String?
+  isTripAdmin: bool, default=false
   # certifications and skills stored as JSON-encoded arrays in strings
   certifications: String?
   createdAt: DateTime, default=now
