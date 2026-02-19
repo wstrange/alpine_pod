@@ -2,8 +2,8 @@ import 'package:alpine_pod_client/alpine_pod_client.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:go_router/go_router.dart';
-import 'package:state_beacon/state_beacon.dart';
-import '../beacon.dart';
+import 'package:signals_flutter/signals_flutter.dart';
+import '../signals.dart';
 
 class CalendarView extends StatefulWidget {
   const CalendarView({super.key});
@@ -39,16 +39,16 @@ class _CalendarViewState extends State<CalendarView> {
     final startOfVisibleWeek = _getStartOfWeek(dateAtCenter);
 
     if (!startOfVisibleWeek
-        .isAtSameMomentAs(_getStartOfWeek(selectedDateBeacon.peek()))) {
+        .isAtSameMomentAs(_getStartOfWeek(selectedDateSignal.peek()))) {
       // Use peek() and then update
-      selectedDateBeacon.value = startOfVisibleWeek;
+      selectedDateSignal.value = startOfVisibleWeek;
     }
   }
 
   @override
   void initState() {
     super.initState();
-    final now = selectedDateBeacon.value.copyWith(
+    final now = selectedDateSignal.value.copyWith(
       hour: 0,
       minute: 0,
       second: 0,
@@ -61,7 +61,7 @@ class _CalendarViewState extends State<CalendarView> {
     _scrollController.addListener(_onScroll);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) _scrollToDate(selectedDateBeacon.value);
+      if (mounted) _scrollToDate(selectedDateSignal.value);
     });
   }
 
@@ -112,16 +112,16 @@ class _CalendarViewState extends State<CalendarView> {
     if (!mounted) return;
     // Neutralize incoming date
     final neutralized = DateTime(newDate.year, newDate.month, newDate.day);
-    selectedDateBeacon.value = neutralized;
+    selectedDateSignal.value = neutralized;
     _scrollToDate(neutralized);
   }
 
   @override
   Widget build(BuildContext context) {
-    final selectedDate = selectedDateBeacon.watch(context);
+    final selectedDate = selectedDateSignal.watch(context);
     final startOfWeek = _getStartOfWeek(selectedDate);
     final endOfWeek = _getEndOfWeek(selectedDate);
-    final eventsValue = currentEventsBeacon.watch(context);
+    final eventsValue = currentEventsSignal.watch(context);
 
     return Column(
       children: [
@@ -186,8 +186,6 @@ class _CalendarViewState extends State<CalendarView> {
                       Center(child: Text('Error: $error')),
                     AsyncLoading() =>
                       const Center(child: CircularProgressIndicator()),
-                    AsyncIdle() =>
-                      const Center(child: Text('Select a section')),
                   },
                 ),
               ],
@@ -263,7 +261,7 @@ class _CalendarViewState extends State<CalendarView> {
 
           // Optimization: We could pass events here if needed, but for now let's keep it simple
           // and let it re-render since it's only 180 items.
-          final eventsValue = currentEventsBeacon.value;
+          final eventsValue = currentEventsSignal.peek();
           bool hasEvents = false;
           if (eventsValue is AsyncData<List<Event>>) {
             hasEvents = eventsValue.value.any((e) {

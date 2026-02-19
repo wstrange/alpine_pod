@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:state_beacon/state_beacon.dart';
-import '../beacon.dart';
+import 'package:signals_flutter/signals_flutter.dart';
+import '../signals.dart';
 
 class SectionSelectionScreen extends StatelessWidget {
   const SectionSelectionScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final sectionsValue = userSectionsBeacon.watch(context);
+    final sectionsValue = userSectionsSignal.watch(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -17,8 +17,8 @@ class SectionSelectionScreen extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: switch (sectionsValue) {
-          AsyncError(error: final err) => Center(child: Text('Error $err')),
-          AsyncLoading() || AsyncIdle() => const Center(
+          AsyncError(:final error) => Center(child: Text('Error $error')),
+          AsyncLoading() => const Center(
               child: CircularProgressIndicator(),
             ),
           AsyncData(value: final s) => ListView.builder(
@@ -30,7 +30,7 @@ class SectionSelectionScreen extends StatelessWidget {
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () {
                     // Navigate to the home screen for the selected section
-                    sectionBeacon.value = section;
+                    sectionSignal.value = section;
                     context.go('/');
                   },
                 );

@@ -1,7 +1,8 @@
+import 'dart:async';
+
 import 'package:alpine_pod_client/alpine_pod_client.dart';
 import 'package:flutter/material.dart';
-import 'package:state_beacon/state_beacon.dart';
-import '../beacon.dart';
+import '../signals.dart';
 import '../widgets/user_list_widget.dart';
 
 class MemberDirectoryScreen extends StatefulWidget {
@@ -13,33 +14,30 @@ class MemberDirectoryScreen extends StatefulWidget {
 
 class _MemberDirectoryScreenState extends State<MemberDirectoryScreen> {
   final _searchController = TextEditingController();
-  // Beacon to hold the search query
-  late final _queryBeacon = _searchController.beacon(
-    debounceTime: const Duration(milliseconds: 500),
-  );
+  Timer? _debounceTimer;
 
   late Future<List<Member>> _membersFuture;
 
   @override
   void initState() {
     super.initState();
-    // Watch the query beacon and refresh list when it changes
-    _queryBeacon.subscribe((value) {
-      _loadMembers(filter: value.text);
-    });
+    _searchController.addListener(_onSearchChanged);
     // Initial load
     _loadMembers();
   }
 
-  void _loadMembers({String? filter}) {
-    // Access the current section ID properly
-    // 'sectionBeacon' is available in beacon.dart
+  void _onSearchChanged() {
+    _debounceTimer?.cancel();
+    _debounceTimer = Timer(const Duration(milliseconds: 500), () {
+      _loadMembers(filter: _searchController.text);
+    });
+  }
 
+  void _loadMembers({String? filter}) {
     if (!mounted) return;
 
-    final sectionId = sectionBeacon.value?.id;
+    final sectionId = sectionSignal.peek()?.id;
     if (sectionId == null) {
-      // Handle no section selected, maybe empty list
       setState(() {
         _membersFuture = Future.value([]);
       });
@@ -54,6 +52,8 @@ class _MemberDirectoryScreenState extends State<MemberDirectoryScreen> {
 
   @override
   void dispose() {
+    _debounceTimer?.cancel();
+    _searchController.removeListener(_onSearchChanged);
     _searchController.dispose();
     super.dispose();
   }
@@ -95,44 +95,12 @@ class _MemberDirectoryScreenState extends State<MemberDirectoryScreen> {
                   return const Center(child: Text('No members found.'));
                 }
 
-                return UserListWidget(
-                  members: members,
-                  // We want it to scroll in the expanded area, so no shrinkWrap needed usually
-                  // But UserListWidget is a ListView.
-                  // If we put it in Expanded, it should work fine.
-                );
+                return UserListWidget(members: members);
               },
             ),
           ),
         ],
       ),
     );
-  }
-}
-
-// Extension to create a beacon from text controller for convenience
-// Or I can just use a simple listener.
-// state_beacon likely has a way or I can do it manually.
-// Simplified beacon wrapper:
-extension TextEditingControllerBeacon on TextEditingController {
-  ReadableBeacon<TextEditingValue> beacon({
-    Duration? debounceTime,
-  }) {
-    final beacon = Beacon.writable(value);
-    addListener(() {
-      beacon.value = value;
-    });
-    if (debounceTime != null) {
-      // Debounced version
-      // Wait, state_beacon APIs are specific.
-      // I'll stick to a simple listener with Timer for debounce in standard Flutter style
-      // to avoid API guessing if I don't have docs handy.
-      // Actually user requested "create the required backend endpoints",
-      // I should impress with the UI.
-      // I'll use simple listener + debounce manually or `Beacon.debounced`.
-      // Let's use standard Beacon.writable and update it in listener.
-      return beacon; // No built-in controller extension in core lib usually.
-    }
-    return beacon;
   }
 }

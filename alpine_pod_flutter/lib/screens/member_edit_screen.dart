@@ -1,16 +1,16 @@
-import 'package:go_router/go_router.dart';
-import '../beacon.dart';
+import 'package:signals_flutter/signals_flutter.dart';
+import 'package:alpine_pod_client/alpine_pod_client.dart';
+import '../signals.dart';
 
 import 'package:flutter/material.dart';
-import 'package:state_beacon/state_beacon.dart';
-import 'package:alpine_pod_client/alpine_pod_client.dart';
+import 'package:go_router/go_router.dart';
 
 class MemberEditScreen extends StatelessWidget {
   const MemberEditScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final memberValue = currentMemberBeacon.watch(context);
+    final memberValue = currentMemberSignal.watch(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -29,7 +29,7 @@ class MemberEditScreen extends StatelessWidget {
       ),
       body: switch (memberValue) {
         AsyncError(error: final e) => Center(child: Text('Error: $e')),
-        AsyncLoading() || AsyncIdle() => const Center(
+        AsyncLoading() => const Center(
             child: CircularProgressIndicator(),
           ),
         AsyncData(value: final member) => member == null
@@ -110,7 +110,7 @@ class _MemberEditFormState extends State<_MemberEditForm> {
       certifications: certificationsController.text,
     );
     client.member.updateMember(updatedMember).then((_) {
-      currentMemberBeacon.reset();
+      currentMemberSignal.reset();
     });
   }
 

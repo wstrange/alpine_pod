@@ -5,8 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:logging/logging.dart';
 import 'package:serverpod_auth_idp_flutter/serverpod_auth_idp_flutter.dart';
 import 'package:serverpod_flutter/serverpod_flutter.dart';
-import 'package:state_beacon/state_beacon.dart';
-import 'beacon.dart';
+import 'signals.dart';
 import 'screens/event_details_screen.dart';
 import 'screens/event_edit_screen.dart';
 import 'screens/home_screen.dart';
@@ -17,8 +16,6 @@ import 'screens/sign_in_screen.dart';
 
 final host = 'Warrens-MacBook-Air.local';
 void main() async {
-  BeaconObserver.useLogging();
-  //Beacon.setObserver(const BeaconLoggingObserver());
   Logger.root.level = Level.ALL;
   Logger.root.onRecord.listen((record) {
     // ignore: avoid_print
@@ -121,7 +118,7 @@ final router = GoRouter(
         if (sections.length > 1) {
           return '/section-selection';
         } else {
-          sectionBeacon.value = sections[0];
+          sectionSignal.value = sections[0];
           return '/';
         }
       } catch (e) {

@@ -2,9 +2,8 @@ import 'package:alpine_pod_client/alpine_pod_client.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logging/logging.dart';
-import 'package:state_beacon/state_beacon.dart';
 
-import '../beacon.dart';
+import '../signals.dart';
 import '../util.dart';
 
 final log = Logger('EventEditScreen');
@@ -47,7 +46,7 @@ class _EventEditScreenState extends State<EventEditScreen> {
 
   void save() async {
     final isCreating = widget.event == null;
-    var section = sectionBeacon.peek();
+    var section = sectionSignal.peek();
     var sid = section?.id;
 
     final eventToSave = widget.event?.copyWith(
@@ -75,7 +74,7 @@ class _EventEditScreenState extends State<EventEditScreen> {
       } else {
         await client.event.updateEvent(eventToSave);
       }
-      currentEventsBeacon.reset();
+      currentEventsSignal.reset();
       if (mounted) {
         await showDialog(
           context: context,
@@ -125,7 +124,7 @@ class _EventEditScreenState extends State<EventEditScreen> {
   @override
   Widget build(BuildContext context) {
     final isCreating = widget.event == null;
-    sectionBeacon.watch(context); // Watch for rebuilds if section changes
+    // sectionSignal is tracked as a dependency of currentEventsSignal — no explicit watch needed
 
     return Scaffold(
       appBar: AppBar(

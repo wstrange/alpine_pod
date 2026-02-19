@@ -33,8 +33,8 @@ dependencies:
   serverpod_auth_client: ^3.3.1
   serverpod_auth_core_flutter: ^3.3.1
 
-  state_beacon: ^1.1.1
-  state_beacon_flutter: ^1.1.1
+  signals: ^6.3.0
+  signals_flutter: ^6.3.0
 
   logging: ^1.3.0
   intl: ^0.20.2

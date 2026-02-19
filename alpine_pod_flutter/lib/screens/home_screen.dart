@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:state_beacon/state_beacon.dart';
-import '../beacon.dart';
+import 'package:signals_flutter/signals_flutter.dart';
+import '../signals.dart';
 import '../widgets/calendar_view.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -9,7 +9,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var section = sectionBeacon.watch(context);
+    var section = sectionSignal.watch(context);
     var sectionName = section?.name;
 
     return Scaffold(
@@ -55,7 +55,7 @@ class HomeScreen extends StatelessWidget {
               leading: const Icon(Icons.logout),
               title: const Text('Logout'),
               onTap: () {
-                sectionBeacon.value = null;
+                sectionSignal.value = null;
                 sessionManager.signOutDevice();
                 Navigator.pop(context); // Close the drawer
               },

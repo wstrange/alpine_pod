@@ -1,7 +1,7 @@
 import 'package:alpine_pod_client/alpine_pod_client.dart';
 import 'package:flutter/material.dart';
-import 'package:state_beacon/state_beacon.dart';
-import '../beacon.dart';
+import 'package:signals_flutter/signals_flutter.dart';
+import '../signals.dart';
 import '../util.dart';
 import 'user_list_widget.dart';
 
@@ -25,7 +25,7 @@ class _EventViewState extends State<EventView> {
 
   void _refreshDetails() {
     // update the current events beacon
-    currentEventsBeacon.reset();
+    currentEventsSignal.reset();
     setState(() {
       _detailsFuture = client.event.getEventDetails(widget.event.id!);
     });
@@ -69,7 +69,8 @@ class _EventViewState extends State<EventView> {
 
   @override
   Widget build(BuildContext context) {
-    final currentMember = currentMemberBeacon.watch(context).unwrapOrNull();
+    final memberState = currentMemberSignal.watch(context);
+    final currentMember = memberState is AsyncData ? memberState.value : null;
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(8.0),
