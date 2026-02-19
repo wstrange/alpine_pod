@@ -24,6 +24,8 @@ class _EventViewState extends State<EventView> {
   }
 
   void _refreshDetails() {
+    // update the current events beacon
+    currentEventsBeacon.reset();
     setState(() {
       _detailsFuture = client.event.getEventDetails(widget.event.id!);
     });
@@ -42,6 +44,24 @@ class _EventViewState extends State<EventView> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error registering: $e')),
+        );
+      }
+    }
+  }
+
+  Future<void> _cancelRegistration(int registrationId) async {
+    try {
+      await client.registration.cancelRegistration(registrationId);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Registration cancelled.')),
+        );
+        _refreshDetails();
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error cancelling registration: $e')),
         );
       }
     }
@@ -94,9 +114,12 @@ class _EventViewState extends State<EventView> {
               final waitlisted = details.waitlist;
               final managers = details.managers;
 
-              final isRegistered = currentMember != null &&
-                  ([...confirmed, ...waitlisted]
-                      .any((r) => r.memberId == currentMember.id));
+              final myRegistration = currentMember == null
+                  ? null
+                  : [...confirmed, ...waitlisted]
+                      .where((r) => r.memberId == currentMember.id)
+                      .firstOrNull;
+              final isRegistered = myRegistration != null;
 
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -168,17 +191,26 @@ class _EventViewState extends State<EventView> {
                   Center(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 16.0),
-                      child: ElevatedButton.icon(
-                        onPressed: isRegistered ? null : _register,
-                        icon: Icon(isRegistered
-                            ? Icons.check_circle
-                            : Icons.person_add),
-                        label: Text(
-                            isRegistered ? 'Already Registered' : 'Register'),
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: const Size(200, 50),
-                        ),
-                      ),
+                      child: isRegistered
+                          ? ElevatedButton.icon(
+                              onPressed: () =>
+                                  _cancelRegistration(myRegistration.id!),
+                              icon: const Icon(Icons.cancel_outlined),
+                              label: const Text('Cancel Registration'),
+                              style: ElevatedButton.styleFrom(
+                                minimumSize: const Size(200, 50),
+                                backgroundColor: Colors.red.shade600,
+                                foregroundColor: Colors.white,
+                              ),
+                            )
+                          : ElevatedButton.icon(
+                              onPressed: _register,
+                              icon: const Icon(Icons.person_add),
+                              label: const Text('Register'),
+                              style: ElevatedButton.styleFrom(
+                                minimumSize: const Size(200, 50),
+                              ),
+                            ),
                     ),
                   ),
                   if (managers.isNotEmpty) ...[

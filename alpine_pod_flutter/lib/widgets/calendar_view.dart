@@ -468,10 +468,60 @@ class _CalendarViewState extends State<CalendarView> {
                 style: TextStyle(
                     fontSize: 13, color: Colors.black.withValues(alpha: 0.6)),
               ),
+              const SizedBox(height: 10),
+              _buildParticipantSummary(event),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildParticipantSummary(Event event) {
+    final registered = event.currentRegistrationCount;
+    final max = event.maxParticipants;
+    final isFull = max > 0 && registered >= max;
+    final isNearlyFull = max > 0 && registered / max >= 0.8;
+
+    final color = isFull
+        ? Colors.red
+        : isNearlyFull
+            ? Colors.amber[700]!
+            : Colors.blue;
+
+    final spotsLabel = max <= 0
+        ? '$registered registered'
+        : isFull
+            ? 'Full • $registered/$max'
+            : '$registered/$max spots filled';
+
+    return Row(
+      children: [
+        Icon(Icons.people_alt_outlined, size: 14, color: color),
+        const SizedBox(width: 4),
+        Text(
+          spotsLabel,
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+            color: color,
+          ),
+        ),
+        if (max > 0 && !isFull) ...[
+          const SizedBox(width: 6),
+          Expanded(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(4),
+              child: LinearProgressIndicator(
+                value: registered / max,
+                minHeight: 4,
+                backgroundColor: Colors.grey.withValues(alpha: 0.2),
+                valueColor: AlwaysStoppedAnimation<Color>(color),
+              ),
+            ),
+          ),
+        ],
+      ],
     );
   }
 
