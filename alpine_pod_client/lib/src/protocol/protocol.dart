@@ -151,10 +151,26 @@ class Protocol extends _i1.SerializationManager {
               .toList()
           as T;
     }
+    if (t == _i1.getType<List<_i6.EventRegistration>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map((e) => deserialize<_i6.EventRegistration>(e))
+                    .toList()
+              : null)
+          as T;
+    }
     if (t == List<_i5.EventManager>) {
       return (data as List)
               .map((e) => deserialize<_i5.EventManager>(e))
               .toList()
+          as T;
+    }
+    if (t == _i1.getType<List<_i5.EventManager>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map((e) => deserialize<_i5.EventManager>(e))
+                    .toList()
+              : null)
           as T;
     }
     if (t == Set<String>) {

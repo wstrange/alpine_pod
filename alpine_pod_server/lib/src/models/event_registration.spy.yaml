@@ -11,6 +11,8 @@ fields:
   waiverAccepted: bool
   participantNotes: String?
   # Internal management fields
+
+  # do we really need this?  Could just go by the date
   waitlistPosition: int?
   waitlistedAt: DateTime?
   paymentStatus: String, default='N/A' # pending, completed, refunded
@@ -23,5 +25,5 @@ indexes:
     unique: true
   event_status_idx:
     fields: eventId, registrationStatus
-  waitlist_idx:
-    fields: eventId, waitlistPosition
+  # waitlist_idx:
+  #   fields: eventId, waitlistPosition

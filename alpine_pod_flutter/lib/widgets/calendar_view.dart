@@ -1,9 +1,9 @@
 import 'package:alpine_pod_client/alpine_pod_client.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:go_router/go_router.dart';
 import 'package:signals_flutter/signals_flutter.dart';
 import '../signals.dart';
+import 'event_card.dart';
 
 class CalendarView extends StatefulWidget {
   const CalendarView({super.key});
@@ -179,14 +179,19 @@ class _CalendarViewState extends State<CalendarView> {
                   ),
                 ),
                 Expanded(
-                  child: switch (eventsValue) {
-                    AsyncData(:final value) =>
-                      _buildWeeklyEventList(value, startOfWeek, endOfWeek),
-                    AsyncError(:final error) =>
-                      Center(child: Text('Error: $error')),
-                    AsyncLoading() =>
-                      const Center(child: CircularProgressIndicator()),
-                  },
+                  child: eventsValue.map(
+                    data: (value) =>
+                        _buildWeeklyEventList(value, startOfWeek, endOfWeek),
+                    error: (error, _) => Center(child: Text('Error: $error')),
+                    loading: () {
+                      final staleValue = currentEventsSignal.peek();
+                      if (staleValue is AsyncData<List<Event>>) {
+                        return _buildWeeklyEventList(
+                            staleValue.value, startOfWeek, endOfWeek);
+                      }
+                      return const Center(child: CircularProgressIndicator());
+                    },
+                  ),
                 ),
               ],
             ),
@@ -386,144 +391,10 @@ class _CalendarViewState extends State<CalendarView> {
                     color: Colors.blueGrey),
               ),
             ),
-            ...dayEvents.map((event) => _buildEventCard(event)),
+            ...dayEvents.map((event) => EventCard(event: event)),
           ],
         );
       },
     );
-  }
-
-  Widget _buildEventCard(Event event) {
-    final startDate = event.startTime.toLocal();
-    final endDate = event.endTime.toLocal();
-
-    return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: Colors.grey.withValues(alpha: 0.15)),
-      ),
-      child: InkWell(
-        onTap: () => _showEventDetails(context, event),
-        borderRadius: BorderRadius.circular(16),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  CircleAvatar(
-                    radius: 20,
-                    backgroundColor: Colors.blue.withValues(alpha: 0.1),
-                    child: const Icon(Icons.campaign,
-                        color: Colors.blue, size: 20),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          event.title,
-                          style: const TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
-                        ),
-                        Text(
-                          '${DateFormat.jm().format(startDate)} • ${DateFormat.jm().format(endDate)}',
-                          style: const TextStyle(
-                              fontSize: 12,
-                              color: Colors.blue,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              if (event.location != null) ...[
-                const SizedBox(height: 12),
-                Row(
-                  children: [
-                    const Icon(Icons.location_on, size: 14, color: Colors.grey),
-                    const SizedBox(width: 4),
-                    Expanded(
-                      child: Text(
-                        event.location!,
-                        style: const TextStyle(
-                            fontSize: 13, color: Colors.blueGrey),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-              const SizedBox(height: 8),
-              Text(
-                event.description,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                    fontSize: 13, color: Colors.black.withValues(alpha: 0.6)),
-              ),
-              const SizedBox(height: 10),
-              _buildParticipantSummary(event),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildParticipantSummary(Event event) {
-    final registered = event.currentRegistrationCount;
-    final max = event.maxParticipants;
-    final isFull = max > 0 && registered >= max;
-    final isNearlyFull = max > 0 && registered / max >= 0.8;
-
-    final color = isFull
-        ? Colors.red
-        : isNearlyFull
-            ? Colors.amber[700]!
-            : Colors.blue;
-
-    final spotsLabel = max <= 0
-        ? '$registered registered'
-        : isFull
-            ? 'Full • $registered/$max'
-            : '$registered/$max spots filled';
-
-    return Row(
-      children: [
-        Icon(Icons.people_alt_outlined, size: 14, color: color),
-        const SizedBox(width: 4),
-        Text(
-          spotsLabel,
-          style: TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-            color: color,
-          ),
-        ),
-        if (max > 0 && !isFull) ...[
-          const SizedBox(width: 6),
-          Expanded(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(4),
-              child: LinearProgressIndicator(
-                value: registered / max,
-                minHeight: 4,
-                backgroundColor: Colors.grey.withValues(alpha: 0.2),
-                valueColor: AlwaysStoppedAnimation<Color>(color),
-              ),
-            ),
-          ),
-        ],
-      ],
-    );
-  }
-
-  void _showEventDetails(BuildContext context, Event event) {
-    context.push('/event-view', extra: event);
   }
 }

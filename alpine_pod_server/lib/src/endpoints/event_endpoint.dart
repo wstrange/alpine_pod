@@ -91,7 +91,14 @@ class EventEndpoint extends Endpoint {
   }
 
   Future<Event?> getEvent(Session session, int id) async {
-    return await Event.db.findById(session, id);
+    return await Event.db.findById(
+      session,
+      id,
+      include: Event.include(
+        eventRegistrations: EventRegistration.includeList(),
+        eventManagers: EventManager.includeList(),
+      ),
+    );
   }
 
   Future<Event> updateEvent(Session session, Event event) async {
@@ -161,6 +168,10 @@ class EventEndpoint extends Endpoint {
         return where;
       },
       orderBy: (t) => t.startTime,
+      include: Event.include(
+        eventManagers: EventManager.includeList(),
+        eventRegistrations: EventRegistration.includeList(),
+      ),
     );
   }
 
@@ -230,11 +241,26 @@ class EventEndpoint extends Endpoint {
       }
 
       // Get event
-      final event =
-          await Event.db.findById(session, eventId, transaction: transaction);
+      final event = await Event.db.findById(
+        session,
+        eventId,
+        transaction: transaction,
+        include:
+            Event.include(eventRegistrations: EventRegistration.includeList()),
+      );
+
       if (event == null) {
         throw Exception('Event not found');
       }
+
+      var eventRegistrations = event.eventRegistrations ?? [];
+
+      var numConfirmed = eventRegistrations
+          .where((r) => r.registrationStatus == RegistrationStatus.confirmed)
+          .length;
+      var numWaitlisted = eventRegistrations
+          .where((r) => r.registrationStatus == RegistrationStatus.waitlisted)
+          .length;
 
       // Check registration dates
       final now = DateTime.now();
@@ -247,24 +273,16 @@ class EventEndpoint extends Endpoint {
         throw Exception('Registration deadline has passed');
       }
 
-      // Determine status
       var status = RegistrationStatus.confirmed;
       int? waitlistPosition;
 
       if (event.requiresApproval) {
         status = RegistrationStatus.pending;
-      } else if (event.currentRegistrationCount >= event.maxParticipants) {
+      } else if (numConfirmed >= event.maxParticipants) {
         if (event.requiresApproval) {
           status = RegistrationStatus.waitlisted;
           // Calculate waitlist position
-          final waitlistCount = await EventRegistration.db.count(
-            session,
-            where: (t) =>
-                t.eventId.equals(eventId) &
-                t.registrationStatus.equals(RegistrationStatus.waitlisted),
-            transaction: transaction,
-          );
-          waitlistPosition = waitlistCount + 1;
+          waitlistPosition = numWaitlisted + 1;
         } else {
           throw Exception('Event is full and waitlist is disabled');
         }
@@ -284,13 +302,6 @@ class EventEndpoint extends Endpoint {
 
       final created = await EventRegistration.db
           .insertRow(session, registration, transaction: transaction);
-
-      // Increment count if confirmed
-      if (status == RegistrationStatus.confirmed) {
-        event.currentRegistrationCount =
-            (event.currentRegistrationCount ?? 0) + 1;
-        await Event.db.updateRow(session, event, transaction: transaction);
-      }
 
       return created;
     });

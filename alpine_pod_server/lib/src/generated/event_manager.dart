@@ -25,7 +25,7 @@ abstract class EventManager
     required this.memberId,
     this.member,
     this.assignedAt,
-  });
+  }) : _eventsEventmanagersEventsId = null;
 
   factory EventManager({
     int? id,
@@ -37,7 +37,7 @@ abstract class EventManager
   }) = _EventManagerImpl;
 
   factory EventManager.fromJson(Map<String, dynamic> jsonSerialization) {
-    return EventManager(
+    return EventManagerImplicit._(
       id: jsonSerialization['id'] as int?,
       eventId: jsonSerialization['eventId'] as int,
       event: jsonSerialization['event'] == null
@@ -50,6 +50,8 @@ abstract class EventManager
       assignedAt: jsonSerialization['assignedAt'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['assignedAt']),
+      $_eventsEventmanagersEventsId:
+          jsonSerialization['_eventsEventmanagersEventsId'] as int?,
     );
   }
 
@@ -69,6 +71,8 @@ abstract class EventManager
   _i3.Member? member;
 
   DateTime? assignedAt;
+
+  final int? _eventsEventmanagersEventsId;
 
   @override
   _i1.Table<int?> get table => t;
@@ -94,6 +98,8 @@ abstract class EventManager
       'memberId': memberId,
       if (member != null) 'member': member?.toJson(),
       if (assignedAt != null) 'assignedAt': assignedAt?.toJson(),
+      if (_eventsEventmanagersEventsId != null)
+        '_eventsEventmanagersEventsId': _eventsEventmanagersEventsId,
     };
   }
 
@@ -177,15 +183,54 @@ class _EventManagerImpl extends EventManager {
     Object? member = _Undefined,
     Object? assignedAt = _Undefined,
   }) {
-    return EventManager(
+    return EventManagerImplicit._(
       id: id is int? ? id : this.id,
       eventId: eventId ?? this.eventId,
       event: event is _i2.Event? ? event : this.event?.copyWith(),
       memberId: memberId ?? this.memberId,
       member: member is _i3.Member? ? member : this.member?.copyWith(),
       assignedAt: assignedAt is DateTime? ? assignedAt : this.assignedAt,
+      $_eventsEventmanagersEventsId: this._eventsEventmanagersEventsId,
     );
   }
+}
+
+class EventManagerImplicit extends _EventManagerImpl {
+  EventManagerImplicit._({
+    int? id,
+    required int eventId,
+    _i2.Event? event,
+    required int memberId,
+    _i3.Member? member,
+    DateTime? assignedAt,
+    int? $_eventsEventmanagersEventsId,
+  }) : _eventsEventmanagersEventsId = $_eventsEventmanagersEventsId,
+       super(
+         id: id,
+         eventId: eventId,
+         event: event,
+         memberId: memberId,
+         member: member,
+         assignedAt: assignedAt,
+       );
+
+  factory EventManagerImplicit(
+    EventManager eventManager, {
+    int? $_eventsEventmanagersEventsId,
+  }) {
+    return EventManagerImplicit._(
+      id: eventManager.id,
+      eventId: eventManager.eventId,
+      event: eventManager.event,
+      memberId: eventManager.memberId,
+      member: eventManager.member,
+      assignedAt: eventManager.assignedAt,
+      $_eventsEventmanagersEventsId: $_eventsEventmanagersEventsId,
+    );
+  }
+
+  @override
+  final int? _eventsEventmanagersEventsId;
 }
 
 class EventManagerUpdateTable extends _i1.UpdateTable<EventManagerTable> {
@@ -206,6 +251,12 @@ class EventManagerUpdateTable extends _i1.UpdateTable<EventManagerTable> {
         table.assignedAt,
         value,
       );
+
+  _i1.ColumnValue<int, int> $_eventsEventmanagersEventsId(int? value) =>
+      _i1.ColumnValue(
+        table.$_eventsEventmanagersEventsId,
+        value,
+      );
 }
 
 class EventManagerTable extends _i1.Table<int?> {
@@ -224,6 +275,10 @@ class EventManagerTable extends _i1.Table<int?> {
       'assignedAt',
       this,
     );
+    $_eventsEventmanagersEventsId = _i1.ColumnInt(
+      '_eventsEventmanagersEventsId',
+      this,
+    );
   }
 
   late final EventManagerUpdateTable updateTable;
@@ -237,6 +292,8 @@ class EventManagerTable extends _i1.Table<int?> {
   _i3.MemberTable? _member;
 
   late final _i1.ColumnDateTime assignedAt;
+
+  late final _i1.ColumnInt $_eventsEventmanagersEventsId;
 
   _i2.EventTable get event {
     if (_event != null) return _event!;
@@ -266,6 +323,15 @@ class EventManagerTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
+    id,
+    eventId,
+    memberId,
+    assignedAt,
+    $_eventsEventmanagersEventsId,
+  ];
+
+  @override
+  List<_i1.Column> get managedColumns => [
     id,
     eventId,
     memberId,

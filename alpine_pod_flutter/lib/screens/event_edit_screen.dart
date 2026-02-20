@@ -74,7 +74,7 @@ class _EventEditScreenState extends State<EventEditScreen> {
       } else {
         await client.event.updateEvent(eventToSave);
       }
-      currentEventsSignal.reset();
+      currentEventsSignal.refresh();
       if (mounted) {
         await showDialog(
           context: context,
@@ -164,7 +164,7 @@ class _EventEditScreenState extends State<EventEditScreen> {
                   firstDate: DateTime(2025),
                   lastDate: DateTime(2050),
                 );
-                if (date != null && mounted) {
+                if (date != null && context.mounted) {
                   final time = await showTimePicker(
                     context: context,
                     initialTime: TimeOfDay.fromDateTime(startTime),
@@ -194,7 +194,7 @@ class _EventEditScreenState extends State<EventEditScreen> {
                   firstDate: startTime,
                   lastDate: DateTime(2100),
                 );
-                if (date != null && mounted) {
+                if (date != null && context.mounted) {
                   final time = await showTimePicker(
                     context: context,
                     initialTime: TimeOfDay.fromDateTime(endTime),

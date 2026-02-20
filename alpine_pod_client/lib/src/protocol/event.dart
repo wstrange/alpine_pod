@@ -12,6 +12,9 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import 'event_type.dart' as _i2;
+import 'event_registration.dart' as _i3;
+import 'event_manager.dart' as _i4;
+import 'package:alpine_pod_client/src/protocol/protocol.dart' as _i5;
 
 abstract class Event implements _i1.SerializableModel {
   Event._({
@@ -35,7 +38,6 @@ abstract class Event implements _i1.SerializableModel {
     this.registrationDeadline,
     this.registrationStartDate,
     this.registrationFee,
-    int? currentRegistrationCount,
     bool? requiresApproval,
     int? minimumParticipants,
     int? maxParticipants,
@@ -44,8 +46,9 @@ abstract class Event implements _i1.SerializableModel {
     required this.sectionId,
     this.documentsJson,
     bool? published,
-  }) : currentRegistrationCount = currentRegistrationCount ?? 0,
-       requiresApproval = requiresApproval ?? true,
+    this.eventRegistrations,
+    this.eventManagers,
+  }) : requiresApproval = requiresApproval ?? true,
        minimumParticipants = minimumParticipants ?? 0,
        maxParticipants = maxParticipants ?? 8,
        published = published ?? false;
@@ -71,7 +74,6 @@ abstract class Event implements _i1.SerializableModel {
     DateTime? registrationDeadline,
     DateTime? registrationStartDate,
     double? registrationFee,
-    int? currentRegistrationCount,
     bool? requiresApproval,
     int? minimumParticipants,
     int? maxParticipants,
@@ -80,6 +82,8 @@ abstract class Event implements _i1.SerializableModel {
     required int sectionId,
     String? documentsJson,
     bool? published,
+    List<_i3.EventRegistration>? eventRegistrations,
+    List<_i4.EventManager>? eventManagers,
   }) = _EventImpl;
 
   factory Event.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -120,8 +124,6 @@ abstract class Event implements _i1.SerializableModel {
             ),
       registrationFee: (jsonSerialization['registrationFee'] as num?)
           ?.toDouble(),
-      currentRegistrationCount:
-          jsonSerialization['currentRegistrationCount'] as int?,
       requiresApproval: jsonSerialization['requiresApproval'] as bool?,
       minimumParticipants: jsonSerialization['minimumParticipants'] as int?,
       maxParticipants: jsonSerialization['maxParticipants'] as int?,
@@ -134,6 +136,16 @@ abstract class Event implements _i1.SerializableModel {
       sectionId: jsonSerialization['sectionId'] as int,
       documentsJson: jsonSerialization['documentsJson'] as String?,
       published: jsonSerialization['published'] as bool?,
+      eventRegistrations: jsonSerialization['eventRegistrations'] == null
+          ? null
+          : _i5.Protocol().deserialize<List<_i3.EventRegistration>>(
+              jsonSerialization['eventRegistrations'],
+            ),
+      eventManagers: jsonSerialization['eventManagers'] == null
+          ? null
+          : _i5.Protocol().deserialize<List<_i4.EventManager>>(
+              jsonSerialization['eventManagers'],
+            ),
     );
   }
 
@@ -180,8 +192,6 @@ abstract class Event implements _i1.SerializableModel {
 
   double? registrationFee;
 
-  int currentRegistrationCount;
-
   bool requiresApproval;
 
   int minimumParticipants;
@@ -197,6 +207,10 @@ abstract class Event implements _i1.SerializableModel {
   String? documentsJson;
 
   bool published;
+
+  List<_i3.EventRegistration>? eventRegistrations;
+
+  List<_i4.EventManager>? eventManagers;
 
   /// Returns a shallow copy of this [Event]
   /// with some or all fields replaced by the given arguments.
@@ -222,7 +236,6 @@ abstract class Event implements _i1.SerializableModel {
     DateTime? registrationDeadline,
     DateTime? registrationStartDate,
     double? registrationFee,
-    int? currentRegistrationCount,
     bool? requiresApproval,
     int? minimumParticipants,
     int? maxParticipants,
@@ -231,6 +244,8 @@ abstract class Event implements _i1.SerializableModel {
     int? sectionId,
     String? documentsJson,
     bool? published,
+    List<_i3.EventRegistration>? eventRegistrations,
+    List<_i4.EventManager>? eventManagers,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -259,7 +274,6 @@ abstract class Event implements _i1.SerializableModel {
       if (registrationStartDate != null)
         'registrationStartDate': registrationStartDate?.toJson(),
       if (registrationFee != null) 'registrationFee': registrationFee,
-      'currentRegistrationCount': currentRegistrationCount,
       'requiresApproval': requiresApproval,
       'minimumParticipants': minimumParticipants,
       'maxParticipants': maxParticipants,
@@ -269,6 +283,12 @@ abstract class Event implements _i1.SerializableModel {
       'sectionId': sectionId,
       if (documentsJson != null) 'documentsJson': documentsJson,
       'published': published,
+      if (eventRegistrations != null)
+        'eventRegistrations': eventRegistrations?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
+      if (eventManagers != null)
+        'eventManagers': eventManagers?.toJson(valueToJson: (v) => v.toJson()),
     };
   }
 
@@ -302,7 +322,6 @@ class _EventImpl extends Event {
     DateTime? registrationDeadline,
     DateTime? registrationStartDate,
     double? registrationFee,
-    int? currentRegistrationCount,
     bool? requiresApproval,
     int? minimumParticipants,
     int? maxParticipants,
@@ -311,6 +330,8 @@ class _EventImpl extends Event {
     required int sectionId,
     String? documentsJson,
     bool? published,
+    List<_i3.EventRegistration>? eventRegistrations,
+    List<_i4.EventManager>? eventManagers,
   }) : super._(
          id: id,
          title: title,
@@ -332,7 +353,6 @@ class _EventImpl extends Event {
          registrationDeadline: registrationDeadline,
          registrationStartDate: registrationStartDate,
          registrationFee: registrationFee,
-         currentRegistrationCount: currentRegistrationCount,
          requiresApproval: requiresApproval,
          minimumParticipants: minimumParticipants,
          maxParticipants: maxParticipants,
@@ -341,6 +361,8 @@ class _EventImpl extends Event {
          sectionId: sectionId,
          documentsJson: documentsJson,
          published: published,
+         eventRegistrations: eventRegistrations,
+         eventManagers: eventManagers,
        );
 
   /// Returns a shallow copy of this [Event]
@@ -368,7 +390,6 @@ class _EventImpl extends Event {
     Object? registrationDeadline = _Undefined,
     Object? registrationStartDate = _Undefined,
     Object? registrationFee = _Undefined,
-    int? currentRegistrationCount,
     bool? requiresApproval,
     int? minimumParticipants,
     int? maxParticipants,
@@ -377,6 +398,8 @@ class _EventImpl extends Event {
     int? sectionId,
     Object? documentsJson = _Undefined,
     bool? published,
+    Object? eventRegistrations = _Undefined,
+    Object? eventManagers = _Undefined,
   }) {
     return Event(
       id: id is int? ? id : this.id,
@@ -415,8 +438,6 @@ class _EventImpl extends Event {
       registrationFee: registrationFee is double?
           ? registrationFee
           : this.registrationFee,
-      currentRegistrationCount:
-          currentRegistrationCount ?? this.currentRegistrationCount,
       requiresApproval: requiresApproval ?? this.requiresApproval,
       minimumParticipants: minimumParticipants ?? this.minimumParticipants,
       maxParticipants: maxParticipants ?? this.maxParticipants,
@@ -431,6 +452,12 @@ class _EventImpl extends Event {
           ? documentsJson
           : this.documentsJson,
       published: published ?? this.published,
+      eventRegistrations: eventRegistrations is List<_i3.EventRegistration>?
+          ? eventRegistrations
+          : this.eventRegistrations?.map((e0) => e0.copyWith()).toList(),
+      eventManagers: eventManagers is List<_i4.EventManager>?
+          ? eventManagers
+          : this.eventManagers?.map((e0) => e0.copyWith()).toList(),
     );
   }
 }

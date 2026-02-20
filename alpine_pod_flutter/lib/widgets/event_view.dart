@@ -24,11 +24,11 @@ class _EventViewState extends State<EventView> {
   }
 
   void _refreshDetails() {
-    // update the current events beacon
-    currentEventsSignal.reset();
+    // Refresh the details from server
     setState(() {
       _detailsFuture = client.event.getEventDetails(widget.event.id!);
     });
+    currentEventsSignal.reload();
   }
 
   Future<void> _register() async {
@@ -38,6 +38,7 @@ class _EventViewState extends State<EventView> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Registration successful!')),
         );
+        // currentEventsSignal.refresh();
         _refreshDetails();
       }
     } catch (e) {
@@ -56,6 +57,7 @@ class _EventViewState extends State<EventView> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Registration cancelled.')),
         );
+        currentEventsSignal.refresh();
         _refreshDetails();
       }
     } catch (e) {

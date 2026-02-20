@@ -40,7 +40,8 @@ abstract class EventRegistration
   }) : additionalGuests = additionalGuests ?? 0,
        paymentStatus = paymentStatus ?? 'N/A',
        paymentAmount = paymentAmount ?? 0.0,
-       noShow = noShow ?? false;
+       noShow = noShow ?? false,
+       _eventsEventregistrationsEventsId = null;
 
   factory EventRegistration({
     int? id,
@@ -63,7 +64,7 @@ abstract class EventRegistration
   }) = _EventRegistrationImpl;
 
   factory EventRegistration.fromJson(Map<String, dynamic> jsonSerialization) {
-    return EventRegistration(
+    return EventRegistrationImplicit._(
       id: jsonSerialization['id'] as int?,
       memberId: jsonSerialization['memberId'] as int,
       member: jsonSerialization['member'] == null
@@ -95,6 +96,8 @@ abstract class EventRegistration
         jsonSerialization['modifiedAt'],
       ),
       noShow: jsonSerialization['noShow'] as bool?,
+      $_eventsEventregistrationsEventsId:
+          jsonSerialization['_eventsEventregistrationsEventsId'] as int?,
     );
   }
 
@@ -136,6 +139,8 @@ abstract class EventRegistration
   DateTime modifiedAt;
 
   bool noShow;
+
+  final int? _eventsEventregistrationsEventsId;
 
   @override
   _i1.Table<int?> get table => t;
@@ -183,6 +188,8 @@ abstract class EventRegistration
       'paymentAmount': paymentAmount,
       'modifiedAt': modifiedAt.toJson(),
       'noShow': noShow,
+      if (_eventsEventregistrationsEventsId != null)
+        '_eventsEventregistrationsEventsId': _eventsEventregistrationsEventsId,
     };
   }
 
@@ -310,7 +317,7 @@ class _EventRegistrationImpl extends EventRegistration {
     DateTime? modifiedAt,
     bool? noShow,
   }) {
-    return EventRegistration(
+    return EventRegistrationImplicit._(
       id: id is int? ? id : this.id,
       memberId: memberId ?? this.memberId,
       member: member is _i2.Member? ? member : this.member?.copyWith(),
@@ -336,8 +343,81 @@ class _EventRegistrationImpl extends EventRegistration {
       paymentAmount: paymentAmount ?? this.paymentAmount,
       modifiedAt: modifiedAt ?? this.modifiedAt,
       noShow: noShow ?? this.noShow,
+      $_eventsEventregistrationsEventsId:
+          this._eventsEventregistrationsEventsId,
     );
   }
+}
+
+class EventRegistrationImplicit extends _EventRegistrationImpl {
+  EventRegistrationImplicit._({
+    int? id,
+    required int memberId,
+    _i2.Member? member,
+    required int eventId,
+    _i3.Event? event,
+    required _i4.RegistrationStatus registrationStatus,
+    required DateTime registrationDate,
+    String? carPoolPreference,
+    int? additionalGuests,
+    required bool waiverAccepted,
+    String? participantNotes,
+    int? waitlistPosition,
+    DateTime? waitlistedAt,
+    String? paymentStatus,
+    double? paymentAmount,
+    required DateTime modifiedAt,
+    bool? noShow,
+    int? $_eventsEventregistrationsEventsId,
+  }) : _eventsEventregistrationsEventsId = $_eventsEventregistrationsEventsId,
+       super(
+         id: id,
+         memberId: memberId,
+         member: member,
+         eventId: eventId,
+         event: event,
+         registrationStatus: registrationStatus,
+         registrationDate: registrationDate,
+         carPoolPreference: carPoolPreference,
+         additionalGuests: additionalGuests,
+         waiverAccepted: waiverAccepted,
+         participantNotes: participantNotes,
+         waitlistPosition: waitlistPosition,
+         waitlistedAt: waitlistedAt,
+         paymentStatus: paymentStatus,
+         paymentAmount: paymentAmount,
+         modifiedAt: modifiedAt,
+         noShow: noShow,
+       );
+
+  factory EventRegistrationImplicit(
+    EventRegistration eventRegistration, {
+    int? $_eventsEventregistrationsEventsId,
+  }) {
+    return EventRegistrationImplicit._(
+      id: eventRegistration.id,
+      memberId: eventRegistration.memberId,
+      member: eventRegistration.member,
+      eventId: eventRegistration.eventId,
+      event: eventRegistration.event,
+      registrationStatus: eventRegistration.registrationStatus,
+      registrationDate: eventRegistration.registrationDate,
+      carPoolPreference: eventRegistration.carPoolPreference,
+      additionalGuests: eventRegistration.additionalGuests,
+      waiverAccepted: eventRegistration.waiverAccepted,
+      participantNotes: eventRegistration.participantNotes,
+      waitlistPosition: eventRegistration.waitlistPosition,
+      waitlistedAt: eventRegistration.waitlistedAt,
+      paymentStatus: eventRegistration.paymentStatus,
+      paymentAmount: eventRegistration.paymentAmount,
+      modifiedAt: eventRegistration.modifiedAt,
+      noShow: eventRegistration.noShow,
+      $_eventsEventregistrationsEventsId: $_eventsEventregistrationsEventsId,
+    );
+  }
+
+  @override
+  final int? _eventsEventregistrationsEventsId;
 }
 
 class EventRegistrationUpdateTable
@@ -421,6 +501,12 @@ class EventRegistrationUpdateTable
     table.noShow,
     value,
   );
+
+  _i1.ColumnValue<int, int> $_eventsEventregistrationsEventsId(int? value) =>
+      _i1.ColumnValue(
+        table.$_eventsEventregistrationsEventsId,
+        value,
+      );
 }
 
 class EventRegistrationTable extends _i1.Table<int?> {
@@ -488,6 +574,10 @@ class EventRegistrationTable extends _i1.Table<int?> {
       this,
       hasDefault: true,
     );
+    $_eventsEventregistrationsEventsId = _i1.ColumnInt(
+      '_eventsEventregistrationsEventsId',
+      this,
+    );
   }
 
   late final EventRegistrationUpdateTable updateTable;
@@ -524,6 +614,8 @@ class EventRegistrationTable extends _i1.Table<int?> {
 
   late final _i1.ColumnBool noShow;
 
+  late final _i1.ColumnInt $_eventsEventregistrationsEventsId;
+
   _i2.MemberTable get member {
     if (_member != null) return _member!;
     _member = _i1.createRelationTable(
@@ -552,6 +644,26 @@ class EventRegistrationTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
+    id,
+    memberId,
+    eventId,
+    registrationStatus,
+    registrationDate,
+    carPoolPreference,
+    additionalGuests,
+    waiverAccepted,
+    participantNotes,
+    waitlistPosition,
+    waitlistedAt,
+    paymentStatus,
+    paymentAmount,
+    modifiedAt,
+    noShow,
+    $_eventsEventregistrationsEventsId,
+  ];
+
+  @override
+  List<_i1.Column> get managedColumns => [
     id,
     memberId,
     eventId,

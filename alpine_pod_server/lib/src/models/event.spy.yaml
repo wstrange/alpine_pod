@@ -22,7 +22,6 @@ fields:
   registrationDeadline: DateTime?
   registrationStartDate: DateTime?
   registrationFee: double?
-  currentRegistrationCount: int, default=0
   requiresApproval: bool, default=true
   minimumParticipants: int, default=0
   maxParticipants: int, default=8
@@ -33,6 +32,8 @@ fields:
   documentsJson: String?
   # Wheter is is visible on the public event list
   published: bool, default=false
+  eventRegistrations: List<EventRegistration>?, relation
+  eventManagers: List<EventManager>?, relation
 indexes:
   upcoming_events_idx:
     fields: startTime

@@ -1,4 +1,3 @@
-
 import 'package:alpine_pod_client/alpine_pod_client.dart';
 import 'package:logging/logging.dart';
 import 'package:serverpod_auth_idp_flutter/serverpod_auth_idp_flutter.dart';
@@ -21,6 +20,8 @@ final currentMemberSignal = futureSignal(() async {
 
 final sectionSignal = signal<Section?>(null);
 
+// todo: Should the signals below be moved into the calendar view widget?
+
 final selectedDateSignal = signal<DateTime>(DateTime.now().copyWith(
   hour: 0,
   minute: 0,
@@ -29,6 +30,10 @@ final selectedDateSignal = signal<DateTime>(DateTime.now().copyWith(
   microsecond: 0,
 ));
 
+// The currently events that are visible in the calendar view
+// todo: when should this be reloaded? What if the events change on the server,
+// or the user updates the event. Should we use a stream instead? Or a timer?
+// or pull to refresh?
 final currentEventsSignal = futureSignal(
   () async {
     final s = sectionSignal.value;

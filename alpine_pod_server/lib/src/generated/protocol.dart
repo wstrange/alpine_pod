@@ -159,6 +159,12 @@ class Protocol extends _i1.SerializationManagerServer {
           isNullable: true,
           dartType: 'DateTime?',
         ),
+        _i2.ColumnDefinition(
+          name: '_eventsEventmanagersEventsId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
       ],
       foreignKeys: [
         _i2.ForeignKeyDefinition(
@@ -179,6 +185,16 @@ class Protocol extends _i1.SerializationManagerServer {
           referenceColumns: ['id'],
           onUpdate: _i2.ForeignKeyAction.noAction,
           onDelete: _i2.ForeignKeyAction.cascade,
+          matchType: null,
+        ),
+        _i2.ForeignKeyDefinition(
+          constraintName: 'event_managers_fk_2',
+          columns: ['_eventsEventmanagersEventsId'],
+          referenceTable: 'events',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _i2.ForeignKeyAction.noAction,
+          onDelete: _i2.ForeignKeyAction.noAction,
           matchType: null,
         ),
       ],
@@ -317,6 +333,12 @@ class Protocol extends _i1.SerializationManagerServer {
           dartType: 'bool',
           columnDefault: 'false',
         ),
+        _i2.ColumnDefinition(
+          name: '_eventsEventregistrationsEventsId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
       ],
       foreignKeys: [
         _i2.ForeignKeyDefinition(
@@ -332,6 +354,16 @@ class Protocol extends _i1.SerializationManagerServer {
         _i2.ForeignKeyDefinition(
           constraintName: 'event_registrations_fk_1',
           columns: ['eventId'],
+          referenceTable: 'events',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _i2.ForeignKeyAction.noAction,
+          onDelete: _i2.ForeignKeyAction.noAction,
+          matchType: null,
+        ),
+        _i2.ForeignKeyDefinition(
+          constraintName: 'event_registrations_fk_2',
+          columns: ['_eventsEventregistrationsEventsId'],
           referenceTable: 'events',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
@@ -534,13 +566,6 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.doublePrecision,
           isNullable: true,
           dartType: 'double?',
-        ),
-        _i2.ColumnDefinition(
-          name: 'currentRegistrationCount',
-          columnType: _i2.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-          columnDefault: '0',
         ),
         _i2.ColumnDefinition(
           name: 'requiresApproval',
@@ -1176,10 +1201,26 @@ class Protocol extends _i1.SerializationManagerServer {
               .toList()
           as T;
     }
+    if (t == _i1.getType<List<_i9.EventRegistration>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map((e) => deserialize<_i9.EventRegistration>(e))
+                    .toList()
+              : null)
+          as T;
+    }
     if (t == List<_i8.EventManager>) {
       return (data as List)
               .map((e) => deserialize<_i8.EventManager>(e))
               .toList()
+          as T;
+    }
+    if (t == _i1.getType<List<_i8.EventManager>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map((e) => deserialize<_i8.EventManager>(e))
+                    .toList()
+              : null)
           as T;
     }
     if (t == Set<String>) {
