@@ -1,90 +1,85 @@
 import 'package:alpine_pod_client/alpine_pod_client.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:signals_flutter/signals_flutter.dart';
 import '../signals.dart';
 import '../util.dart';
 import 'user_list_widget.dart';
 
-class EventView extends StatefulWidget {
+class EventView extends HookWidget {
   const EventView({required this.event, super.key});
 
   final Event event;
 
   @override
-  State<EventView> createState() => _EventViewState();
-}
-
-class _EventViewState extends State<EventView> {
-  late Future<EventDetails> _detailsFuture;
-
-  @override
-  void initState() {
-    super.initState();
-    _refreshDetails();
-  }
-
-  void _refreshDetails() {
-    debugPrint('DEBUG: EventView._refreshDetails calling refresh()');
-    // Refresh the details from server
-    setState(() {
-      _detailsFuture = client.event.getEventDetails(widget.event.id!);
-    });
-    currentEventsSignal.refresh();
-  }
-
-  Future<void> _register() async {
-    try {
-      await client.event.registerForEvent(widget.event.id!);
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Registration successful!')),
-        );
-        // currentEventsSignal.refresh();
-        _refreshDetails();
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error registering: $e')),
-        );
-      }
-    }
-  }
-
-  Future<void> _cancelRegistration(int registrationId) async {
-    try {
-      await client.registration.cancelRegistration(registrationId);
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Registration cancelled.')),
-        );
-        currentEventsSignal.refresh();
-        _refreshDetails();
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error cancelling registration: $e')),
-        );
-      }
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
+    // Watch currentEventsSignal to trigger rebuilds when the list might have changed
+    // (e.g., registrations count update, event edit)
+    currentEventsSignal.watch(context);
+
+    // Fetch full event details (registrations, managers)
+    // We re-fetch whenever currentEventsSignal updates OR if the event id changes.
+    final requestCount = useState(0);
+
+    final detailsFuture = useMemoized(
+      () => client.event.getEvent(event.id!),
+      [event.id, requestCount.value, currentEventsSignal.value],
+    );
+
+    final snapshot = useFuture(detailsFuture);
+
     final memberState = currentMemberSignal.watch(context);
     final currentMember = memberState is AsyncData ? memberState.value : null;
+
+    Future<void> register() async {
+      try {
+        await client.event.registerForEvent(event.id!);
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Registration successful!')),
+          );
+          // Refresh global list and local details
+          currentEventsSignal.refresh();
+          requestCount.value++;
+        }
+      } catch (e) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error registering: $e')),
+          );
+        }
+      }
+    }
+
+    Future<void> cancelRegistration(int registrationId) async {
+      try {
+        await client.registration.cancelRegistration(registrationId);
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Registration cancelled.')),
+          );
+          // Refresh global list and local details
+          currentEventsSignal.refresh();
+          requestCount.value++;
+        }
+      } catch (e) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error cancelling registration: $e')),
+          );
+        }
+      }
+    }
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(8.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(widget.event.title,
-              style: Theme.of(context).textTheme.headlineSmall),
+          Text(event.title, style: Theme.of(context).textTheme.headlineSmall),
           const SizedBox(height: 8),
-          Text('Starts: ${eventDateFormat(widget.event.startTime)}'),
-          Text('Ends: ${eventDateFormat(widget.event.endTime)}'),
+          Text('Starts: ${eventDateFormat(event.startTime)}'),
+          Text('Ends: ${eventDateFormat(event.endTime)}'),
           const SizedBox(height: 8),
           Builder(
             builder: (context) {
@@ -96,27 +91,33 @@ class _EventViewState extends State<EventView> {
                   minHeight: 3 * lineHeight,
                 ),
                 child: SingleChildScrollView(
-                  child: Text(widget.event.description),
+                  child: Text(event.description),
                 ),
               );
             },
           ),
           const SizedBox(height: 16),
-          Text('Location: ${widget.event.location}'),
+          Text('Location: ${event.location}'),
           const Divider(),
-          FutureBuilder<EventDetails>(
-            future: _detailsFuture,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              }
-              if (snapshot.hasError) {
-                return Text('Error loading event details: ${snapshot.error}');
-              }
-              final details = snapshot.data!;
-              final confirmed = details.registrants;
-              final waitlisted = details.waitlist;
-              final managers = details.managers;
+          if (snapshot.connectionState == ConnectionState.waiting &&
+              !snapshot.hasData)
+            const Center(child: CircularProgressIndicator())
+          else if (snapshot.hasError)
+            Text('Error loading event details: ${snapshot.error}')
+          else if (snapshot.hasData)
+            Builder(builder: (context) {
+              final detailedEvent = snapshot.data!;
+              final confirmed = detailedEvent.eventRegistrations
+                      ?.where((r) =>
+                          r.registrationStatus == RegistrationStatus.confirmed)
+                      .toList() ??
+                  [];
+              final waitlisted = detailedEvent.eventRegistrations
+                      ?.where((r) =>
+                          r.registrationStatus == RegistrationStatus.waitlisted)
+                      .toList() ??
+                  [];
+              final managers = detailedEvent.eventManagers ?? [];
 
               final myRegistration = currentMember == null
                   ? null
@@ -142,7 +143,7 @@ class _EventViewState extends State<EventView> {
                               const Icon(Icons.people, color: Colors.blue),
                               const SizedBox(height: 4),
                               Text(
-                                '${details.registrants.length} / ${widget.event.maxParticipants}',
+                                '${confirmed.length} / ${event.maxParticipants}',
                                 style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16,
@@ -152,14 +153,14 @@ class _EventViewState extends State<EventView> {
                                   style: TextStyle(fontSize: 12)),
                             ],
                           ),
-                          if (widget.event.requiresApproval)
+                          if (event.requiresApproval)
                             Column(
                               children: [
                                 const Icon(Icons.hourglass_empty,
                                     color: Colors.orange),
                                 const SizedBox(height: 4),
                                 Text(
-                                  '${details.waitlist.length}',
+                                  '${waitlisted.length}',
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 16,
@@ -169,8 +170,8 @@ class _EventViewState extends State<EventView> {
                                     style: TextStyle(fontSize: 12)),
                               ],
                             ),
-                          if (details.registrants.length >=
-                              widget.event.maxParticipants)
+                          if ((detailedEvent.eventRegistrations?.length ?? 0) >=
+                              event.maxParticipants)
                             Column(
                               children: [
                                 Icon(Icons.warning, color: Colors.red.shade400),
@@ -198,7 +199,7 @@ class _EventViewState extends State<EventView> {
                       child: isRegistered
                           ? ElevatedButton.icon(
                               onPressed: () =>
-                                  _cancelRegistration(myRegistration.id!),
+                                  cancelRegistration(myRegistration.id!),
                               icon: const Icon(Icons.cancel_outlined),
                               label: const Text('Cancel Registration'),
                               style: ElevatedButton.styleFrom(
@@ -208,7 +209,7 @@ class _EventViewState extends State<EventView> {
                               ),
                             )
                           : ElevatedButton.icon(
-                              onPressed: _register,
+                              onPressed: register,
                               icon: const Icon(Icons.person_add),
                               label: const Text('Register'),
                               style: ElevatedButton.styleFrom(
@@ -240,9 +241,6 @@ class _EventViewState extends State<EventView> {
                   if (waitlisted.isNotEmpty) ...[
                     Text('Waitlist (${waitlisted.length})',
                         style: Theme.of(context).textTheme.titleMedium),
-                    // Note: UserListWidget doesn't currently show waitlist position.
-                    // Ideally we should update it or use a custom builder,
-                    // but for now we simply list them.
                     UserListWidget(
                       members: waitlisted.map((r) => r.member!).toList(),
                       shrinkWrap: true,
@@ -255,8 +253,9 @@ class _EventViewState extends State<EventView> {
                     const Text('No registrations or managers yet.'),
                 ],
               );
-            },
-          ),
+            })
+          else
+            const Center(child: CircularProgressIndicator()),
         ],
       ),
     );

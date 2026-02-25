@@ -15,7 +15,6 @@ class CalendarView extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('DEBUG: Building CalendarView');
     final scrollController = useScrollController();
     final selectedDate = selectedDateSignal.watch(context);
 

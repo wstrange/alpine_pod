@@ -21,7 +21,6 @@ event:
   - updateEvent:
   - deleteEvent:
   - listEvents:
-  - getEventDetails:
   - registerForEvent:
 eventManager:
   - assignEventManager:

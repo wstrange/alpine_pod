@@ -1,5 +1,4 @@
 import 'package:alpine_pod_client/alpine_pod_client.dart';
-import 'package:flutter/foundation.dart';
 import 'package:logging/logging.dart';
 import 'package:serverpod_auth_idp_flutter/serverpod_auth_idp_flutter.dart';
 import 'package:signals_flutter/signals_flutter.dart';
@@ -46,14 +45,7 @@ final currentEventsSignal = futureSignal(
         DateTime(startOfWeek.year, startOfWeek.month, startOfWeek.day, 0, 0, 0);
     final end = start.add(const Duration(days: 7));
 
-    debugPrint(
-        'DEBUG: currentEventsSignal re-fetching for section: ${s?.id}, range: $start - $end');
     final events = await client.event.listEvents(s?.id, start, end);
-    debugPrint('DEBUG: currentEventsSignal fetched ${events.length} events');
-    for (var e in events) {
-      debugPrint(
-          'DEBUG: Event: ${e.title}, Registrations: ${e.eventRegistrations?.length}');
-    }
     return events;
   },
   dependencies: [sectionSignal, selectedDateSignal],

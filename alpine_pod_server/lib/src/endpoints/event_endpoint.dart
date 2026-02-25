@@ -90,15 +90,29 @@ class EventEndpoint extends Endpoint {
     });
   }
 
-  Future<Event?> getEvent(Session session, int id) async {
-    return await Event.db.findById(
+  Future<Event> getEvent(Session session, int id) async {
+    final event = await Event.db.findById(
       session,
       id,
       include: Event.include(
-        eventRegistrations: EventRegistration.includeList(),
-        eventManagers: EventManager.includeList(),
+        eventRegistrations: EventRegistration.includeList(
+          include: EventRegistration.include(
+            member: Member.include(),
+          ),
+        ),
+        eventManagers: EventManager.includeList(
+          include: EventManager.include(
+            member: Member.include(),
+          ),
+        ),
       ),
     );
+
+    if (event == null) {
+      throw Exception('Event not found');
+    }
+
+    return event;
   }
 
   Future<Event> updateEvent(Session session, Event event) async {
@@ -172,41 +186,6 @@ class EventEndpoint extends Endpoint {
         eventManagers: EventManager.includeList(),
         eventRegistrations: EventRegistration.includeList(),
       ),
-    );
-  }
-
-  Future<EventDetails> getEventDetails(Session session, int eventId) async {
-    final event = await Event.db.findById(session, eventId);
-    if (event == null) {
-      throw Exception('Event not found');
-    }
-
-    final registrations = await EventRegistration.db.find(
-      session,
-      where: (t) => t.eventId.equals(eventId),
-      include: EventRegistration.include(member: Member.include()),
-      orderBy: (t) => t.registrationDate,
-    );
-
-    final registrants = registrations
-        .where((r) => r.registrationStatus != RegistrationStatus.waitlisted)
-        .toList();
-
-    final waitlist = registrations
-        .where((r) => r.registrationStatus == RegistrationStatus.waitlisted)
-        .toList();
-
-    final managers = await EventManager.db.find(
-      session,
-      where: (t) => t.eventId.equals(eventId),
-      include: EventManager.include(member: Member.include()),
-    );
-
-    return EventDetails(
-      event: event,
-      registrants: registrants,
-      waitlist: waitlist,
-      managers: managers,
     );
   }
 
