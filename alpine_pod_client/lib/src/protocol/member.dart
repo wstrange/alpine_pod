@@ -13,7 +13,9 @@
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart'
     as _i2;
-import 'package:alpine_pod_client/src/protocol/protocol.dart' as _i3;
+import 'event_registration.dart' as _i3;
+import 'event_manager.dart' as _i4;
+import 'package:alpine_pod_client/src/protocol/protocol.dart' as _i5;
 
 abstract class Member implements _i1.SerializableModel {
   Member._({
@@ -35,6 +37,8 @@ abstract class Member implements _i1.SerializableModel {
     this.certifications,
     DateTime? createdAt,
     DateTime? updatedAt,
+    this.registrations,
+    this.managedEvents,
   }) : membershipStatus = membershipStatus ?? 'active',
        isTripAdmin = isTripAdmin ?? false,
        createdAt = createdAt ?? DateTime.now(),
@@ -59,6 +63,8 @@ abstract class Member implements _i1.SerializableModel {
     String? certifications,
     DateTime? createdAt,
     DateTime? updatedAt,
+    List<_i3.EventRegistration>? registrations,
+    List<_i4.EventManager>? managedEvents,
   }) = _MemberImpl;
 
   factory Member.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -67,7 +73,7 @@ abstract class Member implements _i1.SerializableModel {
       userId: _i1.UuidValueJsonExtension.fromJson(jsonSerialization['userId']),
       user: jsonSerialization['user'] == null
           ? null
-          : _i3.Protocol().deserialize<_i2.AuthUser>(jsonSerialization['user']),
+          : _i5.Protocol().deserialize<_i2.AuthUser>(jsonSerialization['user']),
       firstName: jsonSerialization['firstName'] as String,
       lastName: jsonSerialization['lastName'] as String,
       displayName: jsonSerialization['displayName'] as String?,
@@ -88,6 +94,16 @@ abstract class Member implements _i1.SerializableModel {
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
+      registrations: jsonSerialization['registrations'] == null
+          ? null
+          : _i5.Protocol().deserialize<List<_i3.EventRegistration>>(
+              jsonSerialization['registrations'],
+            ),
+      managedEvents: jsonSerialization['managedEvents'] == null
+          ? null
+          : _i5.Protocol().deserialize<List<_i4.EventManager>>(
+              jsonSerialization['managedEvents'],
+            ),
     );
   }
 
@@ -130,6 +146,10 @@ abstract class Member implements _i1.SerializableModel {
 
   DateTime updatedAt;
 
+  List<_i3.EventRegistration>? registrations;
+
+  List<_i4.EventManager>? managedEvents;
+
   /// Returns a shallow copy of this [Member]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
@@ -152,6 +172,8 @@ abstract class Member implements _i1.SerializableModel {
     String? certifications,
     DateTime? createdAt,
     DateTime? updatedAt,
+    List<_i3.EventRegistration>? registrations,
+    List<_i4.EventManager>? managedEvents,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -175,6 +197,10 @@ abstract class Member implements _i1.SerializableModel {
       if (certifications != null) 'certifications': certifications,
       'createdAt': createdAt.toJson(),
       'updatedAt': updatedAt.toJson(),
+      if (registrations != null)
+        'registrations': registrations?.toJson(valueToJson: (v) => v.toJson()),
+      if (managedEvents != null)
+        'managedEvents': managedEvents?.toJson(valueToJson: (v) => v.toJson()),
     };
   }
 
@@ -206,6 +232,8 @@ class _MemberImpl extends Member {
     String? certifications,
     DateTime? createdAt,
     DateTime? updatedAt,
+    List<_i3.EventRegistration>? registrations,
+    List<_i4.EventManager>? managedEvents,
   }) : super._(
          id: id,
          userId: userId,
@@ -225,6 +253,8 @@ class _MemberImpl extends Member {
          certifications: certifications,
          createdAt: createdAt,
          updatedAt: updatedAt,
+         registrations: registrations,
+         managedEvents: managedEvents,
        );
 
   /// Returns a shallow copy of this [Member]
@@ -250,6 +280,8 @@ class _MemberImpl extends Member {
     Object? certifications = _Undefined,
     DateTime? createdAt,
     DateTime? updatedAt,
+    Object? registrations = _Undefined,
+    Object? managedEvents = _Undefined,
   }) {
     return Member(
       id: id is int? ? id : this.id,
@@ -277,6 +309,12 @@ class _MemberImpl extends Member {
           : this.certifications,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      registrations: registrations is List<_i3.EventRegistration>?
+          ? registrations
+          : this.registrations?.map((e0) => e0.copyWith()).toList(),
+      managedEvents: managedEvents is List<_i4.EventManager>?
+          ? managedEvents
+          : this.managedEvents?.map((e0) => e0.copyWith()).toList(),
     );
   }
 }

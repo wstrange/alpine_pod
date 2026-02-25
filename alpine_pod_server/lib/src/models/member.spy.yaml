@@ -18,6 +18,8 @@ fields:
   certifications: String?
   createdAt: DateTime, default=now
   updatedAt: DateTime, default=now
+  registrations: List<EventRegistration>?, relation(name=member_registrations)
+  managedEvents: List<EventManager>?, relation(name=member_managers)
 indexes:
   authuser_idx:
     fields: userId

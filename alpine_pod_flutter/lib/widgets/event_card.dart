@@ -99,7 +99,7 @@ class _ParticipantSummary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final registered = event.currentRegistrationCount;
+    final registered = event.eventRegistrations!.length;
     final max = event.maxParticipants;
     final isFull = max > 0 && registered >= max;
     final isNearlyFull = max > 0 && registered / max >= 0.8;

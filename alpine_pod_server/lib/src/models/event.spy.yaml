@@ -32,8 +32,8 @@ fields:
   documentsJson: String?
   # Wheter is is visible on the public event list
   published: bool, default=false
-  eventRegistrations: List<EventRegistration>?, relation
-  eventManagers: List<EventManager>?, relation
+  eventRegistrations: List<EventRegistration>?, relation(name=event_registrations)
+  eventManagers: List<EventManager>?, relation(name=event_managers)
 indexes:
   upcoming_events_idx:
     fields: startTime

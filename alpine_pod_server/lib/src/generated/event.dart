@@ -886,7 +886,7 @@ class EventTable extends _i1.Table<int?> {
     ___eventRegistrations = _i1.createRelationTable(
       relationFieldName: '__eventRegistrations',
       field: Event.t.id,
-      foreignField: _i3.EventRegistration.t.$_eventsEventregistrationsEventsId,
+      foreignField: _i3.EventRegistration.t.eventId,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
           _i3.EventRegistrationTable(tableRelation: foreignTableRelation),
@@ -899,7 +899,7 @@ class EventTable extends _i1.Table<int?> {
     ___eventManagers = _i1.createRelationTable(
       relationFieldName: '__eventManagers',
       field: Event.t.id,
-      foreignField: _i4.EventManager.t.$_eventsEventmanagersEventsId,
+      foreignField: _i4.EventManager.t.eventId,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
           _i4.EventManagerTable(tableRelation: foreignTableRelation),
@@ -912,7 +912,7 @@ class EventTable extends _i1.Table<int?> {
     var relationTable = _i1.createRelationTable(
       relationFieldName: 'eventRegistrations',
       field: Event.t.id,
-      foreignField: _i3.EventRegistration.t.$_eventsEventregistrationsEventsId,
+      foreignField: _i3.EventRegistration.t.eventId,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
           _i3.EventRegistrationTable(tableRelation: foreignTableRelation),
@@ -931,7 +931,7 @@ class EventTable extends _i1.Table<int?> {
     var relationTable = _i1.createRelationTable(
       relationFieldName: 'eventManagers',
       field: Event.t.id,
-      foreignField: _i4.EventManager.t.$_eventsEventmanagersEventsId,
+      foreignField: _i4.EventManager.t.eventId,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
           _i4.EventManagerTable(tableRelation: foreignTableRelation),
@@ -1303,7 +1303,7 @@ class EventAttachRepository {
   const EventAttachRepository._();
 
   /// Creates a relation between this [Event] and the given [EventRegistration]s
-  /// by setting each [EventRegistration]'s foreign key `_eventsEventregistrationsEventsId` to refer to this [Event].
+  /// by setting each [EventRegistration]'s foreign key `eventId` to refer to this [Event].
   Future<void> eventRegistrations(
     _i1.Session session,
     Event event,
@@ -1318,22 +1318,17 @@ class EventAttachRepository {
     }
 
     var $eventRegistration = eventRegistration
-        .map(
-          (e) => _i3.EventRegistrationImplicit(
-            e,
-            $_eventsEventregistrationsEventsId: event.id,
-          ),
-        )
+        .map((e) => e.copyWith(eventId: event.id))
         .toList();
     await session.db.update<_i3.EventRegistration>(
       $eventRegistration,
-      columns: [_i3.EventRegistration.t.$_eventsEventregistrationsEventsId],
+      columns: [_i3.EventRegistration.t.eventId],
       transaction: transaction,
     );
   }
 
   /// Creates a relation between this [Event] and the given [EventManager]s
-  /// by setting each [EventManager]'s foreign key `_eventsEventmanagersEventsId` to refer to this [Event].
+  /// by setting each [EventManager]'s foreign key `eventId` to refer to this [Event].
   Future<void> eventManagers(
     _i1.Session session,
     Event event,
@@ -1348,16 +1343,11 @@ class EventAttachRepository {
     }
 
     var $eventManager = eventManager
-        .map(
-          (e) => _i4.EventManagerImplicit(
-            e,
-            $_eventsEventmanagersEventsId: event.id,
-          ),
-        )
+        .map((e) => e.copyWith(eventId: event.id))
         .toList();
     await session.db.update<_i4.EventManager>(
       $eventManager,
-      columns: [_i4.EventManager.t.$_eventsEventmanagersEventsId],
+      columns: [_i4.EventManager.t.eventId],
       transaction: transaction,
     );
   }
@@ -1367,7 +1357,7 @@ class EventAttachRowRepository {
   const EventAttachRowRepository._();
 
   /// Creates a relation between this [Event] and the given [EventRegistration]
-  /// by setting the [EventRegistration]'s foreign key `_eventsEventregistrationsEventsId` to refer to this [Event].
+  /// by setting the [EventRegistration]'s foreign key `eventId` to refer to this [Event].
   Future<void> eventRegistrations(
     _i1.Session session,
     Event event,
@@ -1381,19 +1371,16 @@ class EventAttachRowRepository {
       throw ArgumentError.notNull('event.id');
     }
 
-    var $eventRegistration = _i3.EventRegistrationImplicit(
-      eventRegistration,
-      $_eventsEventregistrationsEventsId: event.id,
-    );
+    var $eventRegistration = eventRegistration.copyWith(eventId: event.id);
     await session.db.updateRow<_i3.EventRegistration>(
       $eventRegistration,
-      columns: [_i3.EventRegistration.t.$_eventsEventregistrationsEventsId],
+      columns: [_i3.EventRegistration.t.eventId],
       transaction: transaction,
     );
   }
 
   /// Creates a relation between this [Event] and the given [EventManager]
-  /// by setting the [EventManager]'s foreign key `_eventsEventmanagersEventsId` to refer to this [Event].
+  /// by setting the [EventManager]'s foreign key `eventId` to refer to this [Event].
   Future<void> eventManagers(
     _i1.Session session,
     Event event,
@@ -1407,13 +1394,10 @@ class EventAttachRowRepository {
       throw ArgumentError.notNull('event.id');
     }
 
-    var $eventManager = _i4.EventManagerImplicit(
-      eventManager,
-      $_eventsEventmanagersEventsId: event.id,
-    );
+    var $eventManager = eventManager.copyWith(eventId: event.id);
     await session.db.updateRow<_i4.EventManager>(
       $eventManager,
-      columns: [_i4.EventManager.t.$_eventsEventmanagersEventsId],
+      columns: [_i4.EventManager.t.eventId],
       transaction: transaction,
     );
   }
@@ -1423,7 +1407,7 @@ class EventDetachRepository {
   const EventDetachRepository._();
 
   /// Detaches the relation between this [Event] and the given [EventRegistration]
-  /// by setting the [EventRegistration]'s foreign key `_eventsEventregistrationsEventsId` to `null`.
+  /// by setting the [EventRegistration]'s foreign key `eventId` to `null`.
   ///
   /// This removes the association between the two models without deleting
   /// the related record.
@@ -1437,22 +1421,17 @@ class EventDetachRepository {
     }
 
     var $eventRegistration = eventRegistration
-        .map(
-          (e) => _i3.EventRegistrationImplicit(
-            e,
-            $_eventsEventregistrationsEventsId: null,
-          ),
-        )
+        .map((e) => e.copyWith(eventId: null))
         .toList();
     await session.db.update<_i3.EventRegistration>(
       $eventRegistration,
-      columns: [_i3.EventRegistration.t.$_eventsEventregistrationsEventsId],
+      columns: [_i3.EventRegistration.t.eventId],
       transaction: transaction,
     );
   }
 
   /// Detaches the relation between this [Event] and the given [EventManager]
-  /// by setting the [EventManager]'s foreign key `_eventsEventmanagersEventsId` to `null`.
+  /// by setting the [EventManager]'s foreign key `eventId` to `null`.
   ///
   /// This removes the association between the two models without deleting
   /// the related record.
@@ -1466,16 +1445,11 @@ class EventDetachRepository {
     }
 
     var $eventManager = eventManager
-        .map(
-          (e) => _i4.EventManagerImplicit(
-            e,
-            $_eventsEventmanagersEventsId: null,
-          ),
-        )
+        .map((e) => e.copyWith(eventId: null))
         .toList();
     await session.db.update<_i4.EventManager>(
       $eventManager,
-      columns: [_i4.EventManager.t.$_eventsEventmanagersEventsId],
+      columns: [_i4.EventManager.t.eventId],
       transaction: transaction,
     );
   }
@@ -1485,7 +1459,7 @@ class EventDetachRowRepository {
   const EventDetachRowRepository._();
 
   /// Detaches the relation between this [Event] and the given [EventRegistration]
-  /// by setting the [EventRegistration]'s foreign key `_eventsEventregistrationsEventsId` to `null`.
+  /// by setting the [EventRegistration]'s foreign key `eventId` to `null`.
   ///
   /// This removes the association between the two models without deleting
   /// the related record.
@@ -1498,19 +1472,16 @@ class EventDetachRowRepository {
       throw ArgumentError.notNull('eventRegistration.id');
     }
 
-    var $eventRegistration = _i3.EventRegistrationImplicit(
-      eventRegistration,
-      $_eventsEventregistrationsEventsId: null,
-    );
+    var $eventRegistration = eventRegistration.copyWith(eventId: null);
     await session.db.updateRow<_i3.EventRegistration>(
       $eventRegistration,
-      columns: [_i3.EventRegistration.t.$_eventsEventregistrationsEventsId],
+      columns: [_i3.EventRegistration.t.eventId],
       transaction: transaction,
     );
   }
 
   /// Detaches the relation between this [Event] and the given [EventManager]
-  /// by setting the [EventManager]'s foreign key `_eventsEventmanagersEventsId` to `null`.
+  /// by setting the [EventManager]'s foreign key `eventId` to `null`.
   ///
   /// This removes the association between the two models without deleting
   /// the related record.
@@ -1523,13 +1494,10 @@ class EventDetachRowRepository {
       throw ArgumentError.notNull('eventManager.id');
     }
 
-    var $eventManager = _i4.EventManagerImplicit(
-      eventManager,
-      $_eventsEventmanagersEventsId: null,
-    );
+    var $eventManager = eventManager.copyWith(eventId: null);
     await session.db.updateRow<_i4.EventManager>(
       $eventManager,
-      columns: [_i4.EventManager.t.$_eventsEventmanagersEventsId],
+      columns: [_i4.EventManager.t.eventId],
       transaction: transaction,
     );
   }

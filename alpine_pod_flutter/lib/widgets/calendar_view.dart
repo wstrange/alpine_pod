@@ -1,132 +1,120 @@
 import 'package:alpine_pod_client/alpine_pod_client.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:intl/intl.dart';
 import 'package:signals_flutter/signals_flutter.dart';
+
 import '../signals.dart';
 import 'event_card.dart';
 
-class CalendarView extends StatefulWidget {
+class CalendarView extends HookWidget {
   const CalendarView({super.key});
 
-  @override
-  State<CalendarView> createState() => _CalendarViewState();
-}
-
-class _CalendarViewState extends State<CalendarView> {
-  late ScrollController _scrollController;
-  final double _itemWidth = 54.0;
-  final double _itemPadding = 8.0;
-  late final DateTime _startDate;
-
-  String _formatRange(DateTime start, DateTime end) {
-    return '${DateFormat('MMM d').format(start)} - ${DateFormat('MMM d').format(end)}';
-  }
-
-  void _onScroll() {
-    if (!_scrollController.hasClients) return;
-
-    // Calculate which date is at the start of the visible area
-    final offset = _scrollController.offset - 16.0; // padding
-    final totalItemWidth = _itemWidth + _itemPadding;
-    var index =
-        (offset / totalItemWidth).round() + 1; // +1 to get the Monday-ish area
-
-    // Clamp index to valid items
-    if (index < 0) index = 0;
-    if (index >= 180) index = 179;
-
-    final dateAtCenter = _startDate.add(Duration(days: index));
-    final startOfVisibleWeek = _getStartOfWeek(dateAtCenter);
-
-    if (!startOfVisibleWeek
-        .isAtSameMomentAs(_getStartOfWeek(selectedDateSignal.peek()))) {
-      // Use peek() and then update
-      selectedDateSignal.value = startOfVisibleWeek;
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    final now = selectedDateSignal.value.copyWith(
-      hour: 0,
-      minute: 0,
-      second: 0,
-      millisecond: 0,
-      microsecond: 0,
-    );
-    // Start strip 2 weeks before current selected day
-    _startDate = now.subtract(const Duration(days: 14));
-    _scrollController = ScrollController();
-    _scrollController.addListener(_onScroll);
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) _scrollToDate(selectedDateSignal.value);
-    });
-  }
-
-  @override
-  void dispose() {
-    _scrollController.removeListener(_onScroll);
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  // Week starts on Monday
-  DateTime _getStartOfWeek(DateTime date) {
-    // Neutralize to midnight for safe subtraction
-    final day = DateTime(date.year, date.month, date.day);
-    return day.subtract(Duration(days: day.weekday - 1));
-  }
-
-  DateTime _getEndOfWeek(DateTime date) {
-    return _getStartOfWeek(date).add(const Duration(days: 6));
-  }
-
-  void _scrollToDate(DateTime date) {
-    if (!_scrollController.hasClients) return;
-
-    // To show one day of the previous week on the left,
-    // we scroll to the Sunday before the start of the week.
-    final startOfWeek = _getStartOfWeek(date);
-    final sundayBefore = startOfWeek.subtract(const Duration(days: 1));
-
-    // difference().inDays is safe because we neutralized to midnight
-    final daysSinceStart = sundayBefore.difference(_startDate).inDays;
-    final totalItemWidth = _itemWidth + _itemPadding;
-
-    // Aligns the Sunday to the left corner, accounting for the 16px ListView padding
-    final scrollPosition = 16.0 + (daysSinceStart * totalItemWidth);
-
-    // Only scroll if we are not already close (prevents scroll fighting with listener)
-    if ((_scrollController.offset - scrollPosition).abs() > 10) {
-      _scrollController.animateTo(
-        scrollPosition,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
-    }
-  }
-
-  void _updateSelectedDate(DateTime newDate) {
-    if (!mounted) return;
-    // Neutralize incoming date
-    final neutralized = DateTime(newDate.year, newDate.month, newDate.day);
-    selectedDateSignal.value = neutralized;
-    _scrollToDate(neutralized);
-  }
+  static const double _itemWidth = 54.0;
+  static const double _itemPadding = 8.0;
 
   @override
   Widget build(BuildContext context) {
+    debugPrint('DEBUG: Building CalendarView');
+    final scrollController = useScrollController();
     final selectedDate = selectedDateSignal.watch(context);
-    final startOfWeek = _getStartOfWeek(selectedDate);
-    final endOfWeek = _getEndOfWeek(selectedDate);
+
+    final startDate = useMemoized(() {
+      final now = selectedDateSignal.peek().copyWith(
+            hour: 0,
+            minute: 0,
+            second: 0,
+            millisecond: 0,
+            microsecond: 0,
+          );
+      return now.subtract(const Duration(days: 14));
+    });
+
+    // Week starts on Monday
+    DateTime getStartOfWeek(DateTime date) {
+      final day = DateTime(date.year, date.month, date.day);
+      return day.subtract(Duration(days: day.weekday - 1));
+    }
+
+    DateTime getEndOfWeek(DateTime date) {
+      return getStartOfWeek(date).add(const Duration(days: 6));
+    }
+
+    void scrollToDate(DateTime date) {
+      if (!scrollController.hasClients) return;
+
+      final startOfWeek = getStartOfWeek(date);
+      final sundayBefore = startOfWeek.subtract(const Duration(days: 1));
+      final daysSinceStart = sundayBefore.difference(startDate).inDays;
+      const totalItemWidth = _itemWidth + _itemPadding;
+      final scrollPosition = 16.0 + (daysSinceStart * totalItemWidth);
+
+      if ((scrollController.offset - scrollPosition).abs() > 10) {
+        scrollController.animateTo(
+          scrollPosition,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+      }
+    }
+
+    void onScroll() {
+      if (!scrollController.hasClients) return;
+
+      final offset = scrollController.offset - 16.0;
+      const totalItemWidth = _itemWidth + _itemPadding;
+      var index = (offset / totalItemWidth).round() + 1;
+
+      if (index < 0) index = 0;
+      if (index >= 180) index = 179;
+
+      final dateAtCenter = startDate.add(Duration(days: index));
+      final startOfVisibleWeek = getStartOfWeek(dateAtCenter);
+
+      if (!startOfVisibleWeek
+          .isAtSameMomentAs(getStartOfWeek(selectedDateSignal.peek()))) {
+        selectedDateSignal.value = startOfVisibleWeek;
+      }
+    }
+
+    void updateSelectedDate(DateTime newDate) {
+      final neutralized = DateTime(newDate.year, newDate.month, newDate.day);
+      selectedDateSignal.value = neutralized;
+      scrollToDate(neutralized);
+    }
+
+    useEffect(() {
+      scrollController.addListener(onScroll);
+      return () => scrollController.removeListener(onScroll);
+    }, [scrollController]);
+
+    useEffect(() {
+      // Initial scroll to selected date after first frame
+      Future.microtask(() {
+        scrollToDate(selectedDateSignal.peek());
+      });
+      return null;
+    }, []);
+
+    final startOfWeek = getStartOfWeek(selectedDate);
+    final endOfWeek = getEndOfWeek(selectedDate);
     final eventsValue = currentEventsSignal.watch(context);
 
     return Column(
       children: [
-        _buildWeekHeader(selectedDate, startOfWeek, endOfWeek),
-        _buildHorizontalDateStrip(startOfWeek, endOfWeek),
+        _buildWeekHeader(
+          selectedDate: selectedDate,
+          start: startOfWeek,
+          end: endOfWeek,
+          onUpdateDate: updateSelectedDate,
+        ),
+        _buildHorizontalDateStrip(
+          scrollController: scrollController,
+          startDate: startDate,
+          startOfWeek: startOfWeek,
+          endOfWeek: endOfWeek,
+          onUpdateDate: updateSelectedDate,
+        ),
         const SizedBox(height: 8),
         Expanded(
           child: Container(
@@ -201,7 +189,16 @@ class _CalendarViewState extends State<CalendarView> {
     );
   }
 
-  Widget _buildWeekHeader(DateTime selectedDate, DateTime start, DateTime end) {
+  String _formatRange(DateTime start, DateTime end) {
+    return '${DateFormat('MMM d').format(start)} - ${DateFormat('MMM d').format(end)}';
+  }
+
+  Widget _buildWeekHeader({
+    required DateTime selectedDate,
+    required DateTime start,
+    required DateTime end,
+    required ValueChanged<DateTime> onUpdateDate,
+  }) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
       child: Row(
@@ -210,8 +207,9 @@ class _CalendarViewState extends State<CalendarView> {
           IconButton(
             visualDensity: VisualDensity.compact,
             icon: const Icon(Icons.arrow_left_rounded, size: 28),
-            onPressed: () => _updateSelectedDate(
-                selectedDate.subtract(const Duration(days: 7))),
+            onPressed: () => onUpdateDate(
+              selectedDate.subtract(const Duration(days: 7)),
+            ),
           ),
           Row(
             mainAxisSize: MainAxisSize.min,
@@ -226,7 +224,7 @@ class _CalendarViewState extends State<CalendarView> {
               const SizedBox(width: 8),
               IconButton(
                 visualDensity: VisualDensity.compact,
-                onPressed: () => _updateSelectedDate(DateTime.now()),
+                onPressed: () => onUpdateDate(DateTime.now()),
                 icon: const Icon(Icons.today_rounded, size: 18),
                 color: Colors.blue,
                 tooltip: 'Go to today',
@@ -236,26 +234,31 @@ class _CalendarViewState extends State<CalendarView> {
           IconButton(
             visualDensity: VisualDensity.compact,
             icon: const Icon(Icons.arrow_right_rounded, size: 28),
-            onPressed: () =>
-                _updateSelectedDate(selectedDate.add(const Duration(days: 7))),
+            onPressed: () => onUpdateDate(
+              selectedDate.add(const Duration(days: 7)),
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildHorizontalDateStrip(DateTime startOfWeek, DateTime endOfWeek) {
-    // Note: We don't watch events here to avoid rebuilds of the strip when only events change
-    // but the strip should show event indicators. We can watch a simplified version or just accept a re-render.
+  Widget _buildHorizontalDateStrip({
+    required ScrollController scrollController,
+    required DateTime startDate,
+    required DateTime startOfWeek,
+    required DateTime endOfWeek,
+    required ValueChanged<DateTime> onUpdateDate,
+  }) {
     return SizedBox(
       height: 72,
       child: ListView.builder(
-        controller: _scrollController,
+        controller: scrollController,
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 16),
         itemCount: 180,
         itemBuilder: (context, index) {
-          final date = _startDate.add(Duration(days: index));
+          final date = startDate.add(Duration(days: index));
           final isInSelectedWeek = date.isAtSameMomentAs(startOfWeek) ||
               (date.isAfter(startOfWeek) &&
                   date.isBefore(endOfWeek.add(const Duration(seconds: 1))));
@@ -264,8 +267,6 @@ class _CalendarViewState extends State<CalendarView> {
               DateTime.now().month == date.month &&
               DateTime.now().day == date.day;
 
-          // Optimization: We could pass events here if needed, but for now let's keep it simple
-          // and let it re-render since it's only 180 items.
           final eventsValue = currentEventsSignal.peek();
           bool hasEvents = false;
           if (eventsValue is AsyncData<List<Event>>) {
@@ -278,11 +279,11 @@ class _CalendarViewState extends State<CalendarView> {
           }
 
           return GestureDetector(
-            onTap: () => _updateSelectedDate(date),
+            onTap: () => onUpdateDate(date),
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 200),
               width: _itemWidth,
-              margin: EdgeInsets.symmetric(
+              margin: const EdgeInsets.symmetric(
                   horizontal: _itemPadding / 2, vertical: 4),
               decoration: BoxDecoration(
                 color: isInSelectedWeek
@@ -360,7 +361,6 @@ class _CalendarViewState extends State<CalendarView> {
       );
     }
 
-    // Group events by day
     final Map<DateTime, List<Event>> groupedEvents = {};
     for (var event in weeklyEvents) {
       final start = event.startTime.toLocal();
@@ -368,7 +368,6 @@ class _CalendarViewState extends State<CalendarView> {
       groupedEvents.putIfAbsent(day, () => []).add(event);
     }
 
-    // Sort days
     final sortedDays = groupedEvents.keys.toList()..sort();
 
     return ListView.builder(

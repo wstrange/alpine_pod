@@ -1,8 +1,8 @@
 class: EventManager
 table: event_managers
 fields:
-  event: Event?, relation(onDelete=Cascade)
-  member: Member?, relation(onDelete=Cascade)
+  event: Event?, relation(name=event_managers, onDelete=Cascade)
+  member: Member?, relation(name=member_managers, onDelete=Cascade)
   assignedAt: DateTime?
 indexes:
   event_manager_idx:

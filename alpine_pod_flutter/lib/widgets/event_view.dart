@@ -24,11 +24,12 @@ class _EventViewState extends State<EventView> {
   }
 
   void _refreshDetails() {
+    debugPrint('DEBUG: EventView._refreshDetails calling refresh()');
     // Refresh the details from server
     setState(() {
       _detailsFuture = client.event.getEventDetails(widget.event.id!);
     });
-    currentEventsSignal.reload();
+    currentEventsSignal.refresh();
   }
 
   Future<void> _register() async {
