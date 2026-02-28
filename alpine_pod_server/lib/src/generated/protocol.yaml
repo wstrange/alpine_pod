@@ -25,6 +25,8 @@ event:
 eventManager:
   - assignEventManager:
   - removeEventManager:
+  - addMemberToEvent:
+  - removeMemberFromEvent:
   - listEventManagers:
   - listEventManagerEvents:
   - listEventsWithoutEventManager:

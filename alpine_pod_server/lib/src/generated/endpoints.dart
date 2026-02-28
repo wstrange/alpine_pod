@@ -553,6 +553,50 @@ class Endpoints extends _i1.EndpointDispatch {
                     params['eventManager'],
                   ),
         ),
+        'addMemberToEvent': _i1.MethodConnector(
+          name: 'addMemberToEvent',
+          params: {
+            'eventId': _i1.ParameterDescription(
+              name: 'eventId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+            'memberId': _i1.ParameterDescription(
+              name: 'memberId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['eventManager'] as _i5.EventManagerEndpoint)
+                  .addMemberToEvent(
+                    session,
+                    params['eventId'],
+                    params['memberId'],
+                  ),
+        ),
+        'removeMemberFromEvent': _i1.MethodConnector(
+          name: 'removeMemberFromEvent',
+          params: {
+            'registrationId': _i1.ParameterDescription(
+              name: 'registrationId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['eventManager'] as _i5.EventManagerEndpoint)
+                  .removeMemberFromEvent(
+                    session,
+                    params['registrationId'],
+                  ),
+        ),
         'listEventManagers': _i1.MethodConnector(
           name: 'listEventManagers',
           params: {

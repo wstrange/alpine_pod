@@ -949,6 +949,72 @@ class _EventManagerEndpoint {
     });
   }
 
+  _i3.Future<_i7.EventRegistration> addMemberToEvent(
+    _i1.TestSessionBuilder sessionBuilder,
+    int eventId,
+    int memberId,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'eventManager',
+            method: 'addMemberToEvent',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'eventManager',
+          methodName: 'addMemberToEvent',
+          parameters: _i1.testObjectToJson({
+            'eventId': eventId,
+            'memberId': memberId,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<_i7.EventRegistration>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<void> removeMemberFromEvent(
+    _i1.TestSessionBuilder sessionBuilder,
+    int registrationId,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'eventManager',
+            method: 'removeMemberFromEvent',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'eventManager',
+          methodName: 'removeMemberFromEvent',
+          parameters: _i1.testObjectToJson({'registrationId': registrationId}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<void>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
   _i3.Future<List<_i8.EventManager>> listEventManagers(
     _i1.TestSessionBuilder sessionBuilder,
     int eventId,

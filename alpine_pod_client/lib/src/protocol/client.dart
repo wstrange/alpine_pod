@@ -354,6 +354,29 @@ class EndpointEventManager extends _i2.EndpointRef {
         {'eventManager': eventManager},
       );
 
+  /// Add a member to an event on behalf of an event manager.
+  /// The calling user must be an event manager for this event.
+  _i3.Future<_i7.EventRegistration> addMemberToEvent(
+    int eventId,
+    int memberId,
+  ) => caller.callServerEndpoint<_i7.EventRegistration>(
+    'eventManager',
+    'addMemberToEvent',
+    {
+      'eventId': eventId,
+      'memberId': memberId,
+    },
+  );
+
+  /// Remove a member from an event on behalf of an event manager.
+  /// The calling user must be an event manager for the related event.
+  _i3.Future<void> removeMemberFromEvent(int registrationId) =>
+      caller.callServerEndpoint<void>(
+        'eventManager',
+        'removeMemberFromEvent',
+        {'registrationId': registrationId},
+      );
+
   _i3.Future<List<_i8.EventManager>> listEventManagers(int eventId) =>
       caller.callServerEndpoint<List<_i8.EventManager>>(
         'eventManager',

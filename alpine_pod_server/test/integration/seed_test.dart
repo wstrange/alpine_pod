@@ -92,7 +92,12 @@ void main() {
     test('Create Admin User', () async {
       var auModel = await AuthServices.instance.authUsers.create(
         session,
-        scopes: {Scope.admin},
+        scopes: {
+          Scope.admin,
+          CustomScope.eventManager,
+          CustomScope.sectionManager,
+          CustomScope.member,
+        },
       );
 
       final emailAccountId = await admin.createEmailAuthentication(
@@ -117,7 +122,11 @@ void main() {
 
         var au = await AuthServices.instance.authUsers.create(
           session,
-          scopes: {CustomScope.member},
+          scopes: {
+            CustomScope.member,
+            CustomScope.sectionManager,
+            CustomScope.eventManager
+          },
         );
 
         final emailId = await admin.createEmailAuthentication(

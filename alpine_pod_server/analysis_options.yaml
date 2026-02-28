@@ -21,6 +21,8 @@ linter:
     avoid_print: false
 
 analyzer:
+  errors:
+    experimental_member_use: ignore
   exclude:
     - lib/src/generated/**
     - test/integration/test_tools/serverpod_test_tools.dart

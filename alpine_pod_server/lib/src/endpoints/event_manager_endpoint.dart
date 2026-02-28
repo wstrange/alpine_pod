@@ -106,6 +106,81 @@ class EventManagerEndpoint extends Endpoint {
     await EventManager.db.deleteRow(session, existing);
   }
 
+  /// Add a member to an event on behalf of an event manager.
+  /// The calling user must be an event manager for this event.
+  Future<EventRegistration> addMemberToEvent(
+    Session session,
+    int eventId,
+    int memberId,
+  ) async {
+    final callerInfo = await cache.getMemberInfo(session);
+    if (callerInfo == null) throw Exception('Not authenticated');
+
+    // Verify the caller is an event manager for this event
+    final managerRecord = await EventManager.db.findFirstRow(
+      session,
+      where: (t) =>
+          t.eventId.equals(eventId) & t.memberId.equals(callerInfo.member.id!),
+    );
+    if (managerRecord == null) {
+      throw Exception('You are not an event manager for this event');
+    }
+
+    // Check the target member exists
+    final targetMember = await Member.db.findById(session, memberId);
+    if (targetMember == null) throw Exception('Member not found');
+
+    // Check if already registered
+    final existing = await EventRegistration.db.findFirstRow(
+      session,
+      where: (t) => t.eventId.equals(eventId) & t.memberId.equals(memberId),
+    );
+    if (existing != null) throw Exception('Member is already registered');
+
+    final now = DateTime.now();
+    final registration = EventRegistration(
+      memberId: memberId,
+      eventId: eventId,
+      registrationStatus: RegistrationStatus.confirmed,
+      registrationDate: now,
+      modifiedAt: now,
+      waiverAccepted: false,
+    );
+
+    session.log(
+        'Event manager ${callerInfo.member.id} added member $memberId to event $eventId, $registration');
+
+    return await EventRegistration.db.insertRow(session, registration);
+  }
+
+  /// Remove a member from an event on behalf of an event manager.
+  /// The calling user must be an event manager for the related event.
+  Future<void> removeMemberFromEvent(
+    Session session,
+    int registrationId,
+  ) async {
+    final callerInfo = await cache.getMemberInfo(session);
+    if (callerInfo == null) throw Exception('Not authenticated');
+
+    final reg = await EventRegistration.db.findById(session, registrationId);
+    if (reg == null) throw Exception('Registration not found');
+
+    // Verify the caller is an event manager for this event
+    final managerRecord = await EventManager.db.findFirstRow(
+      session,
+      where: (t) =>
+          t.eventId.equals(reg.eventId) &
+          t.memberId.equals(callerInfo.member.id!),
+    );
+    if (managerRecord == null) {
+      throw Exception('You are not an event manager for this event');
+    }
+
+    await EventRegistration.db.deleteRow(session, reg);
+    session.log(
+        'Event manager ${callerInfo.member.id} removed registration $registrationId');
+  }
+
   Future<List<EventManager>> listEventManagers(
     Session session,
     int eventId,

@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:signals_flutter/signals_flutter.dart';
 import '../signals.dart';
 import '../util.dart';
+import 'event_participants_manager.dart';
 import 'user_list_widget.dart';
 
 class EventView extends HookWidget {
@@ -13,17 +14,24 @@ class EventView extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Watch currentEventsSignal to trigger rebuilds when the list might have changed
-    // (e.g., registrations count update, event edit)
-    currentEventsSignal.watch(context);
+    // A single counter that drives re-fetches of the event details.
+    // Incremented both by the onRefresh callback (local actions) and whenever
+    // currentEventsSignal emits a new value (global list refresh).
+    final refreshCount = useState(0);
+
+    // Subscribe to currentEventsSignal: each time it emits a new value,
+    // bump refreshCount so useMemoized picks it up on the next build.
+    useEffect(() {
+      final sub = currentEventsSignal.subscribe((_) {
+        refreshCount.value++;
+      });
+      return sub; // dispose
+    }, []);
 
     // Fetch full event details (registrations, managers)
-    // We re-fetch whenever currentEventsSignal updates OR if the event id changes.
-    final requestCount = useState(0);
-
     final detailsFuture = useMemoized(
       () => client.event.getEvent(event.id!),
-      [event.id, requestCount.value, currentEventsSignal.value],
+      [event.id, refreshCount.value],
     );
 
     final snapshot = useFuture(detailsFuture);
@@ -38,9 +46,8 @@ class EventView extends HookWidget {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Registration successful!')),
           );
-          // Refresh global list and local details
+          // Refresh global list; the useEffect subscription will bump refreshCount
           currentEventsSignal.refresh();
-          requestCount.value++;
         }
       } catch (e) {
         if (context.mounted) {
@@ -58,9 +65,8 @@ class EventView extends HookWidget {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Registration cancelled.')),
           );
-          // Refresh global list and local details
+          // Refresh global list; the useEffect subscription will bump refreshCount
           currentEventsSignal.refresh();
-          requestCount.value++;
         }
       } catch (e) {
         if (context.mounted) {
@@ -125,6 +131,10 @@ class EventView extends HookWidget {
                       .where((r) => r.memberId == currentMember.id)
                       .firstOrNull;
               final isRegistered = myRegistration != null;
+
+              // Owner check: current user appears in the event managers list
+              final isOwner = currentMember != null &&
+                  managers.any((m) => m.memberId == currentMember.id);
 
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -228,29 +238,39 @@ class EventView extends HookWidget {
                     ),
                     const SizedBox(height: 8),
                   ],
-                  if (confirmed.isNotEmpty) ...[
-                    Text('Confirmed Participants (${confirmed.length})',
-                        style: Theme.of(context).textTheme.titleMedium),
-                    UserListWidget(
-                      members: confirmed.map((r) => r.member!).toList(),
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                    ),
-                    const SizedBox(height: 8),
+                  // Owners see the management UI; others see read-only lists
+                  if (isOwner)
+                    EventParticipantsManager(
+                      event: detailedEvent,
+                      confirmed: confirmed,
+                      waitlisted: waitlisted,
+                      onRefresh: () => refreshCount.value++,
+                    )
+                  else ...[
+                    if (confirmed.isNotEmpty) ...[
+                      Text('Confirmed Participants (${confirmed.length})',
+                          style: Theme.of(context).textTheme.titleMedium),
+                      UserListWidget(
+                        members: confirmed.map((r) => r.member!).toList(),
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                      ),
+                      const SizedBox(height: 8),
+                    ],
+                    if (waitlisted.isNotEmpty) ...[
+                      Text('Waitlist (${waitlisted.length})',
+                          style: Theme.of(context).textTheme.titleMedium),
+                      UserListWidget(
+                        members: waitlisted.map((r) => r.member!).toList(),
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                      ),
+                    ],
+                    if (confirmed.isEmpty &&
+                        waitlisted.isEmpty &&
+                        managers.isEmpty)
+                      const Text('No registrations or managers yet.'),
                   ],
-                  if (waitlisted.isNotEmpty) ...[
-                    Text('Waitlist (${waitlisted.length})',
-                        style: Theme.of(context).textTheme.titleMedium),
-                    UserListWidget(
-                      members: waitlisted.map((r) => r.member!).toList(),
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                    ),
-                  ],
-                  if (confirmed.isEmpty &&
-                      waitlisted.isEmpty &&
-                      managers.isEmpty)
-                    const Text('No registrations or managers yet.'),
                 ],
               );
             })
