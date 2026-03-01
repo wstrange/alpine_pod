@@ -475,6 +475,52 @@ class EndpointMember extends _i2.EndpointRef {
       'filter': filter,
     },
   );
+
+  /// Similar to getSectionMembers but returns the actual membership records,
+  /// which include the user's scopes for the section.
+  _i3.Future<List<_i10.SectionMembership>> getSectionMemberships(
+    int sectionId, {
+    String? filter,
+  }) => caller.callServerEndpoint<List<_i10.SectionMembership>>(
+    'member',
+    'getSectionMemberships',
+    {
+      'sectionId': sectionId,
+      'filter': filter,
+    },
+  );
+
+  /// Get the active user's membership details (and scopes) for a specific section.
+  _i3.Future<_i10.SectionMembership?> getMySectionMembership(int sectionId) =>
+      caller.callServerEndpoint<_i10.SectionMembership?>(
+        'member',
+        'getMySectionMembership',
+        {'sectionId': sectionId},
+      );
+
+  /// Get all the active user's membership details across all sections.
+  _i3.Future<List<_i10.SectionMembership>> getAllMySectionMemberships() =>
+      caller.callServerEndpoint<List<_i10.SectionMembership>>(
+        'member',
+        'getAllMySectionMemberships',
+        {},
+      );
+
+  /// Update a member's scopes for a specific section.
+  /// Requires the caller to be a global admin or a section manager for the section.
+  _i3.Future<_i10.SectionMembership> updateMemberScopes(
+    int memberId,
+    int sectionId,
+    Set<String> newScopes,
+  ) => caller.callServerEndpoint<_i10.SectionMembership>(
+    'member',
+    'updateMemberScopes',
+    {
+      'memberId': memberId,
+      'sectionId': sectionId,
+      'newScopes': newScopes,
+    },
+  );
 }
 
 /// {@category Endpoint}

@@ -81,6 +81,8 @@ void main() {
           type: EventType.hike,
           published: true,
           requiresApproval: false,
+          minimumParticipants: 1,
+          maxParticipants: 10,
         ),
       );
     });
@@ -132,8 +134,6 @@ void main() {
         eventId: event.id!,
         memberId: member.id!,
       );
-
-      await endpoints.eventManager.assignEventManager(adminAuth, manager);
 
       // Note: We can't remove the last manager if there are active registrations,
       // but here there are none.

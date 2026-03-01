@@ -94,9 +94,6 @@ void main() {
         session,
         scopes: {
           Scope.admin,
-          CustomScope.eventManager,
-          CustomScope.sectionManager,
-          CustomScope.member,
         },
       );
 
@@ -122,11 +119,7 @@ void main() {
 
         var au = await AuthServices.instance.authUsers.create(
           session,
-          scopes: {
-            CustomScope.member,
-            CustomScope.sectionManager,
-            CustomScope.eventManager
-          },
+          scopes: {},
         );
 
         final emailId = await admin.createEmailAuthentication(
@@ -153,9 +146,9 @@ void main() {
             ));
         print('Created member profile: $m');
 
-        var scopes = {
-          CustomScope.sectionManager.toString(),
-          CustomScope.member.toString()
+        var scopes = <String>{
+          CustomScope.sectionManager.name!,
+          CustomScope.member.name!,
         };
 
         // assign to first and second sections

@@ -1,6 +1,7 @@
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_auth_idp_server/core.dart';
 import '../generated/protocol.dart';
+import '../member_cache.dart';
 
 /// TODO: Use RBAC to restrict access to these methods
 class MemberEndpoint extends Endpoint {
@@ -70,6 +71,9 @@ class MemberEndpoint extends Endpoint {
     final result =
         await SectionMembership.db.insertRow(session, validatedMembership);
 
+    // Sync global scopes
+    await _syncUserScopes(session, membership.memberId);
+
     return result;
   }
 
@@ -83,6 +87,9 @@ class MemberEndpoint extends Endpoint {
           t.memberId.equals(membership.memberId) &
           t.sectionId.equals(membership.sectionId),
     );
+
+    // Sync global scopes
+    await _syncUserScopes(session, membership.memberId);
   }
 
   Future<Member> updateMember(Session session, Member member) async {
@@ -118,5 +125,144 @@ class MemberEndpoint extends Endpoint {
 
     // Extract members from memberships
     return memberships.map((m) => m.member!).toList();
+  }
+
+  /// Similar to getSectionMembers but returns the actual membership records,
+  /// which include the user's scopes for the section.
+  Future<List<SectionMembership>> getSectionMemberships(
+    Session session,
+    int sectionId, {
+    String? filter,
+  }) async {
+    return await SectionMembership.db.find(
+      session,
+      where: (t) {
+        var expr = t.sectionId.equals(sectionId);
+        if (filter != null && filter.isNotEmpty) {
+          // Filter on member fields.
+          expr = expr &
+              (t.member.firstName.ilike('%$filter%') |
+                  t.member.lastName.ilike('%$filter%') |
+                  t.member.email.ilike('%$filter%'));
+        }
+        return expr;
+      },
+      include: SectionMembership.include(
+        member: Member.include(),
+      ),
+      orderBy: (t) => t.member.lastName,
+    );
+  }
+
+  /// Get the active user's membership details (and scopes) for a specific section.
+  Future<SectionMembership?> getMySectionMembership(
+    Session session,
+    int sectionId,
+  ) async {
+    final callerInfo = await cache.getMemberInfo(session);
+    if (callerInfo == null) return null;
+
+    return await SectionMembership.db.findFirstRow(
+      session,
+      where: (t) =>
+          t.memberId.equals(callerInfo.member.id) &
+          t.sectionId.equals(sectionId),
+    );
+  }
+
+  /// Get all the active user's membership details across all sections.
+  Future<List<SectionMembership>> getAllMySectionMemberships(
+    Session session,
+  ) async {
+    final callerInfo = await cache.getMemberInfo(session);
+    if (callerInfo == null) return [];
+
+    return await SectionMembership.db.find(
+      session,
+      where: (t) => t.memberId.equals(callerInfo.member.id),
+      include: SectionMembership.include(
+        section: Section.include(),
+      ),
+    );
+  }
+
+  /// Update a member's scopes for a specific section.
+  /// Requires the caller to be a global admin or a section manager for the section.
+  Future<SectionMembership> updateMemberScopes(
+    Session session,
+    int memberId,
+    int sectionId,
+    Set<String> newScopes,
+  ) async {
+    final callerInfo = await cache.getMemberInfo(session);
+    if (callerInfo == null) throw Exception('Not authenticated');
+
+    // Authentication/authorization check
+    bool isGlobalAdmin =
+        session.authenticated?.scopes.contains(Scope.admin) ?? false;
+
+    final isManagerForSection =
+        callerInfo.scopesFor(sectionId).contains('sectionManager');
+
+    if (!isGlobalAdmin && !isManagerForSection) {
+      throw Exception(
+          'You do not have permission to manage scopes in this section');
+    }
+
+    // Find the membership to update
+    final membership = await SectionMembership.db.findFirstRow(
+      session,
+      where: (t) => t.memberId.equals(memberId) & t.sectionId.equals(sectionId),
+    );
+
+    if (membership == null) {
+      throw Exception('Target member is not in this section');
+    }
+
+    // Find the member to get the userId for auth update
+    final targetMember = await Member.db.findById(session, memberId);
+    if (targetMember == null) throw Exception('Target member not found');
+
+    // Update the SectionMembership row
+    final updatedMembership = membership.copyWith(
+      scopes: newScopes.toSet(),
+      syncedAt: DateTime.now(),
+    );
+    await SectionMembership.db.updateRow(session, updatedMembership);
+
+    // Sync global scopes
+    await _syncUserScopes(session, memberId);
+
+    return updatedMembership;
+  }
+
+  /// Helper to synchronize the global AuthUser scopes with the aggregate of all section memberships.
+  Future<void> _syncUserScopes(Session session, int memberId) async {
+    final targetMember = await Member.db.findById(session, memberId);
+    if (targetMember == null) return;
+
+    final allMemberships = await SectionMembership.db.find(
+      session,
+      where: (t) => t.memberId.equals(memberId),
+    );
+
+    // Merge scopes from all sections, add base 'member' scope
+    final mergedScopes = <String>{'member'};
+    for (final m in allMemberships) {
+      mergedScopes.addAll(m.scopes);
+    }
+
+    // Convert strings to Scope objects
+    final Set<Scope> authScopes = mergedScopes.map((s) => Scope(s)).toSet();
+
+    // Update the AuthUser scopes
+    await AuthServices.instance.authUsers.update(
+      session,
+      authUserId: targetMember.userId,
+      scopes: authScopes,
+    );
+
+    // Invalidate the cache for the updated member so their new scopes take effect immediately
+    cache.invalidateUserCache(targetMember.userId);
   }
 }

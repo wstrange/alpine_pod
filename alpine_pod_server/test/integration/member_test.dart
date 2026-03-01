@@ -4,6 +4,8 @@
 import 'package:alpine_pod_server/src/generated/protocol.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:test/test.dart';
+import 'package:serverpod_auth_idp_server/core.dart';
+import 'package:serverpod_auth_idp_server/providers/email.dart';
 import 'test_tools/serverpod_test_tools.dart';
 import 'utils/gen_data.dart';
 
@@ -13,6 +15,23 @@ void main() {
   final id = Uuid().v4();
 
   withServerpod('Given TestDataGenerator', (sessionBuilder, endpoints) {
+    Serverpod.instance.initializeAuthServices(
+      identityProviderBuilders: [
+        EmailIdpConfig(
+          secretHashPepper: 'emailSecretHashPepper',
+        ),
+      ],
+      tokenManagerBuilders: [
+        JwtConfig(
+          refreshTokenHashPepper: 'jwtRefreshTokenHashPepper',
+          algorithm: JwtAlgorithm.hmacSha512(
+            SecretKey(
+                'jwtHmacSha512PrivateKey-MustBeLongEnoughFor-HMAC-SHA512-Tests'),
+          ),
+        ),
+      ],
+    );
+
     group('auth member endpoint tests', () {
       var authenticatedSessionBuilder = sessionBuilder.copyWith(
         authentication:
@@ -20,7 +39,12 @@ void main() {
       );
 
       test('getMembers returns list of members for admin', () async {
-        // Assuming member with id=1 is an admin in the test setup
+        // Empty db expected.
+        final session = sessionBuilder.build();
+        await SectionMembership.db
+            .deleteWhere(session, where: (t) => Constant.bool(true));
+        await Member.db.deleteWhere(session, where: (t) => Constant.bool(true));
+
         final members =
             await endpoints.member.getMembers(authenticatedSessionBuilder);
         expect(members, isA<List<Member>>());
@@ -28,7 +52,10 @@ void main() {
       });
 
       test('insert a new member and verify it exists', () async {
-        final m = genData.member();
+        final session = sessionBuilder.build();
+        final authUser = await AuthServices.instance.authUsers.create(session);
+
+        var m = genData.member(userId: authUser.id);
         print(m);
 
         final member =

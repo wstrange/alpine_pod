@@ -30,8 +30,10 @@ import 'package:alpine_pod_server/src/generated/section.dart' as _i15;
 import 'package:alpine_pod_server/src/generated/event.dart' as _i16;
 import 'package:alpine_pod_server/src/generated/event_manager.dart' as _i17;
 import 'package:alpine_pod_server/src/generated/member.dart' as _i18;
-import 'package:alpine_pod_server/src/generated/event_registration.dart'
+import 'package:alpine_pod_server/src/generated/section_membership.dart'
     as _i19;
+import 'package:alpine_pod_server/src/generated/event_registration.dart'
+    as _i20;
 export 'event.dart';
 export 'event_document.dart';
 export 'event_manager.dart';
@@ -938,7 +940,7 @@ class Protocol extends _i1.SerializationManagerServer {
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
           onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.cascade,
+          onDelete: _i2.ForeignKeyAction.noAction,
           matchType: null,
         ),
       ],
@@ -1187,9 +1189,18 @@ class Protocol extends _i1.SerializationManagerServer {
       return (data as List).map((e) => deserialize<_i18.Member>(e)).toList()
           as T;
     }
-    if (t == List<_i19.EventRegistration>) {
+    if (t == List<_i19.SectionMembership>) {
       return (data as List)
-              .map((e) => deserialize<_i19.EventRegistration>(e))
+              .map((e) => deserialize<_i19.SectionMembership>(e))
+              .toList()
+          as T;
+    }
+    if (t == Set<String>) {
+      return (data as List).map((e) => deserialize<String>(e)).toSet() as T;
+    }
+    if (t == List<_i20.EventRegistration>) {
+      return (data as List)
+              .map((e) => deserialize<_i20.EventRegistration>(e))
               .toList()
           as T;
     }

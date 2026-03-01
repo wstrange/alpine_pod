@@ -1,13 +1,12 @@
 // ignore_for_file: unnecessary_non_null_assertion, unnecessary_null_comparison
 
-import 'package:alpine_pod_server/src/custom_scopes.dart';
 import 'package:serverpod/serverpod.dart';
 import '../generated/protocol.dart';
 import '../member_cache.dart';
 
 class EventManagerEndpoint extends Endpoint {
-  @override
-  Set<Scope> get requiredScopes => {CustomScope.eventManager};
+  // We removed global requiredScopes so that we can verify permissions
+  // per section/event.
 
   Future<EventManager> assignEventManager(
     Session session,
@@ -20,6 +19,19 @@ class EventManagerEndpoint extends Endpoint {
     // Get the event to check section
     final event = await Event.db.findById(session, eventManager.eventId!);
     if (event == null) throw Exception('Event not found');
+
+    final callerInfo = await cache.getMemberInfo(session);
+    if (callerInfo == null) throw Exception('Not authenticated');
+
+    bool isGlobalAdmin =
+        session.authenticated?.scopes.contains(Scope.admin) ?? false;
+    bool isEventManagerForSection =
+        callerInfo.scopesFor(event.sectionId).contains('eventManager');
+
+    if (!isGlobalAdmin && !isEventManagerForSection) {
+      throw Exception(
+          'You do not have permission to manage events in this section');
+    }
 
     // Check if event has already ended
     if (event.endTime.isBefore(DateTime.now())) {
@@ -85,6 +97,19 @@ class EventManagerEndpoint extends Endpoint {
     // Get the event to check section
     final event = await Event.db.findById(session, eventManager.eventId!);
     if (event == null) throw Exception('Event not found');
+
+    final callerInfo = await cache.getMemberInfo(session);
+    if (callerInfo == null) throw Exception('Not authenticated');
+
+    bool isGlobalAdmin =
+        session.authenticated?.scopes.contains(Scope.admin) ?? false;
+    bool isEventManagerForSection =
+        callerInfo.scopesFor(event.sectionId).contains('eventManager');
+
+    if (!isGlobalAdmin && !isEventManagerForSection) {
+      throw Exception(
+          'You do not have permission to manage events in this section');
+    }
 
     // Find the assignment
     final existing = await EventManager.db.findFirstRow(

@@ -18,7 +18,20 @@ final currentMemberSignal = futureSignal(() async {
   return await client.member.getCurrentMember();
 });
 
+final allMySectionMembershipsSignal = futureSignal(() async {
+  return await client.member.getAllMySectionMemberships();
+});
+
 final sectionSignal = signal<Section?>(null);
+
+final mySectionMembershipSignal = futureSignal(
+  () async {
+    final s = sectionSignal.value;
+    if (s == null) return null;
+    return await client.member.getMySectionMembership(s.id!);
+  },
+  dependencies: [sectionSignal],
+);
 
 // todo: Should the signals below be moved into the calendar view widget?
 

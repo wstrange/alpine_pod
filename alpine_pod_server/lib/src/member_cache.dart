@@ -38,11 +38,13 @@ class MemberCache {
       where: (t) => t.memberId.equals(member.id),
     );
 
-    final sectionIds = memberships.map((m) => m.sectionId).toSet();
+    final sectionScopes = {for (var m in memberships) m.sectionId: m.scopes};
+    final sectionIds = sectionScopes.keys.toSet();
 
     _cache[id] = MemberInfo(
       member: member,
       sectionIds: sectionIds,
+      sectionScopes: sectionScopes,
       timestamp: DateTime.now(),
     );
   }
@@ -53,6 +55,11 @@ class MemberCache {
       return;
     }
     final userId = authInfo.authUserId;
+    invalidateUserCache(userId);
+  }
+
+  /// Removes a specific user's info from the cache
+  void invalidateUserCache(UuidValue userId) {
     _cache.remove(userId);
   }
 
@@ -96,15 +103,20 @@ class MemberCache {
 class MemberInfo {
   final Member member;
   final Set<int> sectionIds;
+  final Map<int, Set<String>> sectionScopes;
   final DateTime timestamp;
 
   const MemberInfo({
     required this.member,
     required this.sectionIds,
+    required this.sectionScopes,
     required this.timestamp,
   });
 
   bool get isStale =>
       DateTime.now().difference(timestamp).inMinutes >
       MemberCache._maxAgeMinutes;
+
+  /// Returns the scopes for a specific section, or an empty set if not a member.
+  Set<String> scopesFor(int sectionId) => sectionScopes[sectionId] ?? {};
 }

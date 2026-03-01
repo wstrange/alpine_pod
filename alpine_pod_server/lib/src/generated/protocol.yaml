@@ -39,6 +39,10 @@ member:
   - removeMemberFromSection:
   - updateMember:
   - getSectionMembers:
+  - getSectionMemberships:
+  - getMySectionMembership:
+  - getAllMySectionMemberships:
+  - updateMemberScopes:
 registration:
   - updateRegistrationStatus:
   - registerForEvent:

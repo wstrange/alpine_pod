@@ -132,12 +132,15 @@ class _MemberEditFormState extends State<_MemberEditForm> {
 
   @override
   Widget build(BuildContext context) {
+    final membershipsValue = allMySectionMembershipsSignal.watch(context);
+
     return Column(
       children: [
         Expanded(
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(16.0),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 TextFormField(
                   controller: firstNameController,
@@ -183,6 +186,34 @@ class _MemberEditFormState extends State<_MemberEditForm> {
                   decoration:
                       const InputDecoration(labelText: 'Certifications'),
                 ),
+                const SizedBox(height: 24),
+                const Text(
+                  'Sections and Roles',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 8),
+                switch (membershipsValue) {
+                  AsyncError(error: final e) => Text('Error loading roles: $e'),
+                  AsyncLoading() => const CircularProgressIndicator(),
+                  AsyncData(value: final memberships) => memberships.isEmpty
+                      ? const Text('No section memberships found.')
+                      : ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: memberships.length,
+                          itemBuilder: (context, index) {
+                            final m = memberships[index];
+                            final sectionName =
+                                m.section?.name ?? 'Section ${m.sectionId}';
+                            final roles = m.scopes.join(', ');
+                            return ListTile(
+                              title: Text(sectionName),
+                              subtitle: Text('Roles: $roles'),
+                              contentPadding: EdgeInsets.zero,
+                            );
+                          },
+                        ),
+                },
               ],
             ),
           ),

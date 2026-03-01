@@ -13,7 +13,8 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
 import 'member.dart' as _i2;
-import 'package:alpine_pod_server/src/generated/protocol.dart' as _i3;
+import 'section.dart' as _i3;
+import 'package:alpine_pod_server/src/generated/protocol.dart' as _i4;
 
 abstract class SectionMembership
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -22,6 +23,7 @@ abstract class SectionMembership
     required this.memberId,
     this.member,
     required this.sectionId,
+    this.section,
     this.externalUserId,
     DateTime? syncedAt,
     this.sourceSystem,
@@ -33,6 +35,7 @@ abstract class SectionMembership
     required int memberId,
     _i2.Member? member,
     required int sectionId,
+    _i3.Section? section,
     String? externalUserId,
     DateTime? syncedAt,
     String? sourceSystem,
@@ -45,14 +48,19 @@ abstract class SectionMembership
       memberId: jsonSerialization['memberId'] as int,
       member: jsonSerialization['member'] == null
           ? null
-          : _i3.Protocol().deserialize<_i2.Member>(jsonSerialization['member']),
+          : _i4.Protocol().deserialize<_i2.Member>(jsonSerialization['member']),
       sectionId: jsonSerialization['sectionId'] as int,
+      section: jsonSerialization['section'] == null
+          ? null
+          : _i4.Protocol().deserialize<_i3.Section>(
+              jsonSerialization['section'],
+            ),
       externalUserId: jsonSerialization['externalUserId'] as String?,
       syncedAt: jsonSerialization['syncedAt'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['syncedAt']),
       sourceSystem: jsonSerialization['sourceSystem'] as String?,
-      scopes: _i3.Protocol().deserialize<Set<String>>(
+      scopes: _i4.Protocol().deserialize<Set<String>>(
         jsonSerialization['scopes'],
       ),
     );
@@ -70,6 +78,8 @@ abstract class SectionMembership
   _i2.Member? member;
 
   int sectionId;
+
+  _i3.Section? section;
 
   String? externalUserId;
 
@@ -90,6 +100,7 @@ abstract class SectionMembership
     int? memberId,
     _i2.Member? member,
     int? sectionId,
+    _i3.Section? section,
     String? externalUserId,
     DateTime? syncedAt,
     String? sourceSystem,
@@ -103,6 +114,7 @@ abstract class SectionMembership
       'memberId': memberId,
       if (member != null) 'member': member?.toJson(),
       'sectionId': sectionId,
+      if (section != null) 'section': section?.toJson(),
       if (externalUserId != null) 'externalUserId': externalUserId,
       'syncedAt': syncedAt.toJson(),
       if (sourceSystem != null) 'sourceSystem': sourceSystem,
@@ -118,6 +130,7 @@ abstract class SectionMembership
       'memberId': memberId,
       if (member != null) 'member': member?.toJsonForProtocol(),
       'sectionId': sectionId,
+      if (section != null) 'section': section?.toJsonForProtocol(),
       if (externalUserId != null) 'externalUserId': externalUserId,
       'syncedAt': syncedAt.toJson(),
       if (sourceSystem != null) 'sourceSystem': sourceSystem,
@@ -125,8 +138,14 @@ abstract class SectionMembership
     };
   }
 
-  static SectionMembershipInclude include({_i2.MemberInclude? member}) {
-    return SectionMembershipInclude._(member: member);
+  static SectionMembershipInclude include({
+    _i2.MemberInclude? member,
+    _i3.SectionInclude? section,
+  }) {
+    return SectionMembershipInclude._(
+      member: member,
+      section: section,
+    );
   }
 
   static SectionMembershipIncludeList includeList({
@@ -163,6 +182,7 @@ class _SectionMembershipImpl extends SectionMembership {
     required int memberId,
     _i2.Member? member,
     required int sectionId,
+    _i3.Section? section,
     String? externalUserId,
     DateTime? syncedAt,
     String? sourceSystem,
@@ -172,6 +192,7 @@ class _SectionMembershipImpl extends SectionMembership {
          memberId: memberId,
          member: member,
          sectionId: sectionId,
+         section: section,
          externalUserId: externalUserId,
          syncedAt: syncedAt,
          sourceSystem: sourceSystem,
@@ -187,6 +208,7 @@ class _SectionMembershipImpl extends SectionMembership {
     int? memberId,
     Object? member = _Undefined,
     int? sectionId,
+    Object? section = _Undefined,
     Object? externalUserId = _Undefined,
     DateTime? syncedAt,
     Object? sourceSystem = _Undefined,
@@ -197,6 +219,7 @@ class _SectionMembershipImpl extends SectionMembership {
       memberId: memberId ?? this.memberId,
       member: member is _i2.Member? ? member : this.member?.copyWith(),
       sectionId: sectionId ?? this.sectionId,
+      section: section is _i3.Section? ? section : this.section?.copyWith(),
       externalUserId: externalUserId is String?
           ? externalUserId
           : this.externalUserId,
@@ -285,6 +308,8 @@ class SectionMembershipTable extends _i1.Table<int?> {
 
   late final _i1.ColumnInt sectionId;
 
+  _i3.SectionTable? _section;
+
   late final _i1.ColumnString externalUserId;
 
   late final _i1.ColumnDateTime syncedAt;
@@ -306,6 +331,19 @@ class SectionMembershipTable extends _i1.Table<int?> {
     return _member!;
   }
 
+  _i3.SectionTable get section {
+    if (_section != null) return _section!;
+    _section = _i1.createRelationTable(
+      relationFieldName: 'section',
+      field: SectionMembership.t.sectionId,
+      foreignField: _i3.Section.t.id,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i3.SectionTable(tableRelation: foreignTableRelation),
+    );
+    return _section!;
+  }
+
   @override
   List<_i1.Column> get columns => [
     id,
@@ -322,19 +360,31 @@ class SectionMembershipTable extends _i1.Table<int?> {
     if (relationField == 'member') {
       return member;
     }
+    if (relationField == 'section') {
+      return section;
+    }
     return null;
   }
 }
 
 class SectionMembershipInclude extends _i1.IncludeObject {
-  SectionMembershipInclude._({_i2.MemberInclude? member}) {
+  SectionMembershipInclude._({
+    _i2.MemberInclude? member,
+    _i3.SectionInclude? section,
+  }) {
     _member = member;
+    _section = section;
   }
 
   _i2.MemberInclude? _member;
 
+  _i3.SectionInclude? _section;
+
   @override
-  Map<String, _i1.Include?> get includes => {'member': _member};
+  Map<String, _i1.Include?> get includes => {
+    'member': _member,
+    'section': _section,
+  };
 
   @override
   _i1.Table<int?> get table => SectionMembership.t;
@@ -645,6 +695,29 @@ class SectionMembershipAttachRowRepository {
     await session.db.updateRow<SectionMembership>(
       $sectionMembership,
       columns: [SectionMembership.t.memberId],
+      transaction: transaction,
+    );
+  }
+
+  /// Creates a relation between the given [SectionMembership] and [Section]
+  /// by setting the [SectionMembership]'s foreign key `sectionId` to refer to the [Section].
+  Future<void> section(
+    _i1.Session session,
+    SectionMembership sectionMembership,
+    _i3.Section section, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (sectionMembership.id == null) {
+      throw ArgumentError.notNull('sectionMembership.id');
+    }
+    if (section.id == null) {
+      throw ArgumentError.notNull('section.id');
+    }
+
+    var $sectionMembership = sectionMembership.copyWith(sectionId: section.id);
+    await session.db.updateRow<SectionMembership>(
+      $sectionMembership,
+      columns: [SectionMembership.t.sectionId],
       transaction: transaction,
     );
   }

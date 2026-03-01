@@ -801,6 +801,91 @@ class Endpoints extends _i1.EndpointDispatch {
                     filter: params['filter'],
                   ),
         ),
+        'getSectionMemberships': _i1.MethodConnector(
+          name: 'getSectionMemberships',
+          params: {
+            'sectionId': _i1.ParameterDescription(
+              name: 'sectionId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+            'filter': _i1.ParameterDescription(
+              name: 'filter',
+              type: _i1.getType<String?>(),
+              nullable: true,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['member'] as _i6.MemberEndpoint)
+                  .getSectionMemberships(
+                    session,
+                    params['sectionId'],
+                    filter: params['filter'],
+                  ),
+        ),
+        'getMySectionMembership': _i1.MethodConnector(
+          name: 'getMySectionMembership',
+          params: {
+            'sectionId': _i1.ParameterDescription(
+              name: 'sectionId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['member'] as _i6.MemberEndpoint)
+                  .getMySectionMembership(
+                    session,
+                    params['sectionId'],
+                  ),
+        ),
+        'getAllMySectionMemberships': _i1.MethodConnector(
+          name: 'getAllMySectionMemberships',
+          params: {},
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['member'] as _i6.MemberEndpoint)
+                  .getAllMySectionMemberships(session),
+        ),
+        'updateMemberScopes': _i1.MethodConnector(
+          name: 'updateMemberScopes',
+          params: {
+            'memberId': _i1.ParameterDescription(
+              name: 'memberId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+            'sectionId': _i1.ParameterDescription(
+              name: 'sectionId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+            'newScopes': _i1.ParameterDescription(
+              name: 'newScopes',
+              type: _i1.getType<Set<String>>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['member'] as _i6.MemberEndpoint)
+                  .updateMemberScopes(
+                    session,
+                    params['memberId'],
+                    params['sectionId'],
+                    params['newScopes'],
+                  ),
+        ),
       },
     );
     connectors['registration'] = _i1.EndpointConnector(
