@@ -46,12 +46,34 @@ class EventCard extends StatelessWidget {
                           style: const TextStyle(
                               fontSize: 16, fontWeight: FontWeight.bold),
                         ),
-                        Text(
-                          '${DateFormat.jm().format(startDate)} • ${DateFormat.jm().format(endDate)}',
-                          style: const TextStyle(
-                              fontSize: 12,
-                              color: Colors.blue,
-                              fontWeight: FontWeight.bold),
+                        const SizedBox(height: 2),
+                        Row(
+                          children: [
+                            Text(
+                              '${DateFormat.jm().format(startDate)} • ${DateFormat.jm().format(endDate)}',
+                              style: const TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.blue,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            const SizedBox(width: 8),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8, vertical: 2),
+                              decoration: BoxDecoration(
+                                color: Colors.blueGrey.withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Text(
+                                event.type,
+                                style: const TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.blueGrey,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),

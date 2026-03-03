@@ -78,7 +78,7 @@ void main() {
           startTime: DateTime.now().add(Duration(days: 1)),
           endTime: DateTime.now().add(Duration(days: 1, hours: 2)),
           sectionId: section.id!,
-          type: EventType.hike,
+          type: 'Hike',
           published: true,
           requiresApproval: false,
           minimumParticipants: 1,

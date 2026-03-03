@@ -1,1 +1,3 @@
 alpine_pod_server/config/google_client_secret.json
+**/migrations/
+alpine_pod_server/migrations/migration_registry.txt

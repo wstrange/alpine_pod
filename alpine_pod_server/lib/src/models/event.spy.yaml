@@ -3,7 +3,7 @@ table: events
 fields:
   title: String
   description: String
-  type: EventType
+  type: String
   startTime: DateTime
   endTime: DateTime
   # Todo: Consider location data model

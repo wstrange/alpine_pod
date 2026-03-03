@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logging/logging.dart';
 
+import '../event_types.dart';
 import '../signals.dart';
 import '../util.dart';
 
@@ -23,6 +24,7 @@ class _EventEditScreenState extends State<EventEditScreen> {
   late final TextEditingController locationController;
   late DateTime startTime;
   late DateTime endTime;
+  late String _selectedType;
 
   @override
   void initState() {
@@ -34,6 +36,11 @@ class _EventEditScreenState extends State<EventEditScreen> {
     startTime = widget.event?.startTime ?? DateTime.now();
     endTime =
         widget.event?.endTime ?? DateTime.now().add(const Duration(hours: 8));
+    _selectedType = widget.event?.type ?? eventTypes.first;
+    // If the stored type isn't in our list, fall back to the first entry
+    if (!eventTypes.contains(_selectedType)) {
+      _selectedType = eventTypes.first;
+    }
   }
 
   @override
@@ -56,6 +63,7 @@ class _EventEditScreenState extends State<EventEditScreen> {
           location: locationController.text,
           startTime: startTime,
           endTime: endTime,
+          type: _selectedType,
         ) ??
         Event(
           sectionId: sid!,
@@ -64,7 +72,7 @@ class _EventEditScreenState extends State<EventEditScreen> {
           location: locationController.text,
           startTime: startTime,
           endTime: endTime,
-          type: EventType.hike, // TODO: Let user choose
+          type: _selectedType,
           requiresApproval: true,
         );
 
@@ -118,13 +126,13 @@ class _EventEditScreenState extends State<EventEditScreen> {
       startTime = widget.event?.startTime ?? DateTime.now();
       endTime =
           widget.event?.endTime ?? DateTime.now().add(const Duration(hours: 2));
+      _selectedType = widget.event?.type ?? eventTypes.first;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     final isCreating = widget.event == null;
-    // sectionSignal is tracked as a dependency of currentEventsSignal — no explicit watch needed
 
     return Scaffold(
       appBar: AppBar(
@@ -153,6 +161,19 @@ class _EventEditScreenState extends State<EventEditScreen> {
             TextFormField(
               controller: locationController,
               decoration: const InputDecoration(labelText: 'Location'),
+            ),
+            const SizedBox(height: 8),
+            DropdownButtonFormField<String>(
+              value: _selectedType,
+              decoration: const InputDecoration(labelText: 'Event Type'),
+              items: eventTypes
+                  .map((t) => DropdownMenuItem(value: t, child: Text(t)))
+                  .toList(),
+              onChanged: (value) {
+                if (value != null) {
+                  setState(() => _selectedType = value);
+                }
+              },
             ),
             ListTile(
               title: const Text('Start Time'),

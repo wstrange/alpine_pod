@@ -12,10 +12,9 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
-import 'event_type.dart' as _i2;
-import 'event_registration.dart' as _i3;
-import 'event_manager.dart' as _i4;
-import 'package:alpine_pod_server/src/generated/protocol.dart' as _i5;
+import 'event_registration.dart' as _i2;
+import 'event_manager.dart' as _i3;
+import 'package:alpine_pod_server/src/generated/protocol.dart' as _i4;
 
 abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   Event._({
@@ -58,7 +57,7 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     int? id,
     required String title,
     required String description,
-    required _i2.EventType type,
+    required String type,
     required DateTime startTime,
     required DateTime endTime,
     String? location,
@@ -83,8 +82,8 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     required int sectionId,
     String? documentsJson,
     bool? published,
-    List<_i3.EventRegistration>? eventRegistrations,
-    List<_i4.EventManager>? eventManagers,
+    List<_i2.EventRegistration>? eventRegistrations,
+    List<_i3.EventManager>? eventManagers,
   }) = _EventImpl;
 
   factory Event.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -92,7 +91,7 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       id: jsonSerialization['id'] as int?,
       title: jsonSerialization['title'] as String,
       description: jsonSerialization['description'] as String,
-      type: _i2.EventType.fromJson((jsonSerialization['type'] as String)),
+      type: jsonSerialization['type'] as String,
       startTime: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['startTime'],
       ),
@@ -139,12 +138,12 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       published: jsonSerialization['published'] as bool?,
       eventRegistrations: jsonSerialization['eventRegistrations'] == null
           ? null
-          : _i5.Protocol().deserialize<List<_i3.EventRegistration>>(
+          : _i4.Protocol().deserialize<List<_i2.EventRegistration>>(
               jsonSerialization['eventRegistrations'],
             ),
       eventManagers: jsonSerialization['eventManagers'] == null
           ? null
-          : _i5.Protocol().deserialize<List<_i4.EventManager>>(
+          : _i4.Protocol().deserialize<List<_i3.EventManager>>(
               jsonSerialization['eventManagers'],
             ),
     );
@@ -161,7 +160,7 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
 
   String description;
 
-  _i2.EventType type;
+  String type;
 
   DateTime startTime;
 
@@ -211,9 +210,9 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
 
   bool published;
 
-  List<_i3.EventRegistration>? eventRegistrations;
+  List<_i2.EventRegistration>? eventRegistrations;
 
-  List<_i4.EventManager>? eventManagers;
+  List<_i3.EventManager>? eventManagers;
 
   @override
   _i1.Table<int?> get table => t;
@@ -225,7 +224,7 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     int? id,
     String? title,
     String? description,
-    _i2.EventType? type,
+    String? type,
     DateTime? startTime,
     DateTime? endTime,
     String? location,
@@ -250,8 +249,8 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     int? sectionId,
     String? documentsJson,
     bool? published,
-    List<_i3.EventRegistration>? eventRegistrations,
-    List<_i4.EventManager>? eventManagers,
+    List<_i2.EventRegistration>? eventRegistrations,
+    List<_i3.EventManager>? eventManagers,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -260,7 +259,7 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       if (id != null) 'id': id,
       'title': title,
       'description': description,
-      'type': type.toJson(),
+      'type': type,
       'startTime': startTime.toJson(),
       'endTime': endTime.toJson(),
       if (location != null) 'location': location,
@@ -305,7 +304,7 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       if (id != null) 'id': id,
       'title': title,
       'description': description,
-      'type': type.toJson(),
+      'type': type,
       'startTime': startTime.toJson(),
       'endTime': endTime.toJson(),
       if (location != null) 'location': location,
@@ -346,8 +345,8 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   }
 
   static EventInclude include({
-    _i3.EventRegistrationIncludeList? eventRegistrations,
-    _i4.EventManagerIncludeList? eventManagers,
+    _i2.EventRegistrationIncludeList? eventRegistrations,
+    _i3.EventManagerIncludeList? eventManagers,
   }) {
     return EventInclude._(
       eventRegistrations: eventRegistrations,
@@ -388,7 +387,7 @@ class _EventImpl extends Event {
     int? id,
     required String title,
     required String description,
-    required _i2.EventType type,
+    required String type,
     required DateTime startTime,
     required DateTime endTime,
     String? location,
@@ -413,8 +412,8 @@ class _EventImpl extends Event {
     required int sectionId,
     String? documentsJson,
     bool? published,
-    List<_i3.EventRegistration>? eventRegistrations,
-    List<_i4.EventManager>? eventManagers,
+    List<_i2.EventRegistration>? eventRegistrations,
+    List<_i3.EventManager>? eventManagers,
   }) : super._(
          id: id,
          title: title,
@@ -456,7 +455,7 @@ class _EventImpl extends Event {
     Object? id = _Undefined,
     String? title,
     String? description,
-    _i2.EventType? type,
+    String? type,
     DateTime? startTime,
     DateTime? endTime,
     Object? location = _Undefined,
@@ -535,10 +534,10 @@ class _EventImpl extends Event {
           ? documentsJson
           : this.documentsJson,
       published: published ?? this.published,
-      eventRegistrations: eventRegistrations is List<_i3.EventRegistration>?
+      eventRegistrations: eventRegistrations is List<_i2.EventRegistration>?
           ? eventRegistrations
           : this.eventRegistrations?.map((e0) => e0.copyWith()).toList(),
-      eventManagers: eventManagers is List<_i4.EventManager>?
+      eventManagers: eventManagers is List<_i3.EventManager>?
           ? eventManagers
           : this.eventManagers?.map((e0) => e0.copyWith()).toList(),
     );
@@ -558,11 +557,10 @@ class EventUpdateTable extends _i1.UpdateTable<EventTable> {
     value,
   );
 
-  _i1.ColumnValue<_i2.EventType, _i2.EventType> type(_i2.EventType value) =>
-      _i1.ColumnValue(
-        table.type,
-        value,
-      );
+  _i1.ColumnValue<String, String> type(String value) => _i1.ColumnValue(
+    table.type,
+    value,
+  );
 
   _i1.ColumnValue<DateTime, DateTime> startTime(DateTime value) =>
       _i1.ColumnValue(
@@ -710,10 +708,9 @@ class EventTable extends _i1.Table<int?> {
       'description',
       this,
     );
-    type = _i1.ColumnEnum(
+    type = _i1.ColumnString(
       'type',
       this,
-      _i1.EnumSerialization.byName,
     );
     startTime = _i1.ColumnDateTime(
       'startTime',
@@ -823,7 +820,7 @@ class EventTable extends _i1.Table<int?> {
 
   late final _i1.ColumnString description;
 
-  late final _i1.ColumnEnum<_i2.EventType> type;
+  late final _i1.ColumnString type;
 
   late final _i1.ColumnDateTime startTime;
 
@@ -873,72 +870,72 @@ class EventTable extends _i1.Table<int?> {
 
   late final _i1.ColumnBool published;
 
-  _i3.EventRegistrationTable? ___eventRegistrations;
+  _i2.EventRegistrationTable? ___eventRegistrations;
 
-  _i1.ManyRelation<_i3.EventRegistrationTable>? _eventRegistrations;
+  _i1.ManyRelation<_i2.EventRegistrationTable>? _eventRegistrations;
 
-  _i4.EventManagerTable? ___eventManagers;
+  _i3.EventManagerTable? ___eventManagers;
 
-  _i1.ManyRelation<_i4.EventManagerTable>? _eventManagers;
+  _i1.ManyRelation<_i3.EventManagerTable>? _eventManagers;
 
-  _i3.EventRegistrationTable get __eventRegistrations {
+  _i2.EventRegistrationTable get __eventRegistrations {
     if (___eventRegistrations != null) return ___eventRegistrations!;
     ___eventRegistrations = _i1.createRelationTable(
       relationFieldName: '__eventRegistrations',
       field: Event.t.id,
-      foreignField: _i3.EventRegistration.t.eventId,
+      foreignField: _i2.EventRegistration.t.eventId,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i3.EventRegistrationTable(tableRelation: foreignTableRelation),
+          _i2.EventRegistrationTable(tableRelation: foreignTableRelation),
     );
     return ___eventRegistrations!;
   }
 
-  _i4.EventManagerTable get __eventManagers {
+  _i3.EventManagerTable get __eventManagers {
     if (___eventManagers != null) return ___eventManagers!;
     ___eventManagers = _i1.createRelationTable(
       relationFieldName: '__eventManagers',
       field: Event.t.id,
-      foreignField: _i4.EventManager.t.eventId,
+      foreignField: _i3.EventManager.t.eventId,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i4.EventManagerTable(tableRelation: foreignTableRelation),
+          _i3.EventManagerTable(tableRelation: foreignTableRelation),
     );
     return ___eventManagers!;
   }
 
-  _i1.ManyRelation<_i3.EventRegistrationTable> get eventRegistrations {
+  _i1.ManyRelation<_i2.EventRegistrationTable> get eventRegistrations {
     if (_eventRegistrations != null) return _eventRegistrations!;
     var relationTable = _i1.createRelationTable(
       relationFieldName: 'eventRegistrations',
       field: Event.t.id,
-      foreignField: _i3.EventRegistration.t.eventId,
+      foreignField: _i2.EventRegistration.t.eventId,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i3.EventRegistrationTable(tableRelation: foreignTableRelation),
+          _i2.EventRegistrationTable(tableRelation: foreignTableRelation),
     );
-    _eventRegistrations = _i1.ManyRelation<_i3.EventRegistrationTable>(
+    _eventRegistrations = _i1.ManyRelation<_i2.EventRegistrationTable>(
       tableWithRelations: relationTable,
-      table: _i3.EventRegistrationTable(
+      table: _i2.EventRegistrationTable(
         tableRelation: relationTable.tableRelation!.lastRelation,
       ),
     );
     return _eventRegistrations!;
   }
 
-  _i1.ManyRelation<_i4.EventManagerTable> get eventManagers {
+  _i1.ManyRelation<_i3.EventManagerTable> get eventManagers {
     if (_eventManagers != null) return _eventManagers!;
     var relationTable = _i1.createRelationTable(
       relationFieldName: 'eventManagers',
       field: Event.t.id,
-      foreignField: _i4.EventManager.t.eventId,
+      foreignField: _i3.EventManager.t.eventId,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i4.EventManagerTable(tableRelation: foreignTableRelation),
+          _i3.EventManagerTable(tableRelation: foreignTableRelation),
     );
-    _eventManagers = _i1.ManyRelation<_i4.EventManagerTable>(
+    _eventManagers = _i1.ManyRelation<_i3.EventManagerTable>(
       tableWithRelations: relationTable,
-      table: _i4.EventManagerTable(
+      table: _i3.EventManagerTable(
         tableRelation: relationTable.tableRelation!.lastRelation,
       ),
     );
@@ -991,16 +988,16 @@ class EventTable extends _i1.Table<int?> {
 
 class EventInclude extends _i1.IncludeObject {
   EventInclude._({
-    _i3.EventRegistrationIncludeList? eventRegistrations,
-    _i4.EventManagerIncludeList? eventManagers,
+    _i2.EventRegistrationIncludeList? eventRegistrations,
+    _i3.EventManagerIncludeList? eventManagers,
   }) {
     _eventRegistrations = eventRegistrations;
     _eventManagers = eventManagers;
   }
 
-  _i3.EventRegistrationIncludeList? _eventRegistrations;
+  _i2.EventRegistrationIncludeList? _eventRegistrations;
 
-  _i4.EventManagerIncludeList? _eventManagers;
+  _i3.EventManagerIncludeList? _eventManagers;
 
   @override
   Map<String, _i1.Include?> get includes => {
@@ -1307,7 +1304,7 @@ class EventAttachRepository {
   Future<void> eventRegistrations(
     _i1.Session session,
     Event event,
-    List<_i3.EventRegistration> eventRegistration, {
+    List<_i2.EventRegistration> eventRegistration, {
     _i1.Transaction? transaction,
   }) async {
     if (eventRegistration.any((e) => e.id == null)) {
@@ -1320,9 +1317,9 @@ class EventAttachRepository {
     var $eventRegistration = eventRegistration
         .map((e) => e.copyWith(eventId: event.id))
         .toList();
-    await session.db.update<_i3.EventRegistration>(
+    await session.db.update<_i2.EventRegistration>(
       $eventRegistration,
-      columns: [_i3.EventRegistration.t.eventId],
+      columns: [_i2.EventRegistration.t.eventId],
       transaction: transaction,
     );
   }
@@ -1332,7 +1329,7 @@ class EventAttachRepository {
   Future<void> eventManagers(
     _i1.Session session,
     Event event,
-    List<_i4.EventManager> eventManager, {
+    List<_i3.EventManager> eventManager, {
     _i1.Transaction? transaction,
   }) async {
     if (eventManager.any((e) => e.id == null)) {
@@ -1345,9 +1342,9 @@ class EventAttachRepository {
     var $eventManager = eventManager
         .map((e) => e.copyWith(eventId: event.id))
         .toList();
-    await session.db.update<_i4.EventManager>(
+    await session.db.update<_i3.EventManager>(
       $eventManager,
-      columns: [_i4.EventManager.t.eventId],
+      columns: [_i3.EventManager.t.eventId],
       transaction: transaction,
     );
   }
@@ -1361,7 +1358,7 @@ class EventAttachRowRepository {
   Future<void> eventRegistrations(
     _i1.Session session,
     Event event,
-    _i3.EventRegistration eventRegistration, {
+    _i2.EventRegistration eventRegistration, {
     _i1.Transaction? transaction,
   }) async {
     if (eventRegistration.id == null) {
@@ -1372,9 +1369,9 @@ class EventAttachRowRepository {
     }
 
     var $eventRegistration = eventRegistration.copyWith(eventId: event.id);
-    await session.db.updateRow<_i3.EventRegistration>(
+    await session.db.updateRow<_i2.EventRegistration>(
       $eventRegistration,
-      columns: [_i3.EventRegistration.t.eventId],
+      columns: [_i2.EventRegistration.t.eventId],
       transaction: transaction,
     );
   }
@@ -1384,7 +1381,7 @@ class EventAttachRowRepository {
   Future<void> eventManagers(
     _i1.Session session,
     Event event,
-    _i4.EventManager eventManager, {
+    _i3.EventManager eventManager, {
     _i1.Transaction? transaction,
   }) async {
     if (eventManager.id == null) {
@@ -1395,9 +1392,9 @@ class EventAttachRowRepository {
     }
 
     var $eventManager = eventManager.copyWith(eventId: event.id);
-    await session.db.updateRow<_i4.EventManager>(
+    await session.db.updateRow<_i3.EventManager>(
       $eventManager,
-      columns: [_i4.EventManager.t.eventId],
+      columns: [_i3.EventManager.t.eventId],
       transaction: transaction,
     );
   }
@@ -1413,7 +1410,7 @@ class EventDetachRepository {
   /// the related record.
   Future<void> eventRegistrations(
     _i1.Session session,
-    List<_i3.EventRegistration> eventRegistration, {
+    List<_i2.EventRegistration> eventRegistration, {
     _i1.Transaction? transaction,
   }) async {
     if (eventRegistration.any((e) => e.id == null)) {
@@ -1423,9 +1420,9 @@ class EventDetachRepository {
     var $eventRegistration = eventRegistration
         .map((e) => e.copyWith(eventId: null))
         .toList();
-    await session.db.update<_i3.EventRegistration>(
+    await session.db.update<_i2.EventRegistration>(
       $eventRegistration,
-      columns: [_i3.EventRegistration.t.eventId],
+      columns: [_i2.EventRegistration.t.eventId],
       transaction: transaction,
     );
   }
@@ -1437,7 +1434,7 @@ class EventDetachRepository {
   /// the related record.
   Future<void> eventManagers(
     _i1.Session session,
-    List<_i4.EventManager> eventManager, {
+    List<_i3.EventManager> eventManager, {
     _i1.Transaction? transaction,
   }) async {
     if (eventManager.any((e) => e.id == null)) {
@@ -1447,9 +1444,9 @@ class EventDetachRepository {
     var $eventManager = eventManager
         .map((e) => e.copyWith(eventId: null))
         .toList();
-    await session.db.update<_i4.EventManager>(
+    await session.db.update<_i3.EventManager>(
       $eventManager,
-      columns: [_i4.EventManager.t.eventId],
+      columns: [_i3.EventManager.t.eventId],
       transaction: transaction,
     );
   }
@@ -1465,7 +1462,7 @@ class EventDetachRowRepository {
   /// the related record.
   Future<void> eventRegistrations(
     _i1.Session session,
-    _i3.EventRegistration eventRegistration, {
+    _i2.EventRegistration eventRegistration, {
     _i1.Transaction? transaction,
   }) async {
     if (eventRegistration.id == null) {
@@ -1473,9 +1470,9 @@ class EventDetachRowRepository {
     }
 
     var $eventRegistration = eventRegistration.copyWith(eventId: null);
-    await session.db.updateRow<_i3.EventRegistration>(
+    await session.db.updateRow<_i2.EventRegistration>(
       $eventRegistration,
-      columns: [_i3.EventRegistration.t.eventId],
+      columns: [_i2.EventRegistration.t.eventId],
       transaction: transaction,
     );
   }
@@ -1487,7 +1484,7 @@ class EventDetachRowRepository {
   /// the related record.
   Future<void> eventManagers(
     _i1.Session session,
-    _i4.EventManager eventManager, {
+    _i3.EventManager eventManager, {
     _i1.Transaction? transaction,
   }) async {
     if (eventManager.id == null) {
@@ -1495,9 +1492,9 @@ class EventDetachRowRepository {
     }
 
     var $eventManager = eventManager.copyWith(eventId: null);
-    await session.db.updateRow<_i4.EventManager>(
+    await session.db.updateRow<_i3.EventManager>(
       $eventManager,
-      columns: [_i4.EventManager.t.eventId],
+      columns: [_i3.EventManager.t.eventId],
       transaction: transaction,
     );
   }

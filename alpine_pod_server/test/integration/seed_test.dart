@@ -204,7 +204,7 @@ void main() {
             title: 'Sample Event #${i + 1} (${section.name})',
             description:
                 'This is a sample event generated for testing purposes.',
-            type: EventType.hike,
+            type: 'Ski',
             startTime: startTime,
             endTime: endTime,
             location: 'Various Locations',
@@ -212,7 +212,7 @@ void main() {
             requiresApproval: !directRegistration,
             published: true,
             minimumParticipants: 1,
-            maxParticipants: 10,
+            maxParticipants: 4,
           ),
         );
       }

@@ -82,28 +82,55 @@ class EventView extends HookWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(event.title, style: Theme.of(context).textTheme.headlineSmall),
-          const SizedBox(height: 8),
-          Text('Starts: ${eventDateFormat(event.startTime)}'),
-          Text('Ends: ${eventDateFormat(event.endTime)}'),
-          const SizedBox(height: 8),
-          Builder(
-            builder: (context) {
-              final style = Theme.of(context).textTheme.bodyMedium!;
-              final lineHeight = style.fontSize! * (style.height ?? 1.2);
-              return ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxHeight: 15 * lineHeight,
-                  minHeight: 3 * lineHeight,
+          Builder(builder: (context) {
+            // Use the refreshed event when available so edits are reflected
+            final displayEvent = snapshot.data ?? event;
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(displayEvent.title,
+                    style: Theme.of(context).textTheme.headlineSmall),
+                const SizedBox(height: 8),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: Colors.blueGrey.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    displayEvent.type,
+                    style: const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.blueGrey,
+                    ),
+                  ),
                 ),
-                child: SingleChildScrollView(
-                  child: Text(event.description),
+                const SizedBox(height: 8),
+                Text('Starts: ${eventDateFormat(displayEvent.startTime)}'),
+                Text('Ends: ${eventDateFormat(displayEvent.endTime)}'),
+                const SizedBox(height: 8),
+                Builder(
+                  builder: (context) {
+                    final style = Theme.of(context).textTheme.bodyMedium!;
+                    final lineHeight = style.fontSize! * (style.height ?? 1.2);
+                    return ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxHeight: 15 * lineHeight,
+                        minHeight: 3 * lineHeight,
+                      ),
+                      child: SingleChildScrollView(
+                        child: Text(displayEvent.description),
+                      ),
+                    );
+                  },
                 ),
-              );
-            },
-          ),
-          const SizedBox(height: 16),
-          Text('Location: ${event.location}'),
+                const SizedBox(height: 16),
+                Text('Location: ${displayEvent.location}'),
+              ],
+            );
+          }),
           const Divider(),
           if (snapshot.connectionState == ConnectionState.waiting &&
               !snapshot.hasData)

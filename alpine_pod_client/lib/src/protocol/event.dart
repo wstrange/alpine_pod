@@ -11,10 +11,9 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
-import 'event_type.dart' as _i2;
-import 'event_registration.dart' as _i3;
-import 'event_manager.dart' as _i4;
-import 'package:alpine_pod_client/src/protocol/protocol.dart' as _i5;
+import 'event_registration.dart' as _i2;
+import 'event_manager.dart' as _i3;
+import 'package:alpine_pod_client/src/protocol/protocol.dart' as _i4;
 
 abstract class Event implements _i1.SerializableModel {
   Event._({
@@ -57,7 +56,7 @@ abstract class Event implements _i1.SerializableModel {
     int? id,
     required String title,
     required String description,
-    required _i2.EventType type,
+    required String type,
     required DateTime startTime,
     required DateTime endTime,
     String? location,
@@ -82,8 +81,8 @@ abstract class Event implements _i1.SerializableModel {
     required int sectionId,
     String? documentsJson,
     bool? published,
-    List<_i3.EventRegistration>? eventRegistrations,
-    List<_i4.EventManager>? eventManagers,
+    List<_i2.EventRegistration>? eventRegistrations,
+    List<_i3.EventManager>? eventManagers,
   }) = _EventImpl;
 
   factory Event.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -91,7 +90,7 @@ abstract class Event implements _i1.SerializableModel {
       id: jsonSerialization['id'] as int?,
       title: jsonSerialization['title'] as String,
       description: jsonSerialization['description'] as String,
-      type: _i2.EventType.fromJson((jsonSerialization['type'] as String)),
+      type: jsonSerialization['type'] as String,
       startTime: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['startTime'],
       ),
@@ -138,12 +137,12 @@ abstract class Event implements _i1.SerializableModel {
       published: jsonSerialization['published'] as bool?,
       eventRegistrations: jsonSerialization['eventRegistrations'] == null
           ? null
-          : _i5.Protocol().deserialize<List<_i3.EventRegistration>>(
+          : _i4.Protocol().deserialize<List<_i2.EventRegistration>>(
               jsonSerialization['eventRegistrations'],
             ),
       eventManagers: jsonSerialization['eventManagers'] == null
           ? null
-          : _i5.Protocol().deserialize<List<_i4.EventManager>>(
+          : _i4.Protocol().deserialize<List<_i3.EventManager>>(
               jsonSerialization['eventManagers'],
             ),
     );
@@ -158,7 +157,7 @@ abstract class Event implements _i1.SerializableModel {
 
   String description;
 
-  _i2.EventType type;
+  String type;
 
   DateTime startTime;
 
@@ -208,9 +207,9 @@ abstract class Event implements _i1.SerializableModel {
 
   bool published;
 
-  List<_i3.EventRegistration>? eventRegistrations;
+  List<_i2.EventRegistration>? eventRegistrations;
 
-  List<_i4.EventManager>? eventManagers;
+  List<_i3.EventManager>? eventManagers;
 
   /// Returns a shallow copy of this [Event]
   /// with some or all fields replaced by the given arguments.
@@ -219,7 +218,7 @@ abstract class Event implements _i1.SerializableModel {
     int? id,
     String? title,
     String? description,
-    _i2.EventType? type,
+    String? type,
     DateTime? startTime,
     DateTime? endTime,
     String? location,
@@ -244,8 +243,8 @@ abstract class Event implements _i1.SerializableModel {
     int? sectionId,
     String? documentsJson,
     bool? published,
-    List<_i3.EventRegistration>? eventRegistrations,
-    List<_i4.EventManager>? eventManagers,
+    List<_i2.EventRegistration>? eventRegistrations,
+    List<_i3.EventManager>? eventManagers,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -254,7 +253,7 @@ abstract class Event implements _i1.SerializableModel {
       if (id != null) 'id': id,
       'title': title,
       'description': description,
-      'type': type.toJson(),
+      'type': type,
       'startTime': startTime.toJson(),
       'endTime': endTime.toJson(),
       if (location != null) 'location': location,
@@ -305,7 +304,7 @@ class _EventImpl extends Event {
     int? id,
     required String title,
     required String description,
-    required _i2.EventType type,
+    required String type,
     required DateTime startTime,
     required DateTime endTime,
     String? location,
@@ -330,8 +329,8 @@ class _EventImpl extends Event {
     required int sectionId,
     String? documentsJson,
     bool? published,
-    List<_i3.EventRegistration>? eventRegistrations,
-    List<_i4.EventManager>? eventManagers,
+    List<_i2.EventRegistration>? eventRegistrations,
+    List<_i3.EventManager>? eventManagers,
   }) : super._(
          id: id,
          title: title,
@@ -373,7 +372,7 @@ class _EventImpl extends Event {
     Object? id = _Undefined,
     String? title,
     String? description,
-    _i2.EventType? type,
+    String? type,
     DateTime? startTime,
     DateTime? endTime,
     Object? location = _Undefined,
@@ -452,10 +451,10 @@ class _EventImpl extends Event {
           ? documentsJson
           : this.documentsJson,
       published: published ?? this.published,
-      eventRegistrations: eventRegistrations is List<_i3.EventRegistration>?
+      eventRegistrations: eventRegistrations is List<_i2.EventRegistration>?
           ? eventRegistrations
           : this.eventRegistrations?.map((e0) => e0.copyWith()).toList(),
-      eventManagers: eventManagers is List<_i4.EventManager>?
+      eventManagers: eventManagers is List<_i3.EventManager>?
           ? eventManagers
           : this.eventManagers?.map((e0) => e0.copyWith()).toList(),
     );
