@@ -164,7 +164,10 @@ class EventEndpoint extends Endpoint {
     int? sectionId,
     DateTime? startTime,
     DateTime? endTime,
+    bool? onlyMyEvents,
   ) async {
+    final authInfo = session.authenticated;
+
     // Return all events for the section or all events for admin
     return await Event.db.find(
       session,
@@ -179,12 +182,30 @@ class EventEndpoint extends Endpoint {
         if (endTime != null) {
           where = where & (t.startTime <= endTime);
         }
+
+        if (onlyMyEvents == true && authInfo != null) {
+          // Filter to only events where the user is a manager or registrant
+          where = where &
+              (t.eventManagers.any(
+                      (m) => m.member.user.id.equals(authInfo.authUserId)) |
+                  t.eventRegistrations.any(
+                      (r) => r.member.user.id.equals(authInfo.authUserId)));
+        }
+
         return where;
       },
       orderBy: (t) => t.startTime,
       include: Event.include(
-        eventManagers: EventManager.includeList(),
-        eventRegistrations: EventRegistration.includeList(),
+        eventManagers: EventManager.includeList(
+          include: EventManager.include(
+            member: Member.include(),
+          ),
+        ),
+        eventRegistrations: EventRegistration.includeList(
+          include: EventRegistration.include(
+            member: Member.include(),
+          ),
+        ),
       ),
     );
   }

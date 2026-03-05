@@ -813,6 +813,7 @@ class _EventEndpoint {
     int? sectionId,
     DateTime? startTime,
     DateTime? endTime,
+    bool? onlyMyEvents,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -829,6 +830,7 @@ class _EventEndpoint {
             'sectionId': sectionId,
             'startTime': startTime,
             'endTime': endTime,
+            'onlyMyEvents': onlyMyEvents,
           }),
           serializationManager: _serializationManager,
         );

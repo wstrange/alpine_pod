@@ -43,6 +43,8 @@ final selectedDateSignal = signal<DateTime>(DateTime.now().copyWith(
   microsecond: 0,
 ));
 
+final showMyEventsOnlySignal = signal<bool>(false);
+
 // The currently events that are visible in the calendar view
 // todo: when should this be reloaded? What if the events change on the server,
 // or the user updates the event. Should we use a stream instead? Or a timer?
@@ -51,15 +53,17 @@ final currentEventsSignal = futureSignal(
   () async {
     final s = sectionSignal.value;
     final date = selectedDateSignal.value;
+    final onlyMyEvents = showMyEventsOnlySignal.value;
 
-    // Calculate start of week (Monday) and ensure it's neutralized to 00:00:00
-    final startOfWeek = date.subtract(Duration(days: date.weekday - 1));
-    final start =
-        DateTime(startOfWeek.year, startOfWeek.month, startOfWeek.day, 0, 0, 0);
-    final end = start.add(const Duration(days: 7));
+    // Calculate start of month and ensure it's neutralized to 00:00:00
+    final start = DateTime(date.year, date.month, 1);
+    final nextMonth = date.month == 12 ? 1 : date.month + 1;
+    final nextMonthYear = date.month == 12 ? date.year + 1 : date.year;
+    final end = DateTime(nextMonthYear, nextMonth, 1);
 
-    final events = await client.event.listEvents(s?.id, start, end);
+    final events =
+        await client.event.listEvents(s?.id, start, end, onlyMyEvents);
     return events;
   },
-  dependencies: [sectionSignal, selectedDateSignal],
+  dependencies: [sectionSignal, selectedDateSignal, showMyEventsOnlySignal],
 );

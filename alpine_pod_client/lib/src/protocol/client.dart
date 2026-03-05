@@ -314,6 +314,7 @@ class EndpointEvent extends _i2.EndpointRef {
     int? sectionId,
     DateTime? startTime,
     DateTime? endTime,
+    bool? onlyMyEvents,
   ) => caller.callServerEndpoint<List<_i6.Event>>(
     'event',
     'listEvents',
@@ -321,6 +322,7 @@ class EndpointEvent extends _i2.EndpointRef {
       'sectionId': sectionId,
       'startTime': startTime,
       'endTime': endTime,
+      'onlyMyEvents': onlyMyEvents,
     },
   );
 

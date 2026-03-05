@@ -478,6 +478,11 @@ class Endpoints extends _i1.EndpointDispatch {
               type: _i1.getType<DateTime?>(),
               nullable: true,
             ),
+            'onlyMyEvents': _i1.ParameterDescription(
+              name: 'onlyMyEvents',
+              type: _i1.getType<bool?>(),
+              nullable: true,
+            ),
           },
           call:
               (
@@ -488,6 +493,7 @@ class Endpoints extends _i1.EndpointDispatch {
                 params['sectionId'],
                 params['startTime'],
                 params['endTime'],
+                params['onlyMyEvents'],
               ),
         ),
         'registerForEvent': _i1.MethodConnector(

@@ -10,111 +10,38 @@ import 'event_card.dart';
 class CalendarView extends HookWidget {
   const CalendarView({super.key});
 
-  static const double _itemWidth = 54.0;
-  static const double _itemPadding = 8.0;
-
   @override
   Widget build(BuildContext context) {
-    final scrollController = useScrollController();
     final selectedDate = selectedDateSignal.watch(context);
 
-    final startDate = useMemoized(() {
-      final now = selectedDateSignal.peek().copyWith(
-            hour: 0,
-            minute: 0,
-            second: 0,
-            millisecond: 0,
-            microsecond: 0,
-          );
-      return now.subtract(const Duration(days: 14));
-    });
-
-    // Week starts on Monday
-    DateTime getStartOfWeek(DateTime date) {
-      final day = DateTime(date.year, date.month, date.day);
-      return day.subtract(Duration(days: day.weekday - 1));
+    // Month helpers
+    DateTime getStartOfMonth(DateTime date) {
+      return DateTime(date.year, date.month, 1);
     }
 
-    DateTime getEndOfWeek(DateTime date) {
-      return getStartOfWeek(date).add(const Duration(days: 6));
-    }
-
-    void scrollToDate(DateTime date) {
-      if (!scrollController.hasClients) return;
-
-      final startOfWeek = getStartOfWeek(date);
-      final sundayBefore = startOfWeek.subtract(const Duration(days: 1));
-      final daysSinceStart = sundayBefore.difference(startDate).inDays;
-      const totalItemWidth = _itemWidth + _itemPadding;
-      final scrollPosition = 16.0 + (daysSinceStart * totalItemWidth);
-
-      if ((scrollController.offset - scrollPosition).abs() > 10) {
-        scrollController.animateTo(
-          scrollPosition,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOut,
-        );
-      }
-    }
-
-    void onScroll() {
-      if (!scrollController.hasClients) return;
-
-      final offset = scrollController.offset - 16.0;
-      const totalItemWidth = _itemWidth + _itemPadding;
-      var index = (offset / totalItemWidth).round() + 1;
-
-      if (index < 0) index = 0;
-      if (index >= 180) index = 179;
-
-      final dateAtCenter = startDate.add(Duration(days: index));
-      final startOfVisibleWeek = getStartOfWeek(dateAtCenter);
-
-      if (!startOfVisibleWeek
-          .isAtSameMomentAs(getStartOfWeek(selectedDateSignal.peek()))) {
-        selectedDateSignal.value = startOfVisibleWeek;
-      }
+    DateTime getEndOfMonth(DateTime date) {
+      final nextMonth = date.month == 12 ? 1 : date.month + 1;
+      final nextMonthYear = date.month == 12 ? date.year + 1 : date.year;
+      return DateTime(nextMonthYear, nextMonth, 0);
     }
 
     void updateSelectedDate(DateTime newDate) {
-      final neutralized = DateTime(newDate.year, newDate.month, newDate.day);
+      final neutralized = DateTime(newDate.year, newDate.month, 1);
       selectedDateSignal.value = neutralized;
-      scrollToDate(neutralized);
     }
 
-    useEffect(() {
-      scrollController.addListener(onScroll);
-      return () => scrollController.removeListener(onScroll);
-    }, [scrollController]);
-
-    useEffect(() {
-      // Initial scroll to selected date after first frame
-      Future.microtask(() {
-        scrollToDate(selectedDateSignal.peek());
-      });
-      return null;
-    }, []);
-
-    final startOfWeek = getStartOfWeek(selectedDate);
-    final endOfWeek = getEndOfWeek(selectedDate);
+    final startOfMonth = getStartOfMonth(selectedDate);
+    final endOfMonth = getEndOfMonth(selectedDate);
     final eventsValue = currentEventsSignal.watch(context);
 
     return Column(
       children: [
-        _buildWeekHeader(
+        _buildCompactHeader(
+          context: context,
           selectedDate: selectedDate,
-          start: startOfWeek,
-          end: endOfWeek,
           onUpdateDate: updateSelectedDate,
         ),
-        _buildHorizontalDateStrip(
-          scrollController: scrollController,
-          startDate: startDate,
-          startOfWeek: startOfWeek,
-          endOfWeek: endOfWeek,
-          onUpdateDate: updateSelectedDate,
-        ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 4),
         Expanded(
           child: Container(
             decoration: BoxDecoration(
@@ -143,38 +70,17 @@ class CalendarView extends HookWidget {
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(24, 16, 24, 8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        'Weekly Activities',
-                        style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w800,
-                            color: Colors.blueGrey),
-                      ),
-                      Text(
-                        _formatRange(startOfWeek, endOfWeek),
-                        style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.blue),
-                      ),
-                    ],
-                  ),
-                ),
+                const SizedBox(height: 8),
                 Expanded(
                   child: eventsValue.map(
                     data: (value) =>
-                        _buildWeeklyEventList(value, startOfWeek, endOfWeek),
+                        _buildEventList(value, startOfMonth, endOfMonth),
                     error: (error, _) => Center(child: Text('Error: $error')),
                     loading: () {
                       final staleValue = currentEventsSignal.peek();
                       if (staleValue is AsyncData<List<Event>>) {
-                        return _buildWeeklyEventList(
-                            staleValue.value, startOfWeek, endOfWeek);
+                        return _buildEventList(
+                            staleValue.value, startOfMonth, endOfMonth);
                       }
                       return const Center(child: CircularProgressIndicator());
                     },
@@ -188,162 +94,84 @@ class CalendarView extends HookWidget {
     );
   }
 
-  String _formatRange(DateTime start, DateTime end) {
-    return '${DateFormat('MMM d').format(start)} - ${DateFormat('MMM d').format(end)}';
-  }
-
-  Widget _buildWeekHeader({
+  Widget _buildCompactHeader({
+    required BuildContext context,
     required DateTime selectedDate,
-    required DateTime start,
-    required DateTime end,
     required ValueChanged<DateTime> onUpdateDate,
   }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
+    return Container(
+      padding: const EdgeInsets.fromLTRB(8, 8, 12, 4),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          IconButton(
-            visualDensity: VisualDensity.compact,
-            icon: const Icon(Icons.arrow_left_rounded, size: 28),
-            onPressed: () => onUpdateDate(
-              selectedDate.subtract(const Duration(days: 7)),
-            ),
-          ),
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
+              IconButton(
+                visualDensity: VisualDensity.compact,
+                icon: const Icon(Icons.arrow_left_rounded, size: 28),
+                onPressed: () => onUpdateDate(
+                  DateTime(selectedDate.year, selectedDate.month - 1, 1),
+                ),
+              ),
               Text(
-                _formatRange(start, end),
+                DateFormat('MMM yyyy').format(selectedDate),
                 style: const TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
                     color: Colors.blueGrey),
               ),
-              const SizedBox(width: 8),
+              IconButton(
+                visualDensity: VisualDensity.compact,
+                icon: const Icon(Icons.arrow_right_rounded, size: 28),
+                onPressed: () => onUpdateDate(
+                  DateTime(selectedDate.year, selectedDate.month + 1, 1),
+                ),
+              ),
               IconButton(
                 visualDensity: VisualDensity.compact,
                 onPressed: () => onUpdateDate(DateTime.now()),
                 icon: const Icon(Icons.today_rounded, size: 18),
-                color: Colors.blue,
+                color: Colors.blue.withValues(alpha: 0.7),
                 tooltip: 'Go to today',
               ),
             ],
           ),
-          IconButton(
-            visualDensity: VisualDensity.compact,
-            icon: const Icon(Icons.arrow_right_rounded, size: 28),
-            onPressed: () => onUpdateDate(
-              selectedDate.add(const Duration(days: 7)),
-            ),
-          ),
+          const Spacer(),
+          Watch((context) {
+            final onlyMyEvents = showMyEventsOnlySignal.value;
+            return SegmentedButton<bool>(
+              segments: const [
+                ButtonSegment(
+                  value: false,
+                  label: Text('All'),
+                  icon: Icon(Icons.event, size: 16),
+                ),
+                ButtonSegment(
+                  value: true,
+                  label: Text('My Events'),
+                  icon: Icon(Icons.person, size: 16),
+                ),
+              ],
+              selected: {onlyMyEvents},
+              onSelectionChanged: (newSelection) {
+                showMyEventsOnlySignal.value = newSelection.first;
+              },
+              showSelectedIcon: false,
+              style: SegmentedButton.styleFrom(
+                visualDensity: VisualDensity.compact,
+                textStyle: const TextStyle(fontSize: 11),
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+              ),
+            );
+          }),
         ],
       ),
     );
   }
 
-  Widget _buildHorizontalDateStrip({
-    required ScrollController scrollController,
-    required DateTime startDate,
-    required DateTime startOfWeek,
-    required DateTime endOfWeek,
-    required ValueChanged<DateTime> onUpdateDate,
-  }) {
-    return SizedBox(
-      height: 72,
-      child: ListView.builder(
-        controller: scrollController,
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        itemCount: 180,
-        itemBuilder: (context, index) {
-          final date = startDate.add(Duration(days: index));
-          final isInSelectedWeek = date.isAtSameMomentAs(startOfWeek) ||
-              (date.isAfter(startOfWeek) &&
-                  date.isBefore(endOfWeek.add(const Duration(seconds: 1))));
-
-          final isToday = DateTime.now().year == date.year &&
-              DateTime.now().month == date.month &&
-              DateTime.now().day == date.day;
-
-          final eventsValue = currentEventsSignal.peek();
-          bool hasEvents = false;
-          if (eventsValue is AsyncData<List<Event>>) {
-            hasEvents = eventsValue.value.any((e) {
-              final start = e.startTime.toLocal();
-              return start.year == date.year &&
-                  start.month == date.month &&
-                  start.day == date.day;
-            });
-          }
-
-          return GestureDetector(
-            onTap: () => onUpdateDate(date),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              width: _itemWidth,
-              margin: const EdgeInsets.symmetric(
-                  horizontal: _itemPadding / 2, vertical: 4),
-              decoration: BoxDecoration(
-                color: isInSelectedWeek
-                    ? Colors.blue
-                    : (isToday
-                        ? Colors.blue.withValues(alpha: 0.05)
-                        : Colors.white),
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: isInSelectedWeek
-                    ? [
-                        BoxShadow(
-                          color: Colors.blue.withValues(alpha: 0.3),
-                          blurRadius: 4,
-                          offset: const Offset(0, 2),
-                        )
-                      ]
-                    : null,
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    DateFormat('E').format(date).toUpperCase(),
-                    style: TextStyle(
-                      fontSize: 9,
-                      fontWeight: FontWeight.w800,
-                      color:
-                          isInSelectedWeek ? Colors.white70 : Colors.grey[400],
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    date.day.toString(),
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w800,
-                      color: isInSelectedWeek ? Colors.white : Colors.black87,
-                    ),
-                  ),
-                  if (hasEvents)
-                    Container(
-                      margin: const EdgeInsets.only(top: 2),
-                      width: 3,
-                      height: 3,
-                      decoration: BoxDecoration(
-                        color: isInSelectedWeek ? Colors.white70 : Colors.blue,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                ],
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildWeeklyEventList(
-      List<Event> weeklyEvents, DateTime startOfWeek, DateTime endOfWeek) {
-    if (weeklyEvents.isEmpty) {
+  Widget _buildEventList(
+      List<Event> events, DateTime startOfMonth, DateTime endOfMonth) {
+    if (events.isEmpty) {
       return const Center(
         child: Opacity(
           opacity: 0.3,
@@ -352,7 +180,7 @@ class CalendarView extends HookWidget {
             children: [
               Icon(Icons.event_available, size: 56),
               SizedBox(height: 12),
-              Text('No events scheduled for this week',
+              Text('No upcoming events scheduled',
                   style: TextStyle(fontWeight: FontWeight.w600)),
             ],
           ),
@@ -361,7 +189,7 @@ class CalendarView extends HookWidget {
     }
 
     final Map<DateTime, List<Event>> groupedEvents = {};
-    for (var event in weeklyEvents) {
+    for (var event in events) {
       final start = event.startTime.toLocal();
       final day = DateTime(start.year, start.month, start.day);
       groupedEvents.putIfAbsent(day, () => []).add(event);
