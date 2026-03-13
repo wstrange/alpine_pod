@@ -86,7 +86,9 @@ abstract class Member implements _i1.SerializableModel {
       emergencyContactPhone:
           jsonSerialization['emergencyContactPhone'] as String,
       medicalConditions: jsonSerialization['medicalConditions'] as String?,
-      isTripAdmin: jsonSerialization['isTripAdmin'] as bool?,
+      isTripAdmin: jsonSerialization['isTripAdmin'] == null
+          ? null
+          : _i1.BoolJsonExtension.fromJson(jsonSerialization['isTripAdmin']),
       certifications: jsonSerialization['certifications'] as String?,
       createdAt: jsonSerialization['createdAt'] == null
           ? null

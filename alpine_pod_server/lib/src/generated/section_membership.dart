@@ -438,7 +438,7 @@ class SectionMembershipRepository {
   /// );
   /// ```
   Future<List<SectionMembership>> find(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<SectionMembershipTable>? where,
     int? limit,
     int? offset,
@@ -447,6 +447,8 @@ class SectionMembershipRepository {
     _i1.OrderByListBuilder<SectionMembershipTable>? orderByList,
     _i1.Transaction? transaction,
     SectionMembershipInclude? include,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<SectionMembership>(
       where: where?.call(SectionMembership.t),
@@ -457,6 +459,8 @@ class SectionMembershipRepository {
       offset: offset,
       transaction: transaction,
       include: include,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -478,7 +482,7 @@ class SectionMembershipRepository {
   /// );
   /// ```
   Future<SectionMembership?> findFirstRow(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<SectionMembershipTable>? where,
     int? offset,
     _i1.OrderByBuilder<SectionMembershipTable>? orderBy,
@@ -486,6 +490,8 @@ class SectionMembershipRepository {
     _i1.OrderByListBuilder<SectionMembershipTable>? orderByList,
     _i1.Transaction? transaction,
     SectionMembershipInclude? include,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<SectionMembership>(
       where: where?.call(SectionMembership.t),
@@ -495,20 +501,26 @@ class SectionMembershipRepository {
       offset: offset,
       transaction: transaction,
       include: include,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
   /// Finds a single [SectionMembership] by its [id] or null if no such row exists.
   Future<SectionMembership?> findById(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     int id, {
     _i1.Transaction? transaction,
     SectionMembershipInclude? include,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<SectionMembership>(
       id,
       transaction: transaction,
       include: include,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -518,14 +530,20 @@ class SectionMembershipRepository {
   ///
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// insert, none of the rows will be inserted.
+  ///
+  /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
+  /// rows are silently skipped, and only the successfully inserted rows are
+  /// returned.
   Future<List<SectionMembership>> insert(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<SectionMembership> rows, {
     _i1.Transaction? transaction,
+    bool ignoreConflicts = false,
   }) async {
     return session.db.insert<SectionMembership>(
       rows,
       transaction: transaction,
+      ignoreConflicts: ignoreConflicts,
     );
   }
 
@@ -533,7 +551,7 @@ class SectionMembershipRepository {
   ///
   /// The returned [SectionMembership] will have its `id` field set.
   Future<SectionMembership> insertRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     SectionMembership row, {
     _i1.Transaction? transaction,
   }) async {
@@ -549,7 +567,7 @@ class SectionMembershipRepository {
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
   Future<List<SectionMembership>> update(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<SectionMembership> rows, {
     _i1.ColumnSelections<SectionMembershipTable>? columns,
     _i1.Transaction? transaction,
@@ -565,7 +583,7 @@ class SectionMembershipRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<SectionMembership> updateRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     SectionMembership row, {
     _i1.ColumnSelections<SectionMembershipTable>? columns,
     _i1.Transaction? transaction,
@@ -580,7 +598,7 @@ class SectionMembershipRepository {
   /// Updates a single [SectionMembership] by its [id] with the specified [columnValues].
   /// Returns the updated row or null if no row with the given id exists.
   Future<SectionMembership?> updateById(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     int id, {
     required _i1.ColumnValueListBuilder<SectionMembershipUpdateTable>
     columnValues,
@@ -596,7 +614,7 @@ class SectionMembershipRepository {
   /// Updates all [SectionMembership]s matching the [where] expression with the specified [columnValues].
   /// Returns the list of updated rows.
   Future<List<SectionMembership>> updateWhere(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     required _i1.ColumnValueListBuilder<SectionMembershipUpdateTable>
     columnValues,
     required _i1.WhereExpressionBuilder<SectionMembershipTable> where,
@@ -623,7 +641,7 @@ class SectionMembershipRepository {
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
   Future<List<SectionMembership>> delete(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<SectionMembership> rows, {
     _i1.Transaction? transaction,
   }) async {
@@ -635,7 +653,7 @@ class SectionMembershipRepository {
 
   /// Deletes a single [SectionMembership].
   Future<SectionMembership> deleteRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     SectionMembership row, {
     _i1.Transaction? transaction,
   }) async {
@@ -647,7 +665,7 @@ class SectionMembershipRepository {
 
   /// Deletes all rows matching the [where] expression.
   Future<List<SectionMembership>> deleteWhere(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     required _i1.WhereExpressionBuilder<SectionMembershipTable> where,
     _i1.Transaction? transaction,
   }) async {
@@ -660,7 +678,7 @@ class SectionMembershipRepository {
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<SectionMembershipTable>? where,
     int? limit,
     _i1.Transaction? transaction,
@@ -668,6 +686,22 @@ class SectionMembershipRepository {
     return session.db.count<SectionMembership>(
       where: where?.call(SectionMembership.t),
       limit: limit,
+      transaction: transaction,
+    );
+  }
+
+  /// Acquires row-level locks on [SectionMembership] rows matching the [where] expression.
+  Future<void> lockRows(
+    _i1.DatabaseSession session, {
+    required _i1.WhereExpressionBuilder<SectionMembershipTable> where,
+    required _i1.LockMode lockMode,
+    required _i1.Transaction transaction,
+    _i1.LockBehavior lockBehavior = _i1.LockBehavior.wait,
+  }) async {
+    return session.db.lockRows<SectionMembership>(
+      where: where(SectionMembership.t),
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
       transaction: transaction,
     );
   }
@@ -679,7 +713,7 @@ class SectionMembershipAttachRowRepository {
   /// Creates a relation between the given [SectionMembership] and [Member]
   /// by setting the [SectionMembership]'s foreign key `memberId` to refer to the [Member].
   Future<void> member(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     SectionMembership sectionMembership,
     _i2.Member member, {
     _i1.Transaction? transaction,
@@ -702,7 +736,7 @@ class SectionMembershipAttachRowRepository {
   /// Creates a relation between the given [SectionMembership] and [Section]
   /// by setting the [SectionMembership]'s foreign key `sectionId` to refer to the [Section].
   Future<void> section(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     SectionMembership sectionMembership,
     _i3.Section section, {
     _i1.Transaction? transaction,

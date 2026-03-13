@@ -355,7 +355,7 @@ class EventManagerRepository {
   /// );
   /// ```
   Future<List<EventManager>> find(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<EventManagerTable>? where,
     int? limit,
     int? offset,
@@ -364,6 +364,8 @@ class EventManagerRepository {
     _i1.OrderByListBuilder<EventManagerTable>? orderByList,
     _i1.Transaction? transaction,
     EventManagerInclude? include,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<EventManager>(
       where: where?.call(EventManager.t),
@@ -374,6 +376,8 @@ class EventManagerRepository {
       offset: offset,
       transaction: transaction,
       include: include,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -395,7 +399,7 @@ class EventManagerRepository {
   /// );
   /// ```
   Future<EventManager?> findFirstRow(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<EventManagerTable>? where,
     int? offset,
     _i1.OrderByBuilder<EventManagerTable>? orderBy,
@@ -403,6 +407,8 @@ class EventManagerRepository {
     _i1.OrderByListBuilder<EventManagerTable>? orderByList,
     _i1.Transaction? transaction,
     EventManagerInclude? include,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<EventManager>(
       where: where?.call(EventManager.t),
@@ -412,20 +418,26 @@ class EventManagerRepository {
       offset: offset,
       transaction: transaction,
       include: include,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
   /// Finds a single [EventManager] by its [id] or null if no such row exists.
   Future<EventManager?> findById(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     int id, {
     _i1.Transaction? transaction,
     EventManagerInclude? include,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<EventManager>(
       id,
       transaction: transaction,
       include: include,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -435,14 +447,20 @@ class EventManagerRepository {
   ///
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// insert, none of the rows will be inserted.
+  ///
+  /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
+  /// rows are silently skipped, and only the successfully inserted rows are
+  /// returned.
   Future<List<EventManager>> insert(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<EventManager> rows, {
     _i1.Transaction? transaction,
+    bool ignoreConflicts = false,
   }) async {
     return session.db.insert<EventManager>(
       rows,
       transaction: transaction,
+      ignoreConflicts: ignoreConflicts,
     );
   }
 
@@ -450,7 +468,7 @@ class EventManagerRepository {
   ///
   /// The returned [EventManager] will have its `id` field set.
   Future<EventManager> insertRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     EventManager row, {
     _i1.Transaction? transaction,
   }) async {
@@ -466,7 +484,7 @@ class EventManagerRepository {
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
   Future<List<EventManager>> update(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<EventManager> rows, {
     _i1.ColumnSelections<EventManagerTable>? columns,
     _i1.Transaction? transaction,
@@ -482,7 +500,7 @@ class EventManagerRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<EventManager> updateRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     EventManager row, {
     _i1.ColumnSelections<EventManagerTable>? columns,
     _i1.Transaction? transaction,
@@ -497,7 +515,7 @@ class EventManagerRepository {
   /// Updates a single [EventManager] by its [id] with the specified [columnValues].
   /// Returns the updated row or null if no row with the given id exists.
   Future<EventManager?> updateById(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     int id, {
     required _i1.ColumnValueListBuilder<EventManagerUpdateTable> columnValues,
     _i1.Transaction? transaction,
@@ -512,7 +530,7 @@ class EventManagerRepository {
   /// Updates all [EventManager]s matching the [where] expression with the specified [columnValues].
   /// Returns the list of updated rows.
   Future<List<EventManager>> updateWhere(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     required _i1.ColumnValueListBuilder<EventManagerUpdateTable> columnValues,
     required _i1.WhereExpressionBuilder<EventManagerTable> where,
     int? limit,
@@ -538,7 +556,7 @@ class EventManagerRepository {
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
   Future<List<EventManager>> delete(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<EventManager> rows, {
     _i1.Transaction? transaction,
   }) async {
@@ -550,7 +568,7 @@ class EventManagerRepository {
 
   /// Deletes a single [EventManager].
   Future<EventManager> deleteRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     EventManager row, {
     _i1.Transaction? transaction,
   }) async {
@@ -562,7 +580,7 @@ class EventManagerRepository {
 
   /// Deletes all rows matching the [where] expression.
   Future<List<EventManager>> deleteWhere(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     required _i1.WhereExpressionBuilder<EventManagerTable> where,
     _i1.Transaction? transaction,
   }) async {
@@ -575,7 +593,7 @@ class EventManagerRepository {
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<EventManagerTable>? where,
     int? limit,
     _i1.Transaction? transaction,
@@ -583,6 +601,22 @@ class EventManagerRepository {
     return session.db.count<EventManager>(
       where: where?.call(EventManager.t),
       limit: limit,
+      transaction: transaction,
+    );
+  }
+
+  /// Acquires row-level locks on [EventManager] rows matching the [where] expression.
+  Future<void> lockRows(
+    _i1.DatabaseSession session, {
+    required _i1.WhereExpressionBuilder<EventManagerTable> where,
+    required _i1.LockMode lockMode,
+    required _i1.Transaction transaction,
+    _i1.LockBehavior lockBehavior = _i1.LockBehavior.wait,
+  }) async {
+    return session.db.lockRows<EventManager>(
+      where: where(EventManager.t),
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
       transaction: transaction,
     );
   }
@@ -594,7 +628,7 @@ class EventManagerAttachRowRepository {
   /// Creates a relation between the given [EventManager] and [Event]
   /// by setting the [EventManager]'s foreign key `eventId` to refer to the [Event].
   Future<void> event(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     EventManager eventManager,
     _i2.Event event, {
     _i1.Transaction? transaction,
@@ -617,7 +651,7 @@ class EventManagerAttachRowRepository {
   /// Creates a relation between the given [EventManager] and [Member]
   /// by setting the [EventManager]'s foreign key `memberId` to refer to the [Member].
   Future<void> member(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     EventManager eventManager,
     _i3.Member member, {
     _i1.Transaction? transaction,

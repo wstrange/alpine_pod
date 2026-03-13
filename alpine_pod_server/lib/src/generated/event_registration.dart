@@ -81,7 +81,9 @@ abstract class EventRegistration
       ),
       carPoolPreference: jsonSerialization['carPoolPreference'] as String?,
       additionalGuests: jsonSerialization['additionalGuests'] as int?,
-      waiverAccepted: jsonSerialization['waiverAccepted'] as bool,
+      waiverAccepted: _i1.BoolJsonExtension.fromJson(
+        jsonSerialization['waiverAccepted'],
+      ),
       participantNotes: jsonSerialization['participantNotes'] as String?,
       waitlistPosition: jsonSerialization['waitlistPosition'] as int?,
       waitlistedAt: jsonSerialization['waitlistedAt'] == null
@@ -94,7 +96,9 @@ abstract class EventRegistration
       modifiedAt: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['modifiedAt'],
       ),
-      noShow: jsonSerialization['noShow'] as bool?,
+      noShow: jsonSerialization['noShow'] == null
+          ? null
+          : _i1.BoolJsonExtension.fromJson(jsonSerialization['noShow']),
     );
   }
 
@@ -652,7 +656,7 @@ class EventRegistrationRepository {
   /// );
   /// ```
   Future<List<EventRegistration>> find(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<EventRegistrationTable>? where,
     int? limit,
     int? offset,
@@ -661,6 +665,8 @@ class EventRegistrationRepository {
     _i1.OrderByListBuilder<EventRegistrationTable>? orderByList,
     _i1.Transaction? transaction,
     EventRegistrationInclude? include,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<EventRegistration>(
       where: where?.call(EventRegistration.t),
@@ -671,6 +677,8 @@ class EventRegistrationRepository {
       offset: offset,
       transaction: transaction,
       include: include,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -692,7 +700,7 @@ class EventRegistrationRepository {
   /// );
   /// ```
   Future<EventRegistration?> findFirstRow(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<EventRegistrationTable>? where,
     int? offset,
     _i1.OrderByBuilder<EventRegistrationTable>? orderBy,
@@ -700,6 +708,8 @@ class EventRegistrationRepository {
     _i1.OrderByListBuilder<EventRegistrationTable>? orderByList,
     _i1.Transaction? transaction,
     EventRegistrationInclude? include,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<EventRegistration>(
       where: where?.call(EventRegistration.t),
@@ -709,20 +719,26 @@ class EventRegistrationRepository {
       offset: offset,
       transaction: transaction,
       include: include,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
   /// Finds a single [EventRegistration] by its [id] or null if no such row exists.
   Future<EventRegistration?> findById(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     int id, {
     _i1.Transaction? transaction,
     EventRegistrationInclude? include,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<EventRegistration>(
       id,
       transaction: transaction,
       include: include,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -732,14 +748,20 @@ class EventRegistrationRepository {
   ///
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// insert, none of the rows will be inserted.
+  ///
+  /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
+  /// rows are silently skipped, and only the successfully inserted rows are
+  /// returned.
   Future<List<EventRegistration>> insert(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<EventRegistration> rows, {
     _i1.Transaction? transaction,
+    bool ignoreConflicts = false,
   }) async {
     return session.db.insert<EventRegistration>(
       rows,
       transaction: transaction,
+      ignoreConflicts: ignoreConflicts,
     );
   }
 
@@ -747,7 +769,7 @@ class EventRegistrationRepository {
   ///
   /// The returned [EventRegistration] will have its `id` field set.
   Future<EventRegistration> insertRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     EventRegistration row, {
     _i1.Transaction? transaction,
   }) async {
@@ -763,7 +785,7 @@ class EventRegistrationRepository {
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
   Future<List<EventRegistration>> update(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<EventRegistration> rows, {
     _i1.ColumnSelections<EventRegistrationTable>? columns,
     _i1.Transaction? transaction,
@@ -779,7 +801,7 @@ class EventRegistrationRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<EventRegistration> updateRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     EventRegistration row, {
     _i1.ColumnSelections<EventRegistrationTable>? columns,
     _i1.Transaction? transaction,
@@ -794,7 +816,7 @@ class EventRegistrationRepository {
   /// Updates a single [EventRegistration] by its [id] with the specified [columnValues].
   /// Returns the updated row or null if no row with the given id exists.
   Future<EventRegistration?> updateById(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     int id, {
     required _i1.ColumnValueListBuilder<EventRegistrationUpdateTable>
     columnValues,
@@ -810,7 +832,7 @@ class EventRegistrationRepository {
   /// Updates all [EventRegistration]s matching the [where] expression with the specified [columnValues].
   /// Returns the list of updated rows.
   Future<List<EventRegistration>> updateWhere(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     required _i1.ColumnValueListBuilder<EventRegistrationUpdateTable>
     columnValues,
     required _i1.WhereExpressionBuilder<EventRegistrationTable> where,
@@ -837,7 +859,7 @@ class EventRegistrationRepository {
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
   Future<List<EventRegistration>> delete(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<EventRegistration> rows, {
     _i1.Transaction? transaction,
   }) async {
@@ -849,7 +871,7 @@ class EventRegistrationRepository {
 
   /// Deletes a single [EventRegistration].
   Future<EventRegistration> deleteRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     EventRegistration row, {
     _i1.Transaction? transaction,
   }) async {
@@ -861,7 +883,7 @@ class EventRegistrationRepository {
 
   /// Deletes all rows matching the [where] expression.
   Future<List<EventRegistration>> deleteWhere(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     required _i1.WhereExpressionBuilder<EventRegistrationTable> where,
     _i1.Transaction? transaction,
   }) async {
@@ -874,7 +896,7 @@ class EventRegistrationRepository {
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<EventRegistrationTable>? where,
     int? limit,
     _i1.Transaction? transaction,
@@ -882,6 +904,22 @@ class EventRegistrationRepository {
     return session.db.count<EventRegistration>(
       where: where?.call(EventRegistration.t),
       limit: limit,
+      transaction: transaction,
+    );
+  }
+
+  /// Acquires row-level locks on [EventRegistration] rows matching the [where] expression.
+  Future<void> lockRows(
+    _i1.DatabaseSession session, {
+    required _i1.WhereExpressionBuilder<EventRegistrationTable> where,
+    required _i1.LockMode lockMode,
+    required _i1.Transaction transaction,
+    _i1.LockBehavior lockBehavior = _i1.LockBehavior.wait,
+  }) async {
+    return session.db.lockRows<EventRegistration>(
+      where: where(EventRegistration.t),
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
       transaction: transaction,
     );
   }
@@ -893,7 +931,7 @@ class EventRegistrationAttachRowRepository {
   /// Creates a relation between the given [EventRegistration] and [Member]
   /// by setting the [EventRegistration]'s foreign key `memberId` to refer to the [Member].
   Future<void> member(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     EventRegistration eventRegistration,
     _i2.Member member, {
     _i1.Transaction? transaction,
@@ -916,7 +954,7 @@ class EventRegistrationAttachRowRepository {
   /// Creates a relation between the given [EventRegistration] and [Event]
   /// by setting the [EventRegistration]'s foreign key `eventId` to refer to the [Event].
   Future<void> event(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     EventRegistration eventRegistration,
     _i3.Event event, {
     _i1.Transaction? transaction,

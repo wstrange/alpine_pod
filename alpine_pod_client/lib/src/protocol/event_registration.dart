@@ -79,7 +79,9 @@ abstract class EventRegistration implements _i1.SerializableModel {
       ),
       carPoolPreference: jsonSerialization['carPoolPreference'] as String?,
       additionalGuests: jsonSerialization['additionalGuests'] as int?,
-      waiverAccepted: jsonSerialization['waiverAccepted'] as bool,
+      waiverAccepted: _i1.BoolJsonExtension.fromJson(
+        jsonSerialization['waiverAccepted'],
+      ),
       participantNotes: jsonSerialization['participantNotes'] as String?,
       waitlistPosition: jsonSerialization['waitlistPosition'] as int?,
       waitlistedAt: jsonSerialization['waitlistedAt'] == null
@@ -92,7 +94,9 @@ abstract class EventRegistration implements _i1.SerializableModel {
       modifiedAt: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['modifiedAt'],
       ),
-      noShow: jsonSerialization['noShow'] as bool?,
+      noShow: jsonSerialization['noShow'] == null
+          ? null
+          : _i1.BoolJsonExtension.fromJson(jsonSerialization['noShow']),
     );
   }
 

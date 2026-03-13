@@ -309,7 +309,7 @@ class EventDocumentRepository {
   /// );
   /// ```
   Future<List<EventDocument>> find(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<EventDocumentTable>? where,
     int? limit,
     int? offset,
@@ -317,6 +317,8 @@ class EventDocumentRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<EventDocumentTable>? orderByList,
     _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<EventDocument>(
       where: where?.call(EventDocument.t),
@@ -326,6 +328,8 @@ class EventDocumentRepository {
       limit: limit,
       offset: offset,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -347,13 +351,15 @@ class EventDocumentRepository {
   /// );
   /// ```
   Future<EventDocument?> findFirstRow(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<EventDocumentTable>? where,
     int? offset,
     _i1.OrderByBuilder<EventDocumentTable>? orderBy,
     bool orderDescending = false,
     _i1.OrderByListBuilder<EventDocumentTable>? orderByList,
     _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<EventDocument>(
       where: where?.call(EventDocument.t),
@@ -362,18 +368,24 @@ class EventDocumentRepository {
       orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
   /// Finds a single [EventDocument] by its [id] or null if no such row exists.
   Future<EventDocument?> findById(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     int id, {
     _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<EventDocument>(
       id,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -383,14 +395,20 @@ class EventDocumentRepository {
   ///
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// insert, none of the rows will be inserted.
+  ///
+  /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
+  /// rows are silently skipped, and only the successfully inserted rows are
+  /// returned.
   Future<List<EventDocument>> insert(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<EventDocument> rows, {
     _i1.Transaction? transaction,
+    bool ignoreConflicts = false,
   }) async {
     return session.db.insert<EventDocument>(
       rows,
       transaction: transaction,
+      ignoreConflicts: ignoreConflicts,
     );
   }
 
@@ -398,7 +416,7 @@ class EventDocumentRepository {
   ///
   /// The returned [EventDocument] will have its `id` field set.
   Future<EventDocument> insertRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     EventDocument row, {
     _i1.Transaction? transaction,
   }) async {
@@ -414,7 +432,7 @@ class EventDocumentRepository {
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
   Future<List<EventDocument>> update(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<EventDocument> rows, {
     _i1.ColumnSelections<EventDocumentTable>? columns,
     _i1.Transaction? transaction,
@@ -430,7 +448,7 @@ class EventDocumentRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<EventDocument> updateRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     EventDocument row, {
     _i1.ColumnSelections<EventDocumentTable>? columns,
     _i1.Transaction? transaction,
@@ -445,7 +463,7 @@ class EventDocumentRepository {
   /// Updates a single [EventDocument] by its [id] with the specified [columnValues].
   /// Returns the updated row or null if no row with the given id exists.
   Future<EventDocument?> updateById(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     int id, {
     required _i1.ColumnValueListBuilder<EventDocumentUpdateTable> columnValues,
     _i1.Transaction? transaction,
@@ -460,7 +478,7 @@ class EventDocumentRepository {
   /// Updates all [EventDocument]s matching the [where] expression with the specified [columnValues].
   /// Returns the list of updated rows.
   Future<List<EventDocument>> updateWhere(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     required _i1.ColumnValueListBuilder<EventDocumentUpdateTable> columnValues,
     required _i1.WhereExpressionBuilder<EventDocumentTable> where,
     int? limit,
@@ -486,7 +504,7 @@ class EventDocumentRepository {
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
   Future<List<EventDocument>> delete(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<EventDocument> rows, {
     _i1.Transaction? transaction,
   }) async {
@@ -498,7 +516,7 @@ class EventDocumentRepository {
 
   /// Deletes a single [EventDocument].
   Future<EventDocument> deleteRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     EventDocument row, {
     _i1.Transaction? transaction,
   }) async {
@@ -510,7 +528,7 @@ class EventDocumentRepository {
 
   /// Deletes all rows matching the [where] expression.
   Future<List<EventDocument>> deleteWhere(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     required _i1.WhereExpressionBuilder<EventDocumentTable> where,
     _i1.Transaction? transaction,
   }) async {
@@ -523,7 +541,7 @@ class EventDocumentRepository {
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<EventDocumentTable>? where,
     int? limit,
     _i1.Transaction? transaction,
@@ -531,6 +549,22 @@ class EventDocumentRepository {
     return session.db.count<EventDocument>(
       where: where?.call(EventDocument.t),
       limit: limit,
+      transaction: transaction,
+    );
+  }
+
+  /// Acquires row-level locks on [EventDocument] rows matching the [where] expression.
+  Future<void> lockRows(
+    _i1.DatabaseSession session, {
+    required _i1.WhereExpressionBuilder<EventDocumentTable> where,
+    required _i1.LockMode lockMode,
+    required _i1.Transaction transaction,
+    _i1.LockBehavior lockBehavior = _i1.LockBehavior.wait,
+  }) async {
+    return session.db.lockRows<EventDocument>(
+      where: where(EventDocument.t),
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
       transaction: transaction,
     );
   }

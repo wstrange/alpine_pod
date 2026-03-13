@@ -123,7 +123,11 @@ abstract class Event implements _i1.SerializableModel {
             ),
       registrationFee: (jsonSerialization['registrationFee'] as num?)
           ?.toDouble(),
-      requiresApproval: jsonSerialization['requiresApproval'] as bool?,
+      requiresApproval: jsonSerialization['requiresApproval'] == null
+          ? null
+          : _i1.BoolJsonExtension.fromJson(
+              jsonSerialization['requiresApproval'],
+            ),
       minimumParticipants: jsonSerialization['minimumParticipants'] as int?,
       maxParticipants: jsonSerialization['maxParticipants'] as int?,
       cancellationDeadline: jsonSerialization['cancellationDeadline'] == null
@@ -134,7 +138,9 @@ abstract class Event implements _i1.SerializableModel {
       registrationNotes: jsonSerialization['registrationNotes'] as String?,
       sectionId: jsonSerialization['sectionId'] as int,
       documentsJson: jsonSerialization['documentsJson'] as String?,
-      published: jsonSerialization['published'] as bool?,
+      published: jsonSerialization['published'] == null
+          ? null
+          : _i1.BoolJsonExtension.fromJson(jsonSerialization['published']),
       eventRegistrations: jsonSerialization['eventRegistrations'] == null
           ? null
           : _i4.Protocol().deserialize<List<_i2.EventRegistration>>(

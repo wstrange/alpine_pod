@@ -43,7 +43,7 @@ abstract class Notification implements _i1.SerializableModel {
       timestamp: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['timestamp'],
       ),
-      read: jsonSerialization['read'] as bool,
+      read: _i1.BoolJsonExtension.fromJson(jsonSerialization['read']),
       recipientId: jsonSerialization['recipientId'] as String?,
       attachments: jsonSerialization['attachments'] as String?,
       relatedEventId: jsonSerialization['relatedEventId'] as int?,

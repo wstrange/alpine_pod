@@ -30,6 +30,17 @@ class EventDetailsScreen extends HookWidget {
         title: const Text('Event Details'),
         actions: [
           IconButton(
+            icon: const Icon(Icons.copy),
+            tooltip: 'Copy Event',
+            onPressed: () {
+              final clonedEvent = displayEvent.copyWith(
+                id: null,
+                title: 'Copy of ${displayEvent.title}',
+              );
+              GoRouter.of(context).push('/event-details', extra: clonedEvent);
+            },
+          ),
+          IconButton(
             icon: const Icon(Icons.edit),
             onPressed: () {
               GoRouter.of(context).push('/event-details', extra: displayEvent);

@@ -52,7 +52,7 @@ class _EventEditScreenState extends State<EventEditScreen> {
   }
 
   void save() async {
-    final isCreating = widget.event == null;
+    final isCreating = widget.event == null || widget.event?.id == null;
     var section = sectionSignal.peek();
     var sid = section?.id;
 
@@ -132,7 +132,7 @@ class _EventEditScreenState extends State<EventEditScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isCreating = widget.event == null;
+    final isCreating = widget.event == null || widget.event?.id == null;
 
     return Scaffold(
       appBar: AppBar(

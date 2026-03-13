@@ -124,7 +124,11 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
             ),
       registrationFee: (jsonSerialization['registrationFee'] as num?)
           ?.toDouble(),
-      requiresApproval: jsonSerialization['requiresApproval'] as bool?,
+      requiresApproval: jsonSerialization['requiresApproval'] == null
+          ? null
+          : _i1.BoolJsonExtension.fromJson(
+              jsonSerialization['requiresApproval'],
+            ),
       minimumParticipants: jsonSerialization['minimumParticipants'] as int?,
       maxParticipants: jsonSerialization['maxParticipants'] as int?,
       cancellationDeadline: jsonSerialization['cancellationDeadline'] == null
@@ -135,7 +139,9 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       registrationNotes: jsonSerialization['registrationNotes'] as String?,
       sectionId: jsonSerialization['sectionId'] as int,
       documentsJson: jsonSerialization['documentsJson'] as String?,
-      published: jsonSerialization['published'] as bool?,
+      published: jsonSerialization['published'] == null
+          ? null
+          : _i1.BoolJsonExtension.fromJson(jsonSerialization['published']),
       eventRegistrations: jsonSerialization['eventRegistrations'] == null
           ? null
           : _i4.Protocol().deserialize<List<_i2.EventRegistration>>(
@@ -1063,7 +1069,7 @@ class EventRepository {
   /// );
   /// ```
   Future<List<Event>> find(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<EventTable>? where,
     int? limit,
     int? offset,
@@ -1072,6 +1078,8 @@ class EventRepository {
     _i1.OrderByListBuilder<EventTable>? orderByList,
     _i1.Transaction? transaction,
     EventInclude? include,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<Event>(
       where: where?.call(Event.t),
@@ -1082,6 +1090,8 @@ class EventRepository {
       offset: offset,
       transaction: transaction,
       include: include,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -1103,7 +1113,7 @@ class EventRepository {
   /// );
   /// ```
   Future<Event?> findFirstRow(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<EventTable>? where,
     int? offset,
     _i1.OrderByBuilder<EventTable>? orderBy,
@@ -1111,6 +1121,8 @@ class EventRepository {
     _i1.OrderByListBuilder<EventTable>? orderByList,
     _i1.Transaction? transaction,
     EventInclude? include,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<Event>(
       where: where?.call(Event.t),
@@ -1120,20 +1132,26 @@ class EventRepository {
       offset: offset,
       transaction: transaction,
       include: include,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
   /// Finds a single [Event] by its [id] or null if no such row exists.
   Future<Event?> findById(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     int id, {
     _i1.Transaction? transaction,
     EventInclude? include,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<Event>(
       id,
       transaction: transaction,
       include: include,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -1143,14 +1161,20 @@ class EventRepository {
   ///
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// insert, none of the rows will be inserted.
+  ///
+  /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
+  /// rows are silently skipped, and only the successfully inserted rows are
+  /// returned.
   Future<List<Event>> insert(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<Event> rows, {
     _i1.Transaction? transaction,
+    bool ignoreConflicts = false,
   }) async {
     return session.db.insert<Event>(
       rows,
       transaction: transaction,
+      ignoreConflicts: ignoreConflicts,
     );
   }
 
@@ -1158,7 +1182,7 @@ class EventRepository {
   ///
   /// The returned [Event] will have its `id` field set.
   Future<Event> insertRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     Event row, {
     _i1.Transaction? transaction,
   }) async {
@@ -1174,7 +1198,7 @@ class EventRepository {
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
   Future<List<Event>> update(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<Event> rows, {
     _i1.ColumnSelections<EventTable>? columns,
     _i1.Transaction? transaction,
@@ -1190,7 +1214,7 @@ class EventRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<Event> updateRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     Event row, {
     _i1.ColumnSelections<EventTable>? columns,
     _i1.Transaction? transaction,
@@ -1205,7 +1229,7 @@ class EventRepository {
   /// Updates a single [Event] by its [id] with the specified [columnValues].
   /// Returns the updated row or null if no row with the given id exists.
   Future<Event?> updateById(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     int id, {
     required _i1.ColumnValueListBuilder<EventUpdateTable> columnValues,
     _i1.Transaction? transaction,
@@ -1220,7 +1244,7 @@ class EventRepository {
   /// Updates all [Event]s matching the [where] expression with the specified [columnValues].
   /// Returns the list of updated rows.
   Future<List<Event>> updateWhere(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     required _i1.ColumnValueListBuilder<EventUpdateTable> columnValues,
     required _i1.WhereExpressionBuilder<EventTable> where,
     int? limit,
@@ -1246,7 +1270,7 @@ class EventRepository {
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
   Future<List<Event>> delete(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<Event> rows, {
     _i1.Transaction? transaction,
   }) async {
@@ -1258,7 +1282,7 @@ class EventRepository {
 
   /// Deletes a single [Event].
   Future<Event> deleteRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     Event row, {
     _i1.Transaction? transaction,
   }) async {
@@ -1270,7 +1294,7 @@ class EventRepository {
 
   /// Deletes all rows matching the [where] expression.
   Future<List<Event>> deleteWhere(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     required _i1.WhereExpressionBuilder<EventTable> where,
     _i1.Transaction? transaction,
   }) async {
@@ -1283,7 +1307,7 @@ class EventRepository {
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<EventTable>? where,
     int? limit,
     _i1.Transaction? transaction,
@@ -1291,6 +1315,22 @@ class EventRepository {
     return session.db.count<Event>(
       where: where?.call(Event.t),
       limit: limit,
+      transaction: transaction,
+    );
+  }
+
+  /// Acquires row-level locks on [Event] rows matching the [where] expression.
+  Future<void> lockRows(
+    _i1.DatabaseSession session, {
+    required _i1.WhereExpressionBuilder<EventTable> where,
+    required _i1.LockMode lockMode,
+    required _i1.Transaction transaction,
+    _i1.LockBehavior lockBehavior = _i1.LockBehavior.wait,
+  }) async {
+    return session.db.lockRows<Event>(
+      where: where(Event.t),
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
       transaction: transaction,
     );
   }
@@ -1302,7 +1342,7 @@ class EventAttachRepository {
   /// Creates a relation between this [Event] and the given [EventRegistration]s
   /// by setting each [EventRegistration]'s foreign key `eventId` to refer to this [Event].
   Future<void> eventRegistrations(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     Event event,
     List<_i2.EventRegistration> eventRegistration, {
     _i1.Transaction? transaction,
@@ -1327,7 +1367,7 @@ class EventAttachRepository {
   /// Creates a relation between this [Event] and the given [EventManager]s
   /// by setting each [EventManager]'s foreign key `eventId` to refer to this [Event].
   Future<void> eventManagers(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     Event event,
     List<_i3.EventManager> eventManager, {
     _i1.Transaction? transaction,
@@ -1356,7 +1396,7 @@ class EventAttachRowRepository {
   /// Creates a relation between this [Event] and the given [EventRegistration]
   /// by setting the [EventRegistration]'s foreign key `eventId` to refer to this [Event].
   Future<void> eventRegistrations(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     Event event,
     _i2.EventRegistration eventRegistration, {
     _i1.Transaction? transaction,
@@ -1379,7 +1419,7 @@ class EventAttachRowRepository {
   /// Creates a relation between this [Event] and the given [EventManager]
   /// by setting the [EventManager]'s foreign key `eventId` to refer to this [Event].
   Future<void> eventManagers(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     Event event,
     _i3.EventManager eventManager, {
     _i1.Transaction? transaction,
@@ -1409,7 +1449,7 @@ class EventDetachRepository {
   /// This removes the association between the two models without deleting
   /// the related record.
   Future<void> eventRegistrations(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<_i2.EventRegistration> eventRegistration, {
     _i1.Transaction? transaction,
   }) async {
@@ -1433,7 +1473,7 @@ class EventDetachRepository {
   /// This removes the association between the two models without deleting
   /// the related record.
   Future<void> eventManagers(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<_i3.EventManager> eventManager, {
     _i1.Transaction? transaction,
   }) async {
@@ -1461,7 +1501,7 @@ class EventDetachRowRepository {
   /// This removes the association between the two models without deleting
   /// the related record.
   Future<void> eventRegistrations(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     _i2.EventRegistration eventRegistration, {
     _i1.Transaction? transaction,
   }) async {
@@ -1483,7 +1523,7 @@ class EventDetachRowRepository {
   /// This removes the association between the two models without deleting
   /// the related record.
   Future<void> eventManagers(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     _i3.EventManager eventManager, {
     _i1.Transaction? transaction,
   }) async {
