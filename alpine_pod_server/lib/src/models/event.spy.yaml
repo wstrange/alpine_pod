@@ -6,14 +6,9 @@ fields:
   type: String
   startTime: DateTime
   endTime: DateTime
-  # Todo: Consider location data model
-  location: String?
-  gpsLatitude: double?
-  gpsLongitude: double?
-  mapLink: String?
-  carPoolingTime: DateTime?
-  carPoolingPlace: String?
-  carPoolingDriveOrRide: String?
+  eventLocation: String?
+  carpoolLocation: String?
+  carpoolTime: DateTime?
   difficulty: String?
   requiredEquipment: String?
   prerequisites: String?

@@ -1,4 +1,3 @@
-// TODO: Restore web widgets after upgrade verification
 /*
 import 'package:serverpod/serverpod.dart';
 

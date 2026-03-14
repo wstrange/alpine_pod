@@ -2,6 +2,7 @@ import 'package:alpine_pod_client/alpine_pod_client.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:go_router/go_router.dart';
+import 'location_widget.dart';
 
 class EventCard extends StatelessWidget {
   final Event event;
@@ -80,18 +81,20 @@ class EventCard extends StatelessWidget {
                   ),
                 ],
               ),
-              if (event.location != null) ...[
-                const SizedBox(height: 12),
+              if (event.eventLocation != null) ...[
+                const SizedBox(height: 8),
+                LocationWidget(location: event.eventLocation!, compact: true),
+              ],
+              if (event.carpoolLocation != null) ...[
+                const SizedBox(height: 4),
                 Row(
                   children: [
-                    const Icon(Icons.location_on, size: 14, color: Colors.grey),
+                    const Icon(Icons.directions_car_outlined,
+                        size: 14, color: Colors.teal),
                     const SizedBox(width: 4),
-                    Expanded(
-                      child: Text(
-                        event.location!,
-                        style: const TextStyle(
-                            fontSize: 13, color: Colors.blueGrey),
-                      ),
+                    Flexible(
+                      child: LocationWidget(
+                          location: event.carpoolLocation!, compact: true),
                     ),
                   ],
                 ),

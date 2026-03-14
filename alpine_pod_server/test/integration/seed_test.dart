@@ -207,7 +207,7 @@ void main() {
             type: 'Ski',
             startTime: startTime,
             endTime: endTime,
-            location: 'Various Locations',
+            eventLocation: 'Various Locations',
             sectionId: section.id!,
             requiresApproval: !directRegistration,
             published: true,

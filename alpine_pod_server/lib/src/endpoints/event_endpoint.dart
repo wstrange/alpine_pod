@@ -35,19 +35,6 @@ class EventEndpoint extends Endpoint {
           'Minimum participants cannot be greater than maximum participants');
     }
 
-    // Validate GPS coordinates if provided
-    if ((event.gpsLatitude != null && event.gpsLongitude == null) ||
-        (event.gpsLatitude == null && event.gpsLongitude != null)) {
-      throw Exception('Both latitude and longitude must be provided together');
-    }
-    if (event.gpsLatitude != null &&
-        (event.gpsLatitude! < -90 || event.gpsLatitude! > 90)) {
-      throw Exception('Invalid latitude value');
-    }
-    if (event.gpsLongitude != null &&
-        (event.gpsLongitude! < -180 || event.gpsLongitude! > 180)) {
-      throw Exception('Invalid longitude value');
-    }
   }
 
   Future<Event> createEvent(Session session, Event event) async {

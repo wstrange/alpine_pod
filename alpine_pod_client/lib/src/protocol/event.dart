@@ -23,13 +23,9 @@ abstract class Event implements _i1.SerializableModel {
     required this.type,
     required this.startTime,
     required this.endTime,
-    this.location,
-    this.gpsLatitude,
-    this.gpsLongitude,
-    this.mapLink,
-    this.carPoolingTime,
-    this.carPoolingPlace,
-    this.carPoolingDriveOrRide,
+    this.eventLocation,
+    this.carpoolLocation,
+    this.carpoolTime,
     this.difficulty,
     this.requiredEquipment,
     this.prerequisites,
@@ -59,13 +55,9 @@ abstract class Event implements _i1.SerializableModel {
     required String type,
     required DateTime startTime,
     required DateTime endTime,
-    String? location,
-    double? gpsLatitude,
-    double? gpsLongitude,
-    String? mapLink,
-    DateTime? carPoolingTime,
-    String? carPoolingPlace,
-    String? carPoolingDriveOrRide,
+    String? eventLocation,
+    String? carpoolLocation,
+    DateTime? carpoolTime,
     String? difficulty,
     String? requiredEquipment,
     String? prerequisites,
@@ -95,18 +87,13 @@ abstract class Event implements _i1.SerializableModel {
         jsonSerialization['startTime'],
       ),
       endTime: _i1.DateTimeJsonExtension.fromJson(jsonSerialization['endTime']),
-      location: jsonSerialization['location'] as String?,
-      gpsLatitude: (jsonSerialization['gpsLatitude'] as num?)?.toDouble(),
-      gpsLongitude: (jsonSerialization['gpsLongitude'] as num?)?.toDouble(),
-      mapLink: jsonSerialization['mapLink'] as String?,
-      carPoolingTime: jsonSerialization['carPoolingTime'] == null
+      eventLocation: jsonSerialization['eventLocation'] as String?,
+      carpoolLocation: jsonSerialization['carpoolLocation'] as String?,
+      carpoolTime: jsonSerialization['carpoolTime'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(
-              jsonSerialization['carPoolingTime'],
+              jsonSerialization['carpoolTime'],
             ),
-      carPoolingPlace: jsonSerialization['carPoolingPlace'] as String?,
-      carPoolingDriveOrRide:
-          jsonSerialization['carPoolingDriveOrRide'] as String?,
       difficulty: jsonSerialization['difficulty'] as String?,
       requiredEquipment: jsonSerialization['requiredEquipment'] as String?,
       prerequisites: jsonSerialization['prerequisites'] as String?,
@@ -169,19 +156,11 @@ abstract class Event implements _i1.SerializableModel {
 
   DateTime endTime;
 
-  String? location;
+  String? eventLocation;
 
-  double? gpsLatitude;
+  String? carpoolLocation;
 
-  double? gpsLongitude;
-
-  String? mapLink;
-
-  DateTime? carPoolingTime;
-
-  String? carPoolingPlace;
-
-  String? carPoolingDriveOrRide;
+  DateTime? carpoolTime;
 
   String? difficulty;
 
@@ -227,13 +206,9 @@ abstract class Event implements _i1.SerializableModel {
     String? type,
     DateTime? startTime,
     DateTime? endTime,
-    String? location,
-    double? gpsLatitude,
-    double? gpsLongitude,
-    String? mapLink,
-    DateTime? carPoolingTime,
-    String? carPoolingPlace,
-    String? carPoolingDriveOrRide,
+    String? eventLocation,
+    String? carpoolLocation,
+    DateTime? carpoolTime,
     String? difficulty,
     String? requiredEquipment,
     String? prerequisites,
@@ -262,14 +237,9 @@ abstract class Event implements _i1.SerializableModel {
       'type': type,
       'startTime': startTime.toJson(),
       'endTime': endTime.toJson(),
-      if (location != null) 'location': location,
-      if (gpsLatitude != null) 'gpsLatitude': gpsLatitude,
-      if (gpsLongitude != null) 'gpsLongitude': gpsLongitude,
-      if (mapLink != null) 'mapLink': mapLink,
-      if (carPoolingTime != null) 'carPoolingTime': carPoolingTime?.toJson(),
-      if (carPoolingPlace != null) 'carPoolingPlace': carPoolingPlace,
-      if (carPoolingDriveOrRide != null)
-        'carPoolingDriveOrRide': carPoolingDriveOrRide,
+      if (eventLocation != null) 'eventLocation': eventLocation,
+      if (carpoolLocation != null) 'carpoolLocation': carpoolLocation,
+      if (carpoolTime != null) 'carpoolTime': carpoolTime?.toJson(),
       if (difficulty != null) 'difficulty': difficulty,
       if (requiredEquipment != null) 'requiredEquipment': requiredEquipment,
       if (prerequisites != null) 'prerequisites': prerequisites,
@@ -313,13 +283,9 @@ class _EventImpl extends Event {
     required String type,
     required DateTime startTime,
     required DateTime endTime,
-    String? location,
-    double? gpsLatitude,
-    double? gpsLongitude,
-    String? mapLink,
-    DateTime? carPoolingTime,
-    String? carPoolingPlace,
-    String? carPoolingDriveOrRide,
+    String? eventLocation,
+    String? carpoolLocation,
+    DateTime? carpoolTime,
     String? difficulty,
     String? requiredEquipment,
     String? prerequisites,
@@ -344,13 +310,9 @@ class _EventImpl extends Event {
          type: type,
          startTime: startTime,
          endTime: endTime,
-         location: location,
-         gpsLatitude: gpsLatitude,
-         gpsLongitude: gpsLongitude,
-         mapLink: mapLink,
-         carPoolingTime: carPoolingTime,
-         carPoolingPlace: carPoolingPlace,
-         carPoolingDriveOrRide: carPoolingDriveOrRide,
+         eventLocation: eventLocation,
+         carpoolLocation: carpoolLocation,
+         carpoolTime: carpoolTime,
          difficulty: difficulty,
          requiredEquipment: requiredEquipment,
          prerequisites: prerequisites,
@@ -381,13 +343,9 @@ class _EventImpl extends Event {
     String? type,
     DateTime? startTime,
     DateTime? endTime,
-    Object? location = _Undefined,
-    Object? gpsLatitude = _Undefined,
-    Object? gpsLongitude = _Undefined,
-    Object? mapLink = _Undefined,
-    Object? carPoolingTime = _Undefined,
-    Object? carPoolingPlace = _Undefined,
-    Object? carPoolingDriveOrRide = _Undefined,
+    Object? eventLocation = _Undefined,
+    Object? carpoolLocation = _Undefined,
+    Object? carpoolTime = _Undefined,
     Object? difficulty = _Undefined,
     Object? requiredEquipment = _Undefined,
     Object? prerequisites = _Undefined,
@@ -413,19 +371,13 @@ class _EventImpl extends Event {
       type: type ?? this.type,
       startTime: startTime ?? this.startTime,
       endTime: endTime ?? this.endTime,
-      location: location is String? ? location : this.location,
-      gpsLatitude: gpsLatitude is double? ? gpsLatitude : this.gpsLatitude,
-      gpsLongitude: gpsLongitude is double? ? gpsLongitude : this.gpsLongitude,
-      mapLink: mapLink is String? ? mapLink : this.mapLink,
-      carPoolingTime: carPoolingTime is DateTime?
-          ? carPoolingTime
-          : this.carPoolingTime,
-      carPoolingPlace: carPoolingPlace is String?
-          ? carPoolingPlace
-          : this.carPoolingPlace,
-      carPoolingDriveOrRide: carPoolingDriveOrRide is String?
-          ? carPoolingDriveOrRide
-          : this.carPoolingDriveOrRide,
+      eventLocation: eventLocation is String?
+          ? eventLocation
+          : this.eventLocation,
+      carpoolLocation: carpoolLocation is String?
+          ? carpoolLocation
+          : this.carpoolLocation,
+      carpoolTime: carpoolTime is DateTime? ? carpoolTime : this.carpoolTime,
       difficulty: difficulty is String? ? difficulty : this.difficulty,
       requiredEquipment: requiredEquipment is String?
           ? requiredEquipment

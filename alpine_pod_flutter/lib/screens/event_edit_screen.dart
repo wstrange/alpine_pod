@@ -22,8 +22,10 @@ class _EventEditScreenState extends State<EventEditScreen> {
   late final TextEditingController titleController;
   late final TextEditingController descriptionController;
   late final TextEditingController locationController;
+  late final TextEditingController carpoolLocationController;
   late DateTime startTime;
   late DateTime endTime;
+  DateTime? carpoolTime;
   late String _selectedType;
 
   @override
@@ -32,10 +34,13 @@ class _EventEditScreenState extends State<EventEditScreen> {
     titleController = TextEditingController(text: widget.event?.title);
     descriptionController =
         TextEditingController(text: widget.event?.description);
-    locationController = TextEditingController(text: widget.event?.location);
+    locationController = TextEditingController(text: widget.event?.eventLocation);
+    carpoolLocationController =
+        TextEditingController(text: widget.event?.carpoolLocation);
     startTime = widget.event?.startTime ?? DateTime.now();
     endTime =
         widget.event?.endTime ?? DateTime.now().add(const Duration(hours: 8));
+    carpoolTime = widget.event?.carpoolTime;
     _selectedType = widget.event?.type ?? eventTypes.first;
     // If the stored type isn't in our list, fall back to the first entry
     if (!eventTypes.contains(_selectedType)) {
@@ -48,6 +53,7 @@ class _EventEditScreenState extends State<EventEditScreen> {
     titleController.dispose();
     descriptionController.dispose();
     locationController.dispose();
+    carpoolLocationController.dispose();
     super.dispose();
   }
 
@@ -56,11 +62,19 @@ class _EventEditScreenState extends State<EventEditScreen> {
     var section = sectionSignal.peek();
     var sid = section?.id;
 
+    final locText =
+        locationController.text.trim().isEmpty ? null : locationController.text.trim();
+    final carpoolLocText = carpoolLocationController.text.trim().isEmpty
+        ? null
+        : carpoolLocationController.text.trim();
+
     final eventToSave = widget.event?.copyWith(
           sectionId: sid!,
           title: titleController.text,
           description: descriptionController.text,
-          location: locationController.text,
+          eventLocation: locText,
+          carpoolLocation: carpoolLocText,
+          carpoolTime: carpoolTime,
           startTime: startTime,
           endTime: endTime,
           type: _selectedType,
@@ -69,7 +83,9 @@ class _EventEditScreenState extends State<EventEditScreen> {
           sectionId: sid!,
           title: titleController.text,
           description: descriptionController.text,
-          location: locationController.text,
+          eventLocation: locText,
+          carpoolLocation: carpoolLocText,
+          carpoolTime: carpoolTime,
           startTime: startTime,
           endTime: endTime,
           type: _selectedType,
@@ -122,7 +138,9 @@ class _EventEditScreenState extends State<EventEditScreen> {
     setState(() {
       titleController.text = widget.event?.title ?? '';
       descriptionController.text = widget.event?.description ?? '';
-      locationController.text = widget.event?.location ?? '';
+      locationController.text = widget.event?.eventLocation ?? '';
+      carpoolLocationController.text = widget.event?.carpoolLocation ?? '';
+      carpoolTime = widget.event?.carpoolTime;
       startTime = widget.event?.startTime ?? DateTime.now();
       endTime =
           widget.event?.endTime ?? DateTime.now().add(const Duration(hours: 2));
@@ -160,11 +178,74 @@ class _EventEditScreenState extends State<EventEditScreen> {
             ),
             TextFormField(
               controller: locationController,
-              decoration: const InputDecoration(labelText: 'Location'),
+              decoration: const InputDecoration(
+                labelText: 'Event Location',
+                hintText: 'Address, place name, or Google Maps URL',
+                prefixIcon: Icon(Icons.map_outlined),
+              ),
             ),
             const SizedBox(height: 8),
+            const Divider(),
+            const Align(
+              alignment: Alignment.centerLeft,
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 4),
+                child: Text('Carpool',
+                    style: TextStyle(fontWeight: FontWeight.w600)),
+              ),
+            ),
+            TextFormField(
+              controller: carpoolLocationController,
+              decoration: const InputDecoration(
+                labelText: 'Carpool Meet Location',
+                hintText: 'Address, place name, or Google Maps URL',
+                prefixIcon: Icon(Icons.directions_car_outlined),
+              ),
+            ),
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: const Icon(Icons.access_time),
+              title: const Text('Carpool Meet Time'),
+              subtitle: Text(carpoolTime != null
+                  ? eventDateFormat(carpoolTime!)
+                  : 'Not set'),
+              trailing: carpoolTime != null
+                  ? IconButton(
+                      icon: const Icon(Icons.clear),
+                      tooltip: 'Clear',
+                      onPressed: () => setState(() => carpoolTime = null),
+                    )
+                  : null,
+              onTap: () async {
+                final date = await showDatePicker(
+                  context: context,
+                  initialDate: carpoolTime ?? startTime,
+                  firstDate: DateTime(2025),
+                  lastDate: DateTime(2100),
+                );
+                if (date != null && context.mounted) {
+                  final time = await showTimePicker(
+                    context: context,
+                    initialTime: TimeOfDay.fromDateTime(
+                        carpoolTime ?? startTime),
+                  );
+                  if (time != null) {
+                    setState(() {
+                      carpoolTime = DateTime(
+                        date.year,
+                        date.month,
+                        date.day,
+                        time.hour,
+                        time.minute,
+                      );
+                    });
+                  }
+                }
+              },
+            ),
+            const Divider(),
             DropdownButtonFormField<String>(
-              value: _selectedType,
+              initialValue: _selectedType,
               decoration: const InputDecoration(labelText: 'Event Type'),
               items: eventTypes
                   .map((t) => DropdownMenuItem(value: t, child: Text(t)))

@@ -5,6 +5,7 @@ import 'package:signals_flutter/signals_flutter.dart';
 import '../signals.dart';
 import '../util.dart';
 import 'event_participants_manager.dart';
+import 'location_widget.dart';
 import 'user_list_widget.dart';
 
 class EventView extends HookWidget {
@@ -127,7 +128,47 @@ class EventView extends HookWidget {
                   },
                 ),
                 const SizedBox(height: 16),
-                Text('Location: ${displayEvent.location}'),
+                if (displayEvent.eventLocation != null &&
+                    displayEvent.eventLocation!.isNotEmpty)
+                  LocationWidget(location: displayEvent.eventLocation!),
+                if (displayEvent.carpoolLocation != null &&
+                    displayEvent.carpoolLocation!.isNotEmpty) ...[
+                  const SizedBox(height: 6),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Icon(Icons.directions_car_outlined,
+                          size: 16,
+                          color: Theme.of(context).colorScheme.secondary),
+                      const SizedBox(width: 4),
+                      Flexible(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Carpool meet:',
+                                style: TextStyle(
+                                    fontSize: 12,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .secondary,
+                                    fontWeight: FontWeight.w600)),
+                            if (displayEvent.carpoolTime != null)
+                              Text(
+                                eventDateFormat(displayEvent.carpoolTime!),
+                                style: TextStyle(
+                                    fontSize: 12,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .secondary),
+                              ),
+                            LocationWidget(
+                                location: displayEvent.carpoolLocation!),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ],
             );
           }),
