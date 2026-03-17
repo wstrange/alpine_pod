@@ -264,15 +264,11 @@ class EventEndpoint extends Endpoint {
       int? waitlistPosition;
 
       if (event.requiresApproval) {
-        status = RegistrationStatus.pending;
+        // Always waitlist first; manager must approve
+        status = RegistrationStatus.waitlisted;
+        waitlistPosition = numWaitlisted + 1;
       } else if (numConfirmed >= event.maxParticipants) {
-        if (event.requiresApproval) {
-          status = RegistrationStatus.waitlisted;
-          // Calculate waitlist position
-          waitlistPosition = numWaitlisted + 1;
-        } else {
-          throw Exception('Event is full and waitlist is disabled');
-        }
+        throw Exception('Event is full and does not have a waitlist');
       }
 
       // Create registration

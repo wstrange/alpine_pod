@@ -27,6 +27,7 @@ class _EventEditScreenState extends State<EventEditScreen> {
   late DateTime endTime;
   DateTime? carpoolTime;
   late String _selectedType;
+  late bool _requiresApproval;
 
   @override
   void initState() {
@@ -42,6 +43,7 @@ class _EventEditScreenState extends State<EventEditScreen> {
         widget.event?.endTime ?? DateTime.now().add(const Duration(hours: 8));
     carpoolTime = widget.event?.carpoolTime;
     _selectedType = widget.event?.type ?? eventTypes.first;
+    _requiresApproval = widget.event?.requiresApproval ?? true;
     // If the stored type isn't in our list, fall back to the first entry
     if (!eventTypes.contains(_selectedType)) {
       _selectedType = eventTypes.first;
@@ -78,6 +80,7 @@ class _EventEditScreenState extends State<EventEditScreen> {
           startTime: startTime,
           endTime: endTime,
           type: _selectedType,
+          requiresApproval: _requiresApproval,
         ) ??
         Event(
           sectionId: sid!,
@@ -89,7 +92,7 @@ class _EventEditScreenState extends State<EventEditScreen> {
           startTime: startTime,
           endTime: endTime,
           type: _selectedType,
-          requiresApproval: true,
+          requiresApproval: _requiresApproval,
         );
 
     try {
@@ -113,7 +116,7 @@ class _EventEditScreenState extends State<EventEditScreen> {
             ],
           ),
         );
-        if (mounted) GoRouter.of(context).pop();
+        if (mounted) GoRouter.of(context).go('/');
       }
     } catch (e) {
       if (mounted) {
@@ -145,6 +148,7 @@ class _EventEditScreenState extends State<EventEditScreen> {
       endTime =
           widget.event?.endTime ?? DateTime.now().add(const Duration(hours: 2));
       _selectedType = widget.event?.type ?? eventTypes.first;
+      _requiresApproval = widget.event?.requiresApproval ?? true;
     });
   }
 
@@ -157,7 +161,7 @@ class _EventEditScreenState extends State<EventEditScreen> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            GoRouter.of(context).pop();
+            GoRouter.of(context).go('/');
           },
         ),
         title: Text(isCreating ? 'Create Event' : 'Edit Event'),
@@ -255,6 +259,18 @@ class _EventEditScreenState extends State<EventEditScreen> {
                   setState(() => _selectedType = value);
                 }
               },
+            ),
+            SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              secondary: const Icon(Icons.how_to_reg_outlined),
+              title: const Text('Requires Approval'),
+              subtitle: Text(
+                _requiresApproval
+                    ? 'Registrations go to a waitlist and must be approved'
+                    : 'Members can register directly without approval',
+              ),
+              value: _requiresApproval,
+              onChanged: (val) => setState(() => _requiresApproval = val),
             ),
             ListTile(
               title: const Text('Start Time'),

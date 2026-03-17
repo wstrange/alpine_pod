@@ -15,6 +15,9 @@ final genData = GenData();
 
 final uuid = Uuid();
 
+final numEvents = 100;
+final numUsers = 1000;
+
 void main() {
   final adminId = uuid.v4obj();
 
@@ -107,14 +110,14 @@ void main() {
       print('Created Admin: $emailAccountId');
     });
 
-    test('Create Some test users', () async {
+    test('Create test users', () async {
       // get the sections..
       final sections = await endpoints.admin.listSections(authSession);
 
       final s1 = sections[0];
       final s2 = sections[1];
 
-      for (var i = 1; i <= 5; i++) {
+      for (var i = 1; i <= numUsers; i++) {
         var email = 'test$i@acc.ca';
 
         var au = await AuthServices.instance.authUsers.create(
@@ -129,7 +132,7 @@ void main() {
           password: 'Passw0rd',
         );
 
-        print('Created user: $emailId');
+        //print('Created user: $emailId');
         // Now assign them to a section
         // create a member profile
         var m = await endpoints.member.createMember(
@@ -144,7 +147,7 @@ void main() {
               emergencyContactPhone: '5555555',
               userId: au.id,
             ));
-        print('Created member profile: $m');
+        //print('Created member profile: $m');
 
         var scopes = <String>{
           CustomScope.sectionManager.name!,
@@ -157,7 +160,6 @@ void main() {
             SectionMembership(
                 memberId: m.id!, sectionId: s1.id!, scopes: scopes));
 
-        print(sm);
         sm = await endpoints.member.addMemberToSection(
             authSession,
             SectionMembership(
@@ -165,9 +167,9 @@ void main() {
               sectionId: s2.id!,
               scopes: scopes,
             ));
-        print(sm);
+        //print(sm);
       }
-    });
+    }, timeout: Timeout(Duration(minutes: 10)));
 
     test('Create 100 sample events', () async {
       final sections = await endpoints.admin.listSections(authSession);
@@ -216,7 +218,7 @@ void main() {
           ),
         );
       }
-      print('Created 100 sample events.');
+      print('Created  sample events.');
     });
 
     // We want to keep the data after tests run

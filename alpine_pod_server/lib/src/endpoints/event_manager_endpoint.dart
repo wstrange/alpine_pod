@@ -296,4 +296,43 @@ class EventManagerEndpoint extends Endpoint {
       where: (_) => whereClause,
     );
   }
+
+  /// Approve a waitlisted registration, moving it to confirmed.
+  /// The calling user must be an event manager for the event.
+  Future<EventRegistration> approveRegistration(
+    Session session,
+    int registrationId,
+  ) async {
+    final callerInfo = await cache.getMemberInfo(session);
+    if (callerInfo == null) throw Exception('Not authenticated');
+
+    final reg = await EventRegistration.db.findById(session, registrationId);
+    if (reg == null) throw Exception('Registration not found');
+
+    if (reg.registrationStatus != RegistrationStatus.waitlisted) {
+      throw Exception('Registration is not on the waitlist');
+    }
+
+    // Verify the caller is an event manager for this event
+    final managerRecord = await EventManager.db.findFirstRow(
+      session,
+      where: (t) =>
+          t.eventId.equals(reg.eventId) &
+          t.memberId.equals(callerInfo.member.id!),
+    );
+    if (managerRecord == null) {
+      throw Exception('You are not an event manager for this event');
+    }
+
+    final updated = reg.copyWith(
+      registrationStatus: RegistrationStatus.confirmed,
+      waitlistPosition: null,
+      modifiedAt: DateTime.now(),
+    );
+
+    final saved = await EventRegistration.db.updateRow(session, updated);
+    session.log(
+        'Event manager ${callerInfo.member.id} approved registration $registrationId');
+    return saved;
+  }
 }

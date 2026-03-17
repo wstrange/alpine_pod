@@ -1140,6 +1140,37 @@ class _EventManagerEndpoint {
       }
     });
   }
+
+  _i3.Future<_i7.EventRegistration> approveRegistration(
+    _i1.TestSessionBuilder sessionBuilder,
+    int registrationId,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'eventManager',
+            method: 'approveRegistration',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'eventManager',
+          methodName: 'approveRegistration',
+          parameters: _i1.testObjectToJson({'registrationId': registrationId}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<_i7.EventRegistration>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
 }
 
 class _MemberEndpoint {
@@ -1183,8 +1214,9 @@ class _MemberEndpoint {
   }
 
   _i3.Future<List<_i9.Member>> getMembers(
-    _i1.TestSessionBuilder sessionBuilder,
-  ) async {
+    _i1.TestSessionBuilder sessionBuilder, {
+    int? sectionId,
+  }) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
           (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
@@ -1196,7 +1228,7 @@ class _MemberEndpoint {
           createSessionCallback: (_) => _localUniqueSession,
           endpointPath: 'member',
           methodName: 'getMembers',
-          parameters: _i1.testObjectToJson({}),
+          parameters: _i1.testObjectToJson({'sectionId': sectionId}),
           serializationManager: _serializationManager,
         );
         var _localReturnValue =

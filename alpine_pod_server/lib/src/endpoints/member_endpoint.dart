@@ -16,12 +16,52 @@ class MemberEndpoint extends Endpoint {
     return m;
   }
 
-  Future<List<Member>> getMembers(Session session) async {
-    // TODO: Fix
-    // final admin = await isAdmin(session);
-    // if (!admin) throw Exception('Only administrators can view member list');
+  Future<List<Member>> getMembers(Session session, {int? sectionId}) async {
+    final authInfo = session.authenticated;
+    if (authInfo == null) throw Exception('Not authenticated');
 
-    return await Member.db.find(session);
+    final bool isGlobalAdmin = authInfo.scopes.contains(Scope.admin);
+    final callerInfo = await cache.getMemberInfo(session);
+    if (callerInfo == null) throw Exception('Member profile not found');
+
+    // If a specific section is requested, ensure the user has access to it
+    if (sectionId != null) {
+      if (!isGlobalAdmin && !callerInfo.sectionIds.contains(sectionId)) {
+        throw Exception('You do not have access to this section');
+      }
+      return await getSectionMembers(session, sectionId);
+    }
+
+    // Global admins can see everyone if no section is specified
+    if (isGlobalAdmin) {
+      return await Member.db.find(session, orderBy: (t) => t.lastName);
+    }
+
+    if (callerInfo.sectionIds.isEmpty) {
+      return [callerInfo.member];
+    }
+
+    // Find all memberships in sections the caller belongs to
+    final memberships = await SectionMembership.db.find(
+      session,
+      where: (t) => t.sectionId.inSet(callerInfo.sectionIds),
+      include: SectionMembership.include(
+        member: Member.include(),
+      ),
+    );
+
+    // Extract unique members
+    final memberMap = <int, Member>{};
+    memberMap[callerInfo.member.id!] = callerInfo.member;
+    for (var m in memberships) {
+      if (m.member != null) {
+        memberMap[m.member!.id!] = m.member!;
+      }
+    }
+
+    final result = memberMap.values.toList();
+    result.sort((a, b) => a.lastName.compareTo(b.lastName));
+    return result;
   }
 
   /// Create a new member.

@@ -679,6 +679,25 @@ class Endpoints extends _i1.EndpointDispatch {
                     params['sectionId'],
                   ),
         ),
+        'approveRegistration': _i1.MethodConnector(
+          name: 'approveRegistration',
+          params: {
+            'registrationId': _i1.ParameterDescription(
+              name: 'registrationId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['eventManager'] as _i5.EventManagerEndpoint)
+                  .approveRegistration(
+                    session,
+                    params['registrationId'],
+                  ),
+        ),
       },
     );
     connectors['member'] = _i1.EndpointConnector(
@@ -697,13 +716,20 @@ class Endpoints extends _i1.EndpointDispatch {
         ),
         'getMembers': _i1.MethodConnector(
           name: 'getMembers',
-          params: {},
+          params: {
+            'sectionId': _i1.ParameterDescription(
+              name: 'sectionId',
+              type: _i1.getType<int?>(),
+              nullable: true,
+            ),
+          },
           call:
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
               ) async => (endpoints['member'] as _i6.MemberEndpoint).getMembers(
                 session,
+                sectionId: params['sectionId'],
               ),
         ),
         'createMember': _i1.MethodConnector(

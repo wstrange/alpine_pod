@@ -42,10 +42,17 @@ class EventView extends HookWidget {
 
     Future<void> register() async {
       try {
-        await client.event.registerForEvent(event.id!);
+        final reg = await client.event.registerForEvent(event.id!);
         if (context.mounted) {
+          final isWaitlisted =
+              reg.registrationStatus == RegistrationStatus.waitlisted;
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Registration successful!')),
+            SnackBar(
+              content: Text(isWaitlisted
+                  ? 'Added to waitlist. A manager will review your registration.'
+                  : 'Registration successful!'),
+              backgroundColor: isWaitlisted ? Colors.orange.shade700 : null,
+            ),
           );
           // Refresh global list; the useEffect subscription will bump refreshCount
           currentEventsSignal.refresh();

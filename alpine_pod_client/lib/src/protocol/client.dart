@@ -408,6 +408,15 @@ class EndpointEventManager extends _i2.EndpointRef {
         'listSectionEventManagers',
         {'sectionId': sectionId},
       );
+
+  /// Approve a waitlisted registration, moving it to confirmed.
+  /// The calling user must be an event manager for the event.
+  _i3.Future<_i7.EventRegistration> approveRegistration(int registrationId) =>
+      caller.callServerEndpoint<_i7.EventRegistration>(
+        'eventManager',
+        'approveRegistration',
+        {'registrationId': registrationId},
+      );
 }
 
 /// TODO: Use RBAC to restrict access to these methods
@@ -425,11 +434,11 @@ class EndpointMember extends _i2.EndpointRef {
         {},
       );
 
-  _i3.Future<List<_i9.Member>> getMembers() =>
+  _i3.Future<List<_i9.Member>> getMembers({int? sectionId}) =>
       caller.callServerEndpoint<List<_i9.Member>>(
         'member',
         'getMembers',
-        {},
+        {'sectionId': sectionId},
       );
 
   /// Create a new member.

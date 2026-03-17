@@ -58,14 +58,17 @@ class EventParticipantsManager extends HookWidget {
         ],
         if (waitlisted.isNotEmpty) ...[
           Text(
-            'Waitlisted (${waitlisted.length})',
-            style: Theme.of(context).textTheme.titleSmall,
+            'Waitlist – Pending Approval (${waitlisted.length})',
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  color: Colors.orange.shade700,
+                ),
           ),
           const SizedBox(height: 4),
           ...waitlisted.map(
             (reg) => _ParticipantTile(
               registration: reg,
               onRemove: () => _removeParticipant(context, reg),
+              onApprove: () => _approveParticipant(context, reg),
             ),
           ),
         ],
@@ -128,6 +131,33 @@ class EventParticipantsManager extends HookWidget {
     }
   }
 
+  Future<void> _approveParticipant(
+    BuildContext context,
+    EventRegistration reg,
+  ) async {
+    final name = reg.member != null
+        ? reg.member!.displayName ??
+            '${reg.member!.firstName} ${reg.member!.lastName}'
+        : 'this participant';
+
+    try {
+      await client.eventManager.approveRegistration(reg.id!);
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('$name approved and confirmed.')),
+        );
+        currentEventsSignal.refresh();
+        onRefresh();
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error approving participant: $e')),
+        );
+      }
+    }
+  }
+
   void _showAddParticipantDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -152,10 +182,12 @@ class _ParticipantTile extends StatelessWidget {
   const _ParticipantTile({
     required this.registration,
     required this.onRemove,
+    this.onApprove,
   });
 
   final EventRegistration registration;
   final VoidCallback onRemove;
+  final VoidCallback? onApprove;
 
   @override
   Widget build(BuildContext context) {
@@ -183,10 +215,22 @@ class _ParticipantTile extends StatelessWidget {
       subtitle: member != null
           ? Text(member.email, style: const TextStyle(fontSize: 12))
           : null,
-      trailing: IconButton(
-        icon: Icon(Icons.remove_circle_outline, color: Colors.red.shade600),
-        tooltip: 'Remove participant',
-        onPressed: onRemove,
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (onApprove != null)
+            IconButton(
+              icon: const Icon(Icons.check_circle_outline,
+                  color: Colors.green),
+              tooltip: 'Approve',
+              onPressed: onApprove,
+            ),
+          IconButton(
+            icon: Icon(Icons.remove_circle_outline, color: Colors.red.shade600),
+            tooltip: 'Remove participant',
+            onPressed: onRemove,
+          ),
+        ],
       ),
     );
   }

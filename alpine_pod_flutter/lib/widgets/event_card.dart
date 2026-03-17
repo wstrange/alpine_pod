@@ -85,20 +85,6 @@ class EventCard extends StatelessWidget {
                 const SizedBox(height: 8),
                 LocationWidget(location: event.eventLocation!, compact: true),
               ],
-              if (event.carpoolLocation != null) ...[
-                const SizedBox(height: 4),
-                Row(
-                  children: [
-                    const Icon(Icons.directions_car_outlined,
-                        size: 14, color: Colors.teal),
-                    const SizedBox(width: 4),
-                    Flexible(
-                      child: LocationWidget(
-                          location: event.carpoolLocation!, compact: true),
-                    ),
-                  ],
-                ),
-              ],
               const SizedBox(height: 8),
               Text(
                 event.description,
