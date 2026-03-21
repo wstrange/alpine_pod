@@ -16,7 +16,12 @@ class MemberEndpoint extends Endpoint {
     return m;
   }
 
-  Future<List<Member>> getMembers(Session session, {int? sectionId}) async {
+  Future<List<Member>> getMembers(
+    Session session, {
+    int? sectionId,
+    int limit = 100,
+    String? filter,
+  }) async {
     final authInfo = session.authenticated;
     if (authInfo == null) throw Exception('Not authenticated');
 
@@ -29,12 +34,24 @@ class MemberEndpoint extends Endpoint {
       if (!isGlobalAdmin && !callerInfo.sectionIds.contains(sectionId)) {
         throw Exception('You do not have access to this section');
       }
-      return await getSectionMembers(session, sectionId);
+      return await getSectionMembers(session, sectionId, filter: filter);
     }
 
     // Global admins can see everyone if no section is specified
     if (isGlobalAdmin) {
-      return await Member.db.find(session, orderBy: (t) => t.lastName);
+      return await Member.db.find(
+        session,
+        where: (t) {
+          if (filter != null && filter.isNotEmpty) {
+            return t.firstName.ilike('%$filter%') |
+                t.lastName.ilike('%$filter%') |
+                t.email.ilike('%$filter%');
+          }
+          return Constant.bool(true);
+        },
+        orderBy: (t) => t.lastName,
+        limit: limit,
+      );
     }
 
     if (callerInfo.sectionIds.isEmpty) {
@@ -44,7 +61,17 @@ class MemberEndpoint extends Endpoint {
     // Find all memberships in sections the caller belongs to
     final memberships = await SectionMembership.db.find(
       session,
-      where: (t) => t.sectionId.inSet(callerInfo.sectionIds),
+      where: (t) {
+        var expr = t.sectionId.inSet(callerInfo.sectionIds);
+        final f = filter;
+        if (f != null && f.isNotEmpty) {
+          expr = expr &
+              (t.member.firstName.ilike('%$f%') |
+                  t.member.lastName.ilike('%$f%') |
+                  t.member.email.ilike('%$f%'));
+        }
+        return expr;
+      },
       include: SectionMembership.include(
         member: Member.include(),
       ),
@@ -61,6 +88,11 @@ class MemberEndpoint extends Endpoint {
 
     final result = memberMap.values.toList();
     result.sort((a, b) => a.lastName.compareTo(b.lastName));
+
+    // Apply limit
+    if (result.length > limit) {
+      return result.sublist(0, limit);
+    }
     return result;
   }
 

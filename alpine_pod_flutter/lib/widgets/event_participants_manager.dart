@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:alpine_pod_client/alpine_pod_client.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -255,27 +256,32 @@ class _AddParticipantDialog extends HookWidget {
     final filterText = useState('');
     final isLoading = useState(false);
 
-    // Fetch section members once
+    // Fetch section members with server-side filtering, re-fetching when filter changes
     final membersFuture = useMemoized(
-      () => client.member.getSectionMembers(event.sectionId),
-      [event.sectionId],
+      () => client.member.getSectionMembers(event.sectionId,
+          filter: filterText.value.isEmpty ? null : filterText.value),
+      [event.sectionId, filterText.value],
     );
     final membersSnapshot = useFuture(membersFuture);
 
+    // Debounce the search input
+    final debounceTimer = useRef<Timer?>(null);
     useEffect(() {
-      void listener() => filterText.value = searchController.text;
+      void listener() {
+        debounceTimer.value?.cancel();
+        debounceTimer.value = Timer(const Duration(milliseconds: 500), () {
+          filterText.value = searchController.text.trim();
+        });
+      }
+
       searchController.addListener(listener);
-      return () => searchController.removeListener(listener);
+      return () {
+        debounceTimer.value?.cancel();
+        searchController.removeListener(listener);
+      };
     }, [searchController]);
 
-    final allMembers = membersSnapshot.data ?? <Member>[];
-    final query = filterText.value.toLowerCase().trim();
-    final filtered = allMembers.where((m) {
-      final fullName =
-          (m.displayName ?? '${m.firstName} ${m.lastName}').toLowerCase();
-      final email = m.email.toLowerCase();
-      return query.isEmpty || fullName.contains(query) || email.contains(query);
-    }).toList();
+    final filtered = membersSnapshot.data ?? <Member>[];
 
     return AlertDialog(
       title: const Text('Add Participant'),

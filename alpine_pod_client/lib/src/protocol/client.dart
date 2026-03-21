@@ -434,12 +434,19 @@ class EndpointMember extends _i2.EndpointRef {
         {},
       );
 
-  _i3.Future<List<_i9.Member>> getMembers({int? sectionId}) =>
-      caller.callServerEndpoint<List<_i9.Member>>(
-        'member',
-        'getMembers',
-        {'sectionId': sectionId},
-      );
+  _i3.Future<List<_i9.Member>> getMembers({
+    int? sectionId,
+    required int limit,
+    String? filter,
+  }) => caller.callServerEndpoint<List<_i9.Member>>(
+    'member',
+    'getMembers',
+    {
+      'sectionId': sectionId,
+      'limit': limit,
+      'filter': filter,
+    },
+  );
 
   /// Create a new member.
   ///

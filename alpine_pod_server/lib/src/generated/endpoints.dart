@@ -722,6 +722,16 @@ class Endpoints extends _i1.EndpointDispatch {
               type: _i1.getType<int?>(),
               nullable: true,
             ),
+            'limit': _i1.ParameterDescription(
+              name: 'limit',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+            'filter': _i1.ParameterDescription(
+              name: 'filter',
+              type: _i1.getType<String?>(),
+              nullable: true,
+            ),
           },
           call:
               (
@@ -730,6 +740,8 @@ class Endpoints extends _i1.EndpointDispatch {
               ) async => (endpoints['member'] as _i6.MemberEndpoint).getMembers(
                 session,
                 sectionId: params['sectionId'],
+                limit: params['limit'],
+                filter: params['filter'],
               ),
         ),
         'createMember': _i1.MethodConnector(

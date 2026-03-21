@@ -46,7 +46,8 @@ void main() {
         await Member.db.deleteWhere(session, where: (t) => Constant.bool(true));
 
         final members =
-            await endpoints.member.getMembers(authenticatedSessionBuilder);
+            await endpoints.member.getMembers(authenticatedSessionBuilder,
+                limit: 100);
         expect(members, isA<List<Member>>());
         expect(members.length, equals(0));
       });

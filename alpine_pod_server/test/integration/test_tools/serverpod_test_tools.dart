@@ -1216,6 +1216,8 @@ class _MemberEndpoint {
   _i3.Future<List<_i9.Member>> getMembers(
     _i1.TestSessionBuilder sessionBuilder, {
     int? sectionId,
+    required int limit,
+    String? filter,
   }) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -1228,7 +1230,11 @@ class _MemberEndpoint {
           createSessionCallback: (_) => _localUniqueSession,
           endpointPath: 'member',
           methodName: 'getMembers',
-          parameters: _i1.testObjectToJson({'sectionId': sectionId}),
+          parameters: _i1.testObjectToJson({
+            'sectionId': sectionId,
+            'limit': limit,
+            'filter': filter,
+          }),
           serializationManager: _serializationManager,
         );
         var _localReturnValue =
