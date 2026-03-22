@@ -1213,43 +1213,6 @@ class _MemberEndpoint {
     });
   }
 
-  _i3.Future<List<_i9.Member>> getMembers(
-    _i1.TestSessionBuilder sessionBuilder, {
-    int? sectionId,
-    required int limit,
-    String? filter,
-  }) async {
-    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
-      var _localUniqueSession =
-          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
-            endpoint: 'member',
-            method: 'getMembers',
-          );
-      try {
-        var _localCallContext = await _endpointDispatch.getMethodCallContext(
-          createSessionCallback: (_) => _localUniqueSession,
-          endpointPath: 'member',
-          methodName: 'getMembers',
-          parameters: _i1.testObjectToJson({
-            'sectionId': sectionId,
-            'limit': limit,
-            'filter': filter,
-          }),
-          serializationManager: _serializationManager,
-        );
-        var _localReturnValue =
-            await (_localCallContext.method.call(
-                  _localUniqueSession,
-                  _localCallContext.arguments,
-                )
-                as _i3.Future<List<_i9.Member>>);
-        return _localReturnValue;
-      } finally {
-        await _localUniqueSession.close();
-      }
-    });
-  }
-
   _i3.Future<_i9.Member> createMember(
     _i1.TestSessionBuilder sessionBuilder,
     _i9.Member member,
@@ -1375,9 +1338,10 @@ class _MemberEndpoint {
   }
 
   _i3.Future<List<_i9.Member>> getSectionMembers(
-    _i1.TestSessionBuilder sessionBuilder,
-    int sectionId, {
+    _i1.TestSessionBuilder sessionBuilder, {
+    int? sectionId,
     String? filter,
+    required int limit,
   }) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -1393,6 +1357,7 @@ class _MemberEndpoint {
           parameters: _i1.testObjectToJson({
             'sectionId': sectionId,
             'filter': filter,
+            'limit': limit,
           }),
           serializationManager: _serializationManager,
         );
@@ -1413,6 +1378,7 @@ class _MemberEndpoint {
     _i1.TestSessionBuilder sessionBuilder,
     int sectionId, {
     String? filter,
+    required int limit,
   }) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -1428,6 +1394,7 @@ class _MemberEndpoint {
           parameters: _i1.testObjectToJson({
             'sectionId': sectionId,
             'filter': filter,
+            'limit': limit,
           }),
           serializationManager: _serializationManager,
         );

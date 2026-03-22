@@ -714,36 +714,6 @@ class Endpoints extends _i1.EndpointDispatch {
               ) async => (endpoints['member'] as _i6.MemberEndpoint)
                   .getCurrentMember(session),
         ),
-        'getMembers': _i1.MethodConnector(
-          name: 'getMembers',
-          params: {
-            'sectionId': _i1.ParameterDescription(
-              name: 'sectionId',
-              type: _i1.getType<int?>(),
-              nullable: true,
-            ),
-            'limit': _i1.ParameterDescription(
-              name: 'limit',
-              type: _i1.getType<int>(),
-              nullable: false,
-            ),
-            'filter': _i1.ParameterDescription(
-              name: 'filter',
-              type: _i1.getType<String?>(),
-              nullable: true,
-            ),
-          },
-          call:
-              (
-                _i1.Session session,
-                Map<String, dynamic> params,
-              ) async => (endpoints['member'] as _i6.MemberEndpoint).getMembers(
-                session,
-                sectionId: params['sectionId'],
-                limit: params['limit'],
-                filter: params['filter'],
-              ),
-        ),
         'createMember': _i1.MethodConnector(
           name: 'createMember',
           params: {
@@ -825,13 +795,18 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'sectionId': _i1.ParameterDescription(
               name: 'sectionId',
-              type: _i1.getType<int>(),
-              nullable: false,
+              type: _i1.getType<int?>(),
+              nullable: true,
             ),
             'filter': _i1.ParameterDescription(
               name: 'filter',
               type: _i1.getType<String?>(),
               nullable: true,
+            ),
+            'limit': _i1.ParameterDescription(
+              name: 'limit',
+              type: _i1.getType<int>(),
+              nullable: false,
             ),
           },
           call:
@@ -841,8 +816,9 @@ class Endpoints extends _i1.EndpointDispatch {
               ) async =>
                   (endpoints['member'] as _i6.MemberEndpoint).getSectionMembers(
                     session,
-                    params['sectionId'],
+                    sectionId: params['sectionId'],
                     filter: params['filter'],
+                    limit: params['limit'],
                   ),
         ),
         'getSectionMemberships': _i1.MethodConnector(
@@ -858,6 +834,11 @@ class Endpoints extends _i1.EndpointDispatch {
               type: _i1.getType<String?>(),
               nullable: true,
             ),
+            'limit': _i1.ParameterDescription(
+              name: 'limit',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
           },
           call:
               (
@@ -868,6 +849,7 @@ class Endpoints extends _i1.EndpointDispatch {
                     session,
                     params['sectionId'],
                     filter: params['filter'],
+                    limit: params['limit'],
                   ),
         ),
         'getMySectionMembership': _i1.MethodConnector(

@@ -34,7 +34,6 @@ eventManager:
   - approveRegistration:
 member:
   - getCurrentMember:
-  - getMembers:
   - createMember:
   - addMemberToSection:
   - removeMemberFromSection:

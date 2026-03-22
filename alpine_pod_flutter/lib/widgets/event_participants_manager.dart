@@ -3,6 +3,7 @@ import 'package:alpine_pod_client/alpine_pod_client.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import '../signals.dart';
+import 'member_details_dialog.dart';
 
 /// Shown to event managers — lets them add or remove participants.
 class EventParticipantsManager extends HookWidget {
@@ -216,13 +217,15 @@ class _ParticipantTile extends StatelessWidget {
       subtitle: member != null
           ? Text(member.email, style: const TextStyle(fontSize: 12))
           : null,
+      onTap: member != null
+          ? () => showMemberDetailsDialog(context, member)
+          : null,
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           if (onApprove != null)
             IconButton(
-              icon: const Icon(Icons.check_circle_outline,
-                  color: Colors.green),
+              icon: const Icon(Icons.check_circle_outline, color: Colors.green),
               tooltip: 'Approve',
               onPressed: onApprove,
             ),
@@ -258,8 +261,10 @@ class _AddParticipantDialog extends HookWidget {
 
     // Fetch section members with server-side filtering, re-fetching when filter changes
     final membersFuture = useMemoized(
-      () => client.member.getSectionMembers(event.sectionId,
-          filter: filterText.value.isEmpty ? null : filterText.value),
+      () => client.member.getSectionMembers(
+          sectionId: event.sectionId,
+          filter: filterText.value.isEmpty ? null : filterText.value,
+          limit: 50),
       [event.sectionId, filterText.value],
     );
     final membersSnapshot = useFuture(membersFuture);

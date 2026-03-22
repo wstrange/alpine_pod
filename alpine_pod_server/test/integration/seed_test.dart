@@ -178,7 +178,7 @@ void main() {
 
       // Get the test users we just created
       final members =
-          await endpoints.member.getMembers(authSession, limit: 10000);
+          await endpoints.member.getSectionMembers(authSession, limit: 10000);
       final testMembers =
           members.where((m) => m.email.startsWith('test')).toList();
 

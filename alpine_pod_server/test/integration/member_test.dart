@@ -35,18 +35,21 @@ void main() {
     group('auth member endpoint tests', () {
       var authenticatedSessionBuilder = sessionBuilder.copyWith(
         authentication:
-            AuthenticationOverride.authenticationInfo(id, {Scope('admin')}),
+            AuthenticationOverride.authenticationInfo(id, {Scope.admin}),
       );
 
-      test('getMembers returns list of members for admin', () async {
+      test('getSectionMembers returns list of members for admin', () async {
         // Empty db expected.
         final session = sessionBuilder.build();
+        await EventRegistration.db
+            .deleteWhere(session, where: (t) => Constant.bool(true));
+        await Event.db.deleteWhere(session, where: (t) => Constant.bool(true));
         await SectionMembership.db
             .deleteWhere(session, where: (t) => Constant.bool(true));
         await Member.db.deleteWhere(session, where: (t) => Constant.bool(true));
 
         final members =
-            await endpoints.member.getMembers(authenticatedSessionBuilder,
+            await endpoints.member.getSectionMembers(authenticatedSessionBuilder,
                 limit: 100);
         expect(members, isA<List<Member>>());
         expect(members.length, equals(0));

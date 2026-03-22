@@ -1,4 +1,3 @@
-// TODO: Restore web routes after upgrade verification
 /*
 import 'package:serverpod/serverpod.dart';
 import '../widgets/built_with_serverpod_page.dart';

@@ -16,86 +16,6 @@ class MemberEndpoint extends Endpoint {
     return m;
   }
 
-  Future<List<Member>> getMembers(
-    Session session, {
-    int? sectionId,
-    int limit = 100,
-    String? filter,
-  }) async {
-    final authInfo = session.authenticated;
-    if (authInfo == null) throw Exception('Not authenticated');
-
-    final bool isGlobalAdmin = authInfo.scopes.contains(Scope.admin);
-    final callerInfo = await cache.getMemberInfo(session);
-    if (callerInfo == null) throw Exception('Member profile not found');
-
-    // If a specific section is requested, ensure the user has access to it
-    if (sectionId != null) {
-      if (!isGlobalAdmin && !callerInfo.sectionIds.contains(sectionId)) {
-        throw Exception('You do not have access to this section');
-      }
-      return await getSectionMembers(session, sectionId, filter: filter);
-    }
-
-    // Global admins can see everyone if no section is specified
-    if (isGlobalAdmin) {
-      return await Member.db.find(
-        session,
-        where: (t) {
-          if (filter != null && filter.isNotEmpty) {
-            return t.firstName.ilike('%$filter%') |
-                t.lastName.ilike('%$filter%') |
-                t.email.ilike('%$filter%');
-          }
-          return Constant.bool(true);
-        },
-        orderBy: (t) => t.lastName,
-        limit: limit,
-      );
-    }
-
-    if (callerInfo.sectionIds.isEmpty) {
-      return [callerInfo.member];
-    }
-
-    // Find all memberships in sections the caller belongs to
-    final memberships = await SectionMembership.db.find(
-      session,
-      where: (t) {
-        var expr = t.sectionId.inSet(callerInfo.sectionIds);
-        final f = filter;
-        if (f != null && f.isNotEmpty) {
-          expr = expr &
-              (t.member.firstName.ilike('%$f%') |
-                  t.member.lastName.ilike('%$f%') |
-                  t.member.email.ilike('%$f%'));
-        }
-        return expr;
-      },
-      include: SectionMembership.include(
-        member: Member.include(),
-      ),
-    );
-
-    // Extract unique members
-    final memberMap = <int, Member>{};
-    memberMap[callerInfo.member.id!] = callerInfo.member;
-    for (var m in memberships) {
-      if (m.member != null) {
-        memberMap[m.member!.id!] = m.member!;
-      }
-    }
-
-    final result = memberMap.values.toList();
-    result.sort((a, b) => a.lastName.compareTo(b.lastName));
-
-    // Apply limit
-    if (result.length > limit) {
-      return result.sublist(0, limit);
-    }
-    return result;
-  }
-
   /// Create a new member.
   ///
   /// - Validates that the email is not already in use.
@@ -169,19 +89,69 @@ class MemberEndpoint extends Endpoint {
     return updated;
   }
 
-  // New method for Member Directory
+  /// Returns members for a section, or all members the caller has access to
+  /// if [sectionId] is null.
+  ///
+  /// When [sectionId] is null:
+  /// - Global admins see all members.
+  /// - Regular users see members across all their sections (deduplicated).
   Future<List<Member>> getSectionMembers(
-    Session session,
-    int sectionId, {
+    Session session, {
+    int? sectionId,
     String? filter,
+    int limit = 50,
   }) async {
-    // We fetch SectionMemberships and include the Member relation
+    final authInfo = session.authenticated;
+    if (authInfo == null) throw Exception('Not authenticated');
+
+    final bool isGlobalAdmin = authInfo.scopes.contains(Scope.admin);
+
+    // Determine which section IDs to query
+    Set<int> targetSectionIds;
+    if (sectionId != null) {
+      if (!isGlobalAdmin) {
+        final callerInfo = await cache.getMemberInfo(session);
+        if (callerInfo == null) throw Exception('Member profile not found');
+        if (!callerInfo.sectionIds.contains(sectionId)) {
+          throw Exception('You do not have access to this section');
+        }
+      }
+      targetSectionIds = {sectionId};
+    } else {
+      // No section specified
+      if (isGlobalAdmin) {
+        // Admins see all members directly
+        return await Member.db.find(
+          session,
+          where: (t) {
+            if (filter != null && filter.isNotEmpty) {
+              return t.firstName.ilike('%$filter%') |
+                  t.lastName.ilike('%$filter%') |
+                  t.email.ilike('%$filter%');
+            }
+            return Constant.bool(true);
+          },
+          orderBy: (t) => t.lastName,
+          limit: limit,
+        );
+      }
+
+      final callerInfo = await cache.getMemberInfo(session);
+      if (callerInfo == null) throw Exception('Member profile not found');
+      if (callerInfo.sectionIds.isEmpty) {
+        return [callerInfo.member];
+      }
+      targetSectionIds = callerInfo.sectionIds;
+    }
+
+    // Query memberships across the target section(s)
     final memberships = await SectionMembership.db.find(
       session,
       where: (t) {
-        var expr = t.sectionId.equals(sectionId);
+        var expr = targetSectionIds.length == 1
+            ? t.sectionId.equals(targetSectionIds.first)
+            : t.sectionId.inSet(targetSectionIds);
         if (filter != null && filter.isNotEmpty) {
-          // Filter on member fields.
           expr = expr &
               (t.member.firstName.ilike('%$filter%') |
                   t.member.lastName.ilike('%$filter%') |
@@ -193,10 +163,28 @@ class MemberEndpoint extends Endpoint {
         member: Member.include(),
       ),
       orderBy: (t) => t.member.lastName,
+      limit: targetSectionIds.length == 1 ? limit : null,
     );
 
-    // Extract members from memberships
-    return memberships.map((m) => m.member!).toList();
+    // Extract members, deduplicating if querying multiple sections
+    if (targetSectionIds.length == 1) {
+      return memberships.map((m) => m.member!).toList();
+    }
+
+    final memberMap = <int, Member>{};
+    for (var m in memberships) {
+      if (m.member != null) {
+        memberMap[m.member!.id!] = m.member!;
+      }
+    }
+
+    final result = memberMap.values.toList();
+    result.sort((a, b) => a.lastName.compareTo(b.lastName));
+
+    if (result.length > limit) {
+      return result.sublist(0, limit);
+    }
+    return result;
   }
 
   /// Similar to getSectionMembers but returns the actual membership records,
@@ -205,6 +193,7 @@ class MemberEndpoint extends Endpoint {
     Session session,
     int sectionId, {
     String? filter,
+    int limit = 50,
   }) async {
     return await SectionMembership.db.find(
       session,
@@ -223,6 +212,7 @@ class MemberEndpoint extends Endpoint {
         member: Member.include(),
       ),
       orderBy: (t) => t.member.lastName,
+      limit: limit,
     );
   }
 

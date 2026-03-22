@@ -434,20 +434,6 @@ class EndpointMember extends _i2.EndpointRef {
         {},
       );
 
-  _i3.Future<List<_i9.Member>> getMembers({
-    int? sectionId,
-    required int limit,
-    String? filter,
-  }) => caller.callServerEndpoint<List<_i9.Member>>(
-    'member',
-    'getMembers',
-    {
-      'sectionId': sectionId,
-      'limit': limit,
-      'filter': filter,
-    },
-  );
-
   /// Create a new member.
   ///
   /// - Validates that the email is not already in use.
@@ -482,15 +468,23 @@ class EndpointMember extends _i2.EndpointRef {
         {'member': member},
       );
 
-  _i3.Future<List<_i9.Member>> getSectionMembers(
-    int sectionId, {
+  /// Returns members for a section, or all members the caller has access to
+  /// if [sectionId] is null.
+  ///
+  /// When [sectionId] is null:
+  /// - Global admins see all members.
+  /// - Regular users see members across all their sections (deduplicated).
+  _i3.Future<List<_i9.Member>> getSectionMembers({
+    int? sectionId,
     String? filter,
+    required int limit,
   }) => caller.callServerEndpoint<List<_i9.Member>>(
     'member',
     'getSectionMembers',
     {
       'sectionId': sectionId,
       'filter': filter,
+      'limit': limit,
     },
   );
 
@@ -499,12 +493,14 @@ class EndpointMember extends _i2.EndpointRef {
   _i3.Future<List<_i10.SectionMembership>> getSectionMemberships(
     int sectionId, {
     String? filter,
+    required int limit,
   }) => caller.callServerEndpoint<List<_i10.SectionMembership>>(
     'member',
     'getSectionMemberships',
     {
       'sectionId': sectionId,
       'filter': filter,
+      'limit': limit,
     },
   );
 

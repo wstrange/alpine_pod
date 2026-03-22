@@ -45,8 +45,8 @@ class _MemberDirectoryScreenState extends State<MemberDirectoryScreen> {
     }
 
     setState(() {
-      _membershipsFuture =
-          client.member.getSectionMemberships(sectionId, filter: filter);
+      _membershipsFuture = client.member
+          .getSectionMemberships(sectionId, filter: filter, limit: 50);
     });
   }
 
