@@ -1,5 +1,2 @@
 #include "../../Flutter/Flutter-Debug.xcconfig"
 #include "Warnings.xcconfig"
-
-CODE_SIGNING_ALLOWED = NO
-CODE_SIGNING_REQUIRED = NO
