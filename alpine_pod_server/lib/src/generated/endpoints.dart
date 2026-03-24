@@ -49,6 +49,12 @@ class Endpoints extends _i1.EndpointDispatch {
           'refreshJwtTokens',
           null,
         ),
+      'googleIdp': _i2.GoogleIdpEndpoint()
+        ..initialize(
+          server,
+          'googleIdp',
+          null,
+        ),
       'admin': _i3.AdminEndpoint()
         ..initialize(
           server,
@@ -289,6 +295,47 @@ class Endpoints extends _i1.EndpointDispatch {
                         session,
                         refreshToken: params['refreshToken'],
                       ),
+        ),
+      },
+    );
+    connectors['googleIdp'] = _i1.EndpointConnector(
+      name: 'googleIdp',
+      endpoint: endpoints['googleIdp']!,
+      methodConnectors: {
+        'login': _i1.MethodConnector(
+          name: 'login',
+          params: {
+            'idToken': _i1.ParameterDescription(
+              name: 'idToken',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+            'accessToken': _i1.ParameterDescription(
+              name: 'accessToken',
+              type: _i1.getType<String?>(),
+              nullable: true,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['googleIdp'] as _i2.GoogleIdpEndpoint).login(
+                    session,
+                    idToken: params['idToken'],
+                    accessToken: params['accessToken'],
+                  ),
+        ),
+        'hasAccount': _i1.MethodConnector(
+          name: 'hasAccount',
+          params: {},
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['googleIdp'] as _i2.GoogleIdpEndpoint)
+                  .hasAccount(session),
         ),
       },
     );

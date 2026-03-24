@@ -34,6 +34,7 @@ void main() async {
 
   sessionManager = client.auth;
   await sessionManager.initialize();
+  await sessionManager.initializeGoogleSignIn();
   //initializeBeacons();
 
   runApp(

@@ -1,6 +1,7 @@
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_auth_idp_server/core.dart' as core;
 import 'package:serverpod_auth_idp_server/providers/email.dart';
+import 'package:serverpod_auth_idp_server/providers/google.dart';
 
 class EmailIdpEndpoint extends EmailIdpBaseEndpoint {
   @override
@@ -16,3 +17,5 @@ class EmailIdpEndpoint extends EmailIdpBaseEndpoint {
 }
 
 class RefreshJwtTokensEndpoint extends core.RefreshJwtTokensEndpoint {}
+
+class GoogleIdpEndpoint extends GoogleIdpBaseEndpoint {}

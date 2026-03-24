@@ -234,6 +234,38 @@ class EndpointRefreshJwtTokens extends _i4.EndpointRefreshJwtTokens {
 }
 
 /// {@category Endpoint}
+class EndpointGoogleIdp extends _i1.EndpointGoogleIdpBase {
+  EndpointGoogleIdp(_i2.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'googleIdp';
+
+  /// Validates a Google ID token and either logs in the associated user or
+  /// creates a new user account if the Google account ID is not yet known.
+  ///
+  /// If a new user is created an associated [UserProfile] is also created.
+  @override
+  _i3.Future<_i4.AuthSuccess> login({
+    required String idToken,
+    required String? accessToken,
+  }) => caller.callServerEndpoint<_i4.AuthSuccess>(
+    'googleIdp',
+    'login',
+    {
+      'idToken': idToken,
+      'accessToken': accessToken,
+    },
+  );
+
+  @override
+  _i3.Future<bool> hasAccount() => caller.callServerEndpoint<bool>(
+    'googleIdp',
+    'hasAccount',
+    {},
+  );
+}
+
+/// {@category Endpoint}
 class EndpointAdmin extends _i2.EndpointRef {
   EndpointAdmin(_i2.EndpointCaller caller) : super(caller);
 
@@ -654,6 +686,7 @@ class Client extends _i2.ServerpodClientShared {
        ) {
     emailIdp = EndpointEmailIdp(this);
     refreshJwtTokens = EndpointRefreshJwtTokens(this);
+    googleIdp = EndpointGoogleIdp(this);
     admin = EndpointAdmin(this);
     event = EndpointEvent(this);
     eventManager = EndpointEventManager(this);
@@ -666,6 +699,8 @@ class Client extends _i2.ServerpodClientShared {
   late final EndpointEmailIdp emailIdp;
 
   late final EndpointRefreshJwtTokens refreshJwtTokens;
+
+  late final EndpointGoogleIdp googleIdp;
 
   late final EndpointAdmin admin;
 
@@ -685,6 +720,7 @@ class Client extends _i2.ServerpodClientShared {
   Map<String, _i2.EndpointRef> get endpointRefLookup => {
     'emailIdp': emailIdp,
     'refreshJwtTokens': refreshJwtTokens,
+    'googleIdp': googleIdp,
     'admin': admin,
     'event': event,
     'eventManager': eventManager,

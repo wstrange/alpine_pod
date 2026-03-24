@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_auth_idp_server/core.dart';
 import 'package:serverpod_auth_idp_server/providers/email.dart';
+import 'package:serverpod_auth_idp_server/providers/google.dart';
 // import 'package:serverpod_auth_server/serverpod_auth_server.dart' as auth;
 
 import 'src/generated/protocol.dart';
@@ -35,6 +38,9 @@ void run(List<String> args) async {
     // authenticationHandler: auth.authenticationHandler,
   );
 
+  final googleSecret =
+      GoogleClientSecret.fromJsonFile(File('config/google_client_secret.json'));
+
   pod.initializeAuthServices(identityProviderBuilders: [
     EmailIdpConfig(
       secretHashPepper: pod.getPassword('emailSecretHashPepper')!,
@@ -42,7 +48,8 @@ void run(List<String> args) async {
       sendRegistrationVerificationCode: _sendRegistrationCode,
       // Callback to send the password reset verification code to the user.
       sendPasswordResetVerificationCode: _sendPasswordResetCode,
-    )
+    ),
+    GoogleIdpConfig(clientSecret: googleSecret),
   ], tokenManagerBuilders: [
     JwtConfig(
         // Pepper used to hash the refresh token secret.

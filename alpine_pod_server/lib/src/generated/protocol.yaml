@@ -9,6 +9,9 @@ emailIdp:
   - hasAccount:
 refreshJwtTokens:
   - refreshAccessToken:
+googleIdp:
+  - login:
+  - hasAccount:
 admin:
   - createSection:
   - getSection:
