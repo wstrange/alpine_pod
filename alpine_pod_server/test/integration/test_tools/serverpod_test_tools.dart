@@ -1588,6 +1588,41 @@ class _MemberEndpoint {
       }
     });
   }
+
+  _i3.Future<_i9.Member> registerMember(
+    _i1.TestSessionBuilder sessionBuilder,
+    _i9.Member member,
+    List<int> sectionIds,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'member',
+            method: 'registerMember',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'member',
+          methodName: 'registerMember',
+          parameters: _i1.testObjectToJson({
+            'member': member,
+            'sectionIds': sectionIds,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<_i9.Member>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
 }
 
 class _RegistrationEndpoint {

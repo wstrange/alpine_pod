@@ -46,6 +46,7 @@ member:
   - getMySectionMembership:
   - getAllMySectionMemberships:
   - updateMemberScopes:
+  - registerMember:
 registration:
   - updateRegistrationStatus:
   - registerForEvent:

@@ -74,6 +74,12 @@ void main() {
     test('Create Default Sections', () async {
       for (final s in [
         Section(
+          name: 'National',
+          description: 'National Section',
+          location: 'Online',
+          contactInfo: '555-121-23456',
+        ),
+        Section(
           name: 'Calgary',
           description: 'Calgary Section',
           location: 'Room 101',
@@ -114,8 +120,7 @@ void main() {
       // get the sections..
       final sections = await endpoints.admin.listSections(authSession);
 
-      final s1 = sections[0];
-      final s2 = sections[1];
+      final s1 = sections[1];
 
       for (var i = 1; i <= numUsers; i++) {
         var email = 'test$i@acc.ca';
@@ -125,7 +130,7 @@ void main() {
           scopes: {},
         );
 
-        final emailId = await admin.createEmailAuthentication(
+        await admin.createEmailAuthentication(
           session,
           authUserId: au.id,
           email: email,
@@ -155,18 +160,11 @@ void main() {
         };
 
         // assign to first and second sections
-        var sm = await endpoints.member.addMemberToSection(
+        await endpoints.member.addMemberToSection(
             authSession,
             SectionMembership(
                 memberId: m.id!, sectionId: s1.id!, scopes: scopes));
 
-        sm = await endpoints.member.addMemberToSection(
-            authSession,
-            SectionMembership(
-              memberId: m.id!,
-              sectionId: s2.id!,
-              scopes: scopes,
-            ));
         //print(sm);
       }
     }, timeout: Timeout(Duration(minutes: 10)));

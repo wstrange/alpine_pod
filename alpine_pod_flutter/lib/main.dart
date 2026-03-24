@@ -13,6 +13,7 @@ import 'screens/member_directory_screen.dart';
 import 'screens/member_edit_screen.dart';
 import 'screens/section_selection_screen.dart';
 import 'screens/sign_in_screen.dart';
+import 'screens/registration_screen.dart';
 
 final host = 'Warrens-MacBook-Air.local';
 void main() async {
@@ -101,6 +102,10 @@ final router = GoRouter(
       path: '/directory',
       builder: (context, state) => const MemberDirectoryScreen(),
     ),
+    GoRoute(
+      path: '/registration',
+      builder: (context, state) => const RegistrationScreen(),
+    ),
   ],
   redirect: (BuildContext context, GoRouterState state) async {
     final bool loggedIn = sessionManager.isAuthenticated;
@@ -115,7 +120,11 @@ final router = GoRouter(
     // This is a fresh login.
     if (loggingIn) {
       try {
+        final member = await client.member.getCurrentMember();
         final sections = await client.section.getSectionsForCurrentUser();
+        if (member == null || sections.isEmpty) {
+          return '/registration';
+        }
         if (sections.length > 1) {
           return '/section-selection';
         } else {

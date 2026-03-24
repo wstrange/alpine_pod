@@ -959,6 +959,31 @@ class Endpoints extends _i1.EndpointDispatch {
                     params['newScopes'],
                   ),
         ),
+        'registerMember': _i1.MethodConnector(
+          name: 'registerMember',
+          params: {
+            'member': _i1.ParameterDescription(
+              name: 'member',
+              type: _i1.getType<_i12.Member>(),
+              nullable: false,
+            ),
+            'sectionIds': _i1.ParameterDescription(
+              name: 'sectionIds',
+              type: _i1.getType<List<int>>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['member'] as _i6.MemberEndpoint).registerMember(
+                    session,
+                    params['member'],
+                    params['sectionIds'],
+                  ),
+        ),
       },
     );
     connectors['registration'] = _i1.EndpointConnector(

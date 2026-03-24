@@ -327,4 +327,71 @@ class MemberEndpoint extends Endpoint {
     // Invalidate the cache for the updated member so their new scopes take effect immediately
     cache.invalidateUserCache(targetMember.userId);
   }
+
+  /// Atomic registration: creates a Member profile and multiple Section memberships.
+  Future<Member> registerMember(
+    Session session,
+    Member member,
+    List<int> sectionIds,
+  ) async {
+    final authInfo = session.authenticated;
+    if (authInfo == null) throw Exception('Not authenticated');
+
+    return await session.db.transaction((transaction) async {
+      // 1. Create or verify member profile
+      var existingMember = await Member.db.findFirstRow(
+        session,
+        where: (t) => t.user.id.equals(authInfo.authUserId),
+        transaction: transaction,
+      );
+
+      Member createdMember;
+      if (existingMember == null) {
+        // Ensure the email matches the authenticated user if not provided
+        final memberToInsert = member.copyWith(
+          userId: authInfo.authUserId,
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+        );
+        createdMember = await Member.db.insertRow(
+          session,
+          memberToInsert,
+          transaction: transaction,
+        );
+      } else {
+        // Update existing member info if needed?
+        // For now, if they already have a profile, we just use it.
+        createdMember = existingMember;
+      }
+
+      // 2. Create section memberships
+      for (final sectionId in sectionIds) {
+        final existingMembership = await SectionMembership.db.findFirstRow(
+          session,
+          where: (t) =>
+              t.memberId.equals(createdMember.id!) &
+              t.sectionId.equals(sectionId),
+          transaction: transaction,
+        );
+
+        if (existingMembership == null) {
+          await SectionMembership.db.insertRow(
+            session,
+            SectionMembership(
+              memberId: createdMember.id!,
+              sectionId: sectionId,
+              syncedAt: DateTime.now(),
+              scopes: {'member'},
+            ),
+            transaction: transaction,
+          );
+        }
+      }
+
+      // 3. Sync scopes
+      await _syncUserScopes(session, createdMember.id!);
+
+      return createdMember;
+    });
+  }
 }

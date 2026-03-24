@@ -567,6 +567,19 @@ class EndpointMember extends _i2.EndpointRef {
       'newScopes': newScopes,
     },
   );
+
+  /// Atomic registration: creates a Member profile and multiple Section memberships.
+  _i3.Future<_i9.Member> registerMember(
+    _i9.Member member,
+    List<int> sectionIds,
+  ) => caller.callServerEndpoint<_i9.Member>(
+    'member',
+    'registerMember',
+    {
+      'member': member,
+      'sectionIds': sectionIds,
+    },
+  );
 }
 
 /// {@category Endpoint}

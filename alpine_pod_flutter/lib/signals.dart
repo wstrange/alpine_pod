@@ -14,6 +14,10 @@ final userSectionsSignal = futureSignal(() async {
   return await client.section.getSectionsForCurrentUser();
 });
 
+final allSectionsSignal = futureSignal(() async {
+  return await client.section.listSections();
+});
+
 final currentMemberSignal = futureSignal(() async {
   return await client.member.getCurrentMember();
 });

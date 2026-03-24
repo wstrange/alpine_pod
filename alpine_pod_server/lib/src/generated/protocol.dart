@@ -1166,6 +1166,9 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == Set<String>) {
       return (data as List).map((e) => deserialize<String>(e)).toSet() as T;
     }
+    if (t == List<int>) {
+      return (data as List).map((e) => deserialize<int>(e)).toList() as T;
+    }
     if (t == List<_i19.EventRegistration>) {
       return (data as List)
               .map((e) => deserialize<_i19.EventRegistration>(e))
