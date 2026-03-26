@@ -16,7 +16,7 @@ final genData = GenData();
 final uuid = Uuid();
 
 final numEvents = 100;
-final numUsers = 1000;
+final numUsers = 200;
 
 void main() {
   final adminId = uuid.v4obj();

@@ -429,6 +429,24 @@ class Endpoints extends _i1.EndpointDispatch {
                 session,
               ),
         ),
+        'deleteUser': _i1.MethodConnector(
+          name: 'deleteUser',
+          params: {
+            'memberId': _i1.ParameterDescription(
+              name: 'memberId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['admin'] as _i3.AdminEndpoint).deleteUser(
+                session,
+                params['memberId'],
+              ),
+        ),
       },
     );
     connectors['event'] = _i1.EndpointConnector(

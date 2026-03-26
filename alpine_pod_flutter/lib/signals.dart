@@ -10,8 +10,8 @@ final log = Logger('signals');
 
 final userSignal = signal<AuthUser?>(null);
 
-final userSectionsSignal = futureSignal(() async {
-  return await client.section.getSectionsForCurrentUser();
+final userProfileInfoSignal = futureSignal(() async {
+  return await client.modules.serverpod_auth_core.userProfileInfo.get();
 });
 
 final allSectionsSignal = futureSignal(() async {

@@ -2,13 +2,20 @@
 
 
 
-## Admin 
-* Add a way to add a new section.
+## Admin Screen
+* Add admin screen.
+* Add a way to add / edit sections.
+* User search and delete
 * consider adding bulk create endpoint for testing
 
 
 ## General
-* getUsers should limit to 100 or so users, and have a way to get more users. Should accept a search string. UI should be paged?
-* Event edit should allow admin or trip leader to add or remove trip leaders. 
+* getUsers - UI should indicate that not all members are shown (if there are more than 100). Use search box * Event edit should allow admin or trip leader to add or remove trip leaders. 
+
+
+## Registration
+- Set roles?
+- When registering the section selection screen hangs. Probably the call to getSectionsForCurrentUser() is not working as expected - stale.
+
 
 

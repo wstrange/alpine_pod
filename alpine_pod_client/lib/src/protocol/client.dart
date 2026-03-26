@@ -306,6 +306,12 @@ class EndpointAdmin extends _i2.EndpointRef {
         'listSections',
         {},
       );
+
+  _i3.Future<void> deleteUser(int memberId) => caller.callServerEndpoint<void>(
+    'admin',
+    'deleteUser',
+    {'memberId': memberId},
+  );
 }
 
 /// {@category Endpoint}
