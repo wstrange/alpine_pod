@@ -4,12 +4,13 @@ Flutter UI for the alpine_pod Serverpod backend.
 
 ## Implementation Notes
 
-* Uses Riverpod, and Flutter Hooks for state management.
+* Uses Signals and Flutter Hooks for state management.
 * Uses GoRouter for routing.
 * Users serverpod_auth_client for authentication.
 * Standalone widgets go in lib/widgets/.
 * Screens go in lib/screens/
 * For now keep the folder nesting to a minimum.
+* Prefer using signals and hook widgets over stateful widgets
 
 
 ## UI FLow
@@ -21,3 +22,6 @@ Flutter UI for the alpine_pod Serverpod backend.
 ## Routing
 
 Routing is done using GoRouter. If the user has not authencicated they are redirected to the login screen. After login, if the user has not selected a section, they are redirected to the section selection screen. Otherwise, they are taken to the home screen of the selected section.
+
+If the user has the admin scope, they should be redirected to the admin screen.
+

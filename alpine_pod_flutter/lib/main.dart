@@ -14,6 +14,7 @@ import 'screens/member_edit_screen.dart';
 import 'screens/section_selection_screen.dart';
 import 'screens/sign_in_screen.dart';
 import 'screens/registration_screen.dart';
+import 'screens/admin_home_screen.dart';
 
 final host = 'Warrens-MacBook-Air.local';
 void main() async {
@@ -95,6 +96,10 @@ final router = GoRouter(
       builder: (context, state) => const HomeScreen(),
     ),
     GoRoute(
+      path: '/admin',
+      builder: (context, state) => const AdminHomeScreen(),
+    ),
+    GoRoute(
       path: '/profile',
       builder: (context, state) => const MemberEditScreen(),
     ),
@@ -119,6 +124,14 @@ final router = GoRouter(
 
     // This is a fresh login.
     if (loggingIn) {
+      // Admin users bypass normal member/section flow.
+      final isAdmin =
+          sessionManager.authInfo?.scopeNames.contains('serverpod.admin') ??
+              false;
+      if (isAdmin) {
+        return '/admin';
+      }
+
       try {
         final member = await client.member.getCurrentMember();
         final sections = await client.section.getSectionsForCurrentUser();
