@@ -3,7 +3,6 @@
 
 
 ## Admin Screen
-* Add admin screen.
 * Add a way to add / edit sections.
 * User search and delete
 * consider adding bulk create endpoint for testing
@@ -16,6 +15,4 @@
 ## Registration
 - Set roles?
 - When registering the section selection screen hangs. Probably the call to getSectionsForCurrentUser() is not working as expected - stale.
-
-
 
