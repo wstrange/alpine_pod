@@ -89,6 +89,11 @@ export 'package:serverpod_test/serverpod_test_public_exports.dart';
 /// }
 /// ```
 ///
+/// [configOverride] A function to override the server configuration. This function is called with
+/// the default server configuration after it is loaded from the config/ directory
+/// and before it is used to start the server. Use this to override particular
+/// settings in the server configuration.
+///
 /// [testGroupTagsOverride] By default Serverpod test tools tags the `withServerpod` test group with `"integration"`.
 /// This is to provide a simple way to only run unit or integration tests.
 /// This property allows this tag to be overridden to something else. Defaults to `['integration']`.
@@ -99,6 +104,7 @@ void withServerpod(
   String testGroupName,
   _i1.TestClosure<TestEndpoints> testClosure, {
   bool? applyMigrations,
+  _i2.ServerpodConfig Function(_i2.ServerpodConfig)? configOverride,
   bool? enableSessionLogging,
   _i2.ExperimentalFeatures? experimentalFeatures,
   _i1.RollbackDatabase? rollbackDatabase,
@@ -1453,6 +1459,7 @@ class _MemberEndpoint {
     int? sectionId,
     String? filter,
     required int limit,
+    required int offset,
   }) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -1469,6 +1476,7 @@ class _MemberEndpoint {
             'sectionId': sectionId,
             'filter': filter,
             'limit': limit,
+            'offset': offset,
           }),
           serializationManager: _serializationManager,
         );
@@ -1490,6 +1498,7 @@ class _MemberEndpoint {
     int sectionId, {
     String? filter,
     required int limit,
+    required int offset,
   }) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -1506,6 +1515,7 @@ class _MemberEndpoint {
             'sectionId': sectionId,
             'filter': filter,
             'limit': limit,
+            'offset': offset,
           }),
           serializationManager: _serializationManager,
         );

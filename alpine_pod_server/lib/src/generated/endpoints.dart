@@ -873,6 +873,11 @@ class Endpoints extends _i1.EndpointDispatch {
               type: _i1.getType<int>(),
               nullable: false,
             ),
+            'offset': _i1.ParameterDescription(
+              name: 'offset',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
           },
           call:
               (
@@ -884,6 +889,7 @@ class Endpoints extends _i1.EndpointDispatch {
                     sectionId: params['sectionId'],
                     filter: params['filter'],
                     limit: params['limit'],
+                    offset: params['offset'],
                   ),
         ),
         'getSectionMemberships': _i1.MethodConnector(
@@ -904,6 +910,11 @@ class Endpoints extends _i1.EndpointDispatch {
               type: _i1.getType<int>(),
               nullable: false,
             ),
+            'offset': _i1.ParameterDescription(
+              name: 'offset',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
           },
           call:
               (
@@ -915,6 +926,7 @@ class Endpoints extends _i1.EndpointDispatch {
                     params['sectionId'],
                     filter: params['filter'],
                     limit: params['limit'],
+                    offset: params['offset'],
                   ),
         ),
         'getMySectionMembership': _i1.MethodConnector(

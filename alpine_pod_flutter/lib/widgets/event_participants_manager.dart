@@ -264,7 +264,8 @@ class _AddParticipantDialog extends HookWidget {
       () => client.member.getSectionMembers(
           sectionId: event.sectionId,
           filter: filterText.value.isEmpty ? null : filterText.value,
-          limit: 50),
+          limit: 50,
+          offset: 0),
       [event.sectionId, filterText.value],
     );
     final membersSnapshot = useFuture(membersFuture);

@@ -395,6 +395,49 @@ class _MembersTab extends HookWidget {
     final filter = useSignal<String?>(null);
     final reload = useSignal(0);
 
+    // Pagination state
+    final items = useSignal<List<Member>>([]);
+    final offset = useSignal(0);
+    final hasMore = useSignal(true);
+    final isLoading = useSignal(false);
+    final error = useSignal<String?>(null);
+
+    const int pageSize = 50;
+
+    Future<void> fetchPage({bool reset = false}) async {
+      if (isLoading.peek() || (!hasMore.peek() && !reset)) return;
+
+      isLoading.value = true;
+      error.value = null;
+
+      if (reset) {
+        offset.value = 0;
+        hasMore.value = true;
+      }
+
+      try {
+        final newItems = await client.member.getSectionMembers(
+          filter: filter.peek(),
+          limit: pageSize,
+          offset: offset.peek(),
+        );
+
+        if (reset) {
+          items.value = newItems;
+        } else {
+          items.value = [...items.peek(), ...newItems];
+        }
+
+        hasMore.value = newItems.length == pageSize;
+        offset.value = offset.peek() + newItems.length;
+      } catch (e) {
+        error.value = e.toString();
+      } finally {
+        isLoading.value = false;
+      }
+    }
+
+    // Handle filter and reload changes (reset state)
     useEffect(() {
       void onChanged() {
         final text = searchCtrl.text.trim();
@@ -405,12 +448,24 @@ class _MembersTab extends HookWidget {
       return () => searchCtrl.removeListener(onChanged);
     }, [searchCtrl]);
 
-    final membersSignal = useFutureSignal(
-      () => client.member.getSectionMembers(filter: filter.peek(), limit: 100),
-      keys: [filter.value, reload.value],
-    );
+    // Re-fetch on filter or reload change
+    useEffect(() {
+      fetchPage(reset: true);
+      return null;
+    }, [filter.value, reload.value]);
 
-    final members = membersSignal.watch(context);
+    final scrollController = useScrollController();
+    useEffect(() {
+      void onScroll() {
+        if (scrollController.position.pixels >=
+            scrollController.position.maxScrollExtent - 200) {
+          fetchPage();
+        }
+      }
+
+      scrollController.addListener(onScroll);
+      return () => scrollController.removeListener(onScroll);
+    }, [scrollController]);
 
     Future<void> deleteUser(Member member) async {
       final fullName =
@@ -463,33 +518,53 @@ class _MembersTab extends HookWidget {
           ),
         ),
         Expanded(
-          child: members.map(
-            data: (list) {
-              if (list.isEmpty) {
-                return const Center(
-                  child: Text('No members found.',
-                      style: TextStyle(color: Colors.white54)),
-                );
-              }
-              return ListView.separated(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                itemCount: list.length,
-                separatorBuilder: (_, __) => const SizedBox(height: 8),
-                itemBuilder: (_, i) => _MemberCard(
+          child: Watch((context) {
+            final list = items.value;
+            final isInitialLoading = isLoading.value && list.isEmpty;
+            final currentError = error.value;
+
+            if (isInitialLoading) {
+              return const Center(
+                child: CircularProgressIndicator(color: Color(0xFF6C63FF)),
+              );
+            }
+
+            if (currentError != null && list.isEmpty) {
+              return Center(
+                child: Text('Error: $currentError',
+                    style: const TextStyle(color: Colors.redAccent)),
+              );
+            }
+
+            if (list.isEmpty) {
+              return const Center(
+                child: Text('No members found.',
+                    style: TextStyle(color: Colors.white54)),
+              );
+            }
+
+            return ListView.separated(
+              controller: scrollController,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              itemCount: list.length + (hasMore.value ? 1 : 0),
+              separatorBuilder: (_, __) => const SizedBox(height: 8),
+              itemBuilder: (_, i) {
+                if (i == list.length) {
+                  return const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 16),
+                    child: Center(
+                      child: CircularProgressIndicator(
+                          color: Color(0xFF6C63FF), strokeWidth: 2),
+                    ),
+                  );
+                }
+                return _MemberCard(
                   member: list[i],
                   onDelete: () => deleteUser(list[i]),
-                ),
-              );
-            },
-            error: (e, _) => Center(
-              child: Text('Error: $e',
-                  style: const TextStyle(color: Colors.redAccent)),
-            ),
-            loading: () => const Center(
-              child: CircularProgressIndicator(color: Color(0xFF6C63FF)),
-            ),
-          ),
+                );
+              },
+            );
+          }),
         ),
       ],
     );

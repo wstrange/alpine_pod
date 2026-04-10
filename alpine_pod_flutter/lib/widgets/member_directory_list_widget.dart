@@ -4,10 +4,13 @@ import 'package:signals_flutter/signals_flutter.dart';
 import '../signals.dart';
 import 'member_details_dialog.dart';
 
-class MemberDirectoryListWidget extends StatefulWidget {
+class MemberDirectoryListWidget extends StatelessWidget {
   final List<SectionMembership> memberships;
   final bool shrinkWrap;
   final ScrollPhysics? physics;
+  final ScrollController? scrollController;
+  final bool hasMore;
+  final bool isLoadingMore;
   final Function(int memberId, Set<String> newScopes)? onScopesUpdated;
 
   const MemberDirectoryListWidget({
@@ -15,31 +18,38 @@ class MemberDirectoryListWidget extends StatefulWidget {
     required this.memberships,
     this.shrinkWrap = false,
     this.physics,
+    this.scrollController,
+    this.hasMore = false,
+    this.isLoadingMore = false,
     this.onScopesUpdated,
   });
 
-  @override
-  State<MemberDirectoryListWidget> createState() =>
-      _MemberDirectoryListWidgetState();
-}
-
-class _MemberDirectoryListWidgetState extends State<MemberDirectoryListWidget> {
   @override
   Widget build(BuildContext context) {
     // Watch current user's scopes for this section to enable/disable edit features
     mySectionMembershipSignal.watch(context);
 
-    if (widget.memberships.isEmpty) {
+    if (memberships.isEmpty && !isLoadingMore) {
       return const Center(child: Text('No members found.'));
     }
 
     return ListView.separated(
-      shrinkWrap: widget.shrinkWrap,
-      physics: widget.physics,
-      itemCount: widget.memberships.length,
+      controller: scrollController,
+      shrinkWrap: shrinkWrap,
+      physics: physics,
+      itemCount: memberships.length + (hasMore ? 1 : 0),
       separatorBuilder: (context, index) => const Divider(),
       itemBuilder: (context, index) {
-        final membership = widget.memberships[index];
+        if (index == memberships.length) {
+          return const Padding(
+            padding: EdgeInsets.symmetric(vertical: 24),
+            child: Center(
+              child: CircularProgressIndicator(strokeWidth: 2),
+            ),
+          );
+        }
+
+        final membership = memberships[index];
         final member = membership.member;
         if (member == null) return const SizedBox();
 
@@ -89,7 +99,9 @@ class _MemberDirectoryListWidgetState extends State<MemberDirectoryListWidget> {
 
   bool _canEditScopes() {
     final scopes = sessionManager.authInfo?.scopeNames ?? {};
-    if (scopes.contains('admin')) return true;
+    if (scopes.contains('serverpod.admin') || scopes.contains('admin')) {
+      return true;
+    }
 
     // Check section-specific roles
     final myMembership = mySectionMembershipSignal.value.value;
@@ -169,8 +181,8 @@ class _MemberDirectoryListWidgetState extends State<MemberDirectoryListWidget> {
                 TextButton(
                   onPressed: () {
                     Navigator.of(context).pop();
-                    if (widget.onScopesUpdated != null) {
-                      widget.onScopesUpdated!(member.id!, selectedScopes);
+                    if (onScopesUpdated != null) {
+                      onScopesUpdated!(member.id!, selectedScopes);
                     }
                   },
                   child: const Text('Save'),

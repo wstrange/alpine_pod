@@ -95,11 +95,14 @@ class MemberEndpoint extends Endpoint {
   /// When [sectionId] is null:
   /// - Global admins see all members.
   /// - Regular users see members across all their sections (deduplicated).
+  ///
+  /// Use [offset] for pagination — pass `offset: page * limit` to load successive pages.
   Future<List<Member>> getSectionMembers(
     Session session, {
     int? sectionId,
     String? filter,
     int limit = 50,
+    int offset = 0,
   }) async {
     final authInfo = session.authenticated;
     if (authInfo == null) throw Exception('Not authenticated');
@@ -120,7 +123,7 @@ class MemberEndpoint extends Endpoint {
     } else {
       // No section specified
       if (isGlobalAdmin) {
-        // Admins see all members directly
+        // Admins see all members directly — DB handles offset natively.
         return await Member.db.find(
           session,
           where: (t) {
@@ -133,13 +136,14 @@ class MemberEndpoint extends Endpoint {
           },
           orderBy: (t) => t.lastName,
           limit: limit,
+          offset: offset,
         );
       }
 
       final callerInfo = await cache.getMemberInfo(session);
       if (callerInfo == null) throw Exception('Member profile not found');
       if (callerInfo.sectionIds.isEmpty) {
-        return [callerInfo.member];
+        return offset == 0 ? [callerInfo.member] : [];
       }
       targetSectionIds = callerInfo.sectionIds;
     }
@@ -163,14 +167,19 @@ class MemberEndpoint extends Endpoint {
         member: Member.include(),
       ),
       orderBy: (t) => t.member.lastName,
+      // For a single section the DB handles limit + offset directly.
+      // For multi-section we must deduplicate first, so fetch everything
+      // and slice in Dart.
       limit: targetSectionIds.length == 1 ? limit : null,
+      offset: targetSectionIds.length == 1 ? offset : null,
     );
 
-    // Extract members, deduplicating if querying multiple sections
+    // Single section — no deduplication needed.
     if (targetSectionIds.length == 1) {
       return memberships.map((m) => m.member!).toList();
     }
 
+    // Multi-section: deduplicate, sort, then apply offset + limit in Dart.
     final memberMap = <int, Member>{};
     for (var m in memberships) {
       if (m.member != null) {
@@ -178,29 +187,30 @@ class MemberEndpoint extends Endpoint {
       }
     }
 
-    final result = memberMap.values.toList();
-    result.sort((a, b) => a.lastName.compareTo(b.lastName));
+    final result = memberMap.values.toList()
+      ..sort((a, b) => a.lastName.compareTo(b.lastName));
 
-    if (result.length > limit) {
-      return result.sublist(0, limit);
-    }
-    return result;
+    if (offset >= result.length) return [];
+    final end = (offset + limit).clamp(0, result.length);
+    return result.sublist(offset, end);
   }
 
   /// Similar to getSectionMembers but returns the actual membership records,
   /// which include the user's scopes for the section.
+  ///
+  /// Use [offset] for pagination — pass `offset: page * limit` to load successive pages.
   Future<List<SectionMembership>> getSectionMemberships(
     Session session,
     int sectionId, {
     String? filter,
     int limit = 50,
+    int offset = 0,
   }) async {
     return await SectionMembership.db.find(
       session,
       where: (t) {
         var expr = t.sectionId.equals(sectionId);
         if (filter != null && filter.isNotEmpty) {
-          // Filter on member fields.
           expr = expr &
               (t.member.firstName.ilike('%$filter%') |
                   t.member.lastName.ilike('%$filter%') |
@@ -213,6 +223,7 @@ class MemberEndpoint extends Endpoint {
       ),
       orderBy: (t) => t.member.lastName,
       limit: limit,
+      offset: offset,
     );
   }
 

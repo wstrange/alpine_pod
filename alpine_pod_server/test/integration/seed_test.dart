@@ -175,8 +175,8 @@ void main() {
       final edmonton = sections.firstWhere((s) => s.name == 'Edmonton');
 
       // Get the test users we just created
-      final members =
-          await endpoints.member.getSectionMembers(authSession, limit: 10000);
+      final members = await endpoints.member
+          .getSectionMembers(authSession, limit: 10000, offset: 0);
       final testMembers =
           members.where((m) => m.email.startsWith('test')).toList();
 

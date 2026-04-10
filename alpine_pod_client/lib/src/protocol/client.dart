@@ -512,10 +512,13 @@ class EndpointMember extends _i2.EndpointRef {
   /// When [sectionId] is null:
   /// - Global admins see all members.
   /// - Regular users see members across all their sections (deduplicated).
+  ///
+  /// Use [offset] for pagination — pass `offset: page * limit` to load successive pages.
   _i3.Future<List<_i9.Member>> getSectionMembers({
     int? sectionId,
     String? filter,
     required int limit,
+    required int offset,
   }) => caller.callServerEndpoint<List<_i9.Member>>(
     'member',
     'getSectionMembers',
@@ -523,15 +526,19 @@ class EndpointMember extends _i2.EndpointRef {
       'sectionId': sectionId,
       'filter': filter,
       'limit': limit,
+      'offset': offset,
     },
   );
 
   /// Similar to getSectionMembers but returns the actual membership records,
   /// which include the user's scopes for the section.
+  ///
+  /// Use [offset] for pagination — pass `offset: page * limit` to load successive pages.
   _i3.Future<List<_i10.SectionMembership>> getSectionMemberships(
     int sectionId, {
     String? filter,
     required int limit,
+    required int offset,
   }) => caller.callServerEndpoint<List<_i10.SectionMembership>>(
     'member',
     'getSectionMemberships',
@@ -539,6 +546,7 @@ class EndpointMember extends _i2.EndpointRef {
       'sectionId': sectionId,
       'filter': filter,
       'limit': limit,
+      'offset': offset,
     },
   );
 

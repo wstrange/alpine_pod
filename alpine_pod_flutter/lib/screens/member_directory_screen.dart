@@ -2,85 +2,126 @@ import 'dart:async';
 
 import 'package:alpine_pod_client/alpine_pod_client.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:signals_hooks/signals_hooks.dart';
 import '../signals.dart';
 import '../widgets/member_directory_list_widget.dart';
 
-class MemberDirectoryScreen extends StatefulWidget {
+class MemberDirectoryScreen extends HookWidget {
   const MemberDirectoryScreen({super.key});
 
   @override
-  State<MemberDirectoryScreen> createState() => _MemberDirectoryScreenState();
-}
+  Widget build(BuildContext context) {
+    final searchCtrl = useTextEditingController();
+    final filter = useSignal<String?>(null);
+    final reload = useSignal(0);
 
-class _MemberDirectoryScreenState extends State<MemberDirectoryScreen> {
-  final _searchController = TextEditingController();
-  Timer? _debounceTimer;
+    // Pagination state
+    final memberships = useSignal<List<SectionMembership>>([]);
+    final offset = useSignal(0);
+    final hasMore = useSignal(true);
+    final isLoading = useSignal(false);
+    final error = useSignal<String?>(null);
 
-  late Future<List<SectionMembership>> _membershipsFuture;
+    const int pageSize = 50;
 
-  @override
-  void initState() {
-    super.initState();
-    _searchController.addListener(_onSearchChanged);
-    // Initial load
-    _loadMembers();
-  }
+    final section = sectionSignal.watch(context);
 
-  void _onSearchChanged() {
-    _debounceTimer?.cancel();
-    _debounceTimer = Timer(const Duration(milliseconds: 500), () {
-      _loadMembers(filter: _searchController.text);
-    });
-  }
+    Future<void> fetchPage({bool reset = false}) async {
+      final sectionId = section?.id;
+      if (sectionId == null) {
+        memberships.value = [];
+        return;
+      }
 
-  void _loadMembers({String? filter}) {
-    if (!mounted) return;
+      if (isLoading.peek() || (!hasMore.peek() && !reset)) return;
 
-    final sectionId = sectionSignal.peek()?.id;
-    if (sectionId == null) {
-      setState(() {
-        _membershipsFuture = Future.value([]);
-      });
-      return;
+      isLoading.value = true;
+      error.value = null;
+
+      if (reset) {
+        offset.value = 0;
+        hasMore.value = true;
+      }
+
+      try {
+        final newItems = await client.member.getSectionMemberships(
+          sectionId,
+          filter: filter.peek(),
+          limit: pageSize,
+          offset: offset.peek(),
+        );
+
+        if (reset) {
+          memberships.value = newItems;
+        } else {
+          memberships.value = [...memberships.peek(), ...newItems];
+        }
+
+        hasMore.value = newItems.length == pageSize;
+        offset.value = offset.peek() + newItems.length;
+      } catch (e) {
+        error.value = e.toString();
+      } finally {
+        isLoading.value = false;
+      }
     }
 
-    setState(() {
-      _membershipsFuture = client.member
-          .getSectionMemberships(sectionId, filter: filter, limit: 50);
-    });
-  }
+    // Debounced search
+    useEffect(() {
+      Timer? timer;
+      void onChanged() {
+        timer?.cancel();
+        timer = Timer(const Duration(milliseconds: 500), () {
+          final text = searchCtrl.text.trim();
+          filter.value = text.isEmpty ? null : text;
+        });
+      }
 
-  Future<void> _updateScopes(int memberId, Set<String> newScopes) async {
-    final sectionId = sectionSignal.peek()?.id;
-    if (sectionId == null) return;
+      searchCtrl.addListener(onChanged);
+      return () {
+        searchCtrl.removeListener(onChanged);
+        timer?.cancel();
+      };
+    }, [searchCtrl]);
 
-    try {
-      await client.member.updateMemberScopes(memberId, sectionId, newScopes);
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+    // Re-fetch on filter, reload or section change
+    useEffect(() {
+      fetchPage(reset: true);
+      return null;
+    }, [filter.value, reload.value, section?.id]);
+
+    final scrollController = useScrollController();
+    useEffect(() {
+      void onScroll() {
+        if (scrollController.position.pixels >=
+            scrollController.position.maxScrollExtent - 200) {
+          fetchPage();
+        }
+      }
+
+      scrollController.addListener(onScroll);
+      return () => scrollController.removeListener(onScroll);
+    }, [scrollController]);
+
+    Future<void> updateScopes(int memberId, Set<String> newScopes) async {
+      final sectionId = section?.id;
+      if (sectionId == null) return;
+
+      final messenger = ScaffoldMessenger.of(context);
+      try {
+        await client.member.updateMemberScopes(memberId, sectionId, newScopes);
+        messenger.showSnackBar(
           const SnackBar(content: Text('Roles updated successfully')),
         );
-        _loadMembers(filter: _searchController.text); // Reload to show changes
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        reload.value++; // Reload to show changes
+      } catch (e) {
+        messenger.showSnackBar(
           SnackBar(content: Text('Failed to update roles: $e')),
         );
       }
     }
-  }
 
-  @override
-  void dispose() {
-    _debounceTimer?.cancel();
-    _searchController.removeListener(_onSearchChanged);
-    _searchController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Member Directory'),
@@ -90,7 +131,7 @@ class _MemberDirectoryScreenState extends State<MemberDirectoryScreen> {
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: TextField(
-              controller: _searchController,
+              controller: searchCtrl,
               decoration: const InputDecoration(
                 labelText: 'Search',
                 hintText: 'Name or Email',
@@ -100,28 +141,27 @@ class _MemberDirectoryScreenState extends State<MemberDirectoryScreen> {
             ),
           ),
           Expanded(
-            child: FutureBuilder<List<SectionMembership>>(
-              future: _membershipsFuture,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                }
+            child: Watch((context) {
+              final list = memberships.value;
+              final isInitialLoading = isLoading.value && list.isEmpty;
 
-                final memberships = snapshot.data ?? [];
+              if (isInitialLoading) {
+                return const Center(child: CircularProgressIndicator());
+              }
 
-                if (memberships.isEmpty) {
-                  return const Center(child: Text('No members found.'));
-                }
+              final currentError = error.value;
+              if (currentError != null && list.isEmpty) {
+                return Center(child: Text('Error: $currentError'));
+              }
 
-                return MemberDirectoryListWidget(
-                  memberships: memberships,
-                  onScopesUpdated: _updateScopes,
-                );
-              },
-            ),
+              return MemberDirectoryListWidget(
+                memberships: list,
+                hasMore: hasMore.value,
+                isLoadingMore: isLoading.value && list.isNotEmpty,
+                scrollController: scrollController,
+                onScopesUpdated: updateScopes,
+              );
+            }),
           ),
         ],
       ),
