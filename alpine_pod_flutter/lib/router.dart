@@ -35,21 +35,31 @@ final router = GoRouter(
       builder: (context, state) => const SectionSelectionScreen(),
     ),
     GoRoute(
-      path: '/create-event',
-      builder: (context, state) => const EventEditScreen(),
-    ),
-    GoRoute(
-      path: '/event-view',
+      path: '/event-view/:id',
       builder: (context, state) {
-        final event = state.extra as Event;
-        return EventDetailsScreen(event: event);
+        final idStr = state.pathParameters['id'];
+        final id = idStr != null ? int.tryParse(idStr) : null;
+        if (id == null) return const HomeScreen();
+        return EventDetailsScreen(eventId: id);
       },
     ),
     GoRoute(
-      path: '/event-details',
+      path: '/event-edit/:id',
       builder: (context, state) {
-        final event = state.extra as Event;
-        return EventEditScreen(event: event);
+        final idStr = state.pathParameters['id'];
+        final id = idStr != null ? int.tryParse(idStr) : null;
+        if (id == null) return const HomeScreen();
+        return EventEditScreen(eventId: id);
+      },
+    ),
+    GoRoute(
+      path: '/create-event',
+      builder: (context, state) {
+        final extra = state.extra;
+        if (extra is Event) {
+          return EventEditScreen(event: extra);
+        }
+        return const EventEditScreen();
       },
     ),
     GoRoute(

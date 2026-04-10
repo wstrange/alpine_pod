@@ -8,47 +8,52 @@ import '../signals.dart';
 import '../widgets/event_view.dart';
 
 class EventDetailsScreen extends HookWidget {
-  const EventDetailsScreen({required this.event, super.key});
+  const EventDetailsScreen({required this.eventId, super.key});
 
-  final Event event;
+  final int eventId;
 
   @override
   Widget build(BuildContext context) {
-    // Watch the global events signal so we get the refreshed event after edits
-    final eventsValue = currentEventsSignal.watch(context);
-    final freshEvent = useMemoized(() {
-      if (eventsValue is AsyncData<List<Event>>) {
-        return eventsValue.value.where((e) => e.id == event.id).firstOrNull;
-      }
-      return null;
-    }, [eventsValue]);
+    // We create a memoized future signal for this specific event ID.
+    final eventSignal = useMemoized(
+      () => futureSignal(() => client.event.getEvent(eventId)),
+      [eventId],
+    );
 
-    final displayEvent = freshEvent ?? event;
+    final eventValue = eventSignal.watch(context);
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Event Details'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.copy),
-            tooltip: 'Copy Event',
-            onPressed: () {
-              final clonedEvent = displayEvent.copyWith(
-                id: null,
-                title: 'Copy of ${displayEvent.title}',
-              );
-              GoRouter.of(context).push('/event-details', extra: clonedEvent);
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.edit),
-            onPressed: () {
-              GoRouter.of(context).push('/event-details', extra: displayEvent);
-            },
-          ),
-        ],
+        actions: eventValue.map(
+          data: (event) => [
+            IconButton(
+              icon: const Icon(Icons.copy),
+              tooltip: 'Copy Event',
+              onPressed: () {
+                final clonedEvent = event.copyWith(
+                  id: null,
+                  title: 'Copy of ${event.title}',
+                );
+                GoRouter.of(context).push('/create-event', extra: clonedEvent);
+              },
+            ),
+            IconButton(
+              icon: const Icon(Icons.edit),
+              onPressed: () {
+                GoRouter.of(context).push('/event-edit/${event.id}');
+              },
+            ),
+          ],
+          error: (_, __) => [],
+          loading: () => [],
+        ),
       ),
-      body: EventView(event: displayEvent),
+      body: eventValue.map(
+        data: (event) => EventView(event: event),
+        error: (err, _) => Center(child: Text('Error loading event: $err')),
+        loading: () => const Center(child: CircularProgressIndicator()),
+      ),
     );
   }
 }

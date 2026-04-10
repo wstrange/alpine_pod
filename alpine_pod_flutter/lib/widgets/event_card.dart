@@ -22,7 +22,7 @@ class EventCard extends StatelessWidget {
         side: BorderSide(color: Colors.grey.withValues(alpha: 0.15)),
       ),
       child: InkWell(
-        onTap: () => GoRouter.of(context).push('/event-view', extra: event),
+        onTap: () => GoRouter.of(context).push('/event-view/${event.id}'),
         borderRadius: BorderRadius.circular(16),
         child: Padding(
           padding: const EdgeInsets.all(16),

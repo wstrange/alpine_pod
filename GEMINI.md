@@ -110,3 +110,7 @@ If you make any changes make sure they are in a new git branch.
 ## UI
 
 See the alpine_pod_flutter/README.md.
+
+## Notes
+
+* Flutter is installed in `/Users/warren/dev/flutter`

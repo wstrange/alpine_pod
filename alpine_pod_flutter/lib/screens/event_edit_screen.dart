@@ -10,8 +10,9 @@ import '../util.dart';
 final log = Logger('EventEditScreen');
 
 class EventEditScreen extends StatefulWidget {
-  const EventEditScreen({this.event, super.key});
+  const EventEditScreen({this.eventId, this.event, super.key});
 
+  final int? eventId;
   final Event? event;
 
   @override
@@ -29,22 +30,60 @@ class _EventEditScreenState extends State<EventEditScreen> {
   late String _selectedType;
   late bool _requiresApproval;
 
+  Event? _loadedEvent;
+  bool _isLoading = false;
+  String? _error;
+
   @override
   void initState() {
     super.initState();
-    titleController = TextEditingController(text: widget.event?.title);
-    descriptionController =
-        TextEditingController(text: widget.event?.description);
-    locationController = TextEditingController(text: widget.event?.eventLocation);
-    carpoolLocationController =
-        TextEditingController(text: widget.event?.carpoolLocation);
-    startTime = widget.event?.startTime ?? DateTime.now();
-    endTime =
-        widget.event?.endTime ?? DateTime.now().add(const Duration(hours: 8));
-    carpoolTime = widget.event?.carpoolTime;
-    _selectedType = widget.event?.type ?? eventTypes.first;
-    _requiresApproval = widget.event?.requiresApproval ?? true;
-    // If the stored type isn't in our list, fall back to the first entry
+    titleController = TextEditingController();
+    descriptionController = TextEditingController();
+    locationController = TextEditingController();
+    carpoolLocationController = TextEditingController();
+
+    if (widget.eventId != null && widget.event == null) {
+      _loadEvent();
+    } else {
+      _initFields(widget.event);
+    }
+  }
+
+  Future<void> _loadEvent() async {
+    setState(() {
+      _isLoading = true;
+      _error = null;
+    });
+    try {
+      final event = await client.event.getEvent(widget.eventId!);
+      if (mounted) {
+        setState(() {
+          _loadedEvent = event;
+          _isLoading = false;
+        });
+        _initFields(event);
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _error = e.toString();
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  void _initFields(Event? event) {
+    titleController.text = event?.title ?? '';
+    descriptionController.text = event?.description ?? '';
+    locationController.text = event?.eventLocation ?? '';
+    carpoolLocationController.text = event?.carpoolLocation ?? '';
+    startTime = event?.startTime ?? DateTime.now();
+    endTime = event?.endTime ?? DateTime.now().add(const Duration(hours: 8));
+    carpoolTime = event?.carpoolTime;
+    _selectedType = event?.type ?? eventTypes.first;
+    _requiresApproval = event?.requiresApproval ?? true;
+
     if (!eventTypes.contains(_selectedType)) {
       _selectedType = eventTypes.first;
     }
@@ -60,7 +99,8 @@ class _EventEditScreenState extends State<EventEditScreen> {
   }
 
   void save() async {
-    final isCreating = widget.event == null || widget.event?.id == null;
+    final activeEvent = _loadedEvent ?? widget.event;
+    final isCreating = activeEvent == null || activeEvent.id == null;
     var section = sectionSignal.peek();
     var sid = section?.id;
 
@@ -70,7 +110,7 @@ class _EventEditScreenState extends State<EventEditScreen> {
         ? null
         : carpoolLocationController.text.trim();
 
-    final eventToSave = widget.event?.copyWith(
+    final eventToSave = activeEvent?.copyWith(
           sectionId: sid!,
           title: titleController.text,
           description: descriptionController.text,
@@ -138,23 +178,27 @@ class _EventEditScreenState extends State<EventEditScreen> {
   }
 
   void reset() {
-    setState(() {
-      titleController.text = widget.event?.title ?? '';
-      descriptionController.text = widget.event?.description ?? '';
-      locationController.text = widget.event?.eventLocation ?? '';
-      carpoolLocationController.text = widget.event?.carpoolLocation ?? '';
-      carpoolTime = widget.event?.carpoolTime;
-      startTime = widget.event?.startTime ?? DateTime.now();
-      endTime =
-          widget.event?.endTime ?? DateTime.now().add(const Duration(hours: 2));
-      _selectedType = widget.event?.type ?? eventTypes.first;
-      _requiresApproval = widget.event?.requiresApproval ?? true;
-    });
+    _initFields(_loadedEvent ?? widget.event);
   }
 
   @override
   Widget build(BuildContext context) {
-    final isCreating = widget.event == null || widget.event?.id == null;
+    final activeEvent = _loadedEvent ?? widget.event;
+    final isCreating = activeEvent == null || activeEvent.id == null;
+
+    if (_isLoading) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Loading...')),
+        body: const Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    if (_error != null) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Error')),
+        body: Center(child: Text('Error: $_error')),
+      );
+    }
 
     return Scaffold(
       appBar: AppBar(
