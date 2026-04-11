@@ -116,8 +116,8 @@ class EventView extends HookWidget {
                   ),
                 ),
                 const SizedBox(height: 8),
-                Text('Starts: ${eventDateFormat(displayEvent.startTime)}'),
-                Text('Ends: ${eventDateFormat(displayEvent.endTime)}'),
+                Text(formatEventRange(displayEvent.startTime, displayEvent.endTime),
+                    style: const TextStyle(fontWeight: FontWeight.w600)),
                 const SizedBox(height: 8),
                 Builder(
                   builder: (context) {

@@ -190,7 +190,11 @@ class CalendarView extends HookWidget {
 
     final Map<DateTime, List<Event>> groupedEvents = {};
     for (var event in events) {
-      final start = event.startTime.toLocal();
+      var start = event.startTime.toLocal();
+      // If the event started before this month, group it under the 1st of the month
+      if (start.isBefore(startOfMonth)) {
+        start = startOfMonth;
+      }
       final day = DateTime(start.year, start.month, start.day);
       groupedEvents.putIfAbsent(day, () => []).add(event);
     }

@@ -24,6 +24,8 @@ class _EventEditScreenState extends State<EventEditScreen> {
   late final TextEditingController descriptionController;
   late final TextEditingController locationController;
   late final TextEditingController carpoolLocationController;
+  late final TextEditingController minParticipantsController;
+  late final TextEditingController maxParticipantsController;
   late DateTime startTime;
   late DateTime endTime;
   DateTime? carpoolTime;
@@ -41,6 +43,8 @@ class _EventEditScreenState extends State<EventEditScreen> {
     descriptionController = TextEditingController();
     locationController = TextEditingController();
     carpoolLocationController = TextEditingController();
+    minParticipantsController = TextEditingController();
+    maxParticipantsController = TextEditingController();
 
     if (widget.eventId != null && widget.event == null) {
       _loadEvent();
@@ -81,6 +85,8 @@ class _EventEditScreenState extends State<EventEditScreen> {
     startTime = event?.startTime ?? DateTime.now();
     endTime = event?.endTime ?? DateTime.now().add(const Duration(hours: 8));
     carpoolTime = event?.carpoolTime;
+    minParticipantsController.text = (event?.minimumParticipants ?? 0).toString();
+    maxParticipantsController.text = (event?.maxParticipants ?? 8).toString();
     _selectedType = event?.type ?? eventTypes.first;
     _requiresApproval = event?.requiresApproval ?? true;
 
@@ -95,6 +101,8 @@ class _EventEditScreenState extends State<EventEditScreen> {
     descriptionController.dispose();
     locationController.dispose();
     carpoolLocationController.dispose();
+    minParticipantsController.dispose();
+    maxParticipantsController.dispose();
     super.dispose();
   }
 
@@ -109,6 +117,9 @@ class _EventEditScreenState extends State<EventEditScreen> {
     final carpoolLocText = carpoolLocationController.text.trim().isEmpty
         ? null
         : carpoolLocationController.text.trim();
+    
+    final minParticipants = int.tryParse(minParticipantsController.text) ?? 0;
+    final maxParticipants = int.tryParse(maxParticipantsController.text) ?? 8;
 
     final eventToSave = activeEvent?.copyWith(
           sectionId: sid!,
@@ -121,6 +132,8 @@ class _EventEditScreenState extends State<EventEditScreen> {
           endTime: endTime,
           type: _selectedType,
           requiresApproval: _requiresApproval,
+          minimumParticipants: minParticipants,
+          maxParticipants: maxParticipants,
         ) ??
         Event(
           sectionId: sid!,
@@ -133,6 +146,8 @@ class _EventEditScreenState extends State<EventEditScreen> {
           endTime: endTime,
           type: _selectedType,
           requiresApproval: _requiresApproval,
+          minimumParticipants: minParticipants,
+          maxParticipants: maxParticipants,
         );
 
     try {
@@ -316,6 +331,33 @@ class _EventEditScreenState extends State<EventEditScreen> {
               value: _requiresApproval,
               onChanged: (val) => setState(() => _requiresApproval = val),
             ),
+            const Divider(),
+            Row(
+              children: [
+                Expanded(
+                  child: TextFormField(
+                    controller: minParticipantsController,
+                    decoration: const InputDecoration(
+                      labelText: 'Min Participants',
+                      prefixIcon: Icon(Icons.person_outline),
+                    ),
+                    keyboardType: TextInputType.number,
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: TextFormField(
+                    controller: maxParticipantsController,
+                    decoration: const InputDecoration(
+                      labelText: 'Max Participants',
+                      prefixIcon: Icon(Icons.people_outline),
+                    ),
+                    keyboardType: TextInputType.number,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
             ListTile(
               title: const Text('Start Time'),
               subtitle: Text(eventDateFormat(startTime)),

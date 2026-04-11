@@ -1,8 +1,8 @@
 import 'package:alpine_pod_client/alpine_pod_client.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:go_router/go_router.dart';
 import 'location_widget.dart';
+import '../util.dart';
 
 class EventCard extends StatelessWidget {
   final Event event;
@@ -11,8 +11,6 @@ class EventCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final startDate = event.startTime.toLocal();
-    final endDate = event.endTime.toLocal();
 
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
@@ -51,7 +49,7 @@ class EventCard extends StatelessWidget {
                         Row(
                           children: [
                             Text(
-                              '${DateFormat.jm().format(startDate)} • ${DateFormat.jm().format(endDate)}',
+                              formatEventRange(event.startTime, event.endTime),
                               style: const TextStyle(
                                   fontSize: 12,
                                   color: Colors.blue,

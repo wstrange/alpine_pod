@@ -164,7 +164,7 @@ class EventEndpoint extends Endpoint {
           where = where & t.sectionId.equals(sectionId);
         }
         if (startTime != null) {
-          where = where & (t.startTime >= startTime);
+          where = where & (t.endTime >= startTime);
         }
         if (endTime != null) {
           where = where & (t.startTime <= endTime);
