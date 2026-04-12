@@ -24,29 +24,36 @@ class EventDetailsScreen extends HookWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Event Details'),
-        actions: eventValue.map(
-          data: (event) => [
-            IconButton(
-              icon: const Icon(Icons.copy),
-              tooltip: 'Copy Event',
-              onPressed: () {
-                final clonedEvent = event.copyWith(
-                  id: null,
-                  title: 'Copy of ${event.title}',
-                );
-                GoRouter.of(context).push('/create-event', extra: clonedEvent);
-              },
-            ),
-            IconButton(
-              icon: const Icon(Icons.edit),
-              onPressed: () {
-                GoRouter.of(context).push('/event-edit/${event.id}');
-              },
-            ),
-          ],
-          error: (_, __) => [],
-          loading: () => [],
-        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.home_outlined),
+            tooltip: 'Home',
+            onPressed: () => GoRouter.of(context).go('/'),
+          ),
+          ...eventValue.map(
+            data: (event) => [
+              IconButton(
+                icon: const Icon(Icons.copy),
+                tooltip: 'Copy Event',
+                onPressed: () {
+                  final clonedEvent = event.copyWith(
+                    id: null,
+                    title: 'Copy of ${event.title}',
+                  );
+                  GoRouter.of(context).push('/create-event', extra: clonedEvent);
+                },
+              ),
+              IconButton(
+                icon: const Icon(Icons.edit),
+                onPressed: () {
+                  GoRouter.of(context).push('/event-edit/${event.id}');
+                },
+              ),
+            ],
+            error: (_, __) => [],
+            loading: () => [],
+          ),
+        ],
       ),
       body: eventValue.map(
         data: (event) => EventView(event: event),
