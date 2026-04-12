@@ -61,8 +61,8 @@ class LocationWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Icon(
-              Icons.map_outlined,
-              size: compact ? 14 : 16,
+              Icons.location_pin,
+              size: compact ? 18 : 20,
               color: colorScheme.primary,
             ),
             const SizedBox(width: 4),

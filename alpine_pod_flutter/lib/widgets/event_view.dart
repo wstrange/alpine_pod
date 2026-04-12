@@ -116,7 +116,9 @@ class EventView extends HookWidget {
                   ),
                 ),
                 const SizedBox(height: 8),
-                Text(formatEventRange(displayEvent.startTime, displayEvent.endTime),
+                Text(
+                    formatEventRange(
+                        displayEvent.startTime, displayEvent.endTime),
                     style: const TextStyle(fontWeight: FontWeight.w600)),
                 const SizedBox(height: 8),
                 Builder(
@@ -155,9 +157,8 @@ class EventView extends HookWidget {
                             Text('Carpool meet:',
                                 style: TextStyle(
                                     fontSize: 12,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .secondary,
+                                    color:
+                                        Theme.of(context).colorScheme.secondary,
                                     fontWeight: FontWeight.w600)),
                             if (displayEvent.carpoolTime != null)
                               Text(
@@ -286,7 +287,7 @@ class EventView extends HookWidget {
                               onPressed: () =>
                                   cancelRegistration(myRegistration.id!),
                               icon: const Icon(Icons.cancel_outlined),
-                              label: const Text('Cancel Registration'),
+                              label: const Text('Cancel My Registration'),
                               style: ElevatedButton.styleFrom(
                                 minimumSize: const Size(200, 50),
                                 backgroundColor: Colors.red.shade600,

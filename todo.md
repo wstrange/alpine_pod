@@ -9,7 +9,7 @@
 
 
 ## General
-* getUsers - UI should indicate that not all members are shown (if there are more than 100). Use search box * Event edit should allow admin or trip leader to add or remove trip leaders. 
+
 
 
 ## Registration
