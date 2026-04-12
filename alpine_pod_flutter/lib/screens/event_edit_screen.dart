@@ -6,212 +6,199 @@ import 'package:logging/logging.dart';
 import '../event_types.dart';
 import '../signals.dart';
 import '../util.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:signals_hooks/signals_hooks.dart';
 
 final log = Logger('EventEditScreen');
 
-class EventEditScreen extends StatefulWidget {
+class EventEditScreen extends HookWidget {
   const EventEditScreen({this.eventId, this.event, super.key});
 
   final int? eventId;
   final Event? event;
 
   @override
-  State<EventEditScreen> createState() => _EventEditScreenState();
-}
-
-class _EventEditScreenState extends State<EventEditScreen> {
-  late final TextEditingController titleController;
-  late final TextEditingController descriptionController;
-  late final TextEditingController locationController;
-  late final TextEditingController carpoolLocationController;
-  late final TextEditingController minParticipantsController;
-  late final TextEditingController maxParticipantsController;
-  late DateTime startTime;
-  late DateTime endTime;
-  DateTime? carpoolTime;
-  late String _selectedType;
-  late bool _requiresApproval;
-
-  Event? _loadedEvent;
-  bool _isLoading = false;
-  String? _error;
-
-  @override
-  void initState() {
-    super.initState();
-    titleController = TextEditingController();
-    descriptionController = TextEditingController();
-    locationController = TextEditingController();
-    carpoolLocationController = TextEditingController();
-    minParticipantsController = TextEditingController();
-    maxParticipantsController = TextEditingController();
-
-    if (widget.eventId != null && widget.event == null) {
-      _loadEvent();
-    } else {
-      _initFields(widget.event);
-    }
-  }
-
-  Future<void> _loadEvent() async {
-    setState(() {
-      _isLoading = true;
-      _error = null;
-    });
-    try {
-      final event = await client.event.getEvent(widget.eventId!);
-      if (mounted) {
-        setState(() {
-          _loadedEvent = event;
-          _isLoading = false;
-        });
-        _initFields(event);
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _error = e.toString();
-          _isLoading = false;
-        });
-      }
-    }
-  }
-
-  void _initFields(Event? event) {
-    titleController.text = event?.title ?? '';
-    descriptionController.text = event?.description ?? '';
-    locationController.text = event?.eventLocation ?? '';
-    carpoolLocationController.text = event?.carpoolLocation ?? '';
-    startTime = event?.startTime ?? DateTime.now();
-    endTime = event?.endTime ?? DateTime.now().add(const Duration(hours: 8));
-    carpoolTime = event?.carpoolTime;
-    minParticipantsController.text = (event?.minimumParticipants ?? 0).toString();
-    maxParticipantsController.text = (event?.maxParticipants ?? 8).toString();
-    _selectedType = event?.type ?? eventTypes.first;
-    _requiresApproval = event?.requiresApproval ?? true;
-
-    if (!eventTypes.contains(_selectedType)) {
-      _selectedType = eventTypes.first;
-    }
-  }
-
-  @override
-  void dispose() {
-    titleController.dispose();
-    descriptionController.dispose();
-    locationController.dispose();
-    carpoolLocationController.dispose();
-    minParticipantsController.dispose();
-    maxParticipantsController.dispose();
-    super.dispose();
-  }
-
-  void save() async {
-    final activeEvent = _loadedEvent ?? widget.event;
-    final isCreating = activeEvent == null || activeEvent.id == null;
-    var section = sectionSignal.peek();
-    var sid = section?.id;
-
-    final locText =
-        locationController.text.trim().isEmpty ? null : locationController.text.trim();
-    final carpoolLocText = carpoolLocationController.text.trim().isEmpty
-        ? null
-        : carpoolLocationController.text.trim();
-    
-    final minParticipants = int.tryParse(minParticipantsController.text) ?? 0;
-    final maxParticipants = int.tryParse(maxParticipantsController.text) ?? 8;
-
-    final eventToSave = activeEvent?.copyWith(
-          sectionId: sid!,
-          title: titleController.text,
-          description: descriptionController.text,
-          eventLocation: locText,
-          carpoolLocation: carpoolLocText,
-          carpoolTime: carpoolTime,
-          startTime: startTime,
-          endTime: endTime,
-          type: _selectedType,
-          requiresApproval: _requiresApproval,
-          minimumParticipants: minParticipants,
-          maxParticipants: maxParticipants,
-        ) ??
-        Event(
-          sectionId: sid!,
-          title: titleController.text,
-          description: descriptionController.text,
-          eventLocation: locText,
-          carpoolLocation: carpoolLocText,
-          carpoolTime: carpoolTime,
-          startTime: startTime,
-          endTime: endTime,
-          type: _selectedType,
-          requiresApproval: _requiresApproval,
-          minimumParticipants: minParticipants,
-          maxParticipants: maxParticipants,
-        );
-
-    try {
-      if (isCreating) {
-        await client.event.createEvent(eventToSave);
-      } else {
-        await client.event.updateEvent(eventToSave);
-      }
-      currentEventsSignal.refresh();
-      if (mounted) {
-        await showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: const Text('Success'),
-            content: const Text('Event saved successfully'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: const Text('OK'),
-              ),
-            ],
-          ),
-        );
-        if (mounted) GoRouter.of(context).go('/');
-      }
-    } catch (e) {
-      if (mounted) {
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: const Text('Error'),
-            content: Text('Error saving event: $e'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: const Text('OK'),
-              ),
-            ],
-          ),
-        );
-      }
-    }
-  }
-
-  void reset() {
-    _initFields(_loadedEvent ?? widget.event);
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final activeEvent = _loadedEvent ?? widget.event;
+    final titleController = useTextEditingController();
+    final descriptionController = useTextEditingController();
+    final locationController = useTextEditingController();
+    final carpoolLocationController = useTextEditingController();
+    final minParticipantsController = useTextEditingController();
+    final maxParticipantsController = useTextEditingController();
+
+    final startTime = useState<DateTime>(event?.startTime ?? DateTime.now());
+    final endTime = useState<DateTime>(
+        event?.endTime ?? DateTime.now().add(const Duration(hours: 8)));
+    final carpoolTime = useState<DateTime?>(event?.carpoolTime);
+    final selectedType = useState<String>(event?.type ?? eventTypes.first);
+    final requiresApproval = useState<bool>(event?.requiresApproval ?? true);
+
+    final loadedEvent = useState<Event?>(event);
+    final isLoading = useState<bool>(false);
+    final error = useState<String?>(null);
+
+    // Load event if eventId is provided but event is null
+    useEffect(() {
+      if (eventId != null && event == null) {
+        Future<void> loadEvent() async {
+          isLoading.value = true;
+          error.value = null;
+          try {
+            final fetchedEvent = await client.event.getEvent(eventId!);
+            loadedEvent.value = fetchedEvent;
+          } catch (e) {
+            error.value = e.toString();
+          } finally {
+            isLoading.value = false;
+          }
+        }
+
+        loadEvent();
+      }
+      return null;
+    }, [eventId, event]);
+
+    // Update controllers when loadedEvent changes
+    useEffect(() {
+      final e = loadedEvent.value;
+      if (e != null) {
+        titleController.text = e.title;
+        descriptionController.text = e.description;
+        locationController.text = e.eventLocation ?? '';
+        carpoolLocationController.text = e.carpoolLocation ?? '';
+        startTime.value = e.startTime;
+        endTime.value = e.endTime;
+        carpoolTime.value = e.carpoolTime;
+        minParticipantsController.text = (e.minimumParticipants ?? 0).toString();
+        maxParticipantsController.text = (e.maxParticipants ?? 8).toString();
+        selectedType.value = e.type;
+        requiresApproval.value = e.requiresApproval;
+      }
+    }, [loadedEvent.value]);
+
+    void reset() {
+      final e = loadedEvent.value ?? event;
+      titleController.text = e?.title ?? '';
+      descriptionController.text = e?.description ?? '';
+      locationController.text = e?.eventLocation ?? '';
+      carpoolLocationController.text = e?.carpoolLocation ?? '';
+      startTime.value = e?.startTime ?? DateTime.now();
+      endTime.value = e?.endTime ?? DateTime.now().add(const Duration(hours: 8));
+      carpoolTime.value = e?.carpoolTime;
+      minParticipantsController.text = (e?.minimumParticipants ?? 0).toString();
+      maxParticipantsController.text = (e?.maxParticipants ?? 8).toString();
+      selectedType.value = e?.type ?? eventTypes.first;
+      requiresApproval.value = e?.requiresApproval ?? true;
+    }
+
+    void save() async {
+      final activeEvent = loadedEvent.value ?? event;
+      final isCreating = activeEvent == null || activeEvent.id == null;
+      final section = sectionSignal.peek();
+      final sid = section?.id;
+
+      if (sid == null) {
+        return;
+      }
+
+      final locText = locationController.text.trim().isEmpty
+          ? null
+          : locationController.text.trim();
+      final carpoolLocText = carpoolLocationController.text.trim().isEmpty
+          ? null
+          : carpoolLocationController.text.trim();
+
+      final minParticipants = int.tryParse(minParticipantsController.text) ?? 0;
+      final maxParticipants = int.tryParse(maxParticipantsController.text) ?? 8;
+
+      final eventToSave = activeEvent?.copyWith(
+            sectionId: sid,
+            title: titleController.text,
+            description: descriptionController.text,
+            eventLocation: locText,
+            carpoolLocation: carpoolLocText,
+            carpoolTime: carpoolTime.value,
+            startTime: startTime.value,
+            endTime: endTime.value,
+            type: selectedType.value,
+            requiresApproval: requiresApproval.value,
+            minimumParticipants: minParticipants,
+            maxParticipants: maxParticipants,
+          ) ??
+          Event(
+            sectionId: sid,
+            title: titleController.text,
+            description: descriptionController.text,
+            eventLocation: locText,
+            carpoolLocation: carpoolLocText,
+            carpoolTime: carpoolTime.value,
+            startTime: startTime.value,
+            endTime: endTime.value,
+            type: selectedType.value,
+            requiresApproval: requiresApproval.value,
+            minimumParticipants: minParticipants,
+            maxParticipants: maxParticipants,
+          );
+
+      try {
+        final Event savedEvent;
+        if (isCreating) {
+          savedEvent = await client.event.createEvent(eventToSave);
+        } else {
+          savedEvent = await client.event.updateEvent(eventToSave);
+        }
+        currentEventsSignal.refresh();
+        if (context.mounted) {
+          await showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: const Text('Success'),
+              content: const Text('Event saved successfully'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('OK'),
+                ),
+              ],
+            ),
+          );
+          if (context.mounted) {
+            GoRouter.of(context).go('/event-view/${savedEvent.id}');
+          }
+        }
+      } catch (e) {
+        if (context.mounted) {
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: const Text('Error'),
+              content: Text('Error saving event: $e'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('OK'),
+                ),
+              ],
+            ),
+          );
+        }
+      }
+    }
+
+    final activeEvent = loadedEvent.value ?? event;
     final isCreating = activeEvent == null || activeEvent.id == null;
 
-    if (_isLoading) {
+    if (isLoading.value) {
       return Scaffold(
         appBar: AppBar(title: const Text('Loading...')),
         body: const Center(child: CircularProgressIndicator()),
       );
     }
 
-    if (_error != null) {
+    if (error.value != null) {
       return Scaffold(
         appBar: AppBar(title: const Text('Error')),
-        body: Center(child: Text('Error: $_error')),
+        body: Center(child: Text('Error: ${error.value}')),
       );
     }
 
@@ -269,20 +256,20 @@ class _EventEditScreenState extends State<EventEditScreen> {
               contentPadding: EdgeInsets.zero,
               leading: const Icon(Icons.access_time),
               title: const Text('Carpool Meet Time'),
-              subtitle: Text(carpoolTime != null
-                  ? eventDateFormat(carpoolTime!)
+              subtitle: Text(carpoolTime.value != null
+                  ? eventDateFormat(carpoolTime.value!)
                   : 'Not set'),
-              trailing: carpoolTime != null
+              trailing: carpoolTime.value != null
                   ? IconButton(
                       icon: const Icon(Icons.clear),
                       tooltip: 'Clear',
-                      onPressed: () => setState(() => carpoolTime = null),
+                      onPressed: () => carpoolTime.value = null,
                     )
                   : null,
               onTap: () async {
                 final date = await showDatePicker(
                   context: context,
-                  initialDate: carpoolTime ?? startTime,
+                  initialDate: carpoolTime.value ?? startTime.value,
                   firstDate: DateTime(2025),
                   lastDate: DateTime(2100),
                 );
@@ -290,32 +277,30 @@ class _EventEditScreenState extends State<EventEditScreen> {
                   final time = await showTimePicker(
                     context: context,
                     initialTime: TimeOfDay.fromDateTime(
-                        carpoolTime ?? startTime),
+                        carpoolTime.value ?? startTime.value),
                   );
                   if (time != null) {
-                    setState(() {
-                      carpoolTime = DateTime(
-                        date.year,
-                        date.month,
-                        date.day,
-                        time.hour,
-                        time.minute,
-                      );
-                    });
+                    carpoolTime.value = DateTime(
+                      date.year,
+                      date.month,
+                      date.day,
+                      time.hour,
+                      time.minute,
+                    );
                   }
                 }
               },
             ),
             const Divider(),
             DropdownButtonFormField<String>(
-              initialValue: _selectedType,
+              initialValue: selectedType.value,
               decoration: const InputDecoration(labelText: 'Event Type'),
               items: eventTypes
                   .map((t) => DropdownMenuItem(value: t, child: Text(t)))
                   .toList(),
               onChanged: (value) {
                 if (value != null) {
-                  setState(() => _selectedType = value);
+                  selectedType.value = value;
                 }
               },
             ),
@@ -324,12 +309,12 @@ class _EventEditScreenState extends State<EventEditScreen> {
               secondary: const Icon(Icons.how_to_reg_outlined),
               title: const Text('Requires Approval'),
               subtitle: Text(
-                _requiresApproval
+                requiresApproval.value
                     ? 'Registrations go to a waitlist and must be approved'
                     : 'Members can register directly without approval',
               ),
-              value: _requiresApproval,
-              onChanged: (val) => setState(() => _requiresApproval = val),
+              value: requiresApproval.value,
+              onChanged: (val) => requiresApproval.value = val,
             ),
             const Divider(),
             Row(
@@ -360,59 +345,55 @@ class _EventEditScreenState extends State<EventEditScreen> {
             const SizedBox(height: 16),
             ListTile(
               title: const Text('Start Time'),
-              subtitle: Text(eventDateFormat(startTime)),
+              subtitle: Text(eventDateFormat(startTime.value)),
               onTap: () async {
                 final date = await showDatePicker(
                   context: context,
-                  initialDate: startTime,
+                  initialDate: startTime.value,
                   firstDate: DateTime(2025),
                   lastDate: DateTime(2050),
                 );
                 if (date != null && context.mounted) {
                   final time = await showTimePicker(
                     context: context,
-                    initialTime: TimeOfDay.fromDateTime(startTime),
+                    initialTime: TimeOfDay.fromDateTime(startTime.value),
                   );
                   if (time != null) {
-                    setState(() {
-                      startTime = DateTime(
-                        date.year,
-                        date.month,
-                        date.day,
-                        time.hour,
-                        time.minute,
-                      );
-                      endTime = startTime.add(const Duration(hours: 8));
-                    });
+                    startTime.value = DateTime(
+                      date.year,
+                      date.month,
+                      date.day,
+                      time.hour,
+                      time.minute,
+                    );
+                    endTime.value = startTime.value.add(const Duration(hours: 8));
                   }
                 }
               },
             ),
             ListTile(
               title: const Text('End Time'),
-              subtitle: Text(eventDateFormat(endTime)),
+              subtitle: Text(eventDateFormat(endTime.value)),
               onTap: () async {
                 final date = await showDatePicker(
                   context: context,
-                  initialDate: endTime,
-                  firstDate: startTime,
+                  initialDate: endTime.value,
+                  firstDate: startTime.value,
                   lastDate: DateTime(2100),
                 );
                 if (date != null && context.mounted) {
                   final time = await showTimePicker(
                     context: context,
-                    initialTime: TimeOfDay.fromDateTime(endTime),
+                    initialTime: TimeOfDay.fromDateTime(endTime.value),
                   );
                   if (time != null) {
-                    setState(() {
-                      endTime = DateTime(
-                        date.year,
-                        date.month,
-                        date.day,
-                        time.hour,
-                        time.minute,
-                      );
-                    });
+                    endTime.value = DateTime(
+                      date.year,
+                      date.month,
+                      date.day,
+                      time.hour,
+                      time.minute,
+                    );
                   }
                 }
               },
