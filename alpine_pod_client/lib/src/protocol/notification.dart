@@ -19,9 +19,9 @@ abstract class Notification implements _i1.SerializableModel {
     required this.message,
     required this.timestamp,
     required this.read,
-    this.recipientId,
+    required this.memberId,
     this.attachments,
-    this.relatedEventId,
+    this.eventId,
   });
 
   factory Notification({
@@ -30,9 +30,9 @@ abstract class Notification implements _i1.SerializableModel {
     required String message,
     required DateTime timestamp,
     required bool read,
-    String? recipientId,
+    required int memberId,
     String? attachments,
-    int? relatedEventId,
+    int? eventId,
   }) = _NotificationImpl;
 
   factory Notification.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -44,9 +44,9 @@ abstract class Notification implements _i1.SerializableModel {
         jsonSerialization['timestamp'],
       ),
       read: _i1.BoolJsonExtension.fromJson(jsonSerialization['read']),
-      recipientId: jsonSerialization['recipientId'] as String?,
+      memberId: jsonSerialization['memberId'] as int,
       attachments: jsonSerialization['attachments'] as String?,
-      relatedEventId: jsonSerialization['relatedEventId'] as int?,
+      eventId: jsonSerialization['eventId'] as int?,
     );
   }
 
@@ -63,11 +63,11 @@ abstract class Notification implements _i1.SerializableModel {
 
   bool read;
 
-  String? recipientId;
+  int memberId;
 
   String? attachments;
 
-  int? relatedEventId;
+  int? eventId;
 
   /// Returns a shallow copy of this [Notification]
   /// with some or all fields replaced by the given arguments.
@@ -78,9 +78,9 @@ abstract class Notification implements _i1.SerializableModel {
     String? message,
     DateTime? timestamp,
     bool? read,
-    String? recipientId,
+    int? memberId,
     String? attachments,
-    int? relatedEventId,
+    int? eventId,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -91,9 +91,9 @@ abstract class Notification implements _i1.SerializableModel {
       'message': message,
       'timestamp': timestamp.toJson(),
       'read': read,
-      if (recipientId != null) 'recipientId': recipientId,
+      'memberId': memberId,
       if (attachments != null) 'attachments': attachments,
-      if (relatedEventId != null) 'relatedEventId': relatedEventId,
+      if (eventId != null) 'eventId': eventId,
     };
   }
 
@@ -112,18 +112,18 @@ class _NotificationImpl extends Notification {
     required String message,
     required DateTime timestamp,
     required bool read,
-    String? recipientId,
+    required int memberId,
     String? attachments,
-    int? relatedEventId,
+    int? eventId,
   }) : super._(
          id: id,
          title: title,
          message: message,
          timestamp: timestamp,
          read: read,
-         recipientId: recipientId,
+         memberId: memberId,
          attachments: attachments,
-         relatedEventId: relatedEventId,
+         eventId: eventId,
        );
 
   /// Returns a shallow copy of this [Notification]
@@ -136,9 +136,9 @@ class _NotificationImpl extends Notification {
     String? message,
     DateTime? timestamp,
     bool? read,
-    Object? recipientId = _Undefined,
+    int? memberId,
     Object? attachments = _Undefined,
-    Object? relatedEventId = _Undefined,
+    Object? eventId = _Undefined,
   }) {
     return Notification(
       id: id is int? ? id : this.id,
@@ -146,11 +146,9 @@ class _NotificationImpl extends Notification {
       message: message ?? this.message,
       timestamp: timestamp ?? this.timestamp,
       read: read ?? this.read,
-      recipientId: recipientId is String? ? recipientId : this.recipientId,
+      memberId: memberId ?? this.memberId,
       attachments: attachments is String? ? attachments : this.attachments,
-      relatedEventId: relatedEventId is int?
-          ? relatedEventId
-          : this.relatedEventId,
+      eventId: eventId is int? ? eventId : this.eventId,
     );
   }
 }

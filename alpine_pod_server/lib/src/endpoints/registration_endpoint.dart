@@ -1,8 +1,10 @@
 // ignore_for_file: unnecessary_non_null_assertion, unnecessary_null_comparison
 
+import 'dart:async';
 import 'package:serverpod/serverpod.dart';
 import '../generated/protocol.dart';
 import '../member_cache.dart';
+import '../services/notification_service.dart';
 
 class RegistrationEndpoint extends Endpoint {
   /// Determines the initial registration status based on event settings and capacity
@@ -63,7 +65,16 @@ class RegistrationEndpoint extends Endpoint {
       modifiedAt: DateTime.now(),
     );
 
-    return await EventRegistration.db.updateRow(session, updated);
+    final saved = await EventRegistration.db.updateRow(session, updated);
+
+    // Notify member of status changes
+    if (newStatus == RegistrationStatus.confirmed) {
+      unawaited(notificationService.notifyRegistrationApproved(session, saved));
+    } else if (newStatus == RegistrationStatus.cancelled) {
+      unawaited(notificationService.notifyRegistrationRemoved(session, saved));
+    }
+
+    return saved;
   }
 
   Future<EventRegistration> registerForEvent(
@@ -95,7 +106,12 @@ class RegistrationEndpoint extends Endpoint {
       modifiedAt: DateTime.now(),
     );
 
-    return await _createRegistration(session, validatedReg, event);
+    final saved = await _createRegistration(session, validatedReg, event);
+
+    // Notify event manager of new registration
+    // unawaited(notificationService.notifyNewRegistration(session, saved));
+
+    return saved;
   }
 
   Future<EventRegistration> _createRegistration(

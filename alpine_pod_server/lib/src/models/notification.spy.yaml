@@ -5,9 +5,9 @@ fields:
   message: String
   timestamp: DateTime
   read: bool
-  recipientId: String?
+  memberId: int, relation(parent=members)
   attachments: String?
-  relatedEventId: int?
+  eventId: int?, relation(parent=events)
 indexes:
-  recipient_idx:
-    fields: recipientId
+  member_idx:
+    fields: memberId

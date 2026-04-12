@@ -7,7 +7,6 @@ import '../event_types.dart';
 import '../signals.dart';
 import '../util.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:signals_hooks/signals_hooks.dart';
 
 final log = Logger('EventEditScreen');
 
@@ -69,8 +68,8 @@ class EventEditScreen extends HookWidget {
         startTime.value = e.startTime;
         endTime.value = e.endTime;
         carpoolTime.value = e.carpoolTime;
-        minParticipantsController.text = (e.minimumParticipants ?? 0).toString();
-        maxParticipantsController.text = (e.maxParticipants ?? 8).toString();
+        minParticipantsController.text = (e.minimumParticipants).toString();
+        maxParticipantsController.text = (e.maxParticipants).toString();
         selectedType.value = e.type;
         requiresApproval.value = e.requiresApproval;
       }
@@ -83,7 +82,8 @@ class EventEditScreen extends HookWidget {
       locationController.text = e?.eventLocation ?? '';
       carpoolLocationController.text = e?.carpoolLocation ?? '';
       startTime.value = e?.startTime ?? DateTime.now();
-      endTime.value = e?.endTime ?? DateTime.now().add(const Duration(hours: 8));
+      endTime.value =
+          e?.endTime ?? DateTime.now().add(const Duration(hours: 8));
       carpoolTime.value = e?.carpoolTime;
       minParticipantsController.text = (e?.minimumParticipants ?? 0).toString();
       maxParticipantsController.text = (e?.maxParticipants ?? 8).toString();
@@ -366,7 +366,8 @@ class EventEditScreen extends HookWidget {
                       time.hour,
                       time.minute,
                     );
-                    endTime.value = startTime.value.add(const Duration(hours: 8));
+                    endTime.value =
+                        startTime.value.add(const Duration(hours: 8));
                   }
                 }
               },

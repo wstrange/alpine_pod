@@ -1,8 +1,10 @@
 // ignore_for_file: unnecessary_non_null_assertion, unnecessary_null_comparison
 
+import 'dart:async';
 import 'package:serverpod/serverpod.dart';
 import '../generated/protocol.dart';
 import '../member_cache.dart';
+import '../services/notification_service.dart';
 
 class EventManagerEndpoint extends Endpoint {
   // We removed global requiredScopes so that we can verify permissions
@@ -175,7 +177,12 @@ class EventManagerEndpoint extends Endpoint {
     session.log(
         'Event manager ${callerInfo.member.id} added member $memberId to event $eventId, $registration');
 
-    return await EventRegistration.db.insertRow(session, registration);
+    final saved = await EventRegistration.db.insertRow(session, registration);
+
+    // Notify member they were added to the event
+    unawaited(notificationService.notifyRegistrationApproved(session, saved));
+
+    return saved;
   }
 
   /// Remove a member from an event on behalf of an event manager.
@@ -202,6 +209,10 @@ class EventManagerEndpoint extends Endpoint {
     }
 
     await EventRegistration.db.deleteRow(session, reg);
+
+    // Notify member they were removed from the event
+    // unawaited(notificationService.notifyRegistrationRemoved(session, reg));
+
     session.log(
         'Event manager ${callerInfo.member.id} removed registration $registrationId');
   }
@@ -331,6 +342,10 @@ class EventManagerEndpoint extends Endpoint {
     );
 
     final saved = await EventRegistration.db.updateRow(session, updated);
+
+    // Notify member they were approved
+    unawaited(notificationService.notifyRegistrationApproved(session, saved));
+
     session.log(
         'Event manager ${callerInfo.member.id} approved registration $registrationId');
     return saved;

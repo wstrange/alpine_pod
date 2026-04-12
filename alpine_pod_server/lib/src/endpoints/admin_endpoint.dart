@@ -54,12 +54,6 @@ class AdminEndpoint extends Endpoint {
         transaction: transaction,
       );
 
-      // Delete notifications for this user
-      await Notification.db.deleteWhere(
-        session,
-        where: (t) => t.recipientId.equals(member.userId.toString()),
-        transaction: transaction,
-      );
 
       // 2. Delete the auth user record.
       // This will cascade to delete the Member record and EventManager records

@@ -1,0 +1,14 @@
+⠋ Generating code...
+
+ERROR: Found 2 issues.
+Error on line 8, column 18 of lib/src/models/notification.spy.yaml: The "parent" property is deprecated. Use the relation keyword instead. E.g. relation(parent=parent_table). Note that the default onDelete action changes from "Cascade" to "NoAction" when using the relation keyword.
+[34m  ╷[0m
+[34m1 │[0m [91mparent[0m
+[34m  │[0m [91m^^^^^^[0m
+[34m  ╵[0m
+Error on line 10, column 18 of lib/src/models/notification.spy.yaml: The "parent" property is deprecated. Use the relation keyword instead. E.g. relation(parent=parent_table). Note that the default onDelete action changes from "Cascade" to "NoAction" when using the relation keyword.
+[34m  ╷[0m
+[34m1 │[0m [91mparent[0m
+[34m  │[0m [91m^^^^^^[0m
+[34m  ╵[0m
+[2K✗ Generating code (10.6s)
