@@ -22,9 +22,10 @@ import 'package:alpine_pod_client/src/protocol/event_registration.dart' as _i7;
 import 'package:alpine_pod_client/src/protocol/event_manager.dart' as _i8;
 import 'package:alpine_pod_client/src/protocol/member.dart' as _i9;
 import 'package:alpine_pod_client/src/protocol/section_membership.dart' as _i10;
+import 'package:alpine_pod_client/src/protocol/notification.dart' as _i11;
 import 'package:alpine_pod_client/src/protocol/registration_status.dart'
-    as _i11;
-import 'protocol.dart' as _i12;
+    as _i12;
+import 'protocol.dart' as _i13;
 
 /// {@category Endpoint}
 class EndpointEmailIdp extends _i1.EndpointEmailIdpBase {
@@ -597,6 +598,44 @@ class EndpointMember extends _i2.EndpointRef {
 }
 
 /// {@category Endpoint}
+class EndpointNotification extends _i2.EndpointRef {
+  EndpointNotification(_i2.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'notification';
+
+  /// Fetches all notifications for the authenticated user.
+  _i3.Future<List<_i11.Notification>> listNotifications() =>
+      caller.callServerEndpoint<List<_i11.Notification>>(
+        'notification',
+        'listNotifications',
+        {},
+      );
+
+  /// Marks a specific notification as read.
+  _i3.Future<bool> markAsRead(int id) => caller.callServerEndpoint<bool>(
+    'notification',
+    'markAsRead',
+    {'id': id},
+  );
+
+  /// Deletes a specific notification.
+  _i3.Future<bool> deleteNotification(int id) =>
+      caller.callServerEndpoint<bool>(
+        'notification',
+        'deleteNotification',
+        {'id': id},
+      );
+
+  /// Temporary method to create a test notification for the authenticated user.
+  _i3.Future<void> createTestNotification() => caller.callServerEndpoint<void>(
+    'notification',
+    'createTestNotification',
+    {},
+  );
+}
+
+/// {@category Endpoint}
 class EndpointRegistration extends _i2.EndpointRef {
   EndpointRegistration(_i2.EndpointCaller caller) : super(caller);
 
@@ -606,7 +645,7 @@ class EndpointRegistration extends _i2.EndpointRef {
   /// Approve or reject a registration
   _i3.Future<_i7.EventRegistration> updateRegistrationStatus(
     int registrationId,
-    _i11.RegistrationStatus newStatus, {
+    _i12.RegistrationStatus newStatus, {
     String? notes,
   }) => caller.callServerEndpoint<_i7.EventRegistration>(
     'registration',
@@ -702,7 +741,7 @@ class Client extends _i2.ServerpodClientShared {
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
          host,
-         _i12.Protocol(),
+         _i13.Protocol(),
          securityContext: securityContext,
          streamingConnectionTimeout: streamingConnectionTimeout,
          connectionTimeout: connectionTimeout,
@@ -718,6 +757,7 @@ class Client extends _i2.ServerpodClientShared {
     event = EndpointEvent(this);
     eventManager = EndpointEventManager(this);
     member = EndpointMember(this);
+    notification = EndpointNotification(this);
     registration = EndpointRegistration(this);
     section = EndpointSection(this);
     modules = Modules(this);
@@ -737,6 +777,8 @@ class Client extends _i2.ServerpodClientShared {
 
   late final EndpointMember member;
 
+  late final EndpointNotification notification;
+
   late final EndpointRegistration registration;
 
   late final EndpointSection section;
@@ -752,6 +794,7 @@ class Client extends _i2.ServerpodClientShared {
     'event': event,
     'eventManager': eventManager,
     'member': member,
+    'notification': notification,
     'registration': registration,
     'section': section,
   };

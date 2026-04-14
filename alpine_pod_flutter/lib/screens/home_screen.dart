@@ -11,10 +11,21 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     var section = sectionSignal.watch(context);
     var sectionName = section?.name;
+    var unreadCount = unreadNotificationsCountSignal.watch(context);
 
     return Scaffold(
       appBar: AppBar(
         title: Text('$sectionName Section', style: TextStyle(fontSize: 16)),
+        actions: [
+          IconButton(
+            icon: Badge(
+              label: unreadCount > 0 ? Text(unreadCount.toString()) : null,
+              isLabelVisible: unreadCount > 0,
+              child: const Icon(Icons.notifications),
+            ),
+            onPressed: () => GoRouter.of(context).push('/notifications'),
+          ),
+        ],
       ),
       drawer: Drawer(
         child: ListView(

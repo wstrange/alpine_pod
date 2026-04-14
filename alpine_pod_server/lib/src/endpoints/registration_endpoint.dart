@@ -69,9 +69,9 @@ class RegistrationEndpoint extends Endpoint {
 
     // Notify member of status changes
     if (newStatus == RegistrationStatus.confirmed) {
-      unawaited(notificationService.notifyRegistrationApproved(session, saved));
+      await notificationService.notifyRegistrationApproved(session, saved);
     } else if (newStatus == RegistrationStatus.cancelled) {
-      unawaited(notificationService.notifyRegistrationRemoved(session, saved));
+      await notificationService.notifyRegistrationRemoved(session, saved);
     }
 
     return saved;
@@ -109,7 +109,7 @@ class RegistrationEndpoint extends Endpoint {
     final saved = await _createRegistration(session, validatedReg, event);
 
     // Notify event manager of new registration
-    // unawaited(notificationService.notifyNewRegistration(session, saved));
+    await notificationService.notifyNewRegistration(session, saved);
 
     return saved;
   }
@@ -161,6 +161,8 @@ class RegistrationEndpoint extends Endpoint {
 
     await EventRegistration.db.deleteRow(session, reg);
     session.log('Deleted Registration $reg');
+
+    await notificationService.notifyRegistrationRemoved(session, reg);
   }
 
   Future<List<EventRegistration>> getRegistrationsForEvent(

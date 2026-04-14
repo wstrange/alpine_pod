@@ -53,6 +53,8 @@ final showMyEventsOnlySignal = signal<bool>(false);
 // todo: when should this be reloaded? What if the events change on the server,
 // or the user updates the event. Should we use a stream instead? Or a timer?
 // or pull to refresh?
+
+// needs to be a stream that refreshes every 30 seconds.
 final currentEventsSignal = futureSignal(
   () async {
     final s = sectionSignal.value;
@@ -71,3 +73,13 @@ final currentEventsSignal = futureSignal(
   },
   dependencies: [sectionSignal, selectedDateSignal, showMyEventsOnlySignal],
 );
+
+final notificationsSignal = futureSignal(() async {
+  if (!sessionManager.isAuthenticated) return <Notification>[];
+  return await client.notification.listNotifications();
+});
+
+final unreadNotificationsCountSignal = computed(() {
+  final notifications = notificationsSignal.value.value ?? [];
+  return notifications.where((n) => !n.read).length;
+});

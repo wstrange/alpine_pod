@@ -48,6 +48,11 @@ member:
   - getAllMySectionMemberships:
   - updateMemberScopes:
   - registerMember:
+notification:
+  - listNotifications:
+  - markAsRead:
+  - deleteNotification:
+  - createTestNotification:
 registration:
   - updateRegistrationStatus:
   - registerForEvent:

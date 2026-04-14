@@ -1,5 +1,6 @@
 // ignore_for_file: dead_null_aware_expression, unnecessary_null_comparison, unnecessary_non_null_assertion
 
+import 'package:alpine_pod_server/src/services/notification_service.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_auth_idp_server/core.dart';
 import '../generated/protocol.dart';
@@ -34,7 +35,6 @@ class EventEndpoint extends Endpoint {
       throw Exception(
           'Minimum participants cannot be greater than maximum participants');
     }
-
   }
 
   Future<Event> createEvent(Session session, Event event) async {
@@ -285,6 +285,12 @@ class EventEndpoint extends Endpoint {
 
       final created = await EventRegistration.db
           .insertRow(session, registration, transaction: transaction);
+
+      await notificationService.sendNotification(session,
+          memberId: member.id!,
+          title: 'Registered',
+          message: 'Registered for event ${event.title}',
+          eventId: created.eventId);
 
       return created;
     });

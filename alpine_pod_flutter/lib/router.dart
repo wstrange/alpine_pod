@@ -11,6 +11,7 @@ import 'screens/section_selection_screen.dart';
 import 'screens/sign_in_screen.dart';
 import 'screens/registration_screen.dart';
 import 'screens/admin_home_screen.dart';
+import 'screens/notification_screen.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 
@@ -81,6 +82,10 @@ final router = GoRouter(
     GoRoute(
       path: '/registration',
       builder: (context, state) => const RegistrationScreen(),
+    ),
+    GoRoute(
+      path: '/notifications',
+      builder: (context, state) => const NotificationScreen(),
     ),
   ],
   redirect: (BuildContext context, GoRouterState state) async {

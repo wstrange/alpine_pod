@@ -31,8 +31,9 @@ import 'package:alpine_pod_server/src/generated/event_manager.dart' as _i16;
 import 'package:alpine_pod_server/src/generated/member.dart' as _i17;
 import 'package:alpine_pod_server/src/generated/section_membership.dart'
     as _i18;
+import 'package:alpine_pod_server/src/generated/notification.dart' as _i19;
 import 'package:alpine_pod_server/src/generated/event_registration.dart'
-    as _i19;
+    as _i20;
 export 'event.dart';
 export 'event_document.dart';
 export 'event_manager.dart';
@@ -1190,9 +1191,15 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == List<int>) {
       return (data as List).map((e) => deserialize<int>(e)).toList() as T;
     }
-    if (t == List<_i19.EventRegistration>) {
+    if (t == List<_i19.Notification>) {
       return (data as List)
-              .map((e) => deserialize<_i19.EventRegistration>(e))
+              .map((e) => deserialize<_i19.Notification>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_i20.EventRegistration>) {
+      return (data as List)
+              .map((e) => deserialize<_i20.EventRegistration>(e))
               .toList()
           as T;
     }

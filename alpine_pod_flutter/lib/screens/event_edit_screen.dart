@@ -73,6 +73,7 @@ class EventEditScreen extends HookWidget {
         selectedType.value = e.type;
         requiresApproval.value = e.requiresApproval;
       }
+      return null;
     }, [loadedEvent.value]);
 
     void reset() {

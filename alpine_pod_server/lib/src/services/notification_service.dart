@@ -16,10 +16,15 @@ class NotificationService {
     int? eventId,
   }) async {
     // 1. Log the notification (Stub for Email/Mobile)
+    // This causes an error as session is no longer valid.
     session.log(
       'NOTIFICATION [Member: $memberId, Event: $eventId]: $title - $message',
       level: LogLevel.info,
     );
+
+    // print(
+    //   'NOTIFICATION [Member: $memberId, Event: $eventId]: $title - $message',
+    // );
 
     // 2. Persist the notification in the database
     final notification = Notification(
@@ -63,7 +68,8 @@ class NotificationService {
       session,
       memberId: registration.memberId,
       title: 'Registration Cancelled',
-      message: 'Your registration for "${event.title}" has been cancelled or you have been removed.',
+      message:
+          'Your registration for "${event.title}" has been cancelled or you have been removed.',
       eventId: event.id,
     );
   }
@@ -84,7 +90,8 @@ class NotificationService {
       where: (t) => t.eventId.equals(event.id!),
     );
 
-    final memberName = member.displayName ?? '${member.firstName} ${member.lastName}';
+    final memberName =
+        member.displayName ?? '${member.firstName} ${member.lastName}';
 
     for (final manager in managers) {
       await sendNotification(

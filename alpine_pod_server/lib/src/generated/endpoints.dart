@@ -16,22 +16,23 @@ import '../endpoints/admin_endpoint.dart' as _i3;
 import '../endpoints/event_endpoint.dart' as _i4;
 import '../endpoints/event_manager_endpoint.dart' as _i5;
 import '../endpoints/member_endpoint.dart' as _i6;
-import '../endpoints/registration_endpoint.dart' as _i7;
-import '../endpoints/section_endpoint.dart' as _i8;
-import 'package:alpine_pod_server/src/generated/section.dart' as _i9;
-import 'package:alpine_pod_server/src/generated/event.dart' as _i10;
-import 'package:alpine_pod_server/src/generated/event_manager.dart' as _i11;
-import 'package:alpine_pod_server/src/generated/member.dart' as _i12;
+import '../endpoints/notification_endpoint.dart' as _i7;
+import '../endpoints/registration_endpoint.dart' as _i8;
+import '../endpoints/section_endpoint.dart' as _i9;
+import 'package:alpine_pod_server/src/generated/section.dart' as _i10;
+import 'package:alpine_pod_server/src/generated/event.dart' as _i11;
+import 'package:alpine_pod_server/src/generated/event_manager.dart' as _i12;
+import 'package:alpine_pod_server/src/generated/member.dart' as _i13;
 import 'package:alpine_pod_server/src/generated/section_membership.dart'
-    as _i13;
-import 'package:alpine_pod_server/src/generated/registration_status.dart'
     as _i14;
-import 'package:alpine_pod_server/src/generated/event_registration.dart'
+import 'package:alpine_pod_server/src/generated/registration_status.dart'
     as _i15;
-import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart'
+import 'package:alpine_pod_server/src/generated/event_registration.dart'
     as _i16;
-import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
+import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart'
     as _i17;
+import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
+    as _i18;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override
@@ -79,13 +80,19 @@ class Endpoints extends _i1.EndpointDispatch {
           'member',
           null,
         ),
-      'registration': _i7.RegistrationEndpoint()
+      'notification': _i7.NotificationEndpoint()
+        ..initialize(
+          server,
+          'notification',
+          null,
+        ),
+      'registration': _i8.RegistrationEndpoint()
         ..initialize(
           server,
           'registration',
           null,
         ),
-      'section': _i8.SectionEndpoint()
+      'section': _i9.SectionEndpoint()
         ..initialize(
           server,
           'section',
@@ -348,7 +355,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'section': _i1.ParameterDescription(
               name: 'section',
-              type: _i1.getType<_i9.Section>(),
+              type: _i1.getType<_i10.Section>(),
               nullable: false,
             ),
           },
@@ -385,7 +392,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'section': _i1.ParameterDescription(
               name: 'section',
-              type: _i1.getType<_i9.Section>(),
+              type: _i1.getType<_i10.Section>(),
               nullable: false,
             ),
           },
@@ -458,7 +465,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'event': _i1.ParameterDescription(
               name: 'event',
-              type: _i1.getType<_i10.Event>(),
+              type: _i1.getType<_i11.Event>(),
               nullable: false,
             ),
           },
@@ -494,7 +501,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'event': _i1.ParameterDescription(
               name: 'event',
-              type: _i1.getType<_i10.Event>(),
+              type: _i1.getType<_i11.Event>(),
               nullable: false,
             ),
           },
@@ -591,7 +598,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'eventManager': _i1.ParameterDescription(
               name: 'eventManager',
-              type: _i1.getType<_i11.EventManager>(),
+              type: _i1.getType<_i12.EventManager>(),
               nullable: false,
             ),
           },
@@ -610,7 +617,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'eventManager': _i1.ParameterDescription(
               name: 'eventManager',
-              type: _i1.getType<_i11.EventManager>(),
+              type: _i1.getType<_i12.EventManager>(),
               nullable: false,
             ),
           },
@@ -784,7 +791,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'member': _i1.ParameterDescription(
               name: 'member',
-              type: _i1.getType<_i12.Member>(),
+              type: _i1.getType<_i13.Member>(),
               nullable: false,
             ),
           },
@@ -803,7 +810,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'membership': _i1.ParameterDescription(
               name: 'membership',
-              type: _i1.getType<_i13.SectionMembership>(),
+              type: _i1.getType<_i14.SectionMembership>(),
               nullable: false,
             ),
           },
@@ -822,7 +829,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'membership': _i1.ParameterDescription(
               name: 'membership',
-              type: _i1.getType<_i13.SectionMembership>(),
+              type: _i1.getType<_i14.SectionMembership>(),
               nullable: false,
             ),
           },
@@ -841,7 +848,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'member': _i1.ParameterDescription(
               name: 'member',
-              type: _i1.getType<_i12.Member>(),
+              type: _i1.getType<_i13.Member>(),
               nullable: false,
             ),
           },
@@ -994,7 +1001,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'member': _i1.ParameterDescription(
               name: 'member',
-              type: _i1.getType<_i12.Member>(),
+              type: _i1.getType<_i13.Member>(),
               nullable: false,
             ),
             'sectionIds': _i1.ParameterDescription(
@@ -1016,6 +1023,70 @@ class Endpoints extends _i1.EndpointDispatch {
         ),
       },
     );
+    connectors['notification'] = _i1.EndpointConnector(
+      name: 'notification',
+      endpoint: endpoints['notification']!,
+      methodConnectors: {
+        'listNotifications': _i1.MethodConnector(
+          name: 'listNotifications',
+          params: {},
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['notification'] as _i7.NotificationEndpoint)
+                  .listNotifications(session),
+        ),
+        'markAsRead': _i1.MethodConnector(
+          name: 'markAsRead',
+          params: {
+            'id': _i1.ParameterDescription(
+              name: 'id',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['notification'] as _i7.NotificationEndpoint)
+                  .markAsRead(
+                    session,
+                    params['id'],
+                  ),
+        ),
+        'deleteNotification': _i1.MethodConnector(
+          name: 'deleteNotification',
+          params: {
+            'id': _i1.ParameterDescription(
+              name: 'id',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['notification'] as _i7.NotificationEndpoint)
+                  .deleteNotification(
+                    session,
+                    params['id'],
+                  ),
+        ),
+        'createTestNotification': _i1.MethodConnector(
+          name: 'createTestNotification',
+          params: {},
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['notification'] as _i7.NotificationEndpoint)
+                  .createTestNotification(session),
+        ),
+      },
+    );
     connectors['registration'] = _i1.EndpointConnector(
       name: 'registration',
       endpoint: endpoints['registration']!,
@@ -1030,7 +1101,7 @@ class Endpoints extends _i1.EndpointDispatch {
             ),
             'newStatus': _i1.ParameterDescription(
               name: 'newStatus',
-              type: _i1.getType<_i14.RegistrationStatus>(),
+              type: _i1.getType<_i15.RegistrationStatus>(),
               nullable: false,
             ),
             'notes': _i1.ParameterDescription(
@@ -1043,7 +1114,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['registration'] as _i7.RegistrationEndpoint)
+              ) async => (endpoints['registration'] as _i8.RegistrationEndpoint)
                   .updateRegistrationStatus(
                     session,
                     params['registrationId'],
@@ -1056,7 +1127,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'registration': _i1.ParameterDescription(
               name: 'registration',
-              type: _i1.getType<_i15.EventRegistration>(),
+              type: _i1.getType<_i16.EventRegistration>(),
               nullable: false,
             ),
           },
@@ -1064,7 +1135,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['registration'] as _i7.RegistrationEndpoint)
+              ) async => (endpoints['registration'] as _i8.RegistrationEndpoint)
                   .registerForEvent(
                     session,
                     params['registration'],
@@ -1083,7 +1154,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['registration'] as _i7.RegistrationEndpoint)
+              ) async => (endpoints['registration'] as _i8.RegistrationEndpoint)
                   .cancelRegistration(
                     session,
                     params['registrationId'],
@@ -1102,7 +1173,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['registration'] as _i7.RegistrationEndpoint)
+              ) async => (endpoints['registration'] as _i8.RegistrationEndpoint)
                   .getRegistrationsForEvent(
                     session,
                     params['eventId'],
@@ -1128,7 +1199,7 @@ class Endpoints extends _i1.EndpointDispatch {
                 _i1.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['section'] as _i8.SectionEndpoint).getSection(
+                  (endpoints['section'] as _i9.SectionEndpoint).getSection(
                     session,
                     params['id'],
                   ),
@@ -1140,7 +1211,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['section'] as _i8.SectionEndpoint)
+              ) async => (endpoints['section'] as _i9.SectionEndpoint)
                   .listSections(session),
         ),
         'getSectionsForCurrentUser': _i1.MethodConnector(
@@ -1150,14 +1221,14 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['section'] as _i8.SectionEndpoint)
+              ) async => (endpoints['section'] as _i9.SectionEndpoint)
                   .getSectionsForCurrentUser(session),
         ),
       },
     );
-    modules['serverpod_auth_idp'] = _i16.Endpoints()
+    modules['serverpod_auth_idp'] = _i17.Endpoints()
       ..initializeEndpoints(server);
-    modules['serverpod_auth_core'] = _i17.Endpoints()
+    modules['serverpod_auth_core'] = _i18.Endpoints()
       ..initializeEndpoints(server);
   }
 }
