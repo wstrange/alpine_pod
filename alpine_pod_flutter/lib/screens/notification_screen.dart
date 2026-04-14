@@ -9,7 +9,8 @@ class NotificationScreen extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final notificationsState = notificationsSignal.watch(context);
+    // final notificationsState = notificationsSignal.watch(context);
+    final notificationsState = notificationStreamSignal.watch(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -23,12 +24,14 @@ class NotificationScreen extends HookWidget {
               notificationsSignal.refresh();
             },
           ),
-          if (notificationsState.value != null && notificationsState.value!.isNotEmpty)
+          if (notificationsState.value != null &&
+              notificationsState.value!.isNotEmpty)
             IconButton(
               icon: const Icon(Icons.done_all),
               tooltip: 'Mark all as read',
               onPressed: () async {
-                final unread = notificationsState.value!.where((n) => !n.read).toList();
+                final unread =
+                    notificationsState.value!.where((n) => !n.read).toList();
                 for (var n in unread) {
                   await client.notification.markAsRead(n.id!);
                 }
@@ -46,7 +49,8 @@ class NotificationScreen extends HookWidget {
                 children: [
                   Icon(Icons.notifications_none, size: 64, color: Colors.grey),
                   SizedBox(height: 16),
-                  Text('No notifications yet', style: TextStyle(color: Colors.grey)),
+                  Text('No notifications yet',
+                      style: TextStyle(color: Colors.grey)),
                 ],
               ),
             );
@@ -69,21 +73,28 @@ class NotificationScreen extends HookWidget {
                   ),
                   direction: DismissDirection.endToStart,
                   onDismissed: (direction) async {
-                    await client.notification.deleteNotification(notification.id!);
+                    await client.notification
+                        .deleteNotification(notification.id!);
                     notificationsSignal.refresh();
                   },
                   child: ListTile(
                     leading: CircleAvatar(
-                      backgroundColor: notification.read ? Colors.grey[200] : Colors.blue[100],
+                      backgroundColor: notification.read
+                          ? Colors.grey[200]
+                          : Colors.blue[100],
                       child: Icon(
-                        notification.read ? Icons.notifications_none : Icons.notifications_active,
+                        notification.read
+                            ? Icons.notifications_none
+                            : Icons.notifications_active,
                         color: notification.read ? Colors.grey : Colors.blue,
                       ),
                     ),
                     title: Text(
                       notification.title,
                       style: TextStyle(
-                        fontWeight: notification.read ? FontWeight.normal : FontWeight.bold,
+                        fontWeight: notification.read
+                            ? FontWeight.normal
+                            : FontWeight.bold,
                       ),
                     ),
                     subtitle: Column(
@@ -92,16 +103,22 @@ class NotificationScreen extends HookWidget {
                         Text(notification.message),
                         const SizedBox(height: 4),
                         Text(
-                          notification.timestamp.toLocal().toString().split('.')[0],
-                          style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                          notification.timestamp
+                              .toLocal()
+                              .toString()
+                              .split('.')[0],
+                          style:
+                              TextStyle(fontSize: 12, color: Colors.grey[600]),
                         ),
                       ],
                     ),
                     trailing: !notification.read
                         ? IconButton(
-                            icon: const Icon(Icons.mark_chat_read_outlined, size: 20),
+                            icon: const Icon(Icons.mark_chat_read_outlined,
+                                size: 20),
                             onPressed: () async {
-                              await client.notification.markAsRead(notification.id!);
+                              await client.notification
+                                  .markAsRead(notification.id!);
                               notificationsSignal.refresh();
                             },
                           )
@@ -111,7 +128,7 @@ class NotificationScreen extends HookWidget {
                         await client.notification.markAsRead(notification.id!);
                         notificationsSignal.refresh();
                       }
-                      
+
                       if (context.mounted && notification.eventId != null) {
                         context.push('/event-view/${notification.eventId}');
                       }

@@ -79,6 +79,15 @@ final notificationsSignal = futureSignal(() async {
   return await client.notification.listNotifications();
 });
 
+final notificationStreamSignal = streamSignal<List<Notification>>(() async* {
+  while (true) {
+    if (!sessionManager.isAuthenticated) yield <Notification>[];
+    final n = await client.notification.listNotifications();
+    yield n;
+    await Future.delayed(const Duration(seconds: 30));
+  }
+});
+
 final unreadNotificationsCountSignal = computed(() {
   final notifications = notificationsSignal.value.value ?? [];
   return notifications.where((n) => !n.read).length;
