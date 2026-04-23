@@ -2,11 +2,13 @@ import 'package:alpine_pod_client/alpine_pod_client.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logging/logging.dart';
+import 'package:signals_flutter/signals_flutter.dart';
 
 import '../event_types.dart';
 import '../signals.dart';
 import '../util.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import '../widgets/event_managers_manager.dart';
 
 final log = Logger('EventEditScreen');
 
@@ -18,6 +20,12 @@ class EventEditScreen extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final memberState = currentMemberSignal.watch(context);
+    final currentMember = memberState is AsyncData ? memberState.value : null;
+
+    final section = sectionSignal.watch(context);
+    final sid = section?.id;
+
     final titleController = useTextEditingController();
     final descriptionController = useTextEditingController();
     final locationController = useTextEditingController();
@@ -35,6 +43,16 @@ class EventEditScreen extends HookWidget {
     final loadedEvent = useState<Event?>(event);
     final isLoading = useState<bool>(false);
     final error = useState<String?>(null);
+
+    final managers = useState<List<Member>>([]);
+
+    // Initialize managers for new event
+    useEffect(() {
+      if (eventId == null && event == null && currentMember != null && managers.value.isEmpty) {
+        managers.value = [currentMember];
+      }
+      return null;
+    }, [currentMember]);
 
     // Load event if eventId is provided but event is null
     useEffect(() {
@@ -72,6 +90,14 @@ class EventEditScreen extends HookWidget {
         maxParticipantsController.text = (e.maxParticipants).toString();
         selectedType.value = e.type;
         requiresApproval.value = e.requiresApproval;
+
+        // Load managers from the event if they are included
+        if (e.eventManagers != null) {
+          managers.value = e.eventManagers!
+              .where((m) => m.member != null)
+              .map((m) => m.member!)
+              .toList();
+        }
       }
       return null;
     }, [loadedEvent.value]);
@@ -95,8 +121,6 @@ class EventEditScreen extends HookWidget {
     void save() async {
       final activeEvent = loadedEvent.value ?? event;
       final isCreating = activeEvent == null || activeEvent.id == null;
-      final section = sectionSignal.peek();
-      final sid = section?.id;
 
       if (sid == null) {
         return;
@@ -144,7 +168,17 @@ class EventEditScreen extends HookWidget {
       try {
         final Event savedEvent;
         if (isCreating) {
-          savedEvent = await client.event.createEvent(eventToSave);
+          // Pass additional manager IDs (excluding creator who is added by default)
+          final additionalManagerIds = managers.value
+              .where((m) => m.id != currentMember?.id)
+              .map((m) => m.id!)
+              .toList();
+
+          savedEvent = await client.event.createEvent(
+            eventToSave,
+            additionalManagerIds:
+                additionalManagerIds.isEmpty ? null : additionalManagerIds,
+          );
         } else {
           savedEvent = await client.event.updateEvent(eventToSave);
         }
@@ -400,6 +434,14 @@ class EventEditScreen extends HookWidget {
                 }
               },
             ),
+            const SizedBox(height: 16),
+            if (sid != null)
+              EventManagersManager(
+                eventId: activeEvent?.id,
+                sectionId: sid,
+                managers: managers.value,
+                onChanged: (newList) => managers.value = newList,
+              ),
           ],
         ),
       ),

@@ -4,6 +4,7 @@ import 'package:alpine_pod_server/src/services/notification_service.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_auth_idp_server/core.dart';
 import '../generated/protocol.dart';
+import '../member_cache.dart';
 
 class EventEndpoint extends Endpoint {
   void _validateEvent(Event event) {
@@ -37,7 +38,8 @@ class EventEndpoint extends Endpoint {
     }
   }
 
-  Future<Event> createEvent(Session session, Event event) async {
+  Future<Event> createEvent(Session session, Event event,
+      {List<int>? additionalManagerIds}) async {
     session.log('Creating Event $event ', level: LogLevel.info);
 
     final authInfo = session.authenticated;
@@ -69,9 +71,28 @@ class EventEndpoint extends Endpoint {
         EventManager(
           eventId: createdEvent.id!,
           memberId: member.id!,
+          assignedAt: DateTime.now(),
         ),
         transaction: transaction,
       );
+
+      // Assign additional managers if provided
+      if (additionalManagerIds != null) {
+        for (final managerId in additionalManagerIds) {
+          // Skip if it's the creator (already added)
+          if (managerId == member.id) continue;
+
+          await EventManager.db.insertRow(
+            session,
+            EventManager(
+              eventId: createdEvent.id!,
+              memberId: managerId,
+              assignedAt: DateTime.now(),
+            ),
+            transaction: transaction,
+          );
+        }
+      }
 
       return createdEvent;
     });
@@ -108,6 +129,28 @@ class EventEndpoint extends Endpoint {
 
     final existing = await Event.db.findById(session, event.id!);
     if (existing == null) throw Exception('Event not found');
+
+    // Permission check: only managers or section admins can update
+    final callerInfo = await cache.getMemberInfo(session);
+    if (callerInfo == null) throw Exception('Not authenticated');
+
+    bool isGlobalAdmin =
+        session.authenticated?.scopes.contains(Scope.admin) ?? false;
+    bool isSectionManager =
+        callerInfo.scopesFor(existing.sectionId).contains('sectionManager');
+
+    // Check if caller is an event manager for this specific event
+    final isEventManager = await EventManager.db.findFirstRow(
+          session,
+          where: (t) =>
+              t.eventId.equals(existing.id!) &
+              t.memberId.equals(callerInfo.member.id!),
+        ) !=
+        null;
+
+    if (!isGlobalAdmin && !isSectionManager && !isEventManager) {
+      throw Exception('You do not have permission to update this event');
+    }
 
     // Validate event fields
     _validateEvent(event);

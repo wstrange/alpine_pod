@@ -27,7 +27,8 @@ class MemberDirectoryListWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Watch current user's scopes for this section to enable/disable edit features
-    mySectionMembershipSignal.watch(context);
+    isGlobalAdminSignal.watch(context);
+    isSectionManagerSignal.watch(context);
 
     if (memberships.isEmpty && !isLoadingMore) {
       return const Center(child: Text('No members found.'));
@@ -98,19 +99,7 @@ class MemberDirectoryListWidget extends StatelessWidget {
   }
 
   bool _canEditScopes() {
-    final scopes = sessionManager.authInfo?.scopeNames ?? {};
-    if (scopes.contains('serverpod.admin') || scopes.contains('admin')) {
-      return true;
-    }
-
-    // Check section-specific roles
-    final myMembership = mySectionMembershipSignal.value.value;
-    if (myMembership != null &&
-        myMembership.scopes.contains('sectionManager')) {
-      return true;
-    }
-
-    return false;
+    return isGlobalAdminSignal.value || isSectionManagerSignal.value;
   }
 
   void _showEditScopesDialog(

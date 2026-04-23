@@ -114,3 +114,9 @@ See the alpine_pod_flutter/README.md.
 ## Notes
 
 * Flutter is installed in `/Users/warren/dev/flutter`
+
+
+## Use Cases (prompt instructions)
+
+* When creating or editing an event, we need a way to edit the list of event managers for the event. The creator of an event should be added by default. Any current event manager should be allowed to add another user as an event manager.  If a user a sectionAdmin , they should be able to edit the event managers for any event, even if they did not create it.
+* 

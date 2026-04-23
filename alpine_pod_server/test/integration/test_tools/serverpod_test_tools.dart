@@ -810,8 +810,9 @@ class _EventEndpoint {
 
   _i3.Future<_i6.Event> createEvent(
     _i1.TestSessionBuilder sessionBuilder,
-    _i6.Event event,
-  ) async {
+    _i6.Event event, {
+    List<int>? additionalManagerIds,
+  }) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
           (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
@@ -823,7 +824,10 @@ class _EventEndpoint {
           createSessionCallback: (_) => _localUniqueSession,
           endpointPath: 'event',
           methodName: 'createEvent',
-          parameters: _i1.testObjectToJson({'event': event}),
+          parameters: _i1.testObjectToJson({
+            'event': event,
+            'additionalManagerIds': additionalManagerIds,
+          }),
           serializationManager: _serializationManager,
         );
         var _localReturnValue =

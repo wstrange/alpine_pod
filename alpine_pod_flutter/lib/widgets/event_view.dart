@@ -5,6 +5,7 @@ import 'package:signals_flutter/signals_flutter.dart';
 import '../signals.dart';
 import '../util.dart';
 import 'event_participants_manager.dart';
+import 'event_managers_manager.dart';
 import 'location_widget.dart';
 import 'user_list_widget.dart';
 
@@ -208,9 +209,15 @@ class EventView extends HookWidget {
                       .firstOrNull;
               final isRegistered = myRegistration != null;
 
-              // Owner check: current user appears in the event managers list
-              final isOwner = currentMember != null &&
+              // Management check: user is an event manager, section manager, or global admin
+              final isEventManager = currentMember != null &&
                   managers.any((m) => m.memberId == currentMember.id);
+
+              final isSectionManager = isSectionManagerSignal.watch(context);
+              final isGlobalAdmin = isGlobalAdminSignal.watch(context);
+
+              final canManage =
+                  isEventManager || isSectionManager || isGlobalAdmin;
 
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -304,6 +311,15 @@ class EventView extends HookWidget {
                             ),
                     ),
                   ),
+                  // Managers see the management UI; others see read-only lists
+                  if (canManage) ...[
+                    EventParticipantsManager(
+                      event: detailedEvent,
+                      confirmed: confirmed,
+                      waitlisted: waitlisted,
+                      onRefresh: () => refreshCount.value++,
+                    ),
+                  ],
                   if (managers.isNotEmpty) ...[
                     Text('Event Managers',
                         style: Theme.of(context).textTheme.titleMedium),
@@ -314,15 +330,7 @@ class EventView extends HookWidget {
                     ),
                     const SizedBox(height: 8),
                   ],
-                  // Owners see the management UI; others see read-only lists
-                  if (isOwner)
-                    EventParticipantsManager(
-                      event: detailedEvent,
-                      confirmed: confirmed,
-                      waitlisted: waitlisted,
-                      onRefresh: () => refreshCount.value++,
-                    )
-                  else ...[
+                  if (!canManage) ...[
                     if (confirmed.isNotEmpty) ...[
                       Text('Confirmed Participants (${confirmed.length})',
                           style: Theme.of(context).textTheme.titleMedium),

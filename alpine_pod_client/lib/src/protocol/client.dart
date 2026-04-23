@@ -322,12 +322,17 @@ class EndpointEvent extends _i2.EndpointRef {
   @override
   String get name => 'event';
 
-  _i3.Future<_i6.Event> createEvent(_i6.Event event) =>
-      caller.callServerEndpoint<_i6.Event>(
-        'event',
-        'createEvent',
-        {'event': event},
-      );
+  _i3.Future<_i6.Event> createEvent(
+    _i6.Event event, {
+    List<int>? additionalManagerIds,
+  }) => caller.callServerEndpoint<_i6.Event>(
+    'event',
+    'createEvent',
+    {
+      'event': event,
+      'additionalManagerIds': additionalManagerIds,
+    },
+  );
 
   _i3.Future<_i6.Event> getEvent(int id) =>
       caller.callServerEndpoint<_i6.Event>(

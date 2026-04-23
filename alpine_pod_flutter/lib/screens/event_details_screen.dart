@@ -40,15 +40,31 @@ class EventDetailsScreen extends HookWidget {
                     id: null,
                     title: 'Copy of ${event.title}',
                   );
-                  GoRouter.of(context).push('/create-event', extra: clonedEvent);
+                  GoRouter.of(context)
+                      .push('/create-event', extra: clonedEvent);
                 },
               ),
-              IconButton(
-                icon: const Icon(Icons.edit),
-                onPressed: () {
-                  GoRouter.of(context).push('/event-edit/${event.id}');
-                },
-              ),
+              if (() {
+                final memberState = currentMemberSignal.watch(context);
+                final currentMember =
+                    memberState is AsyncData ? memberState.value : null;
+
+                final isEventManager = currentMember != null &&
+                    event.eventManagers
+                            ?.any((m) => m.memberId == currentMember.id) ==
+                        true;
+
+                final isSectionManager = isSectionManagerSignal.watch(context);
+                final isGlobalAdmin = isGlobalAdminSignal.watch(context);
+
+                return isEventManager || isSectionManager || isGlobalAdmin;
+              }())
+                IconButton(
+                  icon: const Icon(Icons.edit),
+                  onPressed: () {
+                    GoRouter.of(context).push('/event-edit/${event.id}');
+                  },
+                ),
             ],
             error: (_, __) => [],
             loading: () => [],

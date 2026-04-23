@@ -37,6 +37,16 @@ final mySectionMembershipSignal = futureSignal(
   dependencies: [sectionSignal],
 );
 
+final isGlobalAdminSignal = computed(() {
+  final scopes = sessionManager.authInfo?.scopeNames ?? {};
+  return scopes.contains('serverpod.admin') || scopes.contains('admin');
+});
+
+final isSectionManagerSignal = computed(() {
+  final membership = mySectionMembershipSignal.value.value;
+  return membership?.scopes.contains('sectionManager') == true;
+});
+
 // todo: Should the signals below be moved into the calendar view widget?
 
 final selectedDateSignal = signal<DateTime>(DateTime.now().copyWith(

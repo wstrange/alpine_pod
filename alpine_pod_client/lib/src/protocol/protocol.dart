@@ -165,6 +165,15 @@ class Protocol extends _i1.SerializationManager {
       return (data as List).map((e) => deserialize<_i11.Section>(e)).toList()
           as T;
     }
+    if (t == List<int>) {
+      return (data as List).map((e) => deserialize<int>(e)).toList() as T;
+    }
+    if (t == _i1.getType<List<int>?>()) {
+      return (data != null
+              ? (data as List).map((e) => deserialize<int>(e)).toList()
+              : null)
+          as T;
+    }
     if (t == List<_i12.Event>) {
       return (data as List).map((e) => deserialize<_i12.Event>(e)).toList()
           as T;
@@ -187,9 +196,6 @@ class Protocol extends _i1.SerializationManager {
     }
     if (t == Set<String>) {
       return (data as List).map((e) => deserialize<String>(e)).toSet() as T;
-    }
-    if (t == List<int>) {
-      return (data as List).map((e) => deserialize<int>(e)).toList() as T;
     }
     if (t == List<_i16.Notification>) {
       return (data as List)

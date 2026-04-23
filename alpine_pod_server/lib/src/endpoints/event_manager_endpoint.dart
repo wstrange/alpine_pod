@@ -27,12 +27,21 @@ class EventManagerEndpoint extends Endpoint {
 
     bool isGlobalAdmin =
         session.authenticated?.scopes.contains(Scope.admin) ?? false;
-    bool isEventManagerForSection =
-        callerInfo.scopesFor(event.sectionId).contains('eventManager');
+    bool isSectionManager =
+        callerInfo.scopesFor(event.sectionId).contains('sectionManager');
 
-    if (!isGlobalAdmin && !isEventManagerForSection) {
+    // Check if caller is an event manager for this specific event
+    final isEventManager = await EventManager.db.findFirstRow(
+          session,
+          where: (t) =>
+              t.eventId.equals(event.id!) &
+              t.memberId.equals(callerInfo.member.id!),
+        ) !=
+        null;
+
+    if (!isGlobalAdmin && !isSectionManager && !isEventManager) {
       throw Exception(
-          'You do not have permission to manage events in this section');
+          'You do not have permission to manage event managers for this event');
     }
 
     // Check if event has already ended
@@ -105,12 +114,21 @@ class EventManagerEndpoint extends Endpoint {
 
     bool isGlobalAdmin =
         session.authenticated?.scopes.contains(Scope.admin) ?? false;
-    bool isEventManagerForSection =
-        callerInfo.scopesFor(event.sectionId).contains('eventManager');
+    bool isSectionManager =
+        callerInfo.scopesFor(event.sectionId).contains('sectionManager');
 
-    if (!isGlobalAdmin && !isEventManagerForSection) {
+    // Check if caller is an event manager for this specific event
+    final isEventManager = await EventManager.db.findFirstRow(
+          session,
+          where: (t) =>
+              t.eventId.equals(event.id!) &
+              t.memberId.equals(callerInfo.member.id!),
+        ) !=
+        null;
+
+    if (!isGlobalAdmin && !isSectionManager && !isEventManager) {
       throw Exception(
-          'You do not have permission to manage events in this section');
+          'You do not have permission to manage event managers for this event');
     }
 
     // Find the assignment

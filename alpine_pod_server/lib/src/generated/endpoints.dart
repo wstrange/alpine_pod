@@ -468,6 +468,11 @@ class Endpoints extends _i1.EndpointDispatch {
               type: _i1.getType<_i11.Event>(),
               nullable: false,
             ),
+            'additionalManagerIds': _i1.ParameterDescription(
+              name: 'additionalManagerIds',
+              type: _i1.getType<List<int>?>(),
+              nullable: true,
+            ),
           },
           call:
               (
@@ -476,6 +481,7 @@ class Endpoints extends _i1.EndpointDispatch {
               ) async => (endpoints['event'] as _i4.EventEndpoint).createEvent(
                 session,
                 params['event'],
+                additionalManagerIds: params['additionalManagerIds'],
               ),
         ),
         'getEvent': _i1.MethodConnector(
