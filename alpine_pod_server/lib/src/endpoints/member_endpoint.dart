@@ -107,22 +107,19 @@ class MemberEndpoint extends Endpoint {
     final authInfo = session.authenticated;
     if (authInfo == null) throw Exception('Not authenticated');
 
-    final bool isGlobalAdmin = authInfo.scopes.contains(Scope.admin);
+    final callerInfo = await cache.getMemberInfo(session);
+    if (callerInfo == null) throw Exception('Member profile not found');
 
     // Determine which section IDs to query
     Set<int> targetSectionIds;
     if (sectionId != null) {
-      if (!isGlobalAdmin) {
-        final callerInfo = await cache.getMemberInfo(session);
-        if (callerInfo == null) throw Exception('Member profile not found');
-        if (!callerInfo.sectionIds.contains(sectionId)) {
-          throw Exception('You do not have access to this section');
-        }
+      if (!callerInfo.isGlobalAdmin(session) &&
+          !callerInfo.sectionIds.contains(sectionId)) {
+        throw Exception('You do not have access to this section');
       }
       targetSectionIds = {sectionId};
     } else {
-      // No section specified
-      if (isGlobalAdmin) {
+      if (callerInfo.isGlobalAdmin(session)) {
         // Admins see all members directly — DB handles offset natively.
         return await Member.db.find(
           session,
@@ -140,8 +137,6 @@ class MemberEndpoint extends Endpoint {
         );
       }
 
-      final callerInfo = await cache.getMemberInfo(session);
-      if (callerInfo == null) throw Exception('Member profile not found');
       if (callerInfo.sectionIds.isEmpty) {
         return offset == 0 ? [callerInfo.member] : [];
       }
@@ -270,14 +265,8 @@ class MemberEndpoint extends Endpoint {
     final callerInfo = await cache.getMemberInfo(session);
     if (callerInfo == null) throw Exception('Not authenticated');
 
-    // Authentication/authorization check
-    bool isGlobalAdmin =
-        session.authenticated?.scopes.contains(Scope.admin) ?? false;
-
-    final isManagerForSection =
-        callerInfo.scopesFor(sectionId).contains('sectionManager');
-
-    if (!isGlobalAdmin && !isManagerForSection) {
+    if (!callerInfo.isGlobalAdmin(session) &&
+        !callerInfo.isSectionManager(sectionId)) {
       throw Exception(
           'You do not have permission to manage scopes in this section');
     }

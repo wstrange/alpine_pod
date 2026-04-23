@@ -158,17 +158,8 @@ class EventManagerEndpoint extends Endpoint {
     int eventId,
     int memberId,
   ) async {
-    final callerInfo = await cache.getMemberInfo(session);
-    if (callerInfo == null) throw Exception('Not authenticated');
-
-    // Verify the caller is an event manager for this event
-    final managerRecord = await EventManager.db.findFirstRow(
-      session,
-      where: (t) =>
-          t.eventId.equals(eventId) & t.memberId.equals(callerInfo.member.id!),
-    );
-    if (managerRecord == null) {
-      throw Exception('You are not an event manager for this event');
+    if (!await cache.canManageEvent(session, eventId)) {
+      throw Exception('You do not have permission to add members to this event');
     }
 
     // Check the target member exists
@@ -191,6 +182,9 @@ class EventManagerEndpoint extends Endpoint {
       modifiedAt: now,
       waiverAccepted: false,
     );
+
+    final callerInfo = await cache.getMemberInfo(session);
+    if (callerInfo == null) throw Exception('Not authenticated');
 
     session.log(
         'Event manager ${callerInfo.member.id} added member $memberId to event $eventId, $registration');
@@ -215,15 +209,9 @@ class EventManagerEndpoint extends Endpoint {
     final reg = await EventRegistration.db.findById(session, registrationId);
     if (reg == null) throw Exception('Registration not found');
 
-    // Verify the caller is an event manager for this event
-    final managerRecord = await EventManager.db.findFirstRow(
-      session,
-      where: (t) =>
-          t.eventId.equals(reg.eventId) &
-          t.memberId.equals(callerInfo.member.id!),
-    );
-    if (managerRecord == null) {
-      throw Exception('You are not an event manager for this event');
+    if (!await cache.canManageEvent(session, reg.eventId)) {
+      throw Exception(
+          'You do not have permission to manage members for this event');
     }
 
     await EventRegistration.db.deleteRow(session, reg);
@@ -342,15 +330,9 @@ class EventManagerEndpoint extends Endpoint {
       throw Exception('Registration is not on the waitlist');
     }
 
-    // Verify the caller is an event manager for this event
-    final managerRecord = await EventManager.db.findFirstRow(
-      session,
-      where: (t) =>
-          t.eventId.equals(reg.eventId) &
-          t.memberId.equals(callerInfo.member.id!),
-    );
-    if (managerRecord == null) {
-      throw Exception('You are not an event manager for this event');
+    if (!await cache.canManageEvent(session, reg.eventId)) {
+      throw Exception(
+          'You do not have permission to manage members for this event');
     }
 
     final updated = reg.copyWith(

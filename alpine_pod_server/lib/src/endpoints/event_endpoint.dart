@@ -47,6 +47,11 @@ class EventEndpoint extends Endpoint {
       throw Exception('User must be authenticated to create an event');
     }
 
+    // Permission check
+    if (!await cache.canCreateEvent(session, event.sectionId)) {
+      throw Exception('You do not have permission to create events in this section');
+    }
+
     // Validate event fields
     _validateEvent(event);
 
@@ -130,25 +135,7 @@ class EventEndpoint extends Endpoint {
     final existing = await Event.db.findById(session, event.id!);
     if (existing == null) throw Exception('Event not found');
 
-    // Permission check: only managers or section admins can update
-    final callerInfo = await cache.getMemberInfo(session);
-    if (callerInfo == null) throw Exception('Not authenticated');
-
-    bool isGlobalAdmin =
-        session.authenticated?.scopes.contains(Scope.admin) ?? false;
-    bool isSectionManager =
-        callerInfo.scopesFor(existing.sectionId).contains('sectionManager');
-
-    // Check if caller is an event manager for this specific event
-    final isEventManager = await EventManager.db.findFirstRow(
-          session,
-          where: (t) =>
-              t.eventId.equals(existing.id!) &
-              t.memberId.equals(callerInfo.member.id!),
-        ) !=
-        null;
-
-    if (!isGlobalAdmin && !isSectionManager && !isEventManager) {
+    if (!await cache.canManageEvent(session, event.id!)) {
       throw Exception('You do not have permission to update this event');
     }
 
@@ -172,6 +159,10 @@ class EventEndpoint extends Endpoint {
   }
 
   Future<void> deleteEvent(Session session, int id) async {
+    if (!await cache.canManageEvent(session, id)) {
+      throw Exception('You do not have permission to delete this event');
+    }
+
     final existing = await Event.db.findById(session, id);
     if (existing == null) return;
 

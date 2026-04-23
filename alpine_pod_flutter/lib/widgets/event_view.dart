@@ -5,7 +5,6 @@ import 'package:signals_flutter/signals_flutter.dart';
 import '../signals.dart';
 import '../util.dart';
 import 'event_participants_manager.dart';
-import 'event_managers_manager.dart';
 import 'location_widget.dart';
 import 'user_list_widget.dart';
 
