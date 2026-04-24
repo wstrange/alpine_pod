@@ -11,89 +11,112 @@ class EventCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isPast = DateTime.now().isAfter(event.endTime.toLocal());
+    final primaryColor = isPast ? Colors.grey : Colors.blue;
 
-    return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: Colors.grey.withValues(alpha: 0.15)),
-      ),
-      child: InkWell(
-        onTap: () => GoRouter.of(context).push('/event-view/${event.id}'),
-        borderRadius: BorderRadius.circular(16),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  CircleAvatar(
-                    radius: 20,
-                    backgroundColor: Colors.blue.withValues(alpha: 0.1),
-                    child: const Icon(Icons.campaign,
-                        color: Colors.blue, size: 20),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          event.title,
-                          style: const TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(height: 2),
-                        Row(
-                          children: [
-                            Text(
-                              formatEventRange(event.startTime, event.endTime),
-                              style: const TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.blue,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            const SizedBox(width: 8),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 8, vertical: 2),
-                              decoration: BoxDecoration(
-                                color: Colors.blueGrey.withValues(alpha: 0.1),
-                                borderRadius: BorderRadius.circular(12),
+    return Opacity(
+      opacity: isPast ? 0.6 : 1.0,
+      child: Card(
+        margin: const EdgeInsets.only(bottom: 12),
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: BorderSide(color: Colors.grey.withValues(alpha: 0.15)),
+        ),
+        child: InkWell(
+          onTap: () => GoRouter.of(context).push('/event-view/${event.id}'),
+          borderRadius: BorderRadius.circular(16),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 20,
+                      backgroundColor: primaryColor.withValues(alpha: 0.1),
+                      child: Icon(Icons.campaign, color: primaryColor, size: 20),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            event.title,
+                            style: const TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(height: 2),
+                          Row(
+                            children: [
+                              Text(
+                                formatEventRange(event.startTime, event.endTime),
+                                style: TextStyle(
+                                    fontSize: 12,
+                                    color: primaryColor,
+                                    fontWeight: FontWeight.bold),
                               ),
-                              child: Text(
-                                event.type,
-                                style: const TextStyle(
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.blueGrey,
+                              const SizedBox(width: 8),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 2),
+                                decoration: BoxDecoration(
+                                  color: Colors.blueGrey.withValues(alpha: 0.1),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Text(
+                                  event.type,
+                                  style: const TextStyle(
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.blueGrey,
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                      ],
+                              if (isPast) ...[
+                                const SizedBox(width: 8),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 6, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey.withValues(alpha: 0.2),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: const Text(
+                                    'PAST',
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
+                  ],
+                ),
+                if (event.eventLocation != null) ...[
+                  const SizedBox(height: 8),
+                  LocationWidget(location: event.eventLocation!, compact: true),
                 ],
-              ),
-              if (event.eventLocation != null) ...[
                 const SizedBox(height: 8),
-                LocationWidget(location: event.eventLocation!, compact: true),
+                Text(
+                  event.description,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                      fontSize: 13, color: Colors.black.withValues(alpha: 0.6)),
+                ),
+                const SizedBox(height: 10),
+                _ParticipantSummary(event: event, isPast: isPast),
               ],
-              const SizedBox(height: 8),
-              Text(
-                event.description,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                    fontSize: 13, color: Colors.black.withValues(alpha: 0.6)),
-              ),
-              const SizedBox(height: 10),
-              _ParticipantSummary(event: event),
-            ],
+            ),
           ),
         ),
       ),
@@ -103,8 +126,9 @@ class EventCard extends StatelessWidget {
 
 class _ParticipantSummary extends StatelessWidget {
   final Event event;
+  final bool isPast;
 
-  const _ParticipantSummary({required this.event});
+  const _ParticipantSummary({required this.event, this.isPast = false});
 
   @override
   Widget build(BuildContext context) {
@@ -113,11 +137,13 @@ class _ParticipantSummary extends StatelessWidget {
     final isFull = max > 0 && registered >= max;
     final isNearlyFull = max > 0 && registered / max >= 0.8;
 
-    final color = isFull
-        ? Colors.red
-        : isNearlyFull
-            ? Colors.amber[700]!
-            : Colors.blue;
+    final color = isPast
+        ? Colors.grey
+        : isFull
+            ? Colors.red
+            : isNearlyFull
+                ? Colors.amber[700]!
+                : Colors.blue;
 
     final spotsLabel = max <= 0
         ? '$registered registered'

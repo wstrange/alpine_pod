@@ -15,6 +15,8 @@ class EventView extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isPast = DateTime.now().isAfter(event.endTime.toLocal());
+
     // A single counter that drives re-fetches of the event details.
     // Incremented both by the onRefresh callback (local actions) and whenever
     // currentEventsSignal emits a new value (global list refresh).
@@ -90,94 +92,123 @@ class EventView extends HookWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          if (isPast)
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+              margin: const EdgeInsets.only(bottom: 16),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade100,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.grey.shade300),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.event_busy_outlined,
+                      color: Colors.grey.shade600, size: 20),
+                  const SizedBox(width: 12),
+                  Text(
+                    'This event has ended.',
+                    style: TextStyle(
+                      color: Colors.grey.shade700,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           Builder(builder: (context) {
             // Use the refreshed event when available so edits are reflected
             final displayEvent = snapshot.data ?? event;
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(displayEvent.title,
-                    style: Theme.of(context).textTheme.headlineSmall),
-                const SizedBox(height: 8),
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: Colors.blueGrey.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Text(
-                    displayEvent.type,
-                    style: const TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.blueGrey,
+            return Opacity(
+              opacity: isPast ? 0.7 : 1.0,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(displayEvent.title,
+                      style: Theme.of(context).textTheme.headlineSmall),
+                  const SizedBox(height: 8),
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: Colors.blueGrey.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      displayEvent.type,
+                      style: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.blueGrey,
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                    formatEventRange(
-                        displayEvent.startTime, displayEvent.endTime),
-                    style: const TextStyle(fontWeight: FontWeight.w600)),
-                const SizedBox(height: 8),
-                Builder(
-                  builder: (context) {
-                    final style = Theme.of(context).textTheme.bodyMedium!;
-                    final lineHeight = style.fontSize! * (style.height ?? 1.2);
-                    return ConstrainedBox(
-                      constraints: BoxConstraints(
-                        maxHeight: 15 * lineHeight,
-                        minHeight: 3 * lineHeight,
-                      ),
-                      child: SingleChildScrollView(
-                        child: Text(displayEvent.description),
-                      ),
-                    );
-                  },
-                ),
-                const SizedBox(height: 16),
-                if (displayEvent.eventLocation != null &&
-                    displayEvent.eventLocation!.isNotEmpty)
-                  LocationWidget(location: displayEvent.eventLocation!),
-                if (displayEvent.carpoolLocation != null &&
-                    displayEvent.carpoolLocation!.isNotEmpty) ...[
-                  const SizedBox(height: 6),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Icon(Icons.directions_car_outlined,
-                          size: 16,
-                          color: Theme.of(context).colorScheme.secondary),
-                      const SizedBox(width: 4),
-                      Flexible(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Carpool meet:',
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    color:
-                                        Theme.of(context).colorScheme.secondary,
-                                    fontWeight: FontWeight.w600)),
-                            if (displayEvent.carpoolTime != null)
-                              Text(
-                                eventDateFormat(displayEvent.carpoolTime!),
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .secondary),
-                              ),
-                            LocationWidget(
-                                location: displayEvent.carpoolLocation!),
-                          ],
+                  const SizedBox(height: 8),
+                  Text(
+                      formatEventRange(
+                          displayEvent.startTime, displayEvent.endTime),
+                      style: const TextStyle(fontWeight: FontWeight.w600)),
+                  const SizedBox(height: 8),
+                  Builder(
+                    builder: (context) {
+                      final style = Theme.of(context).textTheme.bodyMedium!;
+                      final lineHeight = style.fontSize! * (style.height ?? 1.2);
+                      return ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxHeight: 15 * lineHeight,
+                          minHeight: 3 * lineHeight,
                         ),
-                      ),
-                    ],
+                        child: SingleChildScrollView(
+                          child: Text(displayEvent.description),
+                        ),
+                      );
+                    },
                   ),
+                  const SizedBox(height: 16),
+                  if (displayEvent.eventLocation != null &&
+                      displayEvent.eventLocation!.isNotEmpty)
+                    LocationWidget(location: displayEvent.eventLocation!),
+                  if (displayEvent.carpoolLocation != null &&
+                      displayEvent.carpoolLocation!.isNotEmpty) ...[
+                    const SizedBox(height: 6),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Icon(Icons.directions_car_outlined,
+                            size: 16,
+                            color: Theme.of(context).colorScheme.secondary),
+                        const SizedBox(width: 4),
+                        Flexible(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('Carpool meet:',
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary,
+                                      fontWeight: FontWeight.w600)),
+                              if (displayEvent.carpoolTime != null)
+                                Text(
+                                  eventDateFormat(displayEvent.carpoolTime!),
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary),
+                                ),
+                              LocationWidget(
+                                  location: displayEvent.carpoolLocation!),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ],
-              ],
+              ),
             );
           }),
           const Divider(),
@@ -223,7 +254,7 @@ class EventView extends HookWidget {
                 children: [
                   // Registration Stats
                   Card(
-                    color: Colors.blue.shade50,
+                    color: isPast ? Colors.grey.shade100 : Colors.blue.shade50,
                     margin: const EdgeInsets.only(bottom: 16),
                     child: Padding(
                       padding: const EdgeInsets.all(12.0),
@@ -232,13 +263,15 @@ class EventView extends HookWidget {
                         children: [
                           Column(
                             children: [
-                              const Icon(Icons.people, color: Colors.blue),
+                              Icon(Icons.people,
+                                  color: isPast ? Colors.grey : Colors.blue),
                               const SizedBox(height: 4),
                               Text(
                                 '${confirmed.length} / ${event.maxParticipants}',
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16,
+                                  color: isPast ? Colors.grey : null,
                                 ),
                               ),
                               const Text('Registered',
@@ -248,14 +281,15 @@ class EventView extends HookWidget {
                           if (event.requiresApproval)
                             Column(
                               children: [
-                                const Icon(Icons.hourglass_empty,
-                                    color: Colors.orange),
+                                Icon(Icons.hourglass_empty,
+                                    color: isPast ? Colors.grey : Colors.orange),
                                 const SizedBox(height: 4),
                                 Text(
                                   '${waitlisted.length}',
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 16,
+                                    color: isPast ? Colors.grey : null,
                                   ),
                                 ),
                                 const Text('Waitlisted',
@@ -266,14 +300,17 @@ class EventView extends HookWidget {
                               event.maxParticipants)
                             Column(
                               children: [
-                                Icon(Icons.warning, color: Colors.red.shade400),
+                                Icon(Icons.warning,
+                                    color: isPast ? Colors.grey : Colors.red.shade400),
                                 const SizedBox(height: 4),
                                 Text(
                                   'FULL',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 16,
-                                    color: Colors.red.shade700,
+                                    color: isPast
+                                        ? Colors.grey
+                                        : Colors.red.shade700,
                                   ),
                                 ),
                                 const Text('Event Status',
@@ -285,33 +322,34 @@ class EventView extends HookWidget {
                     ),
                   ),
 
-                  Center(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 16.0),
-                      child: isRegistered
-                          ? ElevatedButton.icon(
-                              onPressed: () =>
-                                  cancelRegistration(myRegistration.id!),
-                              icon: const Icon(Icons.cancel_outlined),
-                              label: const Text('Cancel My Registration'),
-                              style: ElevatedButton.styleFrom(
-                                minimumSize: const Size(200, 50),
-                                backgroundColor: Colors.red.shade600,
-                                foregroundColor: Colors.white,
+                  if (!isPast)
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 16.0),
+                        child: isRegistered
+                            ? ElevatedButton.icon(
+                                onPressed: () =>
+                                    cancelRegistration(myRegistration.id!),
+                                icon: const Icon(Icons.cancel_outlined),
+                                label: const Text('Cancel My Registration'),
+                                style: ElevatedButton.styleFrom(
+                                  minimumSize: const Size(200, 50),
+                                  backgroundColor: Colors.red.shade600,
+                                  foregroundColor: Colors.white,
+                                ),
+                              )
+                            : ElevatedButton.icon(
+                                onPressed: register,
+                                icon: const Icon(Icons.person_add),
+                                label: const Text('Register'),
+                                style: ElevatedButton.styleFrom(
+                                  minimumSize: const Size(200, 50),
+                                ),
                               ),
-                            )
-                          : ElevatedButton.icon(
-                              onPressed: register,
-                              icon: const Icon(Icons.person_add),
-                              label: const Text('Register'),
-                              style: ElevatedButton.styleFrom(
-                                minimumSize: const Size(200, 50),
-                              ),
-                            ),
+                      ),
                     ),
-                  ),
                   // Managers see the management UI; others see read-only lists
-                  if (canManage) ...[
+                  if (canManage && !isPast) ...[
                     EventParticipantsManager(
                       event: detailedEvent,
                       confirmed: confirmed,
@@ -329,7 +367,7 @@ class EventView extends HookWidget {
                     ),
                     const SizedBox(height: 8),
                   ],
-                  if (!canManage) ...[
+                  if (!canManage || isPast) ...[
                     if (confirmed.isNotEmpty) ...[
                       Text('Confirmed Participants (${confirmed.length})',
                           style: Theme.of(context).textTheme.titleMedium),

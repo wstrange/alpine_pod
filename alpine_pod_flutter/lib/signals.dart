@@ -47,6 +47,13 @@ final isSectionManagerSignal = computed(() {
   return membership?.scopes.contains('sectionManager') == true;
 });
 
+final canCreateEventsSignal = computed(() {
+  if (isGlobalAdminSignal.value) return true;
+  final membership = mySectionMembershipSignal.value.value;
+  return membership?.scopes.contains('sectionManager') == true ||
+      membership?.scopes.contains('eventManager') == true;
+});
+
 // todo: Should the signals below be moved into the calendar view widget?
 
 final selectedDateSignal = signal<DateTime>(DateTime.now().copyWith(

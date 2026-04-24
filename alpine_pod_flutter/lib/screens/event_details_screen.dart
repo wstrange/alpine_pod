@@ -20,6 +20,7 @@ class EventDetailsScreen extends HookWidget {
     );
 
     final eventValue = eventSignal.watch(context);
+    final canCreate = canCreateEventsSignal.watch(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -31,41 +32,47 @@ class EventDetailsScreen extends HookWidget {
             onPressed: () => GoRouter.of(context).go('/'),
           ),
           ...eventValue.map(
-            data: (event) => [
-              IconButton(
-                icon: const Icon(Icons.copy),
-                tooltip: 'Copy Event',
-                onPressed: () {
-                  final clonedEvent = event.copyWith(
-                    id: null,
-                    title: 'Copy of ${event.title}',
-                  );
-                  GoRouter.of(context)
-                      .push('/create-event', extra: clonedEvent);
-                },
-              ),
-              if (() {
-                final memberState = currentMemberSignal.watch(context);
-                final currentMember =
-                    memberState is AsyncData ? memberState.value : null;
+            data: (event) {
+              final isPast = DateTime.now().isAfter(event.endTime.toLocal());
+              final memberState = currentMemberSignal.watch(context);
+              final currentMember =
+                  memberState is AsyncData ? memberState.value : null;
 
-                final isEventManager = currentMember != null &&
-                    event.eventManagers
-                            ?.any((m) => m.memberId == currentMember.id) ==
-                        true;
+              final isEventManager = currentMember != null &&
+                  event.eventManagers
+                          ?.any((m) => m.memberId == currentMember.id) ==
+                      true;
 
-                final isSectionManager = isSectionManagerSignal.watch(context);
-                final isGlobalAdmin = isGlobalAdminSignal.watch(context);
+              final isSectionManager = isSectionManagerSignal.watch(context);
+              final isGlobalAdmin = isGlobalAdminSignal.watch(context);
 
-                return isEventManager || isSectionManager || isGlobalAdmin;
-              }())
-                IconButton(
-                  icon: const Icon(Icons.edit),
-                  onPressed: () {
-                    GoRouter.of(context).push('/event-edit/${event.id}');
-                  },
-                ),
-            ],
+              final canEdit =
+                  !isPast && (isEventManager || isSectionManager || isGlobalAdmin);
+
+              return [
+                if (canCreate)
+                  IconButton(
+                    icon: const Icon(Icons.copy),
+                    tooltip: 'Copy Event',
+                    onPressed: () {
+                      final clonedEvent = event.copyWith(
+                        id: null,
+                        title: 'Copy of ${event.title}',
+                      );
+                      GoRouter.of(context)
+                          .push('/create-event', extra: clonedEvent);
+                    },
+                  ),
+                if (canEdit)
+                  IconButton(
+                    icon: const Icon(Icons.edit),
+                    tooltip: 'Edit Event',
+                    onPressed: () {
+                      GoRouter.of(context).push('/event-edit/${event.id}');
+                    },
+                  ),
+              ];
+            },
             error: (_, __) => [],
             loading: () => [],
           ),

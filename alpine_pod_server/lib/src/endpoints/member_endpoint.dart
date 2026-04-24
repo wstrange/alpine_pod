@@ -3,7 +3,6 @@ import 'package:serverpod_auth_idp_server/core.dart';
 import '../generated/protocol.dart';
 import '../member_cache.dart';
 
-/// TODO: Use RBAC to restrict access to these methods
 class MemberEndpoint extends Endpoint {
   Future<Member?> getCurrentMember(Session session) async {
     final authInfo = session.authenticated;
