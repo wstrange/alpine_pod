@@ -24,7 +24,7 @@ class UserListWidget extends StatelessWidget {
       shrinkWrap: shrinkWrap,
       physics: physics,
       itemCount: members.length,
-      separatorBuilder: (context, index) => const Divider(),
+      separatorBuilder: (context, index) => const SizedBox(height: 8),
       itemBuilder: (context, index) {
         final member = members[index];
         final name =
@@ -47,4 +47,3 @@ class UserListWidget extends StatelessWidget {
     );
   }
 }
-
