@@ -48,7 +48,10 @@ class EventEditScreen extends HookWidget {
 
     // Initialize managers for new event
     useEffect(() {
-      if (eventId == null && event == null && currentMember != null && managers.value.isEmpty) {
+      if (eventId == null &&
+          event == null &&
+          currentMember != null &&
+          managers.value.isEmpty) {
         managers.value = [currentMember];
       }
       return null;
@@ -257,7 +260,8 @@ class EventEditScreen extends HookWidget {
             ),
             TextFormField(
               controller: descriptionController,
-              decoration: const InputDecoration(labelText: 'Description'),
+              decoration: const InputDecoration(
+                  labelText: 'Description (supports markdown)'),
               maxLines: 30,
               minLines: 5,
             ),
