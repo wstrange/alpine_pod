@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 /// A widget that displays a location string with a map icon.
@@ -67,15 +68,21 @@ class LocationWidget extends StatelessWidget {
             ),
             const SizedBox(width: 4),
             Flexible(
-              child: Text(
-                location,
-                maxLines: compact ? 1 : 2,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: compact ? 13 : 14,
-                  color: colorScheme.primary,
-                  decoration: TextDecoration.underline,
-                  decorationColor: colorScheme.primary.withValues(alpha: 0.5),
+              child: MarkdownBody(
+                data: location,
+                onTapLink: (text, href, title) {
+                  if (href != null) {
+                    launchUrl(Uri.parse(href),
+                        mode: LaunchMode.externalApplication);
+                  }
+                },
+                styleSheet: MarkdownStyleSheet(
+                  p: TextStyle(
+                    fontSize: compact ? 13 : 14,
+                    color: colorScheme.primary,
+                    decoration: TextDecoration.underline,
+                    decorationColor: colorScheme.primary.withValues(alpha: 0.5),
+                  ),
                 ),
               ),
             ),

@@ -268,7 +268,7 @@ class EventEditScreen extends HookWidget {
             TextFormField(
               controller: locationController,
               decoration: const InputDecoration(
-                labelText: 'Event Location',
+                labelText: 'Event Location (supports markdown)',
                 hintText: 'Address, place name, or Google Maps URL',
                 prefixIcon: Icon(Icons.map_outlined),
               ),
@@ -286,7 +286,7 @@ class EventEditScreen extends HookWidget {
             TextFormField(
               controller: carpoolLocationController,
               decoration: const InputDecoration(
-                labelText: 'Carpool Meet Location',
+                labelText: 'Carpool Meet Location (supports markdown)',
                 hintText: 'Address, place name, or Google Maps URL',
                 prefixIcon: Icon(Icons.directions_car_outlined),
               ),
