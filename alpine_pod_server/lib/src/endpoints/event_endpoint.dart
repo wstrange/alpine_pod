@@ -38,6 +38,13 @@ class EventEndpoint extends Endpoint {
     }
   }
 
+  /// Creates a new event and assigns the creator as the default manager.
+  ///
+  /// [session] - The session object.
+  /// [event] - The event to create.
+  /// [additionalManagerIds] - Optional list of additional member IDs to assign as managers.
+  ///
+  /// todo: Do we want to explicitly set the default manager?
   Future<Event> createEvent(Session session, Event event,
       {List<int>? additionalManagerIds}) async {
     session.log('Creating Event $event ', level: LogLevel.info);
@@ -48,8 +55,10 @@ class EventEndpoint extends Endpoint {
     }
 
     // Permission check
-    if (!await cache.canCreateEvent(session, event.sectionId)) {
-      throw Exception('You do not have permission to create events in this section');
+    if (!session.isGlobalAdmin() &&
+        !await cache.canCreateEvent(session, event.sectionId)) {
+      throw Exception(
+          'You do not have permission to create events in this section');
     }
 
     // Validate event fields

@@ -13,7 +13,7 @@ fields:
   emergencyContactName: String
   emergencyContactPhone: String
   medicalConditions: String?
-  isTripAdmin: bool, default=false
+  waiverSignedDate: DateTime, default=1970-01-01T00:00:00.000Z
   # certifications and skills stored as JSON-encoded arrays in strings
   certifications: String?
   createdAt: DateTime, default=now

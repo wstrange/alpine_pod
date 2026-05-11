@@ -677,11 +677,11 @@ class Protocol extends _i1.SerializationManagerServer {
           dartType: 'String?',
         ),
         _i2.ColumnDefinition(
-          name: 'isTripAdmin',
-          columnType: _i2.ColumnType.boolean,
+          name: 'waiverSignedDate',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
           isNullable: false,
-          dartType: 'bool',
-          columnDefault: 'false',
+          dartType: 'DateTime',
+          columnDefault: '\'1970-01-01 00:00:00\'::timestamp without time zone',
         ),
         _i2.ColumnDefinition(
           name: 'certifications',

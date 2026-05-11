@@ -42,6 +42,7 @@ member:
   - addMemberToSection:
   - removeMemberFromSection:
   - updateMember:
+  - acceptWaiver:
   - getSectionMembers:
   - getSectionMemberships:
   - getMySectionMembership:

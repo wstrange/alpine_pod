@@ -88,6 +88,21 @@ class MemberEndpoint extends Endpoint {
     return updated;
   }
 
+  /// Mark the current member's waiver as signed today.
+  Future<Member> acceptWaiver(Session session) async {
+    final currentMember = await getCurrentMember(session);
+    if (currentMember == null) {
+      throw Exception('Not authenticated');
+    }
+
+    final updated = currentMember.copyWith(
+      waiverSignedDate: DateTime.now(),
+      updatedAt: DateTime.now(),
+    );
+
+    return await Member.db.updateRow(session, updated);
+  }
+
   /// Returns members for a section, or all members the caller has access to
   /// if [sectionId] is null.
   ///
@@ -106,39 +121,35 @@ class MemberEndpoint extends Endpoint {
     final authInfo = session.authenticated;
     if (authInfo == null) throw Exception('Not authenticated');
 
+    if (session.isGlobalAdmin()) {
+      // Admins see all members directly — DB handles offset natively.
+      return await Member.db.find(
+        session,
+        where: (t) {
+          if (filter != null && filter.isNotEmpty) {
+            return t.firstName.ilike('%$filter%') |
+                t.lastName.ilike('%$filter%') |
+                t.email.ilike('%$filter%');
+          }
+          return Constant.bool(true);
+        },
+        orderBy: (t) => t.lastName,
+        limit: limit,
+        offset: offset,
+      );
+    }
+
     final callerInfo = await cache.getMemberInfo(session);
     if (callerInfo == null) throw Exception('Member profile not found');
 
     // Determine which section IDs to query
     Set<int> targetSectionIds;
     if (sectionId != null) {
-      if (!callerInfo.isGlobalAdmin(session) &&
-          !callerInfo.sectionIds.contains(sectionId)) {
+      if (!callerInfo.sectionIds.contains(sectionId)) {
         throw Exception('You do not have access to this section');
       }
       targetSectionIds = {sectionId};
     } else {
-      if (callerInfo.isGlobalAdmin(session)) {
-        // Admins see all members directly — DB handles offset natively.
-        return await Member.db.find(
-          session,
-          where: (t) {
-            if (filter != null && filter.isNotEmpty) {
-              return t.firstName.ilike('%$filter%') |
-                  t.lastName.ilike('%$filter%') |
-                  t.email.ilike('%$filter%');
-            }
-            return Constant.bool(true);
-          },
-          orderBy: (t) => t.lastName,
-          limit: limit,
-          offset: offset,
-        );
-      }
-
-      if (callerInfo.sectionIds.isEmpty) {
-        return offset == 0 ? [callerInfo.member] : [];
-      }
       targetSectionIds = callerInfo.sectionIds;
     }
 
@@ -264,8 +275,7 @@ class MemberEndpoint extends Endpoint {
     final callerInfo = await cache.getMemberInfo(session);
     if (callerInfo == null) throw Exception('Not authenticated');
 
-    if (!callerInfo.isGlobalAdmin(session) &&
-        !callerInfo.isSectionManager(sectionId)) {
+    if (!session.isGlobalAdmin() && !callerInfo.isSectionManager(sectionId)) {
       throw Exception(
           'You do not have permission to manage scopes in this section');
     }

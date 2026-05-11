@@ -25,8 +25,7 @@ class EventManagerEndpoint extends Endpoint {
     final callerInfo = await cache.getMemberInfo(session);
     if (callerInfo == null) throw Exception('Not authenticated');
 
-    bool isGlobalAdmin =
-        session.authenticated?.scopes.contains(Scope.admin) ?? false;
+    bool isGlobalAdmin = session.isGlobalAdmin();
     bool isSectionManager =
         callerInfo.scopesFor(event.sectionId).contains('sectionManager');
 
@@ -112,8 +111,7 @@ class EventManagerEndpoint extends Endpoint {
     final callerInfo = await cache.getMemberInfo(session);
     if (callerInfo == null) throw Exception('Not authenticated');
 
-    bool isGlobalAdmin =
-        session.authenticated?.scopes.contains(Scope.admin) ?? false;
+    bool isGlobalAdmin = session.isGlobalAdmin();
     bool isSectionManager =
         callerInfo.scopesFor(event.sectionId).contains('sectionManager');
 

@@ -33,14 +33,15 @@ abstract class Member implements _i1.SerializableModel {
     required this.emergencyContactName,
     required this.emergencyContactPhone,
     this.medicalConditions,
-    bool? isTripAdmin,
+    DateTime? waiverSignedDate,
     this.certifications,
     DateTime? createdAt,
     DateTime? updatedAt,
     this.registrations,
     this.managedEvents,
   }) : membershipStatus = membershipStatus ?? 'active',
-       isTripAdmin = isTripAdmin ?? false,
+       waiverSignedDate =
+           waiverSignedDate ?? DateTime.parse('1970-01-01T00:00:00.000Z'),
        createdAt = createdAt ?? DateTime.now(),
        updatedAt = updatedAt ?? DateTime.now();
 
@@ -59,7 +60,7 @@ abstract class Member implements _i1.SerializableModel {
     required String emergencyContactName,
     required String emergencyContactPhone,
     String? medicalConditions,
-    bool? isTripAdmin,
+    DateTime? waiverSignedDate,
     String? certifications,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -86,9 +87,11 @@ abstract class Member implements _i1.SerializableModel {
       emergencyContactPhone:
           jsonSerialization['emergencyContactPhone'] as String,
       medicalConditions: jsonSerialization['medicalConditions'] as String?,
-      isTripAdmin: jsonSerialization['isTripAdmin'] == null
+      waiverSignedDate: jsonSerialization['waiverSignedDate'] == null
           ? null
-          : _i1.BoolJsonExtension.fromJson(jsonSerialization['isTripAdmin']),
+          : _i1.DateTimeJsonExtension.fromJson(
+              jsonSerialization['waiverSignedDate'],
+            ),
       certifications: jsonSerialization['certifications'] as String?,
       createdAt: jsonSerialization['createdAt'] == null
           ? null
@@ -140,7 +143,7 @@ abstract class Member implements _i1.SerializableModel {
 
   String? medicalConditions;
 
-  bool isTripAdmin;
+  DateTime waiverSignedDate;
 
   String? certifications;
 
@@ -170,7 +173,7 @@ abstract class Member implements _i1.SerializableModel {
     String? emergencyContactName,
     String? emergencyContactPhone,
     String? medicalConditions,
-    bool? isTripAdmin,
+    DateTime? waiverSignedDate,
     String? certifications,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -195,7 +198,7 @@ abstract class Member implements _i1.SerializableModel {
       'emergencyContactName': emergencyContactName,
       'emergencyContactPhone': emergencyContactPhone,
       if (medicalConditions != null) 'medicalConditions': medicalConditions,
-      'isTripAdmin': isTripAdmin,
+      'waiverSignedDate': waiverSignedDate.toJson(),
       if (certifications != null) 'certifications': certifications,
       'createdAt': createdAt.toJson(),
       'updatedAt': updatedAt.toJson(),
@@ -230,7 +233,7 @@ class _MemberImpl extends Member {
     required String emergencyContactName,
     required String emergencyContactPhone,
     String? medicalConditions,
-    bool? isTripAdmin,
+    DateTime? waiverSignedDate,
     String? certifications,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -251,7 +254,7 @@ class _MemberImpl extends Member {
          emergencyContactName: emergencyContactName,
          emergencyContactPhone: emergencyContactPhone,
          medicalConditions: medicalConditions,
-         isTripAdmin: isTripAdmin,
+         waiverSignedDate: waiverSignedDate,
          certifications: certifications,
          createdAt: createdAt,
          updatedAt: updatedAt,
@@ -278,7 +281,7 @@ class _MemberImpl extends Member {
     String? emergencyContactName,
     String? emergencyContactPhone,
     Object? medicalConditions = _Undefined,
-    bool? isTripAdmin,
+    DateTime? waiverSignedDate,
     Object? certifications = _Undefined,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -305,7 +308,7 @@ class _MemberImpl extends Member {
       medicalConditions: medicalConditions is String?
           ? medicalConditions
           : this.medicalConditions,
-      isTripAdmin: isTripAdmin ?? this.isTripAdmin,
+      waiverSignedDate: waiverSignedDate ?? this.waiverSignedDate,
       certifications: certifications is String?
           ? certifications
           : this.certifications,

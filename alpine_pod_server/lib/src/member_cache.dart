@@ -105,7 +105,7 @@ class MemberCache {
     final info = await getMemberInfo(session);
     if (info == null) return false;
 
-    if (info.isGlobalAdmin(session)) return true;
+    if (session.isGlobalAdmin()) return true;
 
     // Get the event to check its section
     final event = await Event.db.findById(session, eventId);
@@ -129,7 +129,7 @@ class MemberCache {
     final info = await getMemberInfo(session);
     if (info == null) return false;
 
-    if (info.isGlobalAdmin(session)) return true;
+    if (session.isGlobalAdmin()) return true;
     if (info.isSectionManager(sectionId)) return true;
     if (info.isEventManagerForSection(sectionId)) return true;
 
@@ -159,9 +159,7 @@ class MemberInfo {
   Set<String> scopesFor(int? sectionId) =>
       sectionId == null ? {} : sectionScopes[sectionId] ?? {};
 
-  /// Check if the user is a global admin
-  bool isGlobalAdmin(Session session) =>
-      session.authenticated?.scopes.contains(Scope.admin) ?? false;
+
 
   /// Check if the user is a section manager for the given section
   bool isSectionManager(int? sectionId) =>
@@ -170,4 +168,10 @@ class MemberInfo {
   /// Check if the user is an event manager for the given section
   bool isEventManagerForSection(int? sectionId) =>
       scopesFor(sectionId).contains('eventManager');
+}
+
+extension SessionExtension on Session {
+  /// Check if the authenticated user is a global admin
+  bool isGlobalAdmin() =>
+      authenticated?.scopes.contains(Scope.admin) ?? false;
 }

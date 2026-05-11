@@ -24,14 +24,14 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  serverpod_flutter: 3.4.6
+  serverpod_flutter: 3.4.8
   alpine_pod_client:
     path: ../alpine_pod_client
   go_router: ^17.1.0
  
-  serverpod_auth_idp_flutter: 3.4.6  
-  serverpod_auth_client: 3.4.6
-  serverpod_auth_core_flutter: 3.4.6
+  serverpod_auth_idp_flutter: 3.4.8  
+  serverpod_auth_client: 3.4.8
+  serverpod_auth_core_flutter: 3.4.8
 
   signals: ^6.3.0
   signals_flutter: ^6.3.0
@@ -68,7 +68,8 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
+  assets:
+    - assets/waiver.md
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 

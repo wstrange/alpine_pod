@@ -12,6 +12,7 @@ import 'screens/sign_in_screen.dart';
 import 'screens/registration_screen.dart';
 import 'screens/admin_home_screen.dart';
 import 'screens/notification_screen.dart';
+import 'screens/waiver_screen.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 
@@ -87,6 +88,10 @@ final router = GoRouter(
       path: '/notifications',
       builder: (context, state) => const NotificationScreen(),
     ),
+    GoRoute(
+      path: '/waiver',
+      builder: (context, state) => const WaiverScreen(),
+    ),
   ],
   redirect: (BuildContext context, GoRouterState state) async {
     final bool loggedIn = sessionManager.isAuthenticated;
@@ -100,16 +105,17 @@ final router = GoRouter(
     // Admin users bypass the normal member bootstrap flow if they have the scope.
     // This allows immediate redirection to /admin.
     final isAdmin = isGlobalAdminSignal.peek();
-    
+
     if (isAdmin) {
       resetRouterBootstrap(); // Admins don't need the member bootstrap path
       if (loggingIn) return '/admin';
       return null;
     }
 
-    // This logic only triggers if we are on the login page (after auth) 
+    // This logic only triggers if we are on the login page (after auth)
     // or if we somehow lack a section assignment while being logged in.
-    if (loggingIn || (sectionSignal.value == null && state.matchedLocation == '/')) {
+    if (loggingIn ||
+        (sectionSignal.value == null && state.matchedLocation == '/')) {
       _bootstrapTask ??= _performBootstrap();
       return await _bootstrapTask;
     }
@@ -128,15 +134,26 @@ Future<String?> _performBootstrap() async {
     final sections = await client.section.getSectionsForCurrentUser();
 
     if (member == null || sections.isEmpty) {
-      debugPrint('Router: Profile missing or no sections. Routing to registration.');
+      debugPrint(
+          'Router: Profile missing or no sections. Routing to registration.');
       return '/registration';
+    }
+
+    final waiverDate = member.waiverSignedDate;
+    final now = DateTime.now();
+    final oneYearAgo = now.subtract(const Duration(days: 365));
+
+    if (waiverDate.isBefore(oneYearAgo)) {
+      debugPrint('Router: Waiver unsigned or expired. Routing to /waiver.');
+      return '/waiver';
     }
 
     if (sections.length > 1) {
       debugPrint('Router: Multiple sections found. Routing to selection.');
       return '/section-selection';
     } else {
-      debugPrint('Router: Single section found. Assigning signal and routing to /');
+      debugPrint(
+          'Router: Single section found. Assigning signal and routing to /');
       sectionSignal.value = sections[0];
       return '/';
     }

@@ -463,7 +463,6 @@ class EndpointEventManager extends _i2.EndpointRef {
       );
 }
 
-/// TODO: Use RBAC to restrict access to these methods
 /// {@category Endpoint}
 class EndpointMember extends _i2.EndpointRef {
   EndpointMember(_i2.EndpointCaller caller) : super(caller);
@@ -510,6 +509,14 @@ class EndpointMember extends _i2.EndpointRef {
         'member',
         'updateMember',
         {'member': member},
+      );
+
+  /// Mark the current member's waiver as signed today.
+  _i3.Future<_i9.Member> acceptWaiver() =>
+      caller.callServerEndpoint<_i9.Member>(
+        'member',
+        'acceptWaiver',
+        {},
       );
 
   /// Returns members for a section, or all members the caller has access to

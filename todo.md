@@ -22,3 +22,5 @@ notifications: When the user navs to the screen, refresh right away - dont wait 
 
 Roles - section admins should be able to add trip leaders, participants. 
 
+* Fix hangs after waiver accept. Could be related to the router bootstrap / signals
+* improve seedtest. Create more realistic data. More trips that are closer to real life. Different sections. 

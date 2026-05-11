@@ -15,8 +15,8 @@ final genData = GenData();
 
 final uuid = Uuid();
 
-final numEvents = 100;
-final numUsers = 200;
+final numEvents = 10;
+final numUsers = 20;
 
 void main() {
   final adminId = uuid.v4obj();
@@ -137,7 +137,7 @@ void main() {
           password: 'Passw0rd',
         );
 
-        //print('Created user: $emailId');
+        print('Created user: $au');
         // Now assign them to a section
         // create a member profile
         var m = await endpoints.member.createMember(
@@ -152,7 +152,7 @@ void main() {
               emergencyContactPhone: '5555555',
               userId: au.id,
             ));
-        //print('Created member profile: $m');
+        print('Created member profile: $m');
 
         var scopes = <String>{
           CustomScope.sectionManager.name!,
@@ -160,12 +160,12 @@ void main() {
         };
 
         // assign to first and second sections
-        await endpoints.member.addMemberToSection(
+        var sm = await endpoints.member.addMemberToSection(
             authSession,
             SectionMembership(
                 memberId: m.id!, sectionId: s1.id!, scopes: scopes));
 
-        //print(sm);
+        // print('Created section membership: $sm');
       }
     }, timeout: Timeout(Duration(minutes: 10)));
 
@@ -175,13 +175,14 @@ void main() {
       final edmonton = sections.firstWhere((s) => s.name == 'Edmonton');
 
       // Get the test users we just created
-      final members = await endpoints.member
-          .getSectionMembers(authSession, limit: 10000, offset: 0);
+      final members = await endpoints.member.getSectionMembers(authSession,
+          sectionId: calgary.id!, limit: 10000, offset: 0);
       final testMembers =
           members.where((m) => m.email.startsWith('test')).toList();
 
       for (var i = 0; i < 100; i++) {
-        final section = i % 2 == 0 ? calgary : edmonton;
+        // final section = i % 2 == 0 ? calgary : edmonton;
+        final section = calgary;
         final directRegistration = i % 4 == 0; // 25%
 
         // Cycle through test1-test5 as "authors" (authenticating as them)
@@ -191,7 +192,11 @@ void main() {
         final userAuthSession = sessionBuilder.copyWith(
           authentication: AuthenticationOverride.authenticationInfo(
             member.userId.toString(),
-            {CustomScope.member},
+            {
+              CustomScope.member,
+              CustomScope.sectionManager,
+              CustomScope.eventManager
+            },
           ),
         );
 
