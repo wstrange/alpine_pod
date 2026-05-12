@@ -96,6 +96,7 @@ final router = GoRouter(
   redirect: (BuildContext context, GoRouterState state) async {
     final bool loggedIn = sessionManager.isAuthenticated;
     final bool loggingIn = state.matchedLocation == '/login';
+    final currentLocation = state.matchedLocation;
 
     if (!loggedIn) {
       resetRouterBootstrap();
@@ -112,10 +113,22 @@ final router = GoRouter(
       return null;
     }
 
+    // Routes that are intermediate bootstrap destinations.
+    // If the user is already on one of these, let them stay — don't
+    // re-run bootstrap which would return the same (now stale) result.
+    const bootstrapDestinations = {
+      '/waiver',
+      '/registration',
+      '/section-selection',
+    };
+    if (bootstrapDestinations.contains(currentLocation)) {
+      return null;
+    }
+
     // This logic only triggers if we are on the login page (after auth)
     // or if we somehow lack a section assignment while being logged in.
     if (loggingIn ||
-        (sectionSignal.value == null && state.matchedLocation == '/')) {
+        (sectionSignal.value == null && currentLocation == '/')) {
       _bootstrapTask ??= _performBootstrap();
       return await _bootstrapTask;
     }

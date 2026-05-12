@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:go_router/go_router.dart';
+import '../router.dart' show resetRouterBootstrap;
 import '../signals.dart';
 
 class WaiverScreen extends StatefulWidget {
@@ -58,8 +59,9 @@ class _WaiverScreenState extends State<WaiverScreen> {
       }
 
       if (mounted) {
-        // Trigger a fresh router navigation 
-        // This will now pass the waiver check inside _performBootstrap
+        // Clear stale bootstrap so the redirect re-runs _performBootstrap
+        // with the freshly-accepted waiver date.
+        resetRouterBootstrap();
         GoRouter.of(context).go('/');
       }
     } catch (e) {
