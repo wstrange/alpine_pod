@@ -105,7 +105,12 @@ final router = GoRouter(
 
     // Admin users bypass the normal member bootstrap flow if they have the scope.
     // This allows immediate redirection to /admin.
-    final isAdmin = isGlobalAdminSignal.peek();
+    // NOTE: We read directly from sessionManager.authInfo instead of
+    // isGlobalAdminSignal because the signal chain may not have propagated
+    // by the time this redirect fires (both listen to the same listenable).
+    final scopes = sessionManager.authInfo?.scopeNames ?? {};
+    final isAdmin =
+        scopes.contains('serverpod.admin') || scopes.contains('admin');
 
     if (isAdmin) {
       resetRouterBootstrap(); // Admins don't need the member bootstrap path
