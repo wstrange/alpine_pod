@@ -3,6 +3,7 @@ import 'package:logging/logging.dart';
 import 'package:serverpod_auth_idp_flutter/serverpod_auth_idp_flutter.dart';
 import 'package:signals_flutter/signals_flutter.dart';
 
+///
 late Client client;
 late FlutterAuthSessionManager sessionManager;
 
@@ -13,26 +14,30 @@ final authInfoStreamSignal = client.auth.authInfoListenable.toSignal();
 
 final userProfileInfoSignal = futureSignal(() async {
   return await client.modules.serverpod_auth_core.userProfileInfo.get();
-}, dependencies: [authInfoStreamSignal]);
+}, dependencies: [authInfoStreamSignal], debugLabel: 'userProfileInfoSignal');
 
 final authUserSignal = computed(() {
   final authInfo = authInfoStreamSignal.value;
   if (authInfo == null) return null;
   return client.auth.authInfo;
-});
+}, debugLabel: 'authUserSignal');
 
+// Get a list of all sections in the database
 final allSectionsSignal = futureSignal(() async {
   return await client.section.listSections();
 });
 
+// Get the member record for the current user
 final currentMemberSignal = futureSignal(() async {
   return await client.member.getCurrentMember();
-});
+}, dependencies: [authUserSignal], debugLabel: 'currentMemberSignal');
 
+// List of all sections that the current user is a member of
 final allMySectionMembershipsSignal = futureSignal(() async {
   return await client.member.getAllMySectionMemberships();
-});
+}, dependencies: [authUserSignal]);
 
+// The currently selected section when the user logged in.
 final sectionSignal = signal<Section?>(null);
 
 final mySectionMembershipSignal = futureSignal(
@@ -41,19 +46,21 @@ final mySectionMembershipSignal = futureSignal(
     if (s == null) return null;
     return await client.member.getMySectionMembership(s.id!);
   },
-  dependencies: [sectionSignal],
+  dependencies: [sectionSignal, authUserSignal],
 );
 
 /// This is not computed. Should be a signal instead. Is there something in the flutter auth
 /// session manager that gives us this? TODO, investigate.
-final isGlobalAdminSignal = computed(() {
-  var foo = authInfoStreamSignal.value;
-  print('update global signal');
+final isGlobalAdminSignal = computed(
+  () {
+    final x = authUserSignal.value;
+    print('updated isGlobalAdminSignal');
+    if (x == null) return false;
 
-  if (foo == null) return false;
-  final scopes = sessionManager.authInfo?.scopeNames ?? {};
-  return scopes.contains('serverpod.admin') || scopes.contains('admin');
-});
+    final scopes = x.scopeNames;
+    return scopes.contains('serverpod.admin') || scopes.contains('admin');
+  },
+);
 
 final isSectionManagerSignal = computed(() {
   final membership = mySectionMembershipSignal.value.value;
@@ -67,6 +74,7 @@ final canCreateEventsSignal = computed(() {
       membership?.scopes.contains('eventManager') == true;
 });
 
+/// selected date in the calendar view
 // todo: Should the signals below be moved into the calendar view widget?
 
 final selectedDateSignal = signal<DateTime>(DateTime.now().copyWith(
@@ -102,12 +110,14 @@ final currentEventsSignal = futureSignal(
     return events;
   },
   dependencies: [sectionSignal, selectedDateSignal, showMyEventsOnlySignal],
+  debugLabel: 'currentEventsSignal',
 );
 
 final notificationsSignal = futureSignal(() async {
-  if (!sessionManager.isAuthenticated) return <Notification>[];
+  final i = authUserSignal.value;
+  if (i == null) return <Notification>[];
   return await client.notification.listNotifications();
-});
+}, debugLabel: 'notificationsSignal');
 
 final notificationStreamSignal = streamSignal<List<Notification>>(() async* {
   while (true) {
