@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:signals_flutter/signals_flutter.dart';
+import '../router.dart' show resetRouterBootstrap;
 import '../signals.dart';
 
 class RegistrationScreen extends HookWidget {
@@ -69,13 +70,17 @@ class RegistrationScreen extends HookWidget {
         await client.member
             .registerMember(member, selectedSectionIds.value.toList());
 
-        // Reset signals to reflect changes
+        // Reset signals to reflect the newly created member
         currentMemberSignal.reset();
         allMySectionMembershipsSignal.reset();
 
         if (context.mounted) {
-          // todo: force logout?
-          context.go('/section-selection');
+          // Clear the stale bootstrap cache (which returned '/registration')
+          // and let the redirect re-run _performBootstrap. The fresh run will
+          // find the new member, check the waiver, and route accordingly:
+          //   waiver needed → /waiver → /section-selection → /
+          resetRouterBootstrap();
+          context.go('/');
         }
       } catch (e) {
         if (context.mounted) {

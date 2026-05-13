@@ -160,7 +160,7 @@ void main() {
         };
 
         // assign to first and second sections
-        var sm = await endpoints.member.addMemberToSection(
+        await endpoints.member.addMemberToSection(
             authSession,
             SectionMembership(
                 memberId: m.id!, sectionId: s1.id!, scopes: scopes));
@@ -172,7 +172,7 @@ void main() {
     test('Create 100 sample events', () async {
       final sections = await endpoints.admin.listSections(authSession);
       final calgary = sections.firstWhere((s) => s.name == 'Calgary');
-      final edmonton = sections.firstWhere((s) => s.name == 'Edmonton');
+      //final edmonton = sections.firstWhere((s) => s.name == 'Edmonton');
 
       // Get the test users we just created
       final members = await endpoints.member.getSectionMembers(authSession,

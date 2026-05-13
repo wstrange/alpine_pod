@@ -9,9 +9,16 @@ late FlutterAuthSessionManager sessionManager;
 final log = Logger('signals');
 
 final userSignal = signal<AuthUser?>(null);
+final authInfoStreamSignal = client.auth.authInfoListenable.toSignal();
 
 final userProfileInfoSignal = futureSignal(() async {
   return await client.modules.serverpod_auth_core.userProfileInfo.get();
+}, dependencies: [authInfoStreamSignal]);
+
+final authUserSignal = computed(() {
+  final authInfo = authInfoStreamSignal.value;
+  if (authInfo == null) return null;
+  return client.auth.authInfo;
 });
 
 final allSectionsSignal = futureSignal(() async {
@@ -37,7 +44,13 @@ final mySectionMembershipSignal = futureSignal(
   dependencies: [sectionSignal],
 );
 
+/// This is not computed. Should be a signal instead. Is there something in the flutter auth
+/// session manager that gives us this? TODO, investigate.
 final isGlobalAdminSignal = computed(() {
+  var foo = authInfoStreamSignal.value;
+  print('update global signal');
+
+  if (foo == null) return false;
   final scopes = sessionManager.authInfo?.scopeNames ?? {};
   return scopes.contains('serverpod.admin') || scopes.contains('admin');
 });

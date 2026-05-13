@@ -96,22 +96,44 @@ class _MemberEditFormState extends State<_MemberEditForm> {
     super.dispose();
   }
 
-  void save() {
-    final updatedMember = widget.member.copyWith(
-      firstName: firstNameController.text,
-      lastName: lastNameController.text,
-      displayName: displayNameController.text,
-      bio: bioController.text,
-      email: emailController.text,
-      phoneNumber: phoneNumberController.text,
-      emergencyContactName: emergencyContactNameController.text,
-      emergencyContactPhone: emergencyContactPhoneController.text,
-      medicalConditions: medicalConditionsController.text,
-      certifications: certificationsController.text,
-    );
-    client.member.updateMember(updatedMember).then((_) {
-      currentMemberSignal.reset();
-    });
+  Future<void> save() async {
+    try {
+      final updatedMember = widget.member.copyWith(
+        firstName: firstNameController.text,
+        lastName: lastNameController.text,
+        displayName: displayNameController.text,
+        bio: bioController.text,
+        email: emailController.text,
+        phoneNumber: phoneNumberController.text,
+        emergencyContactName: emergencyContactNameController.text,
+        emergencyContactPhone: emergencyContactPhoneController.text,
+        medicalConditions: medicalConditionsController.text,
+        certifications: certificationsController.text,
+      );
+      await client.member.updateMember(updatedMember);
+
+      // Update the cached member data directly — avoids the AsyncLoading
+      // state that reset() would cause while re-fetching from the server.
+      currentMemberSignal.setValue(updatedMember);
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Profile saved')),
+        );
+        final router = GoRouter.of(context);
+        if (router.canPop()) {
+          router.pop();
+        } else {
+          router.go('/');
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to save profile: $e')),
+        );
+      }
+    }
   }
 
   void reset() {
@@ -223,6 +245,18 @@ class _MemberEditFormState extends State<_MemberEditForm> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
+              OutlinedButton.icon(
+                onPressed: () {
+                  final router = GoRouter.of(context);
+                  if (router.canPop()) {
+                    router.pop();
+                  } else {
+                    router.go('/');
+                  }
+                },
+                icon: const Icon(Icons.close),
+                label: const Text('Cancel'),
+              ),
               ElevatedButton.icon(
                 onPressed: reset,
                 icon: const Icon(Icons.refresh),
