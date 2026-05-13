@@ -92,6 +92,14 @@ final router = GoRouter(
       path: '/waiver',
       builder: (context, state) => const WaiverScreen(),
     ),
+    GoRoute(
+      path: '/member-edit/:id',
+      builder: (context, state) {
+        final idStr = state.pathParameters['id'];
+        final id = idStr != null ? int.tryParse(idStr) : null;
+        return MemberEditScreen(memberId: id);
+      },
+    ),
   ],
   redirect: (BuildContext context, GoRouterState state) async {
     final bool loggedIn = sessionManager.isAuthenticated;

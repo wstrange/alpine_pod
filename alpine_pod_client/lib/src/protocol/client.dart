@@ -322,6 +322,13 @@ class EndpointEvent extends _i2.EndpointRef {
   @override
   String get name => 'event';
 
+  /// Creates a new event and assigns the creator as the default manager.
+  ///
+  /// [session] - The session object.
+  /// [event] - The event to create.
+  /// [additionalManagerIds] - Optional list of additional member IDs to assign as managers.
+  ///
+  /// todo: Do we want to explicitly set the default manager?
   _i3.Future<_i6.Event> createEvent(
     _i6.Event event, {
     List<int>? additionalManagerIds,
@@ -503,6 +510,21 @@ class EndpointMember extends _i2.EndpointRef {
         'removeMemberFromSection',
         {'membership': membership},
       );
+
+  _i3.Future<_i9.Member?> getMember(int id) =>
+      caller.callServerEndpoint<_i9.Member?>(
+        'member',
+        'getMember',
+        {'id': id},
+      );
+
+  _i3.Future<List<_i10.SectionMembership>> getMemberSectionMemberships(
+    int memberId,
+  ) => caller.callServerEndpoint<List<_i10.SectionMembership>>(
+    'member',
+    'getMemberSectionMemberships',
+    {'memberId': memberId},
+  );
 
   _i3.Future<_i9.Member> updateMember(_i9.Member member) =>
       caller.callServerEndpoint<_i9.Member>(

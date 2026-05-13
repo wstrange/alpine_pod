@@ -83,8 +83,65 @@ class MemberEndpoint extends Endpoint {
     await _syncUserScopes(session, membership.memberId);
   }
 
+  Future<Member?> getMember(Session session, int id) async {
+    final callerInfo = await cache.getMemberInfo(session);
+    if (callerInfo == null) throw Exception('Not authenticated');
+
+    if (!session.isGlobalAdmin() && callerInfo.member.id != id) {
+      throw Exception('You do not have permission to view this member');
+    }
+
+    return await Member.db.findById(session, id);
+  }
+
+  Future<List<SectionMembership>> getMemberSectionMemberships(
+    Session session,
+    int memberId,
+  ) async {
+    final callerInfo = await cache.getMemberInfo(session);
+    if (callerInfo == null) throw Exception('Not authenticated');
+
+    if (!session.isGlobalAdmin() && callerInfo.member.id != memberId) {
+      throw Exception('You do not have permission to view these memberships');
+    }
+
+    return await SectionMembership.db.find(
+      session,
+      where: (t) => t.memberId.equals(memberId),
+      include: SectionMembership.include(
+        section: Section.include(),
+      ),
+    );
+  }
+
   Future<Member> updateMember(Session session, Member member) async {
-    final updated = await Member.db.updateRow(session, member);
+    final callerInfo = await cache.getMemberInfo(session);
+    if (callerInfo == null) throw Exception('Not authenticated');
+
+    // Find the existing record to check userId
+    final existing = await Member.db.findById(session, member.id!);
+    if (existing == null) throw Exception('Member not found');
+
+    if (!session.isGlobalAdmin() && existing.id != callerInfo.member.id) {
+      throw Exception('You do not have permission to update this member');
+    }
+
+    // Prevent changing the userId associated with the member record
+    // even for admins, to keep the link to the Auth record stable.
+    final toUpdate = member.copyWith(
+      userId: existing.userId,
+      updatedAt: DateTime.now(),
+    );
+
+    final updated = await Member.db.updateRow(session, toUpdate);
+
+    // If it's the current user, invalidate their cache
+    if (existing.userId == callerInfo.member.userId) {
+      cache.invalidateCache(session);
+    } else {
+      cache.invalidateUserCache(existing.userId);
+    }
+
     return updated;
   }
 

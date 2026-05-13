@@ -28,9 +28,9 @@ import 'section_membership.dart' as _i13;
 import 'package:alpine_pod_server/src/generated/section.dart' as _i14;
 import 'package:alpine_pod_server/src/generated/event.dart' as _i15;
 import 'package:alpine_pod_server/src/generated/event_manager.dart' as _i16;
-import 'package:alpine_pod_server/src/generated/member.dart' as _i17;
 import 'package:alpine_pod_server/src/generated/section_membership.dart'
-    as _i18;
+    as _i17;
+import 'package:alpine_pod_server/src/generated/member.dart' as _i18;
 import 'package:alpine_pod_server/src/generated/notification.dart' as _i19;
 import 'package:alpine_pod_server/src/generated/event_registration.dart'
     as _i20;
@@ -1184,14 +1184,14 @@ class Protocol extends _i1.SerializationManagerServer {
               .toList()
           as T;
     }
-    if (t == List<_i17.Member>) {
-      return (data as List).map((e) => deserialize<_i17.Member>(e)).toList()
+    if (t == List<_i17.SectionMembership>) {
+      return (data as List)
+              .map((e) => deserialize<_i17.SectionMembership>(e))
+              .toList()
           as T;
     }
-    if (t == List<_i18.SectionMembership>) {
-      return (data as List)
-              .map((e) => deserialize<_i18.SectionMembership>(e))
-              .toList()
+    if (t == List<_i18.Member>) {
+      return (data as List).map((e) => deserialize<_i18.Member>(e)).toList()
           as T;
     }
     if (t == Set<String>) {

@@ -849,6 +849,43 @@ class Endpoints extends _i1.EndpointDispatch {
                     params['membership'],
                   ),
         ),
+        'getMember': _i1.MethodConnector(
+          name: 'getMember',
+          params: {
+            'id': _i1.ParameterDescription(
+              name: 'id',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['member'] as _i6.MemberEndpoint).getMember(
+                session,
+                params['id'],
+              ),
+        ),
+        'getMemberSectionMemberships': _i1.MethodConnector(
+          name: 'getMemberSectionMemberships',
+          params: {
+            'memberId': _i1.ParameterDescription(
+              name: 'memberId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['member'] as _i6.MemberEndpoint)
+                  .getMemberSectionMemberships(
+                    session,
+                    params['memberId'],
+                  ),
+        ),
         'updateMember': _i1.MethodConnector(
           name: 'updateMember',
           params: {

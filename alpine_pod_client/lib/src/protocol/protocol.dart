@@ -23,8 +23,8 @@ import 'section_membership.dart' as _i10;
 import 'package:alpine_pod_client/src/protocol/section.dart' as _i11;
 import 'package:alpine_pod_client/src/protocol/event.dart' as _i12;
 import 'package:alpine_pod_client/src/protocol/event_manager.dart' as _i13;
-import 'package:alpine_pod_client/src/protocol/member.dart' as _i14;
-import 'package:alpine_pod_client/src/protocol/section_membership.dart' as _i15;
+import 'package:alpine_pod_client/src/protocol/section_membership.dart' as _i14;
+import 'package:alpine_pod_client/src/protocol/member.dart' as _i15;
 import 'package:alpine_pod_client/src/protocol/notification.dart' as _i16;
 import 'package:alpine_pod_client/src/protocol/event_registration.dart' as _i17;
 import 'package:serverpod_auth_idp_client/serverpod_auth_idp_client.dart'
@@ -184,14 +184,14 @@ class Protocol extends _i1.SerializationManager {
               .toList()
           as T;
     }
-    if (t == List<_i14.Member>) {
-      return (data as List).map((e) => deserialize<_i14.Member>(e)).toList()
+    if (t == List<_i14.SectionMembership>) {
+      return (data as List)
+              .map((e) => deserialize<_i14.SectionMembership>(e))
+              .toList()
           as T;
     }
-    if (t == List<_i15.SectionMembership>) {
-      return (data as List)
-              .map((e) => deserialize<_i15.SectionMembership>(e))
-              .toList()
+    if (t == List<_i15.Member>) {
+      return (data as List).map((e) => deserialize<_i15.Member>(e)).toList()
           as T;
     }
     if (t == Set<String>) {

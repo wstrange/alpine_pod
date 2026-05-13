@@ -1,6 +1,7 @@
 import 'package:alpine_pod_client/alpine_pod_client.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 import 'package:signals_hooks/signals_hooks.dart';
 import '../signals.dart';
 
@@ -244,10 +245,8 @@ class _SectionDialog extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final formKey = useMemoized(GlobalKey<FormState>.new);
-    final nameCtrl =
-        useTextEditingController(text: section?.name ?? '');
-    final descCtrl =
-        useTextEditingController(text: section?.description ?? '');
+    final nameCtrl = useTextEditingController(text: section?.name ?? '');
+    final descCtrl = useTextEditingController(text: section?.description ?? '');
     final locationCtrl =
         useTextEditingController(text: section?.location ?? '');
     final contactCtrl =
@@ -299,8 +298,8 @@ class _SectionDialog extends HookWidget {
         backgroundColor: const Color(0xFF1A1D27),
         title: Text(
           isEdit ? 'Edit Section' : 'New Section',
-          style: const TextStyle(
-              color: Colors.white, fontWeight: FontWeight.w700),
+          style:
+              const TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
         ),
         content: SizedBox(
           width: 400,
@@ -323,8 +322,8 @@ class _SectionDialog extends HookWidget {
         actions: [
           TextButton(
             onPressed: isSaving ? null : () => Navigator.pop(context),
-            child: const Text('Cancel',
-                style: TextStyle(color: Colors.white54)),
+            child:
+                const Text('Cancel', style: TextStyle(color: Colors.white54)),
           ),
           FilledButton(
             style: FilledButton.styleFrom(
@@ -596,8 +595,7 @@ class _MemberCard extends StatelessWidget {
         border: Border.all(color: Colors.white.withAlpha(15)),
       ),
       child: ListTile(
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
         leading: CircleAvatar(
           backgroundColor: const Color(0xFF6C63FF).withAlpha(180),
           child: Text(initials,
@@ -613,10 +611,20 @@ class _MemberCard extends StatelessWidget {
                 fontSize: 14)),
         subtitle: Text(member.email,
             style: const TextStyle(color: Colors.white54, fontSize: 12)),
-        trailing: IconButton(
-          icon: Icon(Icons.delete_outline, color: Colors.red[300]),
-          tooltip: 'Delete member',
-          onPressed: onDelete,
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              icon: const Icon(Icons.edit_outlined, color: Colors.white54),
+              tooltip: 'Edit member',
+              onPressed: () => context.push('/member-edit/${member.id}'),
+            ),
+            IconButton(
+              icon: Icon(Icons.delete_outline, color: Colors.red[300]),
+              tooltip: 'Delete member',
+              onPressed: onDelete,
+            ),
+          ],
         ),
       ),
     );
@@ -639,17 +647,14 @@ Future<bool> _showConfirmDialog(
       title: Text(title,
           style: const TextStyle(
               color: Colors.white, fontWeight: FontWeight.w700)),
-      content:
-          Text(message, style: const TextStyle(color: Colors.white70)),
+      content: Text(message, style: const TextStyle(color: Colors.white70)),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(ctx, false),
-          child: const Text('Cancel',
-              style: TextStyle(color: Colors.white54)),
+          child: const Text('Cancel', style: TextStyle(color: Colors.white54)),
         ),
         FilledButton(
-          style:
-              FilledButton.styleFrom(backgroundColor: Colors.red[700]),
+          style: FilledButton.styleFrom(backgroundColor: Colors.red[700]),
           onPressed: () => Navigator.pop(ctx, true),
           child: const Text('Delete'),
         ),

@@ -1,16 +1,27 @@
-import 'package:signals_flutter/signals_flutter.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
+import 'package:signals_hooks/signals_hooks.dart';
 import 'package:alpine_pod_client/alpine_pod_client.dart';
 import '../signals.dart';
 
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-
-class MemberEditScreen extends StatelessWidget {
-  const MemberEditScreen({super.key});
+class MemberEditScreen extends HookWidget {
+  final int? memberId;
+  const MemberEditScreen({super.key, this.memberId});
 
   @override
   Widget build(BuildContext context) {
-    final memberValue = currentMemberSignal.watch(context);
+    // Always call hooks unconditionally to maintain consistent hook order.
+    final currentMemberValue = currentMemberSignal.watch(context);
+    final targetMemberValue = useFutureSignal(
+      () => memberId != null
+          ? client.member.getMember(memberId!)
+          : Future.value(null),
+      keys: [memberId],
+    ).value;
+
+    final AsyncState<Member?> memberValue =
+        memberId == null ? currentMemberValue : targetMemberValue;
 
     return Scaffold(
       appBar: AppBar(
@@ -25,7 +36,7 @@ class MemberEditScreen extends StatelessWidget {
             }
           },
         ),
-        title: const Text('Edit Profile'),
+        title: Text(memberId == null ? 'Edit Profile' : 'Edit Member'),
       ),
       body: switch (memberValue) {
         AsyncError(error: final e) => Center(child: Text('Error: $e')),
@@ -33,128 +44,111 @@ class MemberEditScreen extends StatelessWidget {
             child: CircularProgressIndicator(),
           ),
         AsyncData(value: final member) => member == null
-            ? const Center(child: Text('Not logged in.'))
-            : _MemberEditForm(member: member),
+            ? const Center(child: Text('Member not found.'))
+            : _MemberEditForm(member: member, memberId: memberId),
       },
     );
   }
 }
 
-class _MemberEditForm extends StatefulWidget {
+class _MemberEditForm extends HookWidget {
   final Member member;
-  const _MemberEditForm({required this.member});
-
-  @override
-  State<_MemberEditForm> createState() => _MemberEditFormState();
-}
-
-class _MemberEditFormState extends State<_MemberEditForm> {
-  late final TextEditingController firstNameController;
-  late final TextEditingController lastNameController;
-  late final TextEditingController displayNameController;
-  late final TextEditingController bioController;
-  late final TextEditingController emailController;
-  late final TextEditingController phoneNumberController;
-  late final TextEditingController emergencyContactNameController;
-  late final TextEditingController emergencyContactPhoneController;
-  late final TextEditingController medicalConditionsController;
-  late final TextEditingController certificationsController;
-
-  @override
-  void initState() {
-    super.initState();
-    firstNameController = TextEditingController(text: widget.member.firstName);
-    lastNameController = TextEditingController(text: widget.member.lastName);
-    displayNameController =
-        TextEditingController(text: widget.member.displayName);
-    bioController = TextEditingController(text: widget.member.bio);
-    emailController = TextEditingController(text: widget.member.email);
-    phoneNumberController =
-        TextEditingController(text: widget.member.phoneNumber);
-    emergencyContactNameController =
-        TextEditingController(text: widget.member.emergencyContactName);
-    emergencyContactPhoneController =
-        TextEditingController(text: widget.member.emergencyContactPhone);
-    medicalConditionsController =
-        TextEditingController(text: widget.member.medicalConditions);
-    certificationsController =
-        TextEditingController(text: widget.member.certifications);
-  }
-
-  @override
-  void dispose() {
-    firstNameController.dispose();
-    lastNameController.dispose();
-    displayNameController.dispose();
-    bioController.dispose();
-    emailController.dispose();
-    phoneNumberController.dispose();
-    emergencyContactNameController.dispose();
-    emergencyContactPhoneController.dispose();
-    medicalConditionsController.dispose();
-    certificationsController.dispose();
-    super.dispose();
-  }
-
-  Future<void> save() async {
-    try {
-      final updatedMember = widget.member.copyWith(
-        firstName: firstNameController.text,
-        lastName: lastNameController.text,
-        displayName: displayNameController.text,
-        bio: bioController.text,
-        email: emailController.text,
-        phoneNumber: phoneNumberController.text,
-        emergencyContactName: emergencyContactNameController.text,
-        emergencyContactPhone: emergencyContactPhoneController.text,
-        medicalConditions: medicalConditionsController.text,
-        certifications: certificationsController.text,
-      );
-      await client.member.updateMember(updatedMember);
-
-      // Update the cached member data directly — avoids the AsyncLoading
-      // state that reset() would cause while re-fetching from the server.
-      currentMemberSignal.setValue(updatedMember);
-
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Profile saved')),
-        );
-        final router = GoRouter.of(context);
-        if (router.canPop()) {
-          router.pop();
-        } else {
-          router.go('/');
-        }
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to save profile: $e')),
-        );
-      }
-    }
-  }
-
-  void reset() {
-    setState(() {
-      firstNameController.text = widget.member.firstName;
-      lastNameController.text = widget.member.lastName;
-      displayNameController.text = widget.member.displayName ?? '';
-      bioController.text = widget.member.bio ?? '';
-      emailController.text = widget.member.email;
-      phoneNumberController.text = widget.member.phoneNumber;
-      emergencyContactNameController.text = widget.member.emergencyContactName;
-      emergencyContactPhoneController.text =
-          widget.member.emergencyContactPhone;
-      medicalConditionsController.text = widget.member.medicalConditions ?? '';
-      certificationsController.text = widget.member.certifications ?? '';
-    });
-  }
+  final int? memberId;
+  const _MemberEditForm({required this.member, this.memberId});
 
   @override
   Widget build(BuildContext context) {
-    final membershipsValue = allMySectionMembershipsSignal.watch(context);
+    final firstNameController =
+        useTextEditingController(text: member.firstName);
+    final lastNameController = useTextEditingController(text: member.lastName);
+    final displayNameController =
+        useTextEditingController(text: member.displayName);
+    final bioController = useTextEditingController(text: member.bio);
+    final emailController = useTextEditingController(text: member.email);
+    final phoneNumberController =
+        useTextEditingController(text: member.phoneNumber);
+    final emergencyContactNameController =
+        useTextEditingController(text: member.emergencyContactName);
+    final emergencyContactPhoneController =
+        useTextEditingController(text: member.emergencyContactPhone);
+    final medicalConditionsController =
+        useTextEditingController(text: member.medicalConditions);
+    final certificationsController =
+        useTextEditingController(text: member.certifications);
+
+    // Re-initialize controllers if the member changes (e.g. after a refresh or navigation)
+    useValueChanged<Member, void>(member, (_, __) {
+      firstNameController.text = member.firstName;
+      lastNameController.text = member.lastName;
+      displayNameController.text = member.displayName ?? '';
+      bioController.text = member.bio ?? '';
+      emailController.text = member.email;
+      phoneNumberController.text = member.phoneNumber;
+      emergencyContactNameController.text = member.emergencyContactName;
+      emergencyContactPhoneController.text = member.emergencyContactPhone;
+      medicalConditionsController.text = member.medicalConditions ?? '';
+      certificationsController.text = member.certifications ?? '';
+    });
+
+    final membershipsValue = memberId == null
+        ? allMySectionMembershipsSignal.watch(context)
+        : useFutureSignal(
+            () => client.member.getMemberSectionMemberships(memberId!),
+            keys: [memberId],
+          ).value;
+
+    Future<void> save() async {
+      try {
+        final updatedMember = member.copyWith(
+          firstName: firstNameController.text,
+          lastName: lastNameController.text,
+          displayName: displayNameController.text,
+          bio: bioController.text,
+          email: emailController.text,
+          phoneNumber: phoneNumberController.text,
+          emergencyContactName: emergencyContactNameController.text,
+          emergencyContactPhone: emergencyContactPhoneController.text,
+          medicalConditions: medicalConditionsController.text,
+          certifications: certificationsController.text,
+        );
+        await client.member.updateMember(updatedMember);
+
+        if (memberId == null) {
+          currentMemberSignal.setValue(updatedMember);
+        }
+
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Profile saved')),
+          );
+          final router = GoRouter.of(context);
+          if (router.canPop()) {
+            router.pop();
+          } else {
+            router.go('/');
+          }
+        }
+      } catch (e) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Failed to save profile: $e')),
+          );
+        }
+      }
+    }
+
+    void reset() {
+      firstNameController.text = member.firstName;
+      lastNameController.text = member.lastName;
+      displayNameController.text = member.displayName ?? '';
+      bioController.text = member.bio ?? '';
+      emailController.text = member.email;
+      phoneNumberController.text = member.phoneNumber;
+      emergencyContactNameController.text = member.emergencyContactName;
+      emergencyContactPhoneController.text = member.emergencyContactPhone;
+      medicalConditionsController.text = member.medicalConditions ?? '';
+      certificationsController.text = member.certifications ?? '';
+    }
 
     return Column(
       children: [

@@ -51,12 +51,6 @@ class _WaiverScreenState extends State<WaiverScreen> {
     try {
       // Calling our new endpoint
       await client.member.acceptWaiver();
-      
-      // Update local member cache with new date so routing check passes
-      final member = await currentMemberSignal.future;
-      if (member != null) {
-        member.waiverSignedDate = DateTime.now();
-      }
 
       if (mounted) {
         // Clear stale bootstrap so the redirect re-runs _performBootstrap
