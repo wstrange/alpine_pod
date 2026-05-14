@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:signals_hooks/signals_hooks.dart';
 import 'package:alpine_pod_client/alpine_pod_client.dart';
 import '../signals.dart';
+import '../widgets/user_role_editor.dart';
 
 class MemberEditScreen extends HookWidget {
   final int? memberId;
@@ -90,12 +91,16 @@ class _MemberEditForm extends HookWidget {
       certificationsController.text = member.certifications ?? '';
     });
 
+    final reloadMemberships = useSignal(0);
     final membershipsValue = memberId == null
         ? allMySectionMembershipsSignal.watch(context)
         : useFutureSignal(
             () => client.member.getMemberSectionMemberships(memberId!),
-            keys: [memberId],
+            keys: [memberId, reloadMemberships.value],
           ).value;
+
+    final allSectionsValue = allSectionsSignal.watch(context);
+    final isGlobalAdmin = isGlobalAdminSignal.watch(context);
 
     Future<void> save() async {
       try {
@@ -211,24 +216,89 @@ class _MemberEditForm extends HookWidget {
                 switch (membershipsValue) {
                   AsyncError(error: final e) => Text('Error loading roles: $e'),
                   AsyncLoading() => const CircularProgressIndicator(),
-                  AsyncData(value: final memberships) => memberships.isEmpty
-                      ? const Text('No section memberships found.')
-                      : ListView.builder(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: memberships.length,
-                          itemBuilder: (context, index) {
-                            final m = memberships[index];
-                            final sectionName =
-                                m.section?.name ?? 'Section ${m.sectionId}';
-                            final roles = m.scopes.join(', ');
-                            return ListTile(
-                              title: Text(sectionName),
-                              subtitle: Text('Roles: $roles'),
-                              contentPadding: EdgeInsets.zero,
-                            );
+                  AsyncData(value: final memberships) => Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (memberships.isEmpty)
+                          const Text('No section memberships found.'),
+                        ...memberships.map((m) => UserRoleEditor(
+                              memberId: m.memberId,
+                              sectionId: m.sectionId,
+                              sectionName: m.section?.name,
+                            )),
+                        if (isGlobalAdmin && memberId != null) ...[
+                          const SizedBox(height: 16),
+                          switch (allSectionsValue) {
+                            AsyncData(value: final allSections) => () {
+                                final currentSectionIds =
+                                    memberships.map((m) => m.sectionId).toSet();
+                                final availableSections = allSections
+                                    .where((s) =>
+                                        !currentSectionIds.contains(s.id))
+                                    .toList();
+
+                                if (availableSections.isEmpty) {
+                                  return const SizedBox.shrink();
+                                }
+
+                                return ElevatedButton.icon(
+                                  onPressed: () async {
+                                    final selectedSection =
+                                        await showDialog<Section>(
+                                      context: context,
+                                      builder: (context) => AlertDialog(
+                                        title: const Text('Add to Section'),
+                                        content: SizedBox(
+                                          width: double.maxFinite,
+                                          child: ListView.builder(
+                                            shrinkWrap: true,
+                                            itemCount: availableSections.length,
+                                            itemBuilder: (context, index) {
+                                              final s =
+                                                  availableSections[index];
+                                              return ListTile(
+                                                title: Text(s.name),
+                                                onTap: () =>
+                                                    Navigator.pop(context, s),
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                    );
+
+                                    if (selectedSection != null &&
+                                        context.mounted) {
+                                      try {
+                                        await client.member.addMemberToSection(
+                                          SectionMembership(
+                                            memberId: memberId!,
+                                            sectionId: selectedSection.id!,
+                                            scopes: {'member'},
+                                          ),
+                                        );
+                                        reloadMemberships.value++;
+                                      } catch (e) {
+                                        if (context.mounted) {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                                content: Text(
+                                                    'Failed to add to section: $e')),
+                                          );
+                                        }
+                                      }
+                                    }
+                                  },
+                                  icon: const Icon(Icons.add),
+                                  label: const Text('Add to Section'),
+                                );
+                              }(),
+                            _ => const SizedBox.shrink(),
                           },
-                        ),
+                        ],
+                      ],
+                    ),
                 },
               ],
             ),

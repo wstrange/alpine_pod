@@ -25,3 +25,11 @@ Routing is done using GoRouter. If the user has not authencicated they are redir
 
 If the user has the admin scope, they should be redirected to the admin screen.
 
+
+## Running the app
+
+
+Prompt:
+
+Start the antigravity browser if it is not running. Kill any older flutter run processes. Launch the flutter app in the AG browser.
+
