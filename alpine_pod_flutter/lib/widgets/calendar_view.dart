@@ -130,7 +130,7 @@ class CalendarView extends HookWidget {
               IconButton(
                 visualDensity: VisualDensity.compact,
                 onPressed: () => onUpdateDate(DateTime.now()),
-                icon: const Icon(Icons.today_rounded, size: 18),
+                icon: const Icon(Icons.today_rounded, size: 24),
                 color: Colors.blue.withValues(alpha: 0.7),
                 tooltip: 'Go to today',
               ),

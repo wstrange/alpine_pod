@@ -9,6 +9,8 @@ import '../signals.dart';
 import '../util.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import '../widgets/event_managers_manager.dart';
+import '../widgets/template_browser_dialog.dart';
+
 
 final log = Logger('EventEditScreen');
 
@@ -258,10 +260,48 @@ class EventEditScreen extends HookWidget {
               controller: titleController,
               decoration: const InputDecoration(labelText: 'Title'),
             ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.only(left: 4.0),
+                  child: Text('Description', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white70)),
+                ),
+                TextButton.icon(
+                  onPressed: () async {
+                    final template = await showDialog<String>(
+                      context: context,
+                      builder: (context) => const TemplateBrowserDialog(),
+                    );
+                    if (template != null) {
+                      final currentText = descriptionController.text;
+                      final selection = descriptionController.selection;
+                      if (selection.baseOffset < 0) {
+                        descriptionController.text = currentText + (currentText.isEmpty ? '' : '\n\n') + template;
+                      } else {
+                        final newText = currentText.replaceRange(
+                          selection.start,
+                          selection.end,
+                          template,
+                        );
+                        descriptionController.value = descriptionController.value.copyWith(
+                          text: newText,
+                          selection: TextSelection.collapsed(
+                            offset: selection.start + template.length,
+                          ),
+                        );
+                      }
+                    }
+                  },
+                  icon: const Icon(Icons.library_books),
+                  label: const Text('Insert Boilerplate'),
+                ),
+              ],
+            ),
             TextFormField(
               controller: descriptionController,
               decoration: const InputDecoration(
-                  labelText: 'Description (supports markdown)'),
+                  hintText: 'Enter event description (supports markdown)'),
               maxLines: 30,
               minLines: 5,
             ),

@@ -9,9 +9,6 @@ fields:
   eventLocation: String?
   carpoolLocation: String?
   carpoolTime: DateTime?
-  difficulty: String?
-  requiredEquipment: String?
-  prerequisites: String?
   recurring: String?
   # Registration management
   registrationDeadline: DateTime?
@@ -21,10 +18,7 @@ fields:
   minimumParticipants: int, default=0
   maxParticipants: int, default=8
   cancellationDeadline: DateTime?
-  registrationNotes: String?
-  sectionId: int # Associated section
-  # JSON list of documents (e.g. [{"type":"waiver","url":"..."}])
-  documentsJson: String?
+  section: Section?, relation
   # Wheter is is visible on the public event list
   published: bool, default=false
   eventRegistrations: List<EventRegistration>?, relation(name=event_registrations)

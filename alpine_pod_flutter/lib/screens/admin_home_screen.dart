@@ -11,7 +11,7 @@ class AdminHomeScreen extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tabController = useTabController(initialLength: 2);
+    final tabController = useTabController(initialLength: 3);
 
     return Scaffold(
       backgroundColor: const Color(0xFF0F1117),
@@ -68,6 +68,7 @@ class AdminHomeScreen extends HookWidget {
           tabs: const [
             Tab(icon: Icon(Icons.terrain), text: 'Sections'),
             Tab(icon: Icon(Icons.people), text: 'Members'),
+            Tab(icon: Icon(Icons.library_books), text: 'Templates'),
           ],
         ),
       ),
@@ -76,6 +77,7 @@ class AdminHomeScreen extends HookWidget {
         children: const [
           _SectionsTab(),
           _MembersTab(),
+          _TemplatesTab(),
         ],
       ),
     );
@@ -662,4 +664,321 @@ Future<bool> _showConfirmDialog(
     ),
   );
   return result ?? false;
+}
+
+// ---------------------------------------------------------------------------
+// Templates Tab
+// ---------------------------------------------------------------------------
+
+class _TemplatesTab extends HookWidget {
+  const _TemplatesTab();
+
+  @override
+  Widget build(BuildContext context) {
+    final reload = useSignal(0);
+
+    final templatesSignal = useFutureSignal(
+      () => client.eventTemplate.listTemplates(),
+      keys: [reload.value],
+    );
+
+    final templates = templatesSignal.watch(context);
+
+    void refresh() => reload.value++;
+
+    Future<void> deleteTemplate(EventTemplate t) async {
+      final confirmed = await _showConfirmDialog(
+        context,
+        title: 'Delete Template',
+        message: 'Delete "${t.name}"? This cannot be undone.',
+      );
+      if (!confirmed || !context.mounted) return;
+      final messenger = ScaffoldMessenger.of(context);
+      try {
+        await client.eventTemplate.deleteTemplate(t.id!);
+        messenger.showSnackBar(SnackBar(
+          content: Text('"${t.name}" deleted.'),
+          backgroundColor: const Color(0xFF4ECDC4),
+        ));
+        refresh();
+      } catch (e) {
+        messenger.showSnackBar(SnackBar(
+          content: Text('Error: $e'),
+          backgroundColor: Colors.red[700],
+        ));
+      }
+    }
+
+    void openDialog({EventTemplate? existing}) {
+      showDialog(
+        context: context,
+        builder: (_) => _TemplateDialog(template: existing, onSaved: refresh),
+      );
+    }
+
+    return Scaffold(
+      backgroundColor: const Color(0xFF0F1117),
+      floatingActionButton: FloatingActionButton.extended(
+        backgroundColor: const Color(0xFF6C63FF),
+        foregroundColor: Colors.white,
+        icon: const Icon(Icons.add),
+        label: const Text('New Template'),
+        onPressed: () => openDialog(),
+      ),
+      body: templates.map(
+        data: (list) {
+          if (list.isEmpty) {
+            return const Center(
+              child: Text('No templates yet. Create one!',
+                  style: TextStyle(color: Colors.white54)),
+            );
+          }
+          return ListView.separated(
+            padding: const EdgeInsets.fromLTRB(16, 20, 16, 100),
+            itemCount: list.length,
+            separatorBuilder: (_, __) => const SizedBox(height: 10),
+            itemBuilder: (_, i) => _TemplateCard(
+              template: list[i],
+              onEdit: () => openDialog(existing: list[i]),
+              onDelete: () => deleteTemplate(list[i]),
+            ),
+          );
+        },
+        error: (e, _) => Center(
+          child: Text('Error: $e',
+              style: const TextStyle(color: Colors.redAccent)),
+        ),
+        loading: () => const Center(
+          child: CircularProgressIndicator(color: Color(0xFF6C63FF)),
+        ),
+      ),
+    );
+  }
+}
+
+class _TemplateCard extends StatelessWidget {
+  const _TemplateCard({
+    required this.template,
+    required this.onEdit,
+    required this.onDelete,
+  });
+
+  final EventTemplate template;
+  final VoidCallback onEdit;
+  final VoidCallback onDelete;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: const Color(0xFF1A1D27),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.white.withAlpha(15)),
+      ),
+      child: ListTile(
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        leading: Container(
+          width: 44,
+          height: 44,
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [Color(0xFF6C63FF), Color(0xFF4ECDC4)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: const Icon(Icons.library_books, color: Colors.white, size: 20),
+        ),
+        title: Row(
+          children: [
+            Expanded(
+              child: Text(template.name,
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 15)),
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+              decoration: BoxDecoration(
+                color: Colors.white.withAlpha(20),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Text(template.language.toUpperCase(),
+                  style: const TextStyle(color: Colors.white70, fontSize: 10, fontWeight: FontWeight.bold)),
+            ),
+          ],
+        ),
+        subtitle: Padding(
+          padding: const EdgeInsets.only(top: 4.0),
+          child: Text(template.description,
+              style: const TextStyle(color: Colors.white54, fontSize: 12),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis),
+        ),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+                icon: const Icon(Icons.edit_outlined, color: Colors.white54),
+                tooltip: 'Edit',
+                onPressed: onEdit),
+            IconButton(
+                icon: Icon(Icons.delete_outline, color: Colors.red[300]),
+                tooltip: 'Delete',
+                onPressed: onDelete),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _TemplateDialog extends HookWidget {
+  const _TemplateDialog({this.template, required this.onSaved});
+
+  final EventTemplate? template;
+  final VoidCallback onSaved;
+
+  @override
+  Widget build(BuildContext context) {
+    final formKey = useMemoized(GlobalKey<FormState>.new);
+    final nameCtrl = useTextEditingController(text: template?.name ?? '');
+    final languageCtrl = useTextEditingController(text: template?.language ?? 'en');
+    final descCtrl = useTextEditingController(text: template?.description ?? '');
+    final contentCtrl = useTextEditingController(text: template?.content ?? '');
+    final saving = useSignal(false);
+
+    final isEdit = template != null;
+
+    Future<void> save() async {
+      if (!formKey.currentState!.validate()) return;
+      saving.value = true;
+
+      final t = EventTemplate(
+        id: template?.id,
+        name: nameCtrl.text.trim(),
+        language: languageCtrl.text.trim(),
+        description: descCtrl.text.trim(),
+        content: contentCtrl.text.trim(),
+      );
+
+      try {
+        if (isEdit) {
+          await client.eventTemplate.updateTemplate(t);
+        } else {
+          await client.eventTemplate.createTemplate(t);
+        }
+        if (context.mounted) {
+          Navigator.pop(context);
+          onSaved();
+        }
+      } catch (e) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+                content: Text('Save failed: $e'),
+                backgroundColor: Colors.red[700]),
+          );
+        }
+      } finally {
+        saving.value = false;
+      }
+    }
+
+    return Watch((context) {
+      final isSaving = saving.value;
+      return AlertDialog(
+        backgroundColor: const Color(0xFF1A1D27),
+        title: Text(
+          isEdit ? 'Edit Template' : 'New Template',
+          style:
+              const TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+        ),
+        content: SizedBox(
+          width: 600,
+          child: Form(
+            key: formKey,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(flex: 3, child: _field('Name', nameCtrl, required: true)),
+                      const SizedBox(width: 12),
+                      Expanded(flex: 1, child: _field('Lang (e.g. en, fr)', languageCtrl, required: true)),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  _field('Description', descCtrl, required: true, maxLines: 2),
+                  const SizedBox(height: 12),
+                  _field('Markdown Content', contentCtrl, required: true, maxLines: 15),
+                ],
+              ),
+            ),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: isSaving ? null : () => Navigator.pop(context),
+            child:
+                const Text('Cancel', style: TextStyle(color: Colors.white54)),
+          ),
+          FilledButton(
+            style: FilledButton.styleFrom(
+                backgroundColor: const Color(0xFF6C63FF)),
+            onPressed: isSaving ? null : save,
+            child: isSaving
+                ? const SizedBox(
+                    width: 18,
+                    height: 18,
+                    child: CircularProgressIndicator(
+                        color: Colors.white, strokeWidth: 2))
+                : Text(isEdit ? 'Update' : 'Create'),
+          ),
+        ],
+      );
+    });
+  }
+
+  Widget _field(
+    String label,
+    TextEditingController ctrl, {
+    bool required = false,
+    int maxLines = 1,
+  }) {
+    return TextFormField(
+      controller: ctrl,
+      maxLines: maxLines,
+      style: const TextStyle(color: Colors.white),
+      decoration: InputDecoration(
+        labelText: label,
+        labelStyle: const TextStyle(color: Colors.white54),
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.white.withAlpha(30)),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        focusedBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color(0xFF6C63FF)),
+          borderRadius: BorderRadius.all(Radius.circular(8)),
+        ),
+        errorBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.redAccent),
+          borderRadius: BorderRadius.all(Radius.circular(8)),
+        ),
+        focusedErrorBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.redAccent),
+          borderRadius: BorderRadius.all(Radius.circular(8)),
+        ),
+        filled: true,
+        fillColor: const Color(0xFF0F1117),
+      ),
+      validator: required
+          ? (v) => (v == null || v.trim().isEmpty) ? 'Required' : null
+          : null,
+    );
+  }
 }

@@ -12,9 +12,10 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
-import 'event_registration.dart' as _i2;
-import 'event_manager.dart' as _i3;
-import 'package:alpine_pod_server/src/generated/protocol.dart' as _i4;
+import 'section.dart' as _i2;
+import 'event_registration.dart' as _i3;
+import 'event_manager.dart' as _i4;
+import 'package:alpine_pod_server/src/generated/protocol.dart' as _i5;
 
 abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   Event._({
@@ -27,9 +28,6 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     this.eventLocation,
     this.carpoolLocation,
     this.carpoolTime,
-    this.difficulty,
-    this.requiredEquipment,
-    this.prerequisites,
     this.recurring,
     this.registrationDeadline,
     this.registrationStartDate,
@@ -38,9 +36,8 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     int? minimumParticipants,
     int? maxParticipants,
     this.cancellationDeadline,
-    this.registrationNotes,
     required this.sectionId,
-    this.documentsJson,
+    this.section,
     bool? published,
     this.eventRegistrations,
     this.eventManagers,
@@ -59,9 +56,6 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     String? eventLocation,
     String? carpoolLocation,
     DateTime? carpoolTime,
-    String? difficulty,
-    String? requiredEquipment,
-    String? prerequisites,
     String? recurring,
     DateTime? registrationDeadline,
     DateTime? registrationStartDate,
@@ -70,12 +64,11 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     int? minimumParticipants,
     int? maxParticipants,
     DateTime? cancellationDeadline,
-    String? registrationNotes,
     required int sectionId,
-    String? documentsJson,
+    _i2.Section? section,
     bool? published,
-    List<_i2.EventRegistration>? eventRegistrations,
-    List<_i3.EventManager>? eventManagers,
+    List<_i3.EventRegistration>? eventRegistrations,
+    List<_i4.EventManager>? eventManagers,
   }) = _EventImpl;
 
   factory Event.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -95,9 +88,6 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
           : _i1.DateTimeJsonExtension.fromJson(
               jsonSerialization['carpoolTime'],
             ),
-      difficulty: jsonSerialization['difficulty'] as String?,
-      requiredEquipment: jsonSerialization['requiredEquipment'] as String?,
-      prerequisites: jsonSerialization['prerequisites'] as String?,
       recurring: jsonSerialization['recurring'] as String?,
       registrationDeadline: jsonSerialization['registrationDeadline'] == null
           ? null
@@ -123,20 +113,23 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
           : _i1.DateTimeJsonExtension.fromJson(
               jsonSerialization['cancellationDeadline'],
             ),
-      registrationNotes: jsonSerialization['registrationNotes'] as String?,
       sectionId: jsonSerialization['sectionId'] as int,
-      documentsJson: jsonSerialization['documentsJson'] as String?,
+      section: jsonSerialization['section'] == null
+          ? null
+          : _i5.Protocol().deserialize<_i2.Section>(
+              jsonSerialization['section'],
+            ),
       published: jsonSerialization['published'] == null
           ? null
           : _i1.BoolJsonExtension.fromJson(jsonSerialization['published']),
       eventRegistrations: jsonSerialization['eventRegistrations'] == null
           ? null
-          : _i4.Protocol().deserialize<List<_i2.EventRegistration>>(
+          : _i5.Protocol().deserialize<List<_i3.EventRegistration>>(
               jsonSerialization['eventRegistrations'],
             ),
       eventManagers: jsonSerialization['eventManagers'] == null
           ? null
-          : _i4.Protocol().deserialize<List<_i3.EventManager>>(
+          : _i5.Protocol().deserialize<List<_i4.EventManager>>(
               jsonSerialization['eventManagers'],
             ),
     );
@@ -165,12 +158,6 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
 
   DateTime? carpoolTime;
 
-  String? difficulty;
-
-  String? requiredEquipment;
-
-  String? prerequisites;
-
   String? recurring;
 
   DateTime? registrationDeadline;
@@ -187,17 +174,15 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
 
   DateTime? cancellationDeadline;
 
-  String? registrationNotes;
-
   int sectionId;
 
-  String? documentsJson;
+  _i2.Section? section;
 
   bool published;
 
-  List<_i2.EventRegistration>? eventRegistrations;
+  List<_i3.EventRegistration>? eventRegistrations;
 
-  List<_i3.EventManager>? eventManagers;
+  List<_i4.EventManager>? eventManagers;
 
   @override
   _i1.Table<int?> get table => t;
@@ -215,9 +200,6 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     String? eventLocation,
     String? carpoolLocation,
     DateTime? carpoolTime,
-    String? difficulty,
-    String? requiredEquipment,
-    String? prerequisites,
     String? recurring,
     DateTime? registrationDeadline,
     DateTime? registrationStartDate,
@@ -226,12 +208,11 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     int? minimumParticipants,
     int? maxParticipants,
     DateTime? cancellationDeadline,
-    String? registrationNotes,
     int? sectionId,
-    String? documentsJson,
+    _i2.Section? section,
     bool? published,
-    List<_i2.EventRegistration>? eventRegistrations,
-    List<_i3.EventManager>? eventManagers,
+    List<_i3.EventRegistration>? eventRegistrations,
+    List<_i4.EventManager>? eventManagers,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -246,9 +227,6 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       if (eventLocation != null) 'eventLocation': eventLocation,
       if (carpoolLocation != null) 'carpoolLocation': carpoolLocation,
       if (carpoolTime != null) 'carpoolTime': carpoolTime?.toJson(),
-      if (difficulty != null) 'difficulty': difficulty,
-      if (requiredEquipment != null) 'requiredEquipment': requiredEquipment,
-      if (prerequisites != null) 'prerequisites': prerequisites,
       if (recurring != null) 'recurring': recurring,
       if (registrationDeadline != null)
         'registrationDeadline': registrationDeadline?.toJson(),
@@ -260,9 +238,8 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       'maxParticipants': maxParticipants,
       if (cancellationDeadline != null)
         'cancellationDeadline': cancellationDeadline?.toJson(),
-      if (registrationNotes != null) 'registrationNotes': registrationNotes,
       'sectionId': sectionId,
-      if (documentsJson != null) 'documentsJson': documentsJson,
+      if (section != null) 'section': section?.toJson(),
       'published': published,
       if (eventRegistrations != null)
         'eventRegistrations': eventRegistrations?.toJson(
@@ -286,9 +263,6 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       if (eventLocation != null) 'eventLocation': eventLocation,
       if (carpoolLocation != null) 'carpoolLocation': carpoolLocation,
       if (carpoolTime != null) 'carpoolTime': carpoolTime?.toJson(),
-      if (difficulty != null) 'difficulty': difficulty,
-      if (requiredEquipment != null) 'requiredEquipment': requiredEquipment,
-      if (prerequisites != null) 'prerequisites': prerequisites,
       if (recurring != null) 'recurring': recurring,
       if (registrationDeadline != null)
         'registrationDeadline': registrationDeadline?.toJson(),
@@ -300,9 +274,8 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       'maxParticipants': maxParticipants,
       if (cancellationDeadline != null)
         'cancellationDeadline': cancellationDeadline?.toJson(),
-      if (registrationNotes != null) 'registrationNotes': registrationNotes,
       'sectionId': sectionId,
-      if (documentsJson != null) 'documentsJson': documentsJson,
+      if (section != null) 'section': section?.toJsonForProtocol(),
       'published': published,
       if (eventRegistrations != null)
         'eventRegistrations': eventRegistrations?.toJson(
@@ -316,10 +289,12 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   }
 
   static EventInclude include({
-    _i2.EventRegistrationIncludeList? eventRegistrations,
-    _i3.EventManagerIncludeList? eventManagers,
+    _i2.SectionInclude? section,
+    _i3.EventRegistrationIncludeList? eventRegistrations,
+    _i4.EventManagerIncludeList? eventManagers,
   }) {
     return EventInclude._(
+      section: section,
       eventRegistrations: eventRegistrations,
       eventManagers: eventManagers,
     );
@@ -364,9 +339,6 @@ class _EventImpl extends Event {
     String? eventLocation,
     String? carpoolLocation,
     DateTime? carpoolTime,
-    String? difficulty,
-    String? requiredEquipment,
-    String? prerequisites,
     String? recurring,
     DateTime? registrationDeadline,
     DateTime? registrationStartDate,
@@ -375,12 +347,11 @@ class _EventImpl extends Event {
     int? minimumParticipants,
     int? maxParticipants,
     DateTime? cancellationDeadline,
-    String? registrationNotes,
     required int sectionId,
-    String? documentsJson,
+    _i2.Section? section,
     bool? published,
-    List<_i2.EventRegistration>? eventRegistrations,
-    List<_i3.EventManager>? eventManagers,
+    List<_i3.EventRegistration>? eventRegistrations,
+    List<_i4.EventManager>? eventManagers,
   }) : super._(
          id: id,
          title: title,
@@ -391,9 +362,6 @@ class _EventImpl extends Event {
          eventLocation: eventLocation,
          carpoolLocation: carpoolLocation,
          carpoolTime: carpoolTime,
-         difficulty: difficulty,
-         requiredEquipment: requiredEquipment,
-         prerequisites: prerequisites,
          recurring: recurring,
          registrationDeadline: registrationDeadline,
          registrationStartDate: registrationStartDate,
@@ -402,9 +370,8 @@ class _EventImpl extends Event {
          minimumParticipants: minimumParticipants,
          maxParticipants: maxParticipants,
          cancellationDeadline: cancellationDeadline,
-         registrationNotes: registrationNotes,
          sectionId: sectionId,
-         documentsJson: documentsJson,
+         section: section,
          published: published,
          eventRegistrations: eventRegistrations,
          eventManagers: eventManagers,
@@ -424,9 +391,6 @@ class _EventImpl extends Event {
     Object? eventLocation = _Undefined,
     Object? carpoolLocation = _Undefined,
     Object? carpoolTime = _Undefined,
-    Object? difficulty = _Undefined,
-    Object? requiredEquipment = _Undefined,
-    Object? prerequisites = _Undefined,
     Object? recurring = _Undefined,
     Object? registrationDeadline = _Undefined,
     Object? registrationStartDate = _Undefined,
@@ -435,9 +399,8 @@ class _EventImpl extends Event {
     int? minimumParticipants,
     int? maxParticipants,
     Object? cancellationDeadline = _Undefined,
-    Object? registrationNotes = _Undefined,
     int? sectionId,
-    Object? documentsJson = _Undefined,
+    Object? section = _Undefined,
     bool? published,
     Object? eventRegistrations = _Undefined,
     Object? eventManagers = _Undefined,
@@ -456,13 +419,6 @@ class _EventImpl extends Event {
           ? carpoolLocation
           : this.carpoolLocation,
       carpoolTime: carpoolTime is DateTime? ? carpoolTime : this.carpoolTime,
-      difficulty: difficulty is String? ? difficulty : this.difficulty,
-      requiredEquipment: requiredEquipment is String?
-          ? requiredEquipment
-          : this.requiredEquipment,
-      prerequisites: prerequisites is String?
-          ? prerequisites
-          : this.prerequisites,
       recurring: recurring is String? ? recurring : this.recurring,
       registrationDeadline: registrationDeadline is DateTime?
           ? registrationDeadline
@@ -479,18 +435,13 @@ class _EventImpl extends Event {
       cancellationDeadline: cancellationDeadline is DateTime?
           ? cancellationDeadline
           : this.cancellationDeadline,
-      registrationNotes: registrationNotes is String?
-          ? registrationNotes
-          : this.registrationNotes,
       sectionId: sectionId ?? this.sectionId,
-      documentsJson: documentsJson is String?
-          ? documentsJson
-          : this.documentsJson,
+      section: section is _i2.Section? ? section : this.section?.copyWith(),
       published: published ?? this.published,
-      eventRegistrations: eventRegistrations is List<_i2.EventRegistration>?
+      eventRegistrations: eventRegistrations is List<_i3.EventRegistration>?
           ? eventRegistrations
           : this.eventRegistrations?.map((e0) => e0.copyWith()).toList(),
-      eventManagers: eventManagers is List<_i3.EventManager>?
+      eventManagers: eventManagers is List<_i4.EventManager>?
           ? eventManagers
           : this.eventManagers?.map((e0) => e0.copyWith()).toList(),
     );
@@ -545,23 +496,6 @@ class EventUpdateTable extends _i1.UpdateTable<EventTable> {
         value,
       );
 
-  _i1.ColumnValue<String, String> difficulty(String? value) => _i1.ColumnValue(
-    table.difficulty,
-    value,
-  );
-
-  _i1.ColumnValue<String, String> requiredEquipment(String? value) =>
-      _i1.ColumnValue(
-        table.requiredEquipment,
-        value,
-      );
-
-  _i1.ColumnValue<String, String> prerequisites(String? value) =>
-      _i1.ColumnValue(
-        table.prerequisites,
-        value,
-      );
-
   _i1.ColumnValue<String, String> recurring(String? value) => _i1.ColumnValue(
     table.recurring,
     value,
@@ -606,22 +540,10 @@ class EventUpdateTable extends _i1.UpdateTable<EventTable> {
         value,
       );
 
-  _i1.ColumnValue<String, String> registrationNotes(String? value) =>
-      _i1.ColumnValue(
-        table.registrationNotes,
-        value,
-      );
-
   _i1.ColumnValue<int, int> sectionId(int value) => _i1.ColumnValue(
     table.sectionId,
     value,
   );
-
-  _i1.ColumnValue<String, String> documentsJson(String? value) =>
-      _i1.ColumnValue(
-        table.documentsJson,
-        value,
-      );
 
   _i1.ColumnValue<bool, bool> published(bool value) => _i1.ColumnValue(
     table.published,
@@ -664,18 +586,6 @@ class EventTable extends _i1.Table<int?> {
       'carpoolTime',
       this,
     );
-    difficulty = _i1.ColumnString(
-      'difficulty',
-      this,
-    );
-    requiredEquipment = _i1.ColumnString(
-      'requiredEquipment',
-      this,
-    );
-    prerequisites = _i1.ColumnString(
-      'prerequisites',
-      this,
-    );
     recurring = _i1.ColumnString(
       'recurring',
       this,
@@ -711,16 +621,8 @@ class EventTable extends _i1.Table<int?> {
       'cancellationDeadline',
       this,
     );
-    registrationNotes = _i1.ColumnString(
-      'registrationNotes',
-      this,
-    );
     sectionId = _i1.ColumnInt(
       'sectionId',
-      this,
-    );
-    documentsJson = _i1.ColumnString(
-      'documentsJson',
       this,
     );
     published = _i1.ColumnBool(
@@ -748,12 +650,6 @@ class EventTable extends _i1.Table<int?> {
 
   late final _i1.ColumnDateTime carpoolTime;
 
-  late final _i1.ColumnString difficulty;
-
-  late final _i1.ColumnString requiredEquipment;
-
-  late final _i1.ColumnString prerequisites;
-
   late final _i1.ColumnString recurring;
 
   late final _i1.ColumnDateTime registrationDeadline;
@@ -770,80 +666,91 @@ class EventTable extends _i1.Table<int?> {
 
   late final _i1.ColumnDateTime cancellationDeadline;
 
-  late final _i1.ColumnString registrationNotes;
-
   late final _i1.ColumnInt sectionId;
 
-  late final _i1.ColumnString documentsJson;
+  _i2.SectionTable? _section;
 
   late final _i1.ColumnBool published;
 
-  _i2.EventRegistrationTable? ___eventRegistrations;
+  _i3.EventRegistrationTable? ___eventRegistrations;
 
-  _i1.ManyRelation<_i2.EventRegistrationTable>? _eventRegistrations;
+  _i1.ManyRelation<_i3.EventRegistrationTable>? _eventRegistrations;
 
-  _i3.EventManagerTable? ___eventManagers;
+  _i4.EventManagerTable? ___eventManagers;
 
-  _i1.ManyRelation<_i3.EventManagerTable>? _eventManagers;
+  _i1.ManyRelation<_i4.EventManagerTable>? _eventManagers;
 
-  _i2.EventRegistrationTable get __eventRegistrations {
+  _i2.SectionTable get section {
+    if (_section != null) return _section!;
+    _section = _i1.createRelationTable(
+      relationFieldName: 'section',
+      field: Event.t.sectionId,
+      foreignField: _i2.Section.t.id,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i2.SectionTable(tableRelation: foreignTableRelation),
+    );
+    return _section!;
+  }
+
+  _i3.EventRegistrationTable get __eventRegistrations {
     if (___eventRegistrations != null) return ___eventRegistrations!;
     ___eventRegistrations = _i1.createRelationTable(
       relationFieldName: '__eventRegistrations',
       field: Event.t.id,
-      foreignField: _i2.EventRegistration.t.eventId,
+      foreignField: _i3.EventRegistration.t.eventId,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i2.EventRegistrationTable(tableRelation: foreignTableRelation),
+          _i3.EventRegistrationTable(tableRelation: foreignTableRelation),
     );
     return ___eventRegistrations!;
   }
 
-  _i3.EventManagerTable get __eventManagers {
+  _i4.EventManagerTable get __eventManagers {
     if (___eventManagers != null) return ___eventManagers!;
     ___eventManagers = _i1.createRelationTable(
       relationFieldName: '__eventManagers',
       field: Event.t.id,
-      foreignField: _i3.EventManager.t.eventId,
+      foreignField: _i4.EventManager.t.eventId,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i3.EventManagerTable(tableRelation: foreignTableRelation),
+          _i4.EventManagerTable(tableRelation: foreignTableRelation),
     );
     return ___eventManagers!;
   }
 
-  _i1.ManyRelation<_i2.EventRegistrationTable> get eventRegistrations {
+  _i1.ManyRelation<_i3.EventRegistrationTable> get eventRegistrations {
     if (_eventRegistrations != null) return _eventRegistrations!;
     var relationTable = _i1.createRelationTable(
       relationFieldName: 'eventRegistrations',
       field: Event.t.id,
-      foreignField: _i2.EventRegistration.t.eventId,
+      foreignField: _i3.EventRegistration.t.eventId,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i2.EventRegistrationTable(tableRelation: foreignTableRelation),
+          _i3.EventRegistrationTable(tableRelation: foreignTableRelation),
     );
-    _eventRegistrations = _i1.ManyRelation<_i2.EventRegistrationTable>(
+    _eventRegistrations = _i1.ManyRelation<_i3.EventRegistrationTable>(
       tableWithRelations: relationTable,
-      table: _i2.EventRegistrationTable(
+      table: _i3.EventRegistrationTable(
         tableRelation: relationTable.tableRelation!.lastRelation,
       ),
     );
     return _eventRegistrations!;
   }
 
-  _i1.ManyRelation<_i3.EventManagerTable> get eventManagers {
+  _i1.ManyRelation<_i4.EventManagerTable> get eventManagers {
     if (_eventManagers != null) return _eventManagers!;
     var relationTable = _i1.createRelationTable(
       relationFieldName: 'eventManagers',
       field: Event.t.id,
-      foreignField: _i3.EventManager.t.eventId,
+      foreignField: _i4.EventManager.t.eventId,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i3.EventManagerTable(tableRelation: foreignTableRelation),
+          _i4.EventManagerTable(tableRelation: foreignTableRelation),
     );
-    _eventManagers = _i1.ManyRelation<_i3.EventManagerTable>(
+    _eventManagers = _i1.ManyRelation<_i4.EventManagerTable>(
       tableWithRelations: relationTable,
-      table: _i3.EventManagerTable(
+      table: _i4.EventManagerTable(
         tableRelation: relationTable.tableRelation!.lastRelation,
       ),
     );
@@ -861,9 +768,6 @@ class EventTable extends _i1.Table<int?> {
     eventLocation,
     carpoolLocation,
     carpoolTime,
-    difficulty,
-    requiredEquipment,
-    prerequisites,
     recurring,
     registrationDeadline,
     registrationStartDate,
@@ -872,14 +776,15 @@ class EventTable extends _i1.Table<int?> {
     minimumParticipants,
     maxParticipants,
     cancellationDeadline,
-    registrationNotes,
     sectionId,
-    documentsJson,
     published,
   ];
 
   @override
   _i1.Table? getRelationTable(String relationField) {
+    if (relationField == 'section') {
+      return section;
+    }
     if (relationField == 'eventRegistrations') {
       return __eventRegistrations;
     }
@@ -892,19 +797,24 @@ class EventTable extends _i1.Table<int?> {
 
 class EventInclude extends _i1.IncludeObject {
   EventInclude._({
-    _i2.EventRegistrationIncludeList? eventRegistrations,
-    _i3.EventManagerIncludeList? eventManagers,
+    _i2.SectionInclude? section,
+    _i3.EventRegistrationIncludeList? eventRegistrations,
+    _i4.EventManagerIncludeList? eventManagers,
   }) {
+    _section = section;
     _eventRegistrations = eventRegistrations;
     _eventManagers = eventManagers;
   }
 
-  _i2.EventRegistrationIncludeList? _eventRegistrations;
+  _i2.SectionInclude? _section;
 
-  _i3.EventManagerIncludeList? _eventManagers;
+  _i3.EventRegistrationIncludeList? _eventRegistrations;
+
+  _i4.EventManagerIncludeList? _eventManagers;
 
   @override
   Map<String, _i1.Include?> get includes => {
+    'section': _section,
     'eventRegistrations': _eventRegistrations,
     'eventManagers': _eventManagers,
   };
@@ -1242,7 +1152,7 @@ class EventAttachRepository {
   Future<void> eventRegistrations(
     _i1.DatabaseSession session,
     Event event,
-    List<_i2.EventRegistration> eventRegistration, {
+    List<_i3.EventRegistration> eventRegistration, {
     _i1.Transaction? transaction,
   }) async {
     if (eventRegistration.any((e) => e.id == null)) {
@@ -1255,9 +1165,9 @@ class EventAttachRepository {
     var $eventRegistration = eventRegistration
         .map((e) => e.copyWith(eventId: event.id))
         .toList();
-    await session.db.update<_i2.EventRegistration>(
+    await session.db.update<_i3.EventRegistration>(
       $eventRegistration,
-      columns: [_i2.EventRegistration.t.eventId],
+      columns: [_i3.EventRegistration.t.eventId],
       transaction: transaction,
     );
   }
@@ -1267,7 +1177,7 @@ class EventAttachRepository {
   Future<void> eventManagers(
     _i1.DatabaseSession session,
     Event event,
-    List<_i3.EventManager> eventManager, {
+    List<_i4.EventManager> eventManager, {
     _i1.Transaction? transaction,
   }) async {
     if (eventManager.any((e) => e.id == null)) {
@@ -1280,9 +1190,9 @@ class EventAttachRepository {
     var $eventManager = eventManager
         .map((e) => e.copyWith(eventId: event.id))
         .toList();
-    await session.db.update<_i3.EventManager>(
+    await session.db.update<_i4.EventManager>(
       $eventManager,
-      columns: [_i3.EventManager.t.eventId],
+      columns: [_i4.EventManager.t.eventId],
       transaction: transaction,
     );
   }
@@ -1291,12 +1201,35 @@ class EventAttachRepository {
 class EventAttachRowRepository {
   const EventAttachRowRepository._();
 
+  /// Creates a relation between the given [Event] and [Section]
+  /// by setting the [Event]'s foreign key `sectionId` to refer to the [Section].
+  Future<void> section(
+    _i1.DatabaseSession session,
+    Event event,
+    _i2.Section section, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (event.id == null) {
+      throw ArgumentError.notNull('event.id');
+    }
+    if (section.id == null) {
+      throw ArgumentError.notNull('section.id');
+    }
+
+    var $event = event.copyWith(sectionId: section.id);
+    await session.db.updateRow<Event>(
+      $event,
+      columns: [Event.t.sectionId],
+      transaction: transaction,
+    );
+  }
+
   /// Creates a relation between this [Event] and the given [EventRegistration]
   /// by setting the [EventRegistration]'s foreign key `eventId` to refer to this [Event].
   Future<void> eventRegistrations(
     _i1.DatabaseSession session,
     Event event,
-    _i2.EventRegistration eventRegistration, {
+    _i3.EventRegistration eventRegistration, {
     _i1.Transaction? transaction,
   }) async {
     if (eventRegistration.id == null) {
@@ -1307,9 +1240,9 @@ class EventAttachRowRepository {
     }
 
     var $eventRegistration = eventRegistration.copyWith(eventId: event.id);
-    await session.db.updateRow<_i2.EventRegistration>(
+    await session.db.updateRow<_i3.EventRegistration>(
       $eventRegistration,
-      columns: [_i2.EventRegistration.t.eventId],
+      columns: [_i3.EventRegistration.t.eventId],
       transaction: transaction,
     );
   }
@@ -1319,7 +1252,7 @@ class EventAttachRowRepository {
   Future<void> eventManagers(
     _i1.DatabaseSession session,
     Event event,
-    _i3.EventManager eventManager, {
+    _i4.EventManager eventManager, {
     _i1.Transaction? transaction,
   }) async {
     if (eventManager.id == null) {
@@ -1330,9 +1263,9 @@ class EventAttachRowRepository {
     }
 
     var $eventManager = eventManager.copyWith(eventId: event.id);
-    await session.db.updateRow<_i3.EventManager>(
+    await session.db.updateRow<_i4.EventManager>(
       $eventManager,
-      columns: [_i3.EventManager.t.eventId],
+      columns: [_i4.EventManager.t.eventId],
       transaction: transaction,
     );
   }
@@ -1348,7 +1281,7 @@ class EventDetachRepository {
   /// the related record.
   Future<void> eventRegistrations(
     _i1.DatabaseSession session,
-    List<_i2.EventRegistration> eventRegistration, {
+    List<_i3.EventRegistration> eventRegistration, {
     _i1.Transaction? transaction,
   }) async {
     if (eventRegistration.any((e) => e.id == null)) {
@@ -1358,9 +1291,9 @@ class EventDetachRepository {
     var $eventRegistration = eventRegistration
         .map((e) => e.copyWith(eventId: null))
         .toList();
-    await session.db.update<_i2.EventRegistration>(
+    await session.db.update<_i3.EventRegistration>(
       $eventRegistration,
-      columns: [_i2.EventRegistration.t.eventId],
+      columns: [_i3.EventRegistration.t.eventId],
       transaction: transaction,
     );
   }
@@ -1372,7 +1305,7 @@ class EventDetachRepository {
   /// the related record.
   Future<void> eventManagers(
     _i1.DatabaseSession session,
-    List<_i3.EventManager> eventManager, {
+    List<_i4.EventManager> eventManager, {
     _i1.Transaction? transaction,
   }) async {
     if (eventManager.any((e) => e.id == null)) {
@@ -1382,9 +1315,9 @@ class EventDetachRepository {
     var $eventManager = eventManager
         .map((e) => e.copyWith(eventId: null))
         .toList();
-    await session.db.update<_i3.EventManager>(
+    await session.db.update<_i4.EventManager>(
       $eventManager,
-      columns: [_i3.EventManager.t.eventId],
+      columns: [_i4.EventManager.t.eventId],
       transaction: transaction,
     );
   }
@@ -1400,7 +1333,7 @@ class EventDetachRowRepository {
   /// the related record.
   Future<void> eventRegistrations(
     _i1.DatabaseSession session,
-    _i2.EventRegistration eventRegistration, {
+    _i3.EventRegistration eventRegistration, {
     _i1.Transaction? transaction,
   }) async {
     if (eventRegistration.id == null) {
@@ -1408,9 +1341,9 @@ class EventDetachRowRepository {
     }
 
     var $eventRegistration = eventRegistration.copyWith(eventId: null);
-    await session.db.updateRow<_i2.EventRegistration>(
+    await session.db.updateRow<_i3.EventRegistration>(
       $eventRegistration,
-      columns: [_i2.EventRegistration.t.eventId],
+      columns: [_i3.EventRegistration.t.eventId],
       transaction: transaction,
     );
   }
@@ -1422,7 +1355,7 @@ class EventDetachRowRepository {
   /// the related record.
   Future<void> eventManagers(
     _i1.DatabaseSession session,
-    _i3.EventManager eventManager, {
+    _i4.EventManager eventManager, {
     _i1.Transaction? transaction,
   }) async {
     if (eventManager.id == null) {
@@ -1430,9 +1363,9 @@ class EventDetachRowRepository {
     }
 
     var $eventManager = eventManager.copyWith(eventId: null);
-    await session.db.updateRow<_i3.EventManager>(
+    await session.db.updateRow<_i4.EventManager>(
       $eventManager,
-      columns: [_i3.EventManager.t.eventId],
+      columns: [_i4.EventManager.t.eventId],
       transaction: transaction,
     );
   }

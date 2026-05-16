@@ -36,6 +36,11 @@ eventManager:
   - listEventsWithoutEventManager:
   - listSectionEventManagers:
   - approveRegistration:
+eventTemplate:
+  - listTemplates:
+  - createTemplate:
+  - updateTemplate:
+  - deleteTemplate:
 member:
   - getCurrentMember:
   - createMember:

@@ -1,0 +1,7 @@
+class: EventTemplate
+table: event_templates
+fields:
+  name: String
+  description: String
+  content: String
+  language: String, default='en'

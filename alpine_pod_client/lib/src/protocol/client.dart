@@ -20,12 +20,13 @@ import 'package:alpine_pod_client/src/protocol/section.dart' as _i5;
 import 'package:alpine_pod_client/src/protocol/event.dart' as _i6;
 import 'package:alpine_pod_client/src/protocol/event_registration.dart' as _i7;
 import 'package:alpine_pod_client/src/protocol/event_manager.dart' as _i8;
-import 'package:alpine_pod_client/src/protocol/member.dart' as _i9;
-import 'package:alpine_pod_client/src/protocol/section_membership.dart' as _i10;
-import 'package:alpine_pod_client/src/protocol/notification.dart' as _i11;
+import 'package:alpine_pod_client/src/protocol/event_template.dart' as _i9;
+import 'package:alpine_pod_client/src/protocol/member.dart' as _i10;
+import 'package:alpine_pod_client/src/protocol/section_membership.dart' as _i11;
+import 'package:alpine_pod_client/src/protocol/notification.dart' as _i12;
 import 'package:alpine_pod_client/src/protocol/registration_status.dart'
-    as _i12;
-import 'protocol.dart' as _i13;
+    as _i13;
+import 'protocol.dart' as _i14;
 
 /// {@category Endpoint}
 class EndpointEmailIdp extends _i1.EndpointEmailIdpBase {
@@ -471,14 +472,53 @@ class EndpointEventManager extends _i2.EndpointRef {
 }
 
 /// {@category Endpoint}
+class EndpointEventTemplate extends _i2.EndpointRef {
+  EndpointEventTemplate(_i2.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'eventTemplate';
+
+  /// Fetches all event templates from the database.
+  _i3.Future<List<_i9.EventTemplate>> listTemplates() =>
+      caller.callServerEndpoint<List<_i9.EventTemplate>>(
+        'eventTemplate',
+        'listTemplates',
+        {},
+      );
+
+  /// Creates a new event template. Requires Admin scope.
+  _i3.Future<_i9.EventTemplate> createTemplate(_i9.EventTemplate template) =>
+      caller.callServerEndpoint<_i9.EventTemplate>(
+        'eventTemplate',
+        'createTemplate',
+        {'template': template},
+      );
+
+  /// Updates an existing event template. Requires Admin scope.
+  _i3.Future<_i9.EventTemplate> updateTemplate(_i9.EventTemplate template) =>
+      caller.callServerEndpoint<_i9.EventTemplate>(
+        'eventTemplate',
+        'updateTemplate',
+        {'template': template},
+      );
+
+  /// Deletes an event template. Requires Admin scope.
+  _i3.Future<void> deleteTemplate(int id) => caller.callServerEndpoint<void>(
+    'eventTemplate',
+    'deleteTemplate',
+    {'id': id},
+  );
+}
+
+/// {@category Endpoint}
 class EndpointMember extends _i2.EndpointRef {
   EndpointMember(_i2.EndpointCaller caller) : super(caller);
 
   @override
   String get name => 'member';
 
-  _i3.Future<_i9.Member?> getCurrentMember() =>
-      caller.callServerEndpoint<_i9.Member?>(
+  _i3.Future<_i10.Member?> getCurrentMember() =>
+      caller.callServerEndpoint<_i10.Member?>(
         'member',
         'getCurrentMember',
         {},
@@ -489,53 +529,53 @@ class EndpointMember extends _i2.EndpointRef {
   /// - Validates that the email is not already in use.
   /// - Sets `createdAt` to now.
   /// - Inserts the member row and invalidates the member cache.
-  _i3.Future<_i9.Member> createMember(_i9.Member member) =>
-      caller.callServerEndpoint<_i9.Member>(
+  _i3.Future<_i10.Member> createMember(_i10.Member member) =>
+      caller.callServerEndpoint<_i10.Member>(
         'member',
         'createMember',
         {'member': member},
       );
 
-  _i3.Future<_i10.SectionMembership> addMemberToSection(
-    _i10.SectionMembership membership,
-  ) => caller.callServerEndpoint<_i10.SectionMembership>(
+  _i3.Future<_i11.SectionMembership> addMemberToSection(
+    _i11.SectionMembership membership,
+  ) => caller.callServerEndpoint<_i11.SectionMembership>(
     'member',
     'addMemberToSection',
     {'membership': membership},
   );
 
-  _i3.Future<void> removeMemberFromSection(_i10.SectionMembership membership) =>
+  _i3.Future<void> removeMemberFromSection(_i11.SectionMembership membership) =>
       caller.callServerEndpoint<void>(
         'member',
         'removeMemberFromSection',
         {'membership': membership},
       );
 
-  _i3.Future<_i9.Member?> getMember(int id) =>
-      caller.callServerEndpoint<_i9.Member?>(
+  _i3.Future<_i10.Member?> getMember(int id) =>
+      caller.callServerEndpoint<_i10.Member?>(
         'member',
         'getMember',
         {'id': id},
       );
 
-  _i3.Future<List<_i10.SectionMembership>> getMemberSectionMemberships(
+  _i3.Future<List<_i11.SectionMembership>> getMemberSectionMemberships(
     int memberId,
-  ) => caller.callServerEndpoint<List<_i10.SectionMembership>>(
+  ) => caller.callServerEndpoint<List<_i11.SectionMembership>>(
     'member',
     'getMemberSectionMemberships',
     {'memberId': memberId},
   );
 
-  _i3.Future<_i9.Member> updateMember(_i9.Member member) =>
-      caller.callServerEndpoint<_i9.Member>(
+  _i3.Future<_i10.Member> updateMember(_i10.Member member) =>
+      caller.callServerEndpoint<_i10.Member>(
         'member',
         'updateMember',
         {'member': member},
       );
 
   /// Mark the current member's waiver as signed today.
-  _i3.Future<_i9.Member> acceptWaiver() =>
-      caller.callServerEndpoint<_i9.Member>(
+  _i3.Future<_i10.Member> acceptWaiver() =>
+      caller.callServerEndpoint<_i10.Member>(
         'member',
         'acceptWaiver',
         {},
@@ -549,12 +589,12 @@ class EndpointMember extends _i2.EndpointRef {
   /// - Regular users see members across all their sections (deduplicated).
   ///
   /// Use [offset] for pagination — pass `offset: page * limit` to load successive pages.
-  _i3.Future<List<_i9.Member>> getSectionMembers({
+  _i3.Future<List<_i10.Member>> getSectionMembers({
     int? sectionId,
     String? filter,
     required int limit,
     required int offset,
-  }) => caller.callServerEndpoint<List<_i9.Member>>(
+  }) => caller.callServerEndpoint<List<_i10.Member>>(
     'member',
     'getSectionMembers',
     {
@@ -569,12 +609,12 @@ class EndpointMember extends _i2.EndpointRef {
   /// which include the user's scopes for the section.
   ///
   /// Use [offset] for pagination — pass `offset: page * limit` to load successive pages.
-  _i3.Future<List<_i10.SectionMembership>> getSectionMemberships(
+  _i3.Future<List<_i11.SectionMembership>> getSectionMemberships(
     int sectionId, {
     String? filter,
     required int limit,
     required int offset,
-  }) => caller.callServerEndpoint<List<_i10.SectionMembership>>(
+  }) => caller.callServerEndpoint<List<_i11.SectionMembership>>(
     'member',
     'getSectionMemberships',
     {
@@ -586,16 +626,16 @@ class EndpointMember extends _i2.EndpointRef {
   );
 
   /// Get the active user's membership details (and scopes) for a specific section.
-  _i3.Future<_i10.SectionMembership?> getMySectionMembership(int sectionId) =>
-      caller.callServerEndpoint<_i10.SectionMembership?>(
+  _i3.Future<_i11.SectionMembership?> getMySectionMembership(int sectionId) =>
+      caller.callServerEndpoint<_i11.SectionMembership?>(
         'member',
         'getMySectionMembership',
         {'sectionId': sectionId},
       );
 
   /// Get all the active user's membership details across all sections.
-  _i3.Future<List<_i10.SectionMembership>> getAllMySectionMemberships() =>
-      caller.callServerEndpoint<List<_i10.SectionMembership>>(
+  _i3.Future<List<_i11.SectionMembership>> getAllMySectionMemberships() =>
+      caller.callServerEndpoint<List<_i11.SectionMembership>>(
         'member',
         'getAllMySectionMemberships',
         {},
@@ -603,11 +643,11 @@ class EndpointMember extends _i2.EndpointRef {
 
   /// Update a member's scopes for a specific section.
   /// Requires the caller to be a global admin or a section manager for the section.
-  _i3.Future<_i10.SectionMembership> updateMemberScopes(
+  _i3.Future<_i11.SectionMembership> updateMemberScopes(
     int memberId,
     int sectionId,
     Set<String> newScopes,
-  ) => caller.callServerEndpoint<_i10.SectionMembership>(
+  ) => caller.callServerEndpoint<_i11.SectionMembership>(
     'member',
     'updateMemberScopes',
     {
@@ -618,10 +658,10 @@ class EndpointMember extends _i2.EndpointRef {
   );
 
   /// Atomic registration: creates a Member profile and multiple Section memberships.
-  _i3.Future<_i9.Member> registerMember(
-    _i9.Member member,
+  _i3.Future<_i10.Member> registerMember(
+    _i10.Member member,
     List<int> sectionIds,
-  ) => caller.callServerEndpoint<_i9.Member>(
+  ) => caller.callServerEndpoint<_i10.Member>(
     'member',
     'registerMember',
     {
@@ -639,8 +679,8 @@ class EndpointNotification extends _i2.EndpointRef {
   String get name => 'notification';
 
   /// Fetches all notifications for the authenticated user.
-  _i3.Future<List<_i11.Notification>> listNotifications() =>
-      caller.callServerEndpoint<List<_i11.Notification>>(
+  _i3.Future<List<_i12.Notification>> listNotifications() =>
+      caller.callServerEndpoint<List<_i12.Notification>>(
         'notification',
         'listNotifications',
         {},
@@ -679,7 +719,7 @@ class EndpointRegistration extends _i2.EndpointRef {
   /// Approve or reject a registration
   _i3.Future<_i7.EventRegistration> updateRegistrationStatus(
     int registrationId,
-    _i12.RegistrationStatus newStatus, {
+    _i13.RegistrationStatus newStatus, {
     String? notes,
   }) => caller.callServerEndpoint<_i7.EventRegistration>(
     'registration',
@@ -775,7 +815,7 @@ class Client extends _i2.ServerpodClientShared {
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
          host,
-         _i13.Protocol(),
+         _i14.Protocol(),
          securityContext: securityContext,
          streamingConnectionTimeout: streamingConnectionTimeout,
          connectionTimeout: connectionTimeout,
@@ -790,6 +830,7 @@ class Client extends _i2.ServerpodClientShared {
     admin = EndpointAdmin(this);
     event = EndpointEvent(this);
     eventManager = EndpointEventManager(this);
+    eventTemplate = EndpointEventTemplate(this);
     member = EndpointMember(this);
     notification = EndpointNotification(this);
     registration = EndpointRegistration(this);
@@ -809,6 +850,8 @@ class Client extends _i2.ServerpodClientShared {
 
   late final EndpointEventManager eventManager;
 
+  late final EndpointEventTemplate eventTemplate;
+
   late final EndpointMember member;
 
   late final EndpointNotification notification;
@@ -827,6 +870,7 @@ class Client extends _i2.ServerpodClientShared {
     'admin': admin,
     'event': event,
     'eventManager': eventManager,
+    'eventTemplate': eventTemplate,
     'member': member,
     'notification': notification,
     'registration': registration,

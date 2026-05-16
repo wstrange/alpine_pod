@@ -11,9 +11,10 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
-import 'event_registration.dart' as _i2;
-import 'event_manager.dart' as _i3;
-import 'package:alpine_pod_client/src/protocol/protocol.dart' as _i4;
+import 'section.dart' as _i2;
+import 'event_registration.dart' as _i3;
+import 'event_manager.dart' as _i4;
+import 'package:alpine_pod_client/src/protocol/protocol.dart' as _i5;
 
 abstract class Event implements _i1.SerializableModel {
   Event._({
@@ -26,9 +27,6 @@ abstract class Event implements _i1.SerializableModel {
     this.eventLocation,
     this.carpoolLocation,
     this.carpoolTime,
-    this.difficulty,
-    this.requiredEquipment,
-    this.prerequisites,
     this.recurring,
     this.registrationDeadline,
     this.registrationStartDate,
@@ -37,9 +35,8 @@ abstract class Event implements _i1.SerializableModel {
     int? minimumParticipants,
     int? maxParticipants,
     this.cancellationDeadline,
-    this.registrationNotes,
     required this.sectionId,
-    this.documentsJson,
+    this.section,
     bool? published,
     this.eventRegistrations,
     this.eventManagers,
@@ -58,9 +55,6 @@ abstract class Event implements _i1.SerializableModel {
     String? eventLocation,
     String? carpoolLocation,
     DateTime? carpoolTime,
-    String? difficulty,
-    String? requiredEquipment,
-    String? prerequisites,
     String? recurring,
     DateTime? registrationDeadline,
     DateTime? registrationStartDate,
@@ -69,12 +63,11 @@ abstract class Event implements _i1.SerializableModel {
     int? minimumParticipants,
     int? maxParticipants,
     DateTime? cancellationDeadline,
-    String? registrationNotes,
     required int sectionId,
-    String? documentsJson,
+    _i2.Section? section,
     bool? published,
-    List<_i2.EventRegistration>? eventRegistrations,
-    List<_i3.EventManager>? eventManagers,
+    List<_i3.EventRegistration>? eventRegistrations,
+    List<_i4.EventManager>? eventManagers,
   }) = _EventImpl;
 
   factory Event.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -94,9 +87,6 @@ abstract class Event implements _i1.SerializableModel {
           : _i1.DateTimeJsonExtension.fromJson(
               jsonSerialization['carpoolTime'],
             ),
-      difficulty: jsonSerialization['difficulty'] as String?,
-      requiredEquipment: jsonSerialization['requiredEquipment'] as String?,
-      prerequisites: jsonSerialization['prerequisites'] as String?,
       recurring: jsonSerialization['recurring'] as String?,
       registrationDeadline: jsonSerialization['registrationDeadline'] == null
           ? null
@@ -122,20 +112,23 @@ abstract class Event implements _i1.SerializableModel {
           : _i1.DateTimeJsonExtension.fromJson(
               jsonSerialization['cancellationDeadline'],
             ),
-      registrationNotes: jsonSerialization['registrationNotes'] as String?,
       sectionId: jsonSerialization['sectionId'] as int,
-      documentsJson: jsonSerialization['documentsJson'] as String?,
+      section: jsonSerialization['section'] == null
+          ? null
+          : _i5.Protocol().deserialize<_i2.Section>(
+              jsonSerialization['section'],
+            ),
       published: jsonSerialization['published'] == null
           ? null
           : _i1.BoolJsonExtension.fromJson(jsonSerialization['published']),
       eventRegistrations: jsonSerialization['eventRegistrations'] == null
           ? null
-          : _i4.Protocol().deserialize<List<_i2.EventRegistration>>(
+          : _i5.Protocol().deserialize<List<_i3.EventRegistration>>(
               jsonSerialization['eventRegistrations'],
             ),
       eventManagers: jsonSerialization['eventManagers'] == null
           ? null
-          : _i4.Protocol().deserialize<List<_i3.EventManager>>(
+          : _i5.Protocol().deserialize<List<_i4.EventManager>>(
               jsonSerialization['eventManagers'],
             ),
     );
@@ -162,12 +155,6 @@ abstract class Event implements _i1.SerializableModel {
 
   DateTime? carpoolTime;
 
-  String? difficulty;
-
-  String? requiredEquipment;
-
-  String? prerequisites;
-
   String? recurring;
 
   DateTime? registrationDeadline;
@@ -184,17 +171,15 @@ abstract class Event implements _i1.SerializableModel {
 
   DateTime? cancellationDeadline;
 
-  String? registrationNotes;
-
   int sectionId;
 
-  String? documentsJson;
+  _i2.Section? section;
 
   bool published;
 
-  List<_i2.EventRegistration>? eventRegistrations;
+  List<_i3.EventRegistration>? eventRegistrations;
 
-  List<_i3.EventManager>? eventManagers;
+  List<_i4.EventManager>? eventManagers;
 
   /// Returns a shallow copy of this [Event]
   /// with some or all fields replaced by the given arguments.
@@ -209,9 +194,6 @@ abstract class Event implements _i1.SerializableModel {
     String? eventLocation,
     String? carpoolLocation,
     DateTime? carpoolTime,
-    String? difficulty,
-    String? requiredEquipment,
-    String? prerequisites,
     String? recurring,
     DateTime? registrationDeadline,
     DateTime? registrationStartDate,
@@ -220,12 +202,11 @@ abstract class Event implements _i1.SerializableModel {
     int? minimumParticipants,
     int? maxParticipants,
     DateTime? cancellationDeadline,
-    String? registrationNotes,
     int? sectionId,
-    String? documentsJson,
+    _i2.Section? section,
     bool? published,
-    List<_i2.EventRegistration>? eventRegistrations,
-    List<_i3.EventManager>? eventManagers,
+    List<_i3.EventRegistration>? eventRegistrations,
+    List<_i4.EventManager>? eventManagers,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -240,9 +221,6 @@ abstract class Event implements _i1.SerializableModel {
       if (eventLocation != null) 'eventLocation': eventLocation,
       if (carpoolLocation != null) 'carpoolLocation': carpoolLocation,
       if (carpoolTime != null) 'carpoolTime': carpoolTime?.toJson(),
-      if (difficulty != null) 'difficulty': difficulty,
-      if (requiredEquipment != null) 'requiredEquipment': requiredEquipment,
-      if (prerequisites != null) 'prerequisites': prerequisites,
       if (recurring != null) 'recurring': recurring,
       if (registrationDeadline != null)
         'registrationDeadline': registrationDeadline?.toJson(),
@@ -254,9 +232,8 @@ abstract class Event implements _i1.SerializableModel {
       'maxParticipants': maxParticipants,
       if (cancellationDeadline != null)
         'cancellationDeadline': cancellationDeadline?.toJson(),
-      if (registrationNotes != null) 'registrationNotes': registrationNotes,
       'sectionId': sectionId,
-      if (documentsJson != null) 'documentsJson': documentsJson,
+      if (section != null) 'section': section?.toJson(),
       'published': published,
       if (eventRegistrations != null)
         'eventRegistrations': eventRegistrations?.toJson(
@@ -286,9 +263,6 @@ class _EventImpl extends Event {
     String? eventLocation,
     String? carpoolLocation,
     DateTime? carpoolTime,
-    String? difficulty,
-    String? requiredEquipment,
-    String? prerequisites,
     String? recurring,
     DateTime? registrationDeadline,
     DateTime? registrationStartDate,
@@ -297,12 +271,11 @@ class _EventImpl extends Event {
     int? minimumParticipants,
     int? maxParticipants,
     DateTime? cancellationDeadline,
-    String? registrationNotes,
     required int sectionId,
-    String? documentsJson,
+    _i2.Section? section,
     bool? published,
-    List<_i2.EventRegistration>? eventRegistrations,
-    List<_i3.EventManager>? eventManagers,
+    List<_i3.EventRegistration>? eventRegistrations,
+    List<_i4.EventManager>? eventManagers,
   }) : super._(
          id: id,
          title: title,
@@ -313,9 +286,6 @@ class _EventImpl extends Event {
          eventLocation: eventLocation,
          carpoolLocation: carpoolLocation,
          carpoolTime: carpoolTime,
-         difficulty: difficulty,
-         requiredEquipment: requiredEquipment,
-         prerequisites: prerequisites,
          recurring: recurring,
          registrationDeadline: registrationDeadline,
          registrationStartDate: registrationStartDate,
@@ -324,9 +294,8 @@ class _EventImpl extends Event {
          minimumParticipants: minimumParticipants,
          maxParticipants: maxParticipants,
          cancellationDeadline: cancellationDeadline,
-         registrationNotes: registrationNotes,
          sectionId: sectionId,
-         documentsJson: documentsJson,
+         section: section,
          published: published,
          eventRegistrations: eventRegistrations,
          eventManagers: eventManagers,
@@ -346,9 +315,6 @@ class _EventImpl extends Event {
     Object? eventLocation = _Undefined,
     Object? carpoolLocation = _Undefined,
     Object? carpoolTime = _Undefined,
-    Object? difficulty = _Undefined,
-    Object? requiredEquipment = _Undefined,
-    Object? prerequisites = _Undefined,
     Object? recurring = _Undefined,
     Object? registrationDeadline = _Undefined,
     Object? registrationStartDate = _Undefined,
@@ -357,9 +323,8 @@ class _EventImpl extends Event {
     int? minimumParticipants,
     int? maxParticipants,
     Object? cancellationDeadline = _Undefined,
-    Object? registrationNotes = _Undefined,
     int? sectionId,
-    Object? documentsJson = _Undefined,
+    Object? section = _Undefined,
     bool? published,
     Object? eventRegistrations = _Undefined,
     Object? eventManagers = _Undefined,
@@ -378,13 +343,6 @@ class _EventImpl extends Event {
           ? carpoolLocation
           : this.carpoolLocation,
       carpoolTime: carpoolTime is DateTime? ? carpoolTime : this.carpoolTime,
-      difficulty: difficulty is String? ? difficulty : this.difficulty,
-      requiredEquipment: requiredEquipment is String?
-          ? requiredEquipment
-          : this.requiredEquipment,
-      prerequisites: prerequisites is String?
-          ? prerequisites
-          : this.prerequisites,
       recurring: recurring is String? ? recurring : this.recurring,
       registrationDeadline: registrationDeadline is DateTime?
           ? registrationDeadline
@@ -401,18 +359,13 @@ class _EventImpl extends Event {
       cancellationDeadline: cancellationDeadline is DateTime?
           ? cancellationDeadline
           : this.cancellationDeadline,
-      registrationNotes: registrationNotes is String?
-          ? registrationNotes
-          : this.registrationNotes,
       sectionId: sectionId ?? this.sectionId,
-      documentsJson: documentsJson is String?
-          ? documentsJson
-          : this.documentsJson,
+      section: section is _i2.Section? ? section : this.section?.copyWith(),
       published: published ?? this.published,
-      eventRegistrations: eventRegistrations is List<_i2.EventRegistration>?
+      eventRegistrations: eventRegistrations is List<_i3.EventRegistration>?
           ? eventRegistrations
           : this.eventRegistrations?.map((e0) => e0.copyWith()).toList(),
-      eventManagers: eventManagers is List<_i3.EventManager>?
+      eventManagers: eventManagers is List<_i4.EventManager>?
           ? eventManagers
           : this.eventManagers?.map((e0) => e0.copyWith()).toList(),
     );
