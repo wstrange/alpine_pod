@@ -49,8 +49,6 @@ final mySectionMembershipSignal = futureSignal(
   dependencies: [sectionSignal, authUserSignal],
 );
 
-/// This is not computed. Should be a signal instead. Is there something in the flutter auth
-/// session manager that gives us this? TODO, investigate.
 final isGlobalAdminSignal = computed(
   () {
     final x = authUserSignal.value;

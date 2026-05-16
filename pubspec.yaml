@@ -1,0 +1,10 @@
+name: alpine_pod_workspace
+publish_to: 'none'
+
+environment:
+  sdk: '>=3.5.0 <4.0.0'
+
+workspace:
+  - alpine_pod_client
+  - alpine_pod_flutter
+  - alpine_pod_server

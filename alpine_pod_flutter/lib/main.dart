@@ -2,8 +2,6 @@ import 'package:alpine_pod_client/alpine_pod_client.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-// ignore: depend_on_referenced_packages
-import 'package:flutter_driver/driver_extension.dart';
 import 'package:logging/logging.dart';
 import 'package:serverpod_auth_idp_flutter/serverpod_auth_idp_flutter.dart';
 import 'package:serverpod_flutter/serverpod_flutter.dart';
