@@ -151,15 +151,28 @@ class EventView extends HookWidget {
                       formatEventRange(
                           displayEvent.startTime, displayEvent.endTime),
                       style: const TextStyle(fontWeight: FontWeight.w600)),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 12),
+                  // ── Description ──────────────────────────────────────────
+                  _SectionLabel(label: 'Description', icon: Icons.article_outlined),
+                  const SizedBox(height: 6),
                   Builder(
                     builder: (context) {
+                      final colorScheme = Theme.of(context).colorScheme;
                       final style = Theme.of(context).textTheme.bodyMedium!;
                       final lineHeight = style.fontSize! * (style.height ?? 1.2);
-                      return ConstrainedBox(
+                      return Container(
+                        width: double.infinity,
                         constraints: BoxConstraints(
                           maxHeight: 15 * lineHeight,
-                          minHeight: 3 * lineHeight,
+                        ),
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: colorScheme.surfaceContainerHighest
+                              .withValues(alpha: 0.45),
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(
+                            color: colorScheme.outlineVariant.withValues(alpha: 0.5),
+                          ),
                         ),
                         child: SingleChildScrollView(
                           child: MarkdownBody(
@@ -174,47 +187,85 @@ class EventView extends HookWidget {
                       );
                     },
                   ),
-                  const SizedBox(height: 16),
-                  if (displayEvent.eventLocation != null &&
-                      displayEvent.eventLocation!.isNotEmpty)
-                    LocationWidget(location: displayEvent.eventLocation!),
-                  if (displayEvent.carpoolLocation != null &&
-                      displayEvent.carpoolLocation!.isNotEmpty) ...[
+                  // ── Location ─────────────────────────────────────────────
+                  if ((displayEvent.eventLocation != null &&
+                          displayEvent.eventLocation!.isNotEmpty) ||
+                      (displayEvent.carpoolLocation != null &&
+                          displayEvent.carpoolLocation!.isNotEmpty)) ...[
+                    const SizedBox(height: 16),
+                    _SectionLabel(label: 'Location', icon: Icons.place_outlined),
                     const SizedBox(height: 6),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Icon(Icons.directions_car_outlined,
-                            size: 16,
-                            color: Theme.of(context).colorScheme.secondary),
-                        const SizedBox(width: 4),
-                        Flexible(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('Carpool meet:',
-                                  style: TextStyle(
-                                      fontSize: 12,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .secondary,
-                                      fontWeight: FontWeight.w600)),
-                              if (displayEvent.carpoolTime != null)
-                                Text(
-                                  eventDateFormat(displayEvent.carpoolTime!),
-                                  style: TextStyle(
-                                      fontSize: 12,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .secondary),
-                                ),
-                              LocationWidget(
-                                  location: displayEvent.carpoolLocation!),
-                            ],
+                    Builder(builder: (context) {
+                      final colorScheme = Theme.of(context).colorScheme;
+                      return Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 10),
+                        decoration: BoxDecoration(
+                          color: colorScheme.primaryContainer
+                              .withValues(alpha: 0.25),
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(
+                            color: colorScheme.primary.withValues(alpha: 0.2),
                           ),
                         ),
-                      ],
-                    ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (displayEvent.eventLocation != null &&
+                                displayEvent.eventLocation!.isNotEmpty)
+                              LocationWidget(
+                                  location: displayEvent.eventLocation!),
+                            if (displayEvent.carpoolLocation != null &&
+                                displayEvent.carpoolLocation!.isNotEmpty) ...[
+                              if (displayEvent.eventLocation != null &&
+                                  displayEvent.eventLocation!.isNotEmpty)
+                                Divider(
+                                    height: 16,
+                                    color: colorScheme.outlineVariant
+                                        .withValues(alpha: 0.5)),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Icon(Icons.directions_car_outlined,
+                                      size: 16,
+                                      color: colorScheme.secondary),
+                                  const SizedBox(width: 6),
+                                  Flexible(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Carpool meet:',
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: colorScheme.secondary,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                        if (displayEvent.carpoolTime != null)
+                                          Text(
+                                            eventDateFormat(
+                                                displayEvent.carpoolTime!),
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              color: colorScheme.secondary,
+                                            ),
+                                          ),
+                                        LocationWidget(
+                                            location:
+                                                displayEvent.carpoolLocation!),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ],
+                        ),
+                      );
+                    }),
                   ],
                 ],
               ),
@@ -408,6 +459,35 @@ class EventView extends HookWidget {
             const Center(child: CircularProgressIndicator()),
         ],
       ),
+    );
+  }
+}
+
+/// A small section header with an icon and a label, used to visually
+/// separate distinct sections within the event detail view.
+class _SectionLabel extends StatelessWidget {
+  const _SectionLabel({required this.label, required this.icon});
+
+  final String label;
+  final IconData icon;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Row(
+      children: [
+        Icon(icon, size: 15, color: colorScheme.onSurfaceVariant),
+        const SizedBox(width: 5),
+        Text(
+          label.toUpperCase(),
+          style: TextStyle(
+            fontSize: 11,
+            fontWeight: FontWeight.w700,
+            letterSpacing: 0.8,
+            color: colorScheme.onSurfaceVariant,
+          ),
+        ),
+      ],
     );
   }
 }

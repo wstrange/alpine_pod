@@ -12,6 +12,8 @@
             "program": "lib/main.dart",
             "cwd": "alpine_pod_flutter",
             "args": [
+                "--web-hostname",
+                "localhost",
                 "--web-port",
                 "56804"
             ]

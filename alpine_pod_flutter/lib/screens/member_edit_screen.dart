@@ -21,8 +21,9 @@ class MemberEditScreen extends HookWidget {
       keys: [memberId],
     ).value;
 
-    final AsyncState<Member?> memberValue =
-        memberId == null ? currentMemberValue : targetMemberValue;
+    final AsyncState<Member?> memberValue = memberId == null
+        ? currentMemberValue
+        : targetMemberValue;
 
     return Scaffold(
       appBar: AppBar(
@@ -41,12 +42,11 @@ class MemberEditScreen extends HookWidget {
       ),
       body: switch (memberValue) {
         AsyncError(error: final e) => Center(child: Text('Error: $e')),
-        AsyncLoading() => const Center(
-            child: CircularProgressIndicator(),
-          ),
-        AsyncData(value: final member) => member == null
-            ? const Center(child: Text('Member not found.'))
-            : _MemberEditForm(member: member, memberId: memberId),
+        AsyncLoading() => const Center(child: CircularProgressIndicator()),
+        AsyncData(value: final member) =>
+          member == null
+              ? const Center(child: Text('Member not found.'))
+              : _MemberEditForm(member: member, memberId: memberId),
       },
     );
   }
@@ -59,26 +59,33 @@ class _MemberEditForm extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final firstNameController =
-        useTextEditingController(text: member.firstName);
+    final firstNameController = useTextEditingController(
+      text: member.firstName,
+    );
     final lastNameController = useTextEditingController(text: member.lastName);
-    final displayNameController =
-        useTextEditingController(text: member.displayName);
+    final displayNameController = useTextEditingController(
+      text: member.displayName,
+    );
     final bioController = useTextEditingController(text: member.bio);
     final emailController = useTextEditingController(text: member.email);
-    final phoneNumberController =
-        useTextEditingController(text: member.phoneNumber);
-    final emergencyContactNameController =
-        useTextEditingController(text: member.emergencyContactName);
-    final emergencyContactPhoneController =
-        useTextEditingController(text: member.emergencyContactPhone);
-    final medicalConditionsController =
-        useTextEditingController(text: member.medicalConditions);
-    final certificationsController =
-        useTextEditingController(text: member.certifications);
+    final phoneNumberController = useTextEditingController(
+      text: member.phoneNumber,
+    );
+    final emergencyContactNameController = useTextEditingController(
+      text: member.emergencyContactName,
+    );
+    final emergencyContactPhoneController = useTextEditingController(
+      text: member.emergencyContactPhone,
+    );
+    final medicalConditionsController = useTextEditingController(
+      text: member.medicalConditions,
+    );
+    final certificationsController = useTextEditingController(
+      text: member.certifications,
+    );
 
     // Re-initialize controllers if the member changes (e.g. after a refresh or navigation)
-    useValueChanged<Member, void>(member, (_, __) {
+    useValueChanged<Member, void>(member, (_, _) {
       firstNameController.text = member.firstName;
       lastNameController.text = member.lastName;
       displayNameController.text = member.displayName ?? '';
@@ -123,9 +130,9 @@ class _MemberEditForm extends HookWidget {
         }
 
         if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Profile saved')),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text('Profile saved')));
           final router = GoRouter.of(context);
           if (router.canPop()) {
             router.pop();
@@ -135,9 +142,9 @@ class _MemberEditForm extends HookWidget {
         }
       } catch (e) {
         if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Failed to save profile: $e')),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text('Failed to save profile: $e')));
         }
       }
     }
@@ -190,22 +197,26 @@ class _MemberEditForm extends HookWidget {
                 TextFormField(
                   controller: emergencyContactNameController,
                   decoration: const InputDecoration(
-                      labelText: 'Emergency Contact Name'),
+                    labelText: 'Emergency Contact Name',
+                  ),
                 ),
                 TextFormField(
                   controller: emergencyContactPhoneController,
                   decoration: const InputDecoration(
-                      labelText: 'Emergency Contact Phone'),
+                    labelText: 'Emergency Contact Phone',
+                  ),
                 ),
                 TextFormField(
                   controller: medicalConditionsController,
-                  decoration:
-                      const InputDecoration(labelText: 'Medical Conditions'),
+                  decoration: const InputDecoration(
+                    labelText: 'Medical Conditions',
+                  ),
                 ),
                 TextFormField(
                   controller: certificationsController,
-                  decoration:
-                      const InputDecoration(labelText: 'Certifications'),
+                  decoration: const InputDecoration(
+                    labelText: 'Certifications',
+                  ),
                 ),
                 const SizedBox(height: 24),
                 const Text(
@@ -217,34 +228,36 @@ class _MemberEditForm extends HookWidget {
                   AsyncError(error: final e) => Text('Error loading roles: $e'),
                   AsyncLoading() => const CircularProgressIndicator(),
                   AsyncData(value: final memberships) => Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        if (memberships.isEmpty)
-                          const Text('No section memberships found.'),
-                        ...memberships.map((m) => UserRoleEditor(
-                              memberId: m.memberId,
-                              sectionId: m.sectionId,
-                              sectionName: m.section?.name,
-                            )),
-                        if (isGlobalAdmin && memberId != null) ...[
-                          const SizedBox(height: 16),
-                          switch (allSectionsValue) {
-                            AsyncData(value: final allSections) => () {
-                                final currentSectionIds =
-                                    memberships.map((m) => m.sectionId).toSet();
-                                final availableSections = allSections
-                                    .where((s) =>
-                                        !currentSectionIds.contains(s.id))
-                                    .toList();
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (memberships.isEmpty)
+                        const Text('No section memberships found.'),
+                      ...memberships.map(
+                        (m) => UserRoleEditor(
+                          memberId: m.memberId,
+                          sectionId: m.sectionId,
+                          sectionName: m.section?.name,
+                        ),
+                      ),
+                      if (isGlobalAdmin && memberId != null) ...[
+                        const SizedBox(height: 16),
+                        switch (allSectionsValue) {
+                          AsyncData(value: final allSections) => () {
+                            final currentSectionIds = memberships
+                                .map((m) => m.sectionId)
+                                .toSet();
+                            final availableSections = allSections
+                                .where((s) => !currentSectionIds.contains(s.id))
+                                .toList();
 
-                                if (availableSections.isEmpty) {
-                                  return const SizedBox.shrink();
-                                }
+                            if (availableSections.isEmpty) {
+                              return const SizedBox.shrink();
+                            }
 
-                                return ElevatedButton.icon(
-                                  onPressed: () async {
-                                    final selectedSection =
-                                        await showDialog<Section>(
+                            return ElevatedButton.icon(
+                              onPressed: () async {
+                                final selectedSection =
+                                    await showDialog<Section>(
                                       context: context,
                                       builder: (context) => AlertDialog(
                                         title: const Text('Add to Section'),
@@ -267,38 +280,41 @@ class _MemberEditForm extends HookWidget {
                                       ),
                                     );
 
-                                    if (selectedSection != null &&
-                                        context.mounted) {
-                                      try {
-                                        await client.member.addMemberToSection(
-                                          SectionMembership(
-                                            memberId: memberId!,
-                                            sectionId: selectedSection.id!,
-                                            scopes: {'member'},
+                                if (selectedSection != null &&
+                                    context.mounted) {
+                                  try {
+                                    await client.member.addMemberToSection(
+                                      SectionMembership(
+                                        memberId: memberId!,
+                                        sectionId: selectedSection.id!,
+                                        scopes: {'member'},
+                                      ),
+                                    );
+                                    reloadMemberships.value++;
+                                  } catch (e) {
+                                    if (context.mounted) {
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            'Failed to add to section: $e',
                                           ),
-                                        );
-                                        reloadMemberships.value++;
-                                      } catch (e) {
-                                        if (context.mounted) {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            SnackBar(
-                                                content: Text(
-                                                    'Failed to add to section: $e')),
-                                          );
-                                        }
-                                      }
+                                        ),
+                                      );
                                     }
-                                  },
-                                  icon: const Icon(Icons.add),
-                                  label: const Text('Add to Section'),
-                                );
-                              }(),
-                            _ => const SizedBox.shrink(),
-                          },
-                        ],
+                                  }
+                                }
+                              },
+                              icon: const Icon(Icons.add),
+                              label: const Text('Add to Section'),
+                            );
+                          }(),
+                          _ => const SizedBox.shrink(),
+                        },
                       ],
-                    ),
+                    ],
+                  ),
                 },
               ],
             ),

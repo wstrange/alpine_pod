@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_underscores
+
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
@@ -24,7 +26,7 @@ class EventDetailsScreen extends HookWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Event Details'),
+        // title: const Text('${eventValue.}'),
         actions: [
           IconButton(
             icon: const Icon(Icons.home_outlined),
@@ -35,19 +37,23 @@ class EventDetailsScreen extends HookWidget {
             data: (event) {
               final isPast = DateTime.now().isAfter(event.endTime.toLocal());
               final memberState = currentMemberSignal.watch(context);
-              final currentMember =
-                  memberState is AsyncData ? memberState.value : null;
+              final currentMember = memberState is AsyncData
+                  ? memberState.value
+                  : null;
 
-              final isEventManager = currentMember != null &&
-                  event.eventManagers
-                          ?.any((m) => m.memberId == currentMember.id) ==
+              final isEventManager =
+                  currentMember != null &&
+                  event.eventManagers?.any(
+                        (m) => m.memberId == currentMember.id,
+                      ) ==
                       true;
 
               final isSectionManager = isSectionManagerSignal.watch(context);
               final isGlobalAdmin = isGlobalAdminSignal.watch(context);
 
               final canEdit =
-                  !isPast && (isEventManager || isSectionManager || isGlobalAdmin);
+                  !isPast &&
+                  (isEventManager || isSectionManager || isGlobalAdmin);
 
               return [
                 if (canCreate)
@@ -59,8 +65,9 @@ class EventDetailsScreen extends HookWidget {
                         id: null,
                         title: 'Copy of ${event.title}',
                       );
-                      GoRouter.of(context)
-                          .push('/create-event', extra: clonedEvent);
+                      GoRouter.of(
+                        context,
+                      ).push('/create-event', extra: clonedEvent);
                     },
                   ),
                 if (canEdit)

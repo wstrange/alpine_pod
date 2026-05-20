@@ -23,13 +23,16 @@ class UserRoleEditor extends HookWidget {
     final myMemberships =
         allMySectionMembershipsSignal.watch(context).value ?? [];
     final isManagerOfThisSection = myMemberships.any(
-        (m) => m.sectionId == sectionId && m.scopes.contains('sectionManager'));
+      (m) => m.sectionId == sectionId && m.scopes.contains('sectionManager'),
+    );
 
     final canEdit = isAdmin || isManagerOfThisSection;
 
     // Fetch the target member's memberships and find the one for this section
     final membershipSignal = useFutureSignal(
-      () => client.member.getMemberSectionMemberships(memberId).then(
+      () => client.member
+          .getMemberSectionMemberships(memberId)
+          .then(
             (memberships) => memberships.firstWhere(
               (m) => m.sectionId == sectionId,
               orElse: () => throw Exception('Membership not found'),
@@ -59,38 +62,38 @@ class UserRoleEditor extends HookWidget {
             switch (membershipValue) {
               AsyncError(error: final e) => Text('Error: $e'),
               AsyncLoading() => const Center(
-                  child: Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: CircularProgressIndicator(),
-                  ),
+                child: Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: CircularProgressIndicator(),
                 ),
+              ),
               AsyncData(value: final membership) => _RoleSelector(
-                  membership: membership,
-                  canEdit: canEdit,
-                  isGlobalAdmin: isAdmin,
-                  onChanged: (newScopes) async {
-                    try {
-                      await client.member.updateMemberScopes(
-                        memberId,
-                        sectionId,
-                        newScopes,
+                membership: membership,
+                canEdit: canEdit,
+                isGlobalAdmin: isAdmin,
+                onChanged: (newScopes) async {
+                  try {
+                    await client.member.updateMemberScopes(
+                      memberId,
+                      sectionId,
+                      newScopes,
+                    );
+                    // Invalidate the signal to trigger a refresh
+                    membershipSignal.refresh();
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Roles updated')),
                       );
-                      // Invalidate the signal to trigger a refresh
-                      membershipSignal.refresh();
-                      if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Roles updated')),
-                        );
-                      }
-                    } catch (e) {
-                      if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Failed to update roles: $e')),
-                        );
-                      }
                     }
-                  },
-                ),
+                  } catch (e) {
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Failed to update roles: $e')),
+                      );
+                    }
+                  }
+                },
+              ),
             },
           ],
         ),
@@ -117,14 +120,18 @@ class _RoleSelector extends HookWidget {
     final currentScopes = useState<Set<String>>(membership.scopes.toSet());
 
     // Sync with membership data if it changes
-    useValueChanged<SectionMembership, void>(membership, (_, __) {
+    useValueChanged<SectionMembership, void>(membership, (_, _) {
       currentScopes.value = membership.scopes.toSet();
     });
 
     final roles = [
       ('member', 'Member', 'Basic access to the section.'),
       ('eventManager', 'Trip Leader', 'Can manage events they lead.'),
-      ('sectionManager', 'Section Manager', 'Can manage section users and events.'),
+      (
+        'sectionManager',
+        'Section Manager',
+        'Can manage section users and events.',
+      ),
       ('admin', 'Admin', 'Full global administrative access.'),
     ];
 

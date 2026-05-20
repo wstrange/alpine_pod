@@ -8,7 +8,8 @@ import 'package:serverpod_flutter/serverpod_flutter.dart';
 import 'signals.dart';
 import 'router.dart';
 
-final host = 'Warrens-MacBook-Air.local';
+// final host = 'Warrens-MacBook-Air.local';
+final host = 'localhost';
 void main() async {
   Logger.root.level = Level.ALL;
   Logger.root.onRecord.listen((record) {
@@ -32,7 +33,15 @@ void main() async {
 
   sessionManager = client.auth;
   await sessionManager.initialize();
-  await sessionManager.initializeGoogleSignIn();
+  // await client.auth.initializeGoogleSignIn();
+
+  await sessionManager.initializeGoogleSignIn(
+    // Acording to docs, this is not needed. web/index.html should be enough.
+    clientId:
+        '465372895035-35rlrpfdibu9r1435kg9vsoua640e50o.apps.googleusercontent.com',
+    // serverClientId:
+    //     '465372895035-35rlrpfdibu9r1435kg9vsoua640e50o.apps.googleusercontent.com',
+  );
 
   runApp(
     const MyApp(),

@@ -32,9 +32,9 @@ class EventParticipantsManager extends HookWidget {
             Text(
               'Manage Participants',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.primary,
+              ),
             ),
             FilledButton.icon(
               onPressed: () => _showAddParticipantDialog(context),
@@ -61,9 +61,9 @@ class EventParticipantsManager extends HookWidget {
         if (waitlisted.isNotEmpty) ...[
           Text(
             'Waitlist – Pending Approval (${waitlisted.length})',
-            style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  color: Colors.orange.shade700,
-                ),
+            style: Theme.of(
+              context,
+            ).textTheme.titleSmall?.copyWith(color: Colors.orange.shade700),
           ),
           const SizedBox(height: 4),
           ...waitlisted.map(
@@ -89,7 +89,7 @@ class EventParticipantsManager extends HookWidget {
   ) async {
     final name = reg.member != null
         ? reg.member!.displayName ??
-            '${reg.member!.firstName} ${reg.member!.lastName}'
+              '${reg.member!.firstName} ${reg.member!.lastName}'
         : 'this participant';
 
     final confirmed = await showDialog<bool>(
@@ -104,9 +104,7 @@ class EventParticipantsManager extends HookWidget {
           ),
           FilledButton(
             onPressed: () => Navigator.pop(ctx, true),
-            style: FilledButton.styleFrom(
-              backgroundColor: Colors.red.shade600,
-            ),
+            style: FilledButton.styleFrom(backgroundColor: Colors.red.shade600),
             child: const Text('Remove'),
           ),
         ],
@@ -118,9 +116,9 @@ class EventParticipantsManager extends HookWidget {
     try {
       await client.eventManager.removeMemberFromEvent(reg.id!);
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('$name removed from event.')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('$name removed from event.')));
         currentEventsSignal.refresh();
         onRefresh();
       }
@@ -139,7 +137,7 @@ class EventParticipantsManager extends HookWidget {
   ) async {
     final name = reg.member != null
         ? reg.member!.displayName ??
-            '${reg.member!.firstName} ${reg.member!.lastName}'
+              '${reg.member!.firstName} ${reg.member!.lastName}'
         : 'this participant';
 
     try {
@@ -262,10 +260,11 @@ class _AddParticipantDialog extends HookWidget {
     // Fetch section members with server-side filtering, re-fetching when filter changes
     final membersFuture = useMemoized(
       () => client.member.getSectionMembers(
-          sectionId: event.sectionId,
-          filter: filterText.value.isEmpty ? null : filterText.value,
-          limit: 50,
-          offset: 0),
+        sectionId: event.sectionId,
+        filter: filterText.value.isEmpty ? null : filterText.value,
+        limit: 50,
+        offset: 0,
+      ),
       [event.sectionId, filterText.value],
     );
     final membersSnapshot = useFuture(membersFuture);
@@ -326,12 +325,14 @@ class _AddParticipantDialog extends HookWidget {
                     : ListView.separated(
                         shrinkWrap: true,
                         itemCount: filtered.length,
-                        separatorBuilder: (_, __) => const Divider(height: 1),
+                        separatorBuilder: (_, _) => const Divider(height: 1),
                         itemBuilder: (ctx, i) {
                           final member = filtered[i];
-                          final alreadyIn =
-                              alreadyRegisteredIds.contains(member.id);
-                          final name = member.displayName ??
+                          final alreadyIn = alreadyRegisteredIds.contains(
+                            member.id,
+                          );
+                          final name =
+                              member.displayName ??
                               '${member.firstName} ${member.lastName}';
                           return ListTile(
                             dense: true,
@@ -358,23 +359,24 @@ class _AddParticipantDialog extends HookWidget {
                                     padding: EdgeInsets.zero,
                                   )
                                 : isLoading.value
-                                    ? const SizedBox(
-                                        width: 20,
-                                        height: 20,
-                                        child: CircularProgressIndicator(
-                                            strokeWidth: 2),
-                                      )
-                                    : null,
+                                ? const SizedBox(
+                                    width: 20,
+                                    height: 20,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                    ),
+                                  )
+                                : null,
                             enabled: !alreadyIn && !isLoading.value,
                             onTap: alreadyIn || isLoading.value
                                 ? null
                                 : () => _addMember(
-                                      ctx,
-                                      context,
-                                      member,
-                                      name,
-                                      isLoading,
-                                    ),
+                                    ctx,
+                                    context,
+                                    member,
+                                    name,
+                                    isLoading,
+                                  ),
                           );
                         },
                       ),
@@ -404,15 +406,15 @@ class _AddParticipantDialog extends HookWidget {
       onAdded();
       if (dialogContext.mounted) Navigator.of(dialogContext).pop();
       if (parentContext.mounted) {
-        ScaffoldMessenger.of(parentContext).showSnackBar(
-          SnackBar(content: Text('$name added to event.')),
-        );
+        ScaffoldMessenger.of(
+          parentContext,
+        ).showSnackBar(SnackBar(content: Text('$name added to event.')));
       }
     } catch (e) {
       if (parentContext.mounted) {
-        ScaffoldMessenger.of(parentContext).showSnackBar(
-          SnackBar(content: Text('Error adding participant: $e')),
-        );
+        ScaffoldMessenger.of(
+          parentContext,
+        ).showSnackBar(SnackBar(content: Text('Error adding participant: $e')));
       }
     } finally {
       if (dialogContext.mounted) isLoading.value = false;

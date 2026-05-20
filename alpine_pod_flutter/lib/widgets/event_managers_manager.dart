@@ -33,9 +33,9 @@ class EventManagersManager extends HookWidget {
             Text(
               'Event Managers',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.primary,
+              ),
             ),
             FilledButton.icon(
               onPressed: () => _showAddManagerDialog(context),
@@ -66,7 +66,7 @@ class EventManagersManager extends HookWidget {
 
     // Don't allow removing if it's the only manager and we are editing
     if (managers.length <= 1 && eventId != null) {
-       ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('At least one manager is required.')),
       );
       return;
@@ -84,9 +84,7 @@ class EventManagersManager extends HookWidget {
           ),
           FilledButton(
             onPressed: () => Navigator.pop(ctx, true),
-            style: FilledButton.styleFrom(
-              backgroundColor: Colors.red.shade600,
-            ),
+            style: FilledButton.styleFrom(backgroundColor: Colors.red.shade600),
             child: const Text('Remove'),
           ),
         ],
@@ -104,9 +102,9 @@ class EventManagersManager extends HookWidget {
         onChanged(managers.where((m) => m.id != member.id).toList());
       } catch (e) {
         if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error removing manager: $e')),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text('Error removing manager: $e')));
         }
       }
     } else {
@@ -147,10 +145,7 @@ class EventManagersManager extends HookWidget {
 }
 
 class _ManagerTile extends StatelessWidget {
-  const _ManagerTile({
-    required this.member,
-    required this.onRemove,
-  });
+  const _ManagerTile({required this.member, required this.onRemove});
 
   final Member member;
   final VoidCallback onRemove;
@@ -205,10 +200,11 @@ class _AddManagerDialog extends HookWidget {
 
     final membersFuture = useMemoized(
       () => client.member.getSectionMembers(
-          sectionId: sectionId,
-          filter: filterText.value.isEmpty ? null : filterText.value,
-          limit: 50,
-          offset: 0),
+        sectionId: sectionId,
+        filter: filterText.value.isEmpty ? null : filterText.value,
+        limit: 50,
+        offset: 0,
+      ),
       [sectionId, filterText.value],
     );
     final membersSnapshot = useFuture(membersFuture);
@@ -268,12 +264,14 @@ class _AddManagerDialog extends HookWidget {
                     : ListView.separated(
                         shrinkWrap: true,
                         itemCount: filtered.length,
-                        separatorBuilder: (_, __) => const Divider(height: 1),
+                        separatorBuilder: (_, _) => const Divider(height: 1),
                         itemBuilder: (ctx, i) {
                           final member = filtered[i];
-                          final alreadyIn =
-                              alreadyManagerIds.contains(member.id);
-                          final name = member.displayName ??
+                          final alreadyIn = alreadyManagerIds.contains(
+                            member.id,
+                          );
+                          final name =
+                              member.displayName ??
                               '${member.firstName} ${member.lastName}';
                           return ListTile(
                             dense: true,

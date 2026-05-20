@@ -18,4 +18,22 @@ class EmailIdpEndpoint extends EmailIdpBaseEndpoint {
 
 class RefreshJwtTokensEndpoint extends core.RefreshJwtTokensEndpoint {}
 
-class GoogleIdpEndpoint extends GoogleIdpBaseEndpoint {}
+class GoogleIdpEndpoint extends GoogleIdpBaseEndpoint {
+  @override
+  Future<AuthSuccess> login(
+    final Session session, {
+    required final String idToken,
+    required final String? accessToken,
+  }) async {
+    print('Google Login request');
+    print('idToken: $idToken');
+    print('accessToken: $accessToken');
+    var result = await super.login(
+      session,
+      idToken: idToken,
+      accessToken: accessToken,
+    );
+    print('Google Login result: $result');
+    return result;
+  }
+}

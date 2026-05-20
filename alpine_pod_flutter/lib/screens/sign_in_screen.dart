@@ -30,6 +30,9 @@ class SignInScreen extends StatelessWidget {
           client: client,
           startScreen: EmailFlowScreen.login,
         ),
+        // googleSignInWidget: GoogleSignInWidget(
+        //   client: client,
+        // ),
       ),
     );
   }

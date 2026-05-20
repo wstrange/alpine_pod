@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:serverpod/serverpod.dart';
@@ -61,14 +62,11 @@ void run(List<String> args) async {
         )),
   ]);
 
+  print(
+      'Google Client ID: ${googleSecret.clientId}. ${googleSecret.redirectUris}');
+
   // Setup a default page at the web root.
-  // pod.webServer.addRoute(RouteRoot(), '/');
-  // pod.webServer.addRoute(RouteRoot(), '/index.html');
-  // Serve all files in the /static directory.
-  // pod.webServer.addRoute(
-  //   StaticDirectory(serverDirectory: 'static', basePath: '/'),
-  //   '/*',
-  // );
+  pod.webServer.addRoute(HelloRoute(), '/hello');
 
   // Start the server.
   await pod.start();
@@ -96,4 +94,16 @@ void _sendPasswordResetCode(
   // NOTE: Here you call your mail service to send the verification code to
   // the user. For testing, we will just log the verification code.
   session.log('[EmailIDP] Password reset code ($email): $verificationCode');
+}
+
+class HelloRoute extends Route {
+  @override
+  Future<Result> handleCall(Session session, Request request) async {
+    return Response.ok(
+      body: Body.fromString(
+        jsonEncode({'message': 'Hello from Serverpod!'}),
+        mimeType: MimeType.json,
+      ),
+    );
+  }
 }

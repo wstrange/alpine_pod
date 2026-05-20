@@ -74,11 +74,7 @@ class AdminHomeScreen extends HookWidget {
       ),
       body: TabBarView(
         controller: tabController,
-        children: const [
-          _SectionsTab(),
-          _MembersTab(),
-          _TemplatesTab(),
-        ],
+        children: const [_SectionsTab(), _MembersTab(), _TemplatesTab()],
       ),
     );
   }
@@ -115,16 +111,20 @@ class _SectionsTab extends HookWidget {
       final messenger = ScaffoldMessenger.of(context);
       try {
         await client.admin.deleteSection(s.id!);
-        messenger.showSnackBar(SnackBar(
-          content: Text('"${s.name}" deleted.'),
-          backgroundColor: const Color(0xFF4ECDC4),
-        ));
+        messenger.showSnackBar(
+          SnackBar(
+            content: Text('"${s.name}" deleted.'),
+            backgroundColor: const Color(0xFF4ECDC4),
+          ),
+        );
         refresh();
       } catch (e) {
-        messenger.showSnackBar(SnackBar(
-          content: Text('Error: $e'),
-          backgroundColor: Colors.red[700],
-        ));
+        messenger.showSnackBar(
+          SnackBar(
+            content: Text('Error: $e'),
+            backgroundColor: Colors.red[700],
+          ),
+        );
       }
     }
 
@@ -148,14 +148,16 @@ class _SectionsTab extends HookWidget {
         data: (list) {
           if (list.isEmpty) {
             return const Center(
-              child: Text('No sections yet. Create one!',
-                  style: TextStyle(color: Colors.white54)),
+              child: Text(
+                'No sections yet. Create one!',
+                style: TextStyle(color: Colors.white54),
+              ),
             );
           }
           return ListView.separated(
             padding: const EdgeInsets.fromLTRB(16, 20, 16, 100),
             itemCount: list.length,
-            separatorBuilder: (_, __) => const SizedBox(height: 10),
+            separatorBuilder: (_, _) => const SizedBox(height: 10),
             itemBuilder: (_, i) => _SectionCard(
               section: list[i],
               onEdit: () => openDialog(existing: list[i]),
@@ -164,8 +166,10 @@ class _SectionsTab extends HookWidget {
           );
         },
         error: (e, _) => Center(
-          child: Text('Error: $e',
-              style: const TextStyle(color: Colors.redAccent)),
+          child: Text(
+            'Error: $e',
+            style: const TextStyle(color: Colors.redAccent),
+          ),
         ),
         loading: () => const Center(
           child: CircularProgressIndicator(color: Color(0xFF6C63FF)),
@@ -195,8 +199,10 @@ class _SectionCard extends StatelessWidget {
         border: Border.all(color: Colors.white.withAlpha(15)),
       ),
       child: ListTile(
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 10,
+        ),
         leading: Container(
           width: 44,
           height: 44,
@@ -210,26 +216,33 @@ class _SectionCard extends StatelessWidget {
           ),
           child: const Icon(Icons.terrain, color: Colors.white, size: 20),
         ),
-        title: Text(section.name,
-            style: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
-                fontSize: 15)),
-        subtitle: Text(section.description,
-            style: const TextStyle(color: Colors.white54, fontSize: 12),
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis),
+        title: Text(
+          section.name,
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w600,
+            fontSize: 15,
+          ),
+        ),
+        subtitle: Text(
+          section.description,
+          style: const TextStyle(color: Colors.white54, fontSize: 12),
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+        ),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             IconButton(
-                icon: const Icon(Icons.edit_outlined, color: Colors.white54),
-                tooltip: 'Edit',
-                onPressed: onEdit),
+              icon: const Icon(Icons.edit_outlined, color: Colors.white54),
+              tooltip: 'Edit',
+              onPressed: onEdit,
+            ),
             IconButton(
-                icon: Icon(Icons.delete_outline, color: Colors.red[300]),
-                tooltip: 'Delete',
-                onPressed: onDelete),
+              icon: Icon(Icons.delete_outline, color: Colors.red[300]),
+              tooltip: 'Delete',
+              onPressed: onDelete,
+            ),
           ],
         ),
       ),
@@ -249,10 +262,12 @@ class _SectionDialog extends HookWidget {
     final formKey = useMemoized(GlobalKey<FormState>.new);
     final nameCtrl = useTextEditingController(text: section?.name ?? '');
     final descCtrl = useTextEditingController(text: section?.description ?? '');
-    final locationCtrl =
-        useTextEditingController(text: section?.location ?? '');
-    final contactCtrl =
-        useTextEditingController(text: section?.contactInfo ?? '');
+    final locationCtrl = useTextEditingController(
+      text: section?.location ?? '',
+    );
+    final contactCtrl = useTextEditingController(
+      text: section?.contactInfo ?? '',
+    );
     final saving = useSignal(false);
 
     final isEdit = section != null;
@@ -265,10 +280,12 @@ class _SectionDialog extends HookWidget {
         id: section?.id,
         name: nameCtrl.text.trim(),
         description: descCtrl.text.trim(),
-        location:
-            locationCtrl.text.trim().isEmpty ? null : locationCtrl.text.trim(),
-        contactInfo:
-            contactCtrl.text.trim().isEmpty ? null : contactCtrl.text.trim(),
+        location: locationCtrl.text.trim().isEmpty
+            ? null
+            : locationCtrl.text.trim(),
+        contactInfo: contactCtrl.text.trim().isEmpty
+            ? null
+            : contactCtrl.text.trim(),
       );
 
       try {
@@ -285,8 +302,9 @@ class _SectionDialog extends HookWidget {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-                content: Text('Save failed: $e'),
-                backgroundColor: Colors.red[700]),
+              content: Text('Save failed: $e'),
+              backgroundColor: Colors.red[700],
+            ),
           );
         }
       } finally {
@@ -300,8 +318,10 @@ class _SectionDialog extends HookWidget {
         backgroundColor: const Color(0xFF1A1D27),
         title: Text(
           isEdit ? 'Edit Section' : 'New Section',
-          style:
-              const TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w700,
+          ),
         ),
         content: SizedBox(
           width: 400,
@@ -324,19 +344,25 @@ class _SectionDialog extends HookWidget {
         actions: [
           TextButton(
             onPressed: isSaving ? null : () => Navigator.pop(context),
-            child:
-                const Text('Cancel', style: TextStyle(color: Colors.white54)),
+            child: const Text(
+              'Cancel',
+              style: TextStyle(color: Colors.white54),
+            ),
           ),
           FilledButton(
             style: FilledButton.styleFrom(
-                backgroundColor: const Color(0xFF6C63FF)),
+              backgroundColor: const Color(0xFF6C63FF),
+            ),
             onPressed: isSaving ? null : save,
             child: isSaving
                 ? const SizedBox(
                     width: 18,
                     height: 18,
                     child: CircularProgressIndicator(
-                        color: Colors.white, strokeWidth: 2))
+                      color: Colors.white,
+                      strokeWidth: 2,
+                    ),
+                  )
                 : Text(isEdit ? 'Update' : 'Create'),
           ),
         ],
@@ -481,16 +507,20 @@ class _MembersTab extends HookWidget {
       final messenger = ScaffoldMessenger.of(context);
       try {
         await client.admin.deleteUser(member.id!);
-        messenger.showSnackBar(SnackBar(
-          content: Text('"$fullName" deleted.'),
-          backgroundColor: const Color(0xFF4ECDC4),
-        ));
+        messenger.showSnackBar(
+          SnackBar(
+            content: Text('"$fullName" deleted.'),
+            backgroundColor: const Color(0xFF4ECDC4),
+          ),
+        );
         reload.value++;
       } catch (e) {
-        messenger.showSnackBar(SnackBar(
-          content: Text('Error: $e'),
-          backgroundColor: Colors.red[700],
-        ));
+        messenger.showSnackBar(
+          SnackBar(
+            content: Text('Error: $e'),
+            backgroundColor: Colors.red[700],
+          ),
+        );
       }
     }
 
@@ -532,15 +562,19 @@ class _MembersTab extends HookWidget {
 
             if (currentError != null && list.isEmpty) {
               return Center(
-                child: Text('Error: $currentError',
-                    style: const TextStyle(color: Colors.redAccent)),
+                child: Text(
+                  'Error: $currentError',
+                  style: const TextStyle(color: Colors.redAccent),
+                ),
               );
             }
 
             if (list.isEmpty) {
               return const Center(
-                child: Text('No members found.',
-                    style: TextStyle(color: Colors.white54)),
+                child: Text(
+                  'No members found.',
+                  style: TextStyle(color: Colors.white54),
+                ),
               );
             }
 
@@ -548,14 +582,16 @@ class _MembersTab extends HookWidget {
               controller: scrollController,
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               itemCount: list.length + (hasMore.value ? 1 : 0),
-              separatorBuilder: (_, __) => const SizedBox(height: 8),
+              separatorBuilder: (_, _) => const SizedBox(height: 8),
               itemBuilder: (_, i) {
                 if (i == list.length) {
                   return const Padding(
                     padding: EdgeInsets.symmetric(vertical: 16),
                     child: Center(
                       child: CircularProgressIndicator(
-                          color: Color(0xFF6C63FF), strokeWidth: 2),
+                        color: Color(0xFF6C63FF),
+                        strokeWidth: 2,
+                      ),
                     ),
                   );
                 }
@@ -600,19 +636,27 @@ class _MemberCard extends StatelessWidget {
         contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
         leading: CircleAvatar(
           backgroundColor: const Color(0xFF6C63FF).withAlpha(180),
-          child: Text(initials,
-              style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 14)),
-        ),
-        title: Text(fullName,
+          child: Text(
+            initials,
             style: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
-                fontSize: 14)),
-        subtitle: Text(member.email,
-            style: const TextStyle(color: Colors.white54, fontSize: 12)),
+              color: Colors.white,
+              fontWeight: FontWeight.w700,
+              fontSize: 14,
+            ),
+          ),
+        ),
+        title: Text(
+          fullName,
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w600,
+            fontSize: 14,
+          ),
+        ),
+        subtitle: Text(
+          member.email,
+          style: const TextStyle(color: Colors.white54, fontSize: 12),
+        ),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -646,9 +690,13 @@ Future<bool> _showConfirmDialog(
     context: context,
     builder: (ctx) => AlertDialog(
       backgroundColor: const Color(0xFF1A1D27),
-      title: Text(title,
-          style: const TextStyle(
-              color: Colors.white, fontWeight: FontWeight.w700)),
+      title: Text(
+        title,
+        style: const TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
       content: Text(message, style: const TextStyle(color: Colors.white70)),
       actions: [
         TextButton(
@@ -696,16 +744,20 @@ class _TemplatesTab extends HookWidget {
       final messenger = ScaffoldMessenger.of(context);
       try {
         await client.eventTemplate.deleteTemplate(t.id!);
-        messenger.showSnackBar(SnackBar(
-          content: Text('"${t.name}" deleted.'),
-          backgroundColor: const Color(0xFF4ECDC4),
-        ));
+        messenger.showSnackBar(
+          SnackBar(
+            content: Text('"${t.name}" deleted.'),
+            backgroundColor: const Color(0xFF4ECDC4),
+          ),
+        );
         refresh();
       } catch (e) {
-        messenger.showSnackBar(SnackBar(
-          content: Text('Error: $e'),
-          backgroundColor: Colors.red[700],
-        ));
+        messenger.showSnackBar(
+          SnackBar(
+            content: Text('Error: $e'),
+            backgroundColor: Colors.red[700],
+          ),
+        );
       }
     }
 
@@ -729,14 +781,16 @@ class _TemplatesTab extends HookWidget {
         data: (list) {
           if (list.isEmpty) {
             return const Center(
-              child: Text('No templates yet. Create one!',
-                  style: TextStyle(color: Colors.white54)),
+              child: Text(
+                'No templates yet. Create one!',
+                style: TextStyle(color: Colors.white54),
+              ),
             );
           }
           return ListView.separated(
             padding: const EdgeInsets.fromLTRB(16, 20, 16, 100),
             itemCount: list.length,
-            separatorBuilder: (_, __) => const SizedBox(height: 10),
+            separatorBuilder: (_, _) => const SizedBox(height: 10),
             itemBuilder: (_, i) => _TemplateCard(
               template: list[i],
               onEdit: () => openDialog(existing: list[i]),
@@ -745,8 +799,10 @@ class _TemplatesTab extends HookWidget {
           );
         },
         error: (e, _) => Center(
-          child: Text('Error: $e',
-              style: const TextStyle(color: Colors.redAccent)),
+          child: Text(
+            'Error: $e',
+            style: const TextStyle(color: Colors.redAccent),
+          ),
         ),
         loading: () => const Center(
           child: CircularProgressIndicator(color: Color(0xFF6C63FF)),
@@ -776,8 +832,10 @@ class _TemplateCard extends StatelessWidget {
         border: Border.all(color: Colors.white.withAlpha(15)),
       ),
       child: ListTile(
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 10,
+        ),
         leading: Container(
           width: 44,
           height: 44,
@@ -794,11 +852,14 @@ class _TemplateCard extends StatelessWidget {
         title: Row(
           children: [
             Expanded(
-              child: Text(template.name,
-                  style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 15)),
+              child: Text(
+                template.name,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 15,
+                ),
+              ),
             ),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
@@ -806,29 +867,39 @@ class _TemplateCard extends StatelessWidget {
                 color: Colors.white.withAlpha(20),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Text(template.language.toUpperCase(),
-                  style: const TextStyle(color: Colors.white70, fontSize: 10, fontWeight: FontWeight.bold)),
+              child: Text(
+                template.language.toUpperCase(),
+                style: const TextStyle(
+                  color: Colors.white70,
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
           ],
         ),
         subtitle: Padding(
           padding: const EdgeInsets.only(top: 4.0),
-          child: Text(template.description,
-              style: const TextStyle(color: Colors.white54, fontSize: 12),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis),
+          child: Text(
+            template.description,
+            style: const TextStyle(color: Colors.white54, fontSize: 12),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
         ),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             IconButton(
-                icon: const Icon(Icons.edit_outlined, color: Colors.white54),
-                tooltip: 'Edit',
-                onPressed: onEdit),
+              icon: const Icon(Icons.edit_outlined, color: Colors.white54),
+              tooltip: 'Edit',
+              onPressed: onEdit,
+            ),
             IconButton(
-                icon: Icon(Icons.delete_outline, color: Colors.red[300]),
-                tooltip: 'Delete',
-                onPressed: onDelete),
+              icon: Icon(Icons.delete_outline, color: Colors.red[300]),
+              tooltip: 'Delete',
+              onPressed: onDelete,
+            ),
           ],
         ),
       ),
@@ -846,8 +917,12 @@ class _TemplateDialog extends HookWidget {
   Widget build(BuildContext context) {
     final formKey = useMemoized(GlobalKey<FormState>.new);
     final nameCtrl = useTextEditingController(text: template?.name ?? '');
-    final languageCtrl = useTextEditingController(text: template?.language ?? 'en');
-    final descCtrl = useTextEditingController(text: template?.description ?? '');
+    final languageCtrl = useTextEditingController(
+      text: template?.language ?? 'en',
+    );
+    final descCtrl = useTextEditingController(
+      text: template?.description ?? '',
+    );
     final contentCtrl = useTextEditingController(text: template?.content ?? '');
     final saving = useSignal(false);
 
@@ -879,8 +954,9 @@ class _TemplateDialog extends HookWidget {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-                content: Text('Save failed: $e'),
-                backgroundColor: Colors.red[700]),
+              content: Text('Save failed: $e'),
+              backgroundColor: Colors.red[700],
+            ),
           );
         }
       } finally {
@@ -894,8 +970,10 @@ class _TemplateDialog extends HookWidget {
         backgroundColor: const Color(0xFF1A1D27),
         title: Text(
           isEdit ? 'Edit Template' : 'New Template',
-          style:
-              const TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w700,
+          ),
         ),
         content: SizedBox(
           width: 600,
@@ -907,15 +985,30 @@ class _TemplateDialog extends HookWidget {
                 children: [
                   Row(
                     children: [
-                      Expanded(flex: 3, child: _field('Name', nameCtrl, required: true)),
+                      Expanded(
+                        flex: 3,
+                        child: _field('Name', nameCtrl, required: true),
+                      ),
                       const SizedBox(width: 12),
-                      Expanded(flex: 1, child: _field('Lang (e.g. en, fr)', languageCtrl, required: true)),
+                      Expanded(
+                        flex: 1,
+                        child: _field(
+                          'Lang (e.g. en, fr)',
+                          languageCtrl,
+                          required: true,
+                        ),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 12),
                   _field('Description', descCtrl, required: true, maxLines: 2),
                   const SizedBox(height: 12),
-                  _field('Markdown Content', contentCtrl, required: true, maxLines: 15),
+                  _field(
+                    'Markdown Content',
+                    contentCtrl,
+                    required: true,
+                    maxLines: 15,
+                  ),
                 ],
               ),
             ),
@@ -924,19 +1017,25 @@ class _TemplateDialog extends HookWidget {
         actions: [
           TextButton(
             onPressed: isSaving ? null : () => Navigator.pop(context),
-            child:
-                const Text('Cancel', style: TextStyle(color: Colors.white54)),
+            child: const Text(
+              'Cancel',
+              style: TextStyle(color: Colors.white54),
+            ),
           ),
           FilledButton(
             style: FilledButton.styleFrom(
-                backgroundColor: const Color(0xFF6C63FF)),
+              backgroundColor: const Color(0xFF6C63FF),
+            ),
             onPressed: isSaving ? null : save,
             child: isSaving
                 ? const SizedBox(
                     width: 18,
                     height: 18,
                     child: CircularProgressIndicator(
-                        color: Colors.white, strokeWidth: 2))
+                      color: Colors.white,
+                      strokeWidth: 2,
+                    ),
+                  )
                 : Text(isEdit ? 'Update' : 'Create'),
           ),
         ],

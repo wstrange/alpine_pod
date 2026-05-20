@@ -9,7 +9,6 @@ fields:
   eventLocation: String?
   carpoolLocation: String?
   carpoolTime: DateTime?
-  recurring: String?
   # Registration management
   registrationDeadline: DateTime?
   registrationStartDate: DateTime?
@@ -19,7 +18,7 @@ fields:
   maxParticipants: int, default=8
   cancellationDeadline: DateTime?
   section: Section?, relation
-  # Wheter is is visible on the public event list
+  # Whether it is visible on the public event list
   published: bool, default=false
   eventRegistrations: List<EventRegistration>?, relation(name=event_registrations)
   eventManagers: List<EventManager>?, relation(name=event_managers)
