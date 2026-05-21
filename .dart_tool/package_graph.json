@@ -35,6 +35,7 @@
         "serverpod_auth_client",
         "serverpod_auth_core_flutter",
         "serverpod_auth_idp_flutter",
+        "serverpod_auth_idp_flutter_facebook",
         "serverpod_flutter",
         "signals",
         "signals_flutter",
@@ -234,6 +235,16 @@
       "version": "6.0.0",
       "dependencies": [
         "lints"
+      ]
+    },
+    {
+      "name": "serverpod_auth_idp_flutter_facebook",
+      "version": "3.4.8",
+      "dependencies": [
+        "flutter",
+        "flutter_facebook_auth",
+        "serverpod_auth_idp_client",
+        "serverpod_auth_idp_flutter"
       ]
     },
     {
@@ -1034,6 +1045,16 @@
       ]
     },
     {
+      "name": "flutter_facebook_auth",
+      "version": "7.1.6",
+      "dependencies": [
+        "facebook_auth_desktop",
+        "flutter",
+        "flutter_facebook_auth_platform_interface",
+        "flutter_facebook_auth_web"
+      ]
+    },
+    {
       "name": "url_launcher_windows",
       "version": "3.1.5",
       "dependencies": [
@@ -1494,6 +1515,34 @@
         "meta",
         "path",
         "vm_service"
+      ]
+    },
+    {
+      "name": "facebook_auth_desktop",
+      "version": "2.1.2",
+      "dependencies": [
+        "flutter",
+        "flutter_facebook_auth_platform_interface",
+        "flutter_secure_storage",
+        "http"
+      ]
+    },
+    {
+      "name": "flutter_facebook_auth_web",
+      "version": "6.1.2",
+      "dependencies": [
+        "flutter",
+        "flutter_facebook_auth_platform_interface",
+        "flutter_web_plugins",
+        "web"
+      ]
+    },
+    {
+      "name": "flutter_facebook_auth_platform_interface",
+      "version": "6.1.2",
+      "dependencies": [
+        "flutter",
+        "plugin_platform_interface"
       ]
     },
     {

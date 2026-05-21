@@ -242,10 +242,6 @@ class EndpointGoogleIdp extends _i1.EndpointGoogleIdpBase {
   @override
   String get name => 'googleIdp';
 
-  /// Validates a Google ID token and either logs in the associated user or
-  /// creates a new user account if the Google account ID is not yet known.
-  ///
-  /// If a new user is created an associated [UserProfile] is also created.
   @override
   _i3.Future<_i4.AuthSuccess> login({
     required String idToken,
@@ -262,6 +258,34 @@ class EndpointGoogleIdp extends _i1.EndpointGoogleIdpBase {
   @override
   _i3.Future<bool> hasAccount() => caller.callServerEndpoint<bool>(
     'googleIdp',
+    'hasAccount',
+    {},
+  );
+}
+
+/// {@category Endpoint}
+class EndpointFacebookIdp extends _i1.EndpointFacebookIdpBase {
+  EndpointFacebookIdp(_i2.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'facebookIdp';
+
+  /// Validates a Facebook access token and either logs in the associated user or
+  /// creates a new user account if the Facebook account ID is not yet known.
+  ///
+  /// If the access token is invalid or expired, the
+  /// [FacebookAccessTokenVerificationException] will be thrown.
+  @override
+  _i3.Future<_i4.AuthSuccess> login({required String accessToken}) =>
+      caller.callServerEndpoint<_i4.AuthSuccess>(
+        'facebookIdp',
+        'login',
+        {'accessToken': accessToken},
+      );
+
+  @override
+  _i3.Future<bool> hasAccount() => caller.callServerEndpoint<bool>(
+    'facebookIdp',
     'hasAccount',
     {},
   );
@@ -827,6 +851,7 @@ class Client extends _i2.ServerpodClientShared {
     emailIdp = EndpointEmailIdp(this);
     refreshJwtTokens = EndpointRefreshJwtTokens(this);
     googleIdp = EndpointGoogleIdp(this);
+    facebookIdp = EndpointFacebookIdp(this);
     admin = EndpointAdmin(this);
     event = EndpointEvent(this);
     eventManager = EndpointEventManager(this);
@@ -843,6 +868,8 @@ class Client extends _i2.ServerpodClientShared {
   late final EndpointRefreshJwtTokens refreshJwtTokens;
 
   late final EndpointGoogleIdp googleIdp;
+
+  late final EndpointFacebookIdp facebookIdp;
 
   late final EndpointAdmin admin;
 
@@ -867,6 +894,7 @@ class Client extends _i2.ServerpodClientShared {
     'emailIdp': emailIdp,
     'refreshJwtTokens': refreshJwtTokens,
     'googleIdp': googleIdp,
+    'facebookIdp': facebookIdp,
     'admin': admin,
     'event': event,
     'eventManager': eventManager,

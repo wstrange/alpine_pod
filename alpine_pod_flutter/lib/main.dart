@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:logging/logging.dart';
 import 'package:serverpod_auth_idp_flutter/serverpod_auth_idp_flutter.dart';
+import 'package:serverpod_auth_idp_flutter_facebook/serverpod_auth_idp_flutter_facebook.dart';
+// import 'package:serverpod_auth_idp_flutter_facebook/serverpod_auth_idp_flutter_facebook.dart';
 import 'package:serverpod_flutter/serverpod_flutter.dart';
 import 'signals.dart';
 import 'router.dart';
@@ -24,8 +26,9 @@ void main() async {
   // enableFlutterDriverExtension();
 
   const serverUrlFromEnv = String.fromEnvironment('SERVER_URL');
-  final serverUrl =
-      serverUrlFromEnv.isEmpty ? 'http://$host:8080/' : serverUrlFromEnv;
+  final serverUrl = serverUrlFromEnv.isEmpty
+      ? 'http://$host:8080/'
+      : serverUrlFromEnv;
 
   client = Client(serverUrl)
     ..connectivityMonitor = FlutterConnectivityMonitor()
@@ -33,7 +36,6 @@ void main() async {
 
   sessionManager = client.auth;
   await sessionManager.initialize();
-  // await client.auth.initializeGoogleSignIn();
 
   await sessionManager.initializeGoogleSignIn(
     // Acording to docs, this is not needed. web/index.html should be enough.
@@ -43,9 +45,9 @@ void main() async {
     //     '465372895035-35rlrpfdibu9r1435kg9vsoua640e50o.apps.googleusercontent.com',
   );
 
-  runApp(
-    const MyApp(),
-  );
+  await sessionManager.initializeFacebookSignIn(appId: '954559893876564');
+
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -55,9 +57,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       title: 'Alpine Pod',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: ThemeData(primarySwatch: Colors.blue),
       routerConfig: router,
     );
   }

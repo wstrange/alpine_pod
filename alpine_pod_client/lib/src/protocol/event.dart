@@ -27,7 +27,6 @@ abstract class Event implements _i1.SerializableModel {
     this.eventLocation,
     this.carpoolLocation,
     this.carpoolTime,
-    this.recurring,
     this.registrationDeadline,
     this.registrationStartDate,
     this.registrationFee,
@@ -55,7 +54,6 @@ abstract class Event implements _i1.SerializableModel {
     String? eventLocation,
     String? carpoolLocation,
     DateTime? carpoolTime,
-    String? recurring,
     DateTime? registrationDeadline,
     DateTime? registrationStartDate,
     double? registrationFee,
@@ -87,7 +85,6 @@ abstract class Event implements _i1.SerializableModel {
           : _i1.DateTimeJsonExtension.fromJson(
               jsonSerialization['carpoolTime'],
             ),
-      recurring: jsonSerialization['recurring'] as String?,
       registrationDeadline: jsonSerialization['registrationDeadline'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(
@@ -155,8 +152,6 @@ abstract class Event implements _i1.SerializableModel {
 
   DateTime? carpoolTime;
 
-  String? recurring;
-
   DateTime? registrationDeadline;
 
   DateTime? registrationStartDate;
@@ -194,7 +189,6 @@ abstract class Event implements _i1.SerializableModel {
     String? eventLocation,
     String? carpoolLocation,
     DateTime? carpoolTime,
-    String? recurring,
     DateTime? registrationDeadline,
     DateTime? registrationStartDate,
     double? registrationFee,
@@ -221,7 +215,6 @@ abstract class Event implements _i1.SerializableModel {
       if (eventLocation != null) 'eventLocation': eventLocation,
       if (carpoolLocation != null) 'carpoolLocation': carpoolLocation,
       if (carpoolTime != null) 'carpoolTime': carpoolTime?.toJson(),
-      if (recurring != null) 'recurring': recurring,
       if (registrationDeadline != null)
         'registrationDeadline': registrationDeadline?.toJson(),
       if (registrationStartDate != null)
@@ -263,7 +256,6 @@ class _EventImpl extends Event {
     String? eventLocation,
     String? carpoolLocation,
     DateTime? carpoolTime,
-    String? recurring,
     DateTime? registrationDeadline,
     DateTime? registrationStartDate,
     double? registrationFee,
@@ -286,7 +278,6 @@ class _EventImpl extends Event {
          eventLocation: eventLocation,
          carpoolLocation: carpoolLocation,
          carpoolTime: carpoolTime,
-         recurring: recurring,
          registrationDeadline: registrationDeadline,
          registrationStartDate: registrationStartDate,
          registrationFee: registrationFee,
@@ -315,7 +306,6 @@ class _EventImpl extends Event {
     Object? eventLocation = _Undefined,
     Object? carpoolLocation = _Undefined,
     Object? carpoolTime = _Undefined,
-    Object? recurring = _Undefined,
     Object? registrationDeadline = _Undefined,
     Object? registrationStartDate = _Undefined,
     Object? registrationFee = _Undefined,
@@ -343,7 +333,6 @@ class _EventImpl extends Event {
           ? carpoolLocation
           : this.carpoolLocation,
       carpoolTime: carpoolTime is DateTime? ? carpoolTime : this.carpoolTime,
-      recurring: recurring is String? ? recurring : this.recurring,
       registrationDeadline: registrationDeadline is DateTime?
           ? registrationDeadline
           : this.registrationDeadline,

@@ -12,6 +12,9 @@ refreshJwtTokens:
 googleIdp:
   - login:
   - hasAccount:
+facebookIdp:
+  - login:
+  - hasAccount:
 admin:
   - createSection:
   - getSection:

@@ -58,6 +58,12 @@ class Endpoints extends _i1.EndpointDispatch {
           'googleIdp',
           null,
         ),
+      'facebookIdp': _i2.FacebookIdpEndpoint()
+        ..initialize(
+          server,
+          'facebookIdp',
+          null,
+        ),
       'admin': _i3.AdminEndpoint()
         ..initialize(
           server,
@@ -350,6 +356,41 @@ class Endpoints extends _i1.EndpointDispatch {
                 _i1.Session session,
                 Map<String, dynamic> params,
               ) async => (endpoints['googleIdp'] as _i2.GoogleIdpEndpoint)
+                  .hasAccount(session),
+        ),
+      },
+    );
+    connectors['facebookIdp'] = _i1.EndpointConnector(
+      name: 'facebookIdp',
+      endpoint: endpoints['facebookIdp']!,
+      methodConnectors: {
+        'login': _i1.MethodConnector(
+          name: 'login',
+          params: {
+            'accessToken': _i1.ParameterDescription(
+              name: 'accessToken',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['facebookIdp'] as _i2.FacebookIdpEndpoint).login(
+                    session,
+                    accessToken: params['accessToken'],
+                  ),
+        ),
+        'hasAccount': _i1.MethodConnector(
+          name: 'hasAccount',
+          params: {},
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['facebookIdp'] as _i2.FacebookIdpEndpoint)
                   .hasAccount(session),
         ),
       },

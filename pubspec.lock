@@ -273,6 +273,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.0"
+  facebook_auth_desktop:
+    dependency: transitive
+    description:
+      name: facebook_auth_desktop
+      sha256: "1d85de41e773426b4edec1ce6dff92ca0dca77b9d64980cfb21b900fc789ab2c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.2"
   fake_async:
     dependency: transitive
     description:
@@ -331,6 +339,30 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_facebook_auth:
+    dependency: transitive
+    description:
+      name: flutter_facebook_auth
+      sha256: c9e5c412ce784955019393ff65a537541cf695598b64fd9a411ef9cd04bb1c9e
+      url: "https://pub.dev"
+    source: hosted
+    version: "7.1.6"
+  flutter_facebook_auth_platform_interface:
+    dependency: transitive
+    description:
+      name: flutter_facebook_auth_platform_interface
+      sha256: e04b8dbfa77702bea45a79993163ad5d20b2c0084109bec591fdc2b9ee505779
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.1.2"
+  flutter_facebook_auth_web:
+    dependency: transitive
+    description:
+      name: flutter_facebook_auth_web
+      sha256: f682400d61cf8d52dd8b6458b5ee106ed57e95309a117dc32875d3da129ce47c
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.1.2"
   flutter_hooks:
     dependency: transitive
     description:
@@ -1060,6 +1092,14 @@ packages:
     description:
       name: serverpod_auth_idp_flutter
       sha256: a8a3fb58f5b1ebdc204ec579baf49423bd56a227f6e453df086a8dec23bae923
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.4.8"
+  serverpod_auth_idp_flutter_facebook:
+    dependency: transitive
+    description:
+      name: serverpod_auth_idp_flutter_facebook
+      sha256: "7f7b94a25f540d2de1db0625d6a6545e0b2672eeae9d336dfcca9a00df75eed1"
       url: "https://pub.dev"
     source: hosted
     version: "3.4.8"

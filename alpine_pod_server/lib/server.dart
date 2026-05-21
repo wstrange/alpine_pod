@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_auth_idp_server/core.dart';
 import 'package:serverpod_auth_idp_server/providers/email.dart';
+import 'package:serverpod_auth_idp_server/providers/facebook.dart';
 import 'package:serverpod_auth_idp_server/providers/google.dart';
 // import 'package:serverpod_auth_server/serverpod_auth_server.dart' as auth;
 
@@ -39,31 +40,41 @@ void run(List<String> args) async {
     // authenticationHandler: auth.authenticationHandler,
   );
 
-  final googleSecret =
-      GoogleClientSecret.fromJsonFile(File('config/google_client_secret.json'));
+  final googleSecret = GoogleClientSecret.fromJsonFile(
+    File('config/google_client_secret.json'),
+  );
 
-  pod.initializeAuthServices(identityProviderBuilders: [
-    EmailIdpConfig(
-      secretHashPepper: pod.getPassword('emailSecretHashPepper')!,
-      // Callback to send the registration verification code to the user.
-      sendRegistrationVerificationCode: _sendRegistrationCode,
-      // Callback to send the password reset verification code to the user.
-      sendPasswordResetVerificationCode: _sendPasswordResetCode,
-    ),
-    GoogleIdpConfig(clientSecret: googleSecret),
-  ], tokenManagerBuilders: [
-    JwtConfig(
+  pod.initializeAuthServices(
+    identityProviderBuilders: [
+      EmailIdpConfig(
+        secretHashPepper: pod.getPassword('emailSecretHashPepper')!,
+        // Callback to send the registration verification code to the user.
+        sendRegistrationVerificationCode: _sendRegistrationCode,
+        // Callback to send the password reset verification code to the user.
+        sendPasswordResetVerificationCode: _sendPasswordResetCode,
+      ),
+      GoogleIdpConfig(clientSecret: googleSecret),
+      FacebookIdpConfig(
+        appSecret: pod.getPassword('facebookAppSecret')!,
+        appId: pod.getPassword('facebookAppId')!,
+      ),
+    ],
+    tokenManagerBuilders: [
+      JwtConfig(
         // Pepper used to hash the refresh token secret.
         refreshTokenHashPepper: pod.getPassword('jwtRefreshTokenHashPepper')!,
         // Algorithm used to sign the tokens (`hmacSha512` or `ecdsaSha512`).
         algorithm: JwtAlgorithm.hmacSha512(
           // Private key to sign the tokens. Must be a valid HMAC SHA-512 key.
           SecretKey(pod.getPassword('jwtHmacSha512PrivateKey')!),
-        )),
-  ]);
+        ),
+      ),
+    ],
+  );
 
   print(
-      'Google Client ID: ${googleSecret.clientId}. ${googleSecret.redirectUris}');
+    'Google Client ID: ${googleSecret.clientId}. ${googleSecret.redirectUris}',
+  );
 
   // Setup a default page at the web root.
   pod.webServer.addRoute(HelloRoute(), '/hello');

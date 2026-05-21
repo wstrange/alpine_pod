@@ -28,7 +28,6 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     this.eventLocation,
     this.carpoolLocation,
     this.carpoolTime,
-    this.recurring,
     this.registrationDeadline,
     this.registrationStartDate,
     this.registrationFee,
@@ -56,7 +55,6 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     String? eventLocation,
     String? carpoolLocation,
     DateTime? carpoolTime,
-    String? recurring,
     DateTime? registrationDeadline,
     DateTime? registrationStartDate,
     double? registrationFee,
@@ -88,7 +86,6 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
           : _i1.DateTimeJsonExtension.fromJson(
               jsonSerialization['carpoolTime'],
             ),
-      recurring: jsonSerialization['recurring'] as String?,
       registrationDeadline: jsonSerialization['registrationDeadline'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(
@@ -158,8 +155,6 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
 
   DateTime? carpoolTime;
 
-  String? recurring;
-
   DateTime? registrationDeadline;
 
   DateTime? registrationStartDate;
@@ -200,7 +195,6 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     String? eventLocation,
     String? carpoolLocation,
     DateTime? carpoolTime,
-    String? recurring,
     DateTime? registrationDeadline,
     DateTime? registrationStartDate,
     double? registrationFee,
@@ -227,7 +221,6 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       if (eventLocation != null) 'eventLocation': eventLocation,
       if (carpoolLocation != null) 'carpoolLocation': carpoolLocation,
       if (carpoolTime != null) 'carpoolTime': carpoolTime?.toJson(),
-      if (recurring != null) 'recurring': recurring,
       if (registrationDeadline != null)
         'registrationDeadline': registrationDeadline?.toJson(),
       if (registrationStartDate != null)
@@ -263,7 +256,6 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       if (eventLocation != null) 'eventLocation': eventLocation,
       if (carpoolLocation != null) 'carpoolLocation': carpoolLocation,
       if (carpoolTime != null) 'carpoolTime': carpoolTime?.toJson(),
-      if (recurring != null) 'recurring': recurring,
       if (registrationDeadline != null)
         'registrationDeadline': registrationDeadline?.toJson(),
       if (registrationStartDate != null)
@@ -339,7 +331,6 @@ class _EventImpl extends Event {
     String? eventLocation,
     String? carpoolLocation,
     DateTime? carpoolTime,
-    String? recurring,
     DateTime? registrationDeadline,
     DateTime? registrationStartDate,
     double? registrationFee,
@@ -362,7 +353,6 @@ class _EventImpl extends Event {
          eventLocation: eventLocation,
          carpoolLocation: carpoolLocation,
          carpoolTime: carpoolTime,
-         recurring: recurring,
          registrationDeadline: registrationDeadline,
          registrationStartDate: registrationStartDate,
          registrationFee: registrationFee,
@@ -391,7 +381,6 @@ class _EventImpl extends Event {
     Object? eventLocation = _Undefined,
     Object? carpoolLocation = _Undefined,
     Object? carpoolTime = _Undefined,
-    Object? recurring = _Undefined,
     Object? registrationDeadline = _Undefined,
     Object? registrationStartDate = _Undefined,
     Object? registrationFee = _Undefined,
@@ -419,7 +408,6 @@ class _EventImpl extends Event {
           ? carpoolLocation
           : this.carpoolLocation,
       carpoolTime: carpoolTime is DateTime? ? carpoolTime : this.carpoolTime,
-      recurring: recurring is String? ? recurring : this.recurring,
       registrationDeadline: registrationDeadline is DateTime?
           ? registrationDeadline
           : this.registrationDeadline,
@@ -495,11 +483,6 @@ class EventUpdateTable extends _i1.UpdateTable<EventTable> {
         table.carpoolTime,
         value,
       );
-
-  _i1.ColumnValue<String, String> recurring(String? value) => _i1.ColumnValue(
-    table.recurring,
-    value,
-  );
 
   _i1.ColumnValue<DateTime, DateTime> registrationDeadline(DateTime? value) =>
       _i1.ColumnValue(
@@ -586,10 +569,6 @@ class EventTable extends _i1.Table<int?> {
       'carpoolTime',
       this,
     );
-    recurring = _i1.ColumnString(
-      'recurring',
-      this,
-    );
     registrationDeadline = _i1.ColumnDateTime(
       'registrationDeadline',
       this,
@@ -649,8 +628,6 @@ class EventTable extends _i1.Table<int?> {
   late final _i1.ColumnString carpoolLocation;
 
   late final _i1.ColumnDateTime carpoolTime;
-
-  late final _i1.ColumnString recurring;
 
   late final _i1.ColumnDateTime registrationDeadline;
 
@@ -768,7 +745,6 @@ class EventTable extends _i1.Table<int?> {
     eventLocation,
     carpoolLocation,
     carpoolTime,
-    recurring,
     registrationDeadline,
     registrationStartDate,
     registrationFee,
