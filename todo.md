@@ -23,7 +23,16 @@ notifications: When the user navs to the screen, refresh right away - dont wait 
 Roles - section admins should be able to add trip leaders, participants. 
 
 * improve seedtest. Create more realistic data. More trips that are closer to real life. Different sections. 
-* social login - multiple redirects, user is assigned as admin? Profile is not created.
-* admin login - should not prompt for waiver or proflile
-* admin screen should edit users, assign roles, etc.
-* signals.dart - needs improvement. some signaals should be streams, eg. when auth state changes. 
+
+
+* bug - new login, after completing waiver, the section selection screen hangs. 
+
+
+issue: when the admin invokes the member-edit screen - the server role check fails beacuse the admin user does not have a profile.
+
+Either a) create a profile for admin, or bypass the check in the server 
+
+maybe the profile create is easiest?
+
+
+

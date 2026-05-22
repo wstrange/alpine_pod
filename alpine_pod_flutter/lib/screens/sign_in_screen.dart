@@ -22,9 +22,9 @@ class SignInScreen extends StatelessWidget {
         onError: (error) {
           // Handle errors
           print('Auth Error:   $error');
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error: $error')),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text('Error: $error')));
         },
         emailSignInWidget: EmailSignInWidget(
           client: client,

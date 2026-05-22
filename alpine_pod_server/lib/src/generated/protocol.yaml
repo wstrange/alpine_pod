@@ -21,6 +21,7 @@ admin:
   - updateSection:
   - deleteSection:
   - listSections:
+  - getMember:
   - deleteUser:
 event:
   - createEvent:

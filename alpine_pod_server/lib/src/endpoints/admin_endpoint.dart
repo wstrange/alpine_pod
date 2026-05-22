@@ -34,11 +34,16 @@ class AdminEndpoint extends Endpoint {
     return await Section.db.find(session);
   }
 
+  // Future<List<Member>> getMembers(Session session, String sectionId) async {
+  //   return await Member.db.find(session);
+  // }
+
+  Future<Member?> getMember(Session session, int id) async {
+    return await Member.db.findById(session, id);
+  }
+
   Future<void> deleteUser(Session session, int memberId) async {
-    session.log(
-      'Deleting user with memberId: $memberId',
-      level: LogLevel.info,
-    );
+    session.log('Deleting user with memberId: $memberId', level: LogLevel.info);
 
     final member = await Member.db.findById(session, memberId);
     if (member == null) {

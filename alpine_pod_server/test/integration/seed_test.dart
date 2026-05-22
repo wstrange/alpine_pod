@@ -114,6 +114,39 @@ void main() {
       );
 
       print('Created Admin: $emailAccountId');
+
+      // Create a Member profile for the admin user
+      final adminMember = await endpoints.member.createMember(
+        authSession,
+        Member(
+          firstName: 'Admin',
+          lastName: 'User',
+          displayName: 'Admin User',
+          email: 'admin@acc.ca',
+          phoneNumber: '555-0000',
+          emergencyContactName: 'Emergency Contact',
+          emergencyContactPhone: '555-0001',
+          userId: auModel.id,
+        ),
+      );
+      print('Created Admin Member profile: $adminMember');
+
+      // Add admin to the National section
+      final sections = await endpoints.admin.listSections(authSession);
+      final national = sections.firstWhere((s) => s.name == 'National');
+
+      await endpoints.member.addMemberToSection(
+        authSession,
+        SectionMembership(
+          memberId: adminMember.id!,
+          sectionId: national.id!,
+          scopes: {
+            CustomScope.sectionManager.name!,
+            CustomScope.member.name!,
+          },
+        ),
+      );
+      print('Added Admin to National section');
     });
 
     test('Create test users', () async {
