@@ -374,8 +374,19 @@ class MemberEndpoint extends Endpoint {
       where: (t) => t.memberId.equals(memberId),
     );
 
-    // Merge scopes from all sections, add base 'member' scope
-    final mergedScopes = <String>{'member'};
+    // Fetch the existing user to preserve global/admin scopes
+    final authUser = await AuthServices.instance.authUsers.get(
+      session,
+      authUserId: targetMember.userId,
+    );
+
+    // Keep global/admin scopes that are not managed by section memberships
+    final preservedScopes = authUser.scopeNames
+        .where((s) => s == 'serverpod.admin' || s == 'admin')
+        .toSet();
+
+    // Merge scopes from all sections, add base 'member' scope and preserved scopes
+    final mergedScopes = <String>{'member', ...preservedScopes};
     for (final m in allMemberships) {
       mergedScopes.addAll(m.scopes);
     }
