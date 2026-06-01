@@ -143,6 +143,8 @@ Future<String?> _performBootstrap() async {
     final member = await client.member.getCurrentMember();
     final sections = await client.section.getSectionsForCurrentUser();
 
+    currentMemberSignal.value = member;
+
     if (member == null || sections.isEmpty) {
       debugPrint('Router: Profile missing or no sections. Routing to registration.');
       return '/registration';

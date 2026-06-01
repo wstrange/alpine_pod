@@ -27,12 +27,14 @@ final allSectionsSignal = futureSignal(() async {
   return await client.section.listSections();
 });
 
+final currentMemberSignal = signal<Member?>(null, options: SignalOptions(name: 'currentMemberSignal'));
+
 // Get the member record for the current user
-final currentMemberSignal = futureSignal<Member?>(() async {
-  final m = await client.member.getCurrentMember();
-  print('Fetched current member $m');
-  return m;
-}, options: AsyncSignalOptions(dependencies: [authUserSignal], name: 'currentMemberSignal'));
+// final currentMemberAsyncSignal = futureSignal<Member?>(() async {
+//   final m = await client.member.getCurrentMember();
+//   print('Fetched current member $m');
+//   return m;
+// }, options: AsyncSignalOptions(dependencies: [authUserSignal], name: 'currentMemberSignal', lazy: false));
 
 // List of all sections that the current user is a member of
 final allMySectionMembershipsSignal = futureSignal(() async {
