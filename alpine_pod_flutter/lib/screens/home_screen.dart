@@ -1,3 +1,4 @@
+import 'package:alpine_pod_client/alpine_pod_client.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:signals_flutter/signals_flutter.dart';
@@ -34,17 +35,16 @@ class HomeScreen extends StatelessWidget {
               padding: EdgeInsets.zero,
               children: [
                 const DrawerHeader(
-                  decoration: BoxDecoration(
-                    color: Colors.blue,
-                  ),
+                  decoration: BoxDecoration(color: Colors.blue),
                   child: Text('Menu'),
                 ),
                 ListTile(
                   leading: const Icon(Icons.person),
                   title: const Text('Profile'),
                   onTap: () {
+                    final currentMember = currentMemberSignal.value.requireValue as Member;
                     Navigator.pop(context); // Close the drawer
-                    GoRouter.of(context).push('/profile');
+                    GoRouter.of(context).push('/member-edit/${currentMember.id}');
                   },
                 ),
                 ListTile(

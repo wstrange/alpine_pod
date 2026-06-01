@@ -32,10 +32,7 @@ final router = GoRouter(
       path: '/login',
       builder: (context, state) => SignInScreen(client: client),
     ),
-    GoRoute(
-      path: '/section-selection',
-      builder: (context, state) => const SectionSelectionScreen(),
-    ),
+    GoRoute(path: '/section-selection', builder: (context, state) => const SectionSelectionScreen()),
     GoRoute(
       path: '/event-view/:id',
       builder: (context, state) {
@@ -64,37 +61,17 @@ final router = GoRouter(
         return const EventEditScreen();
       },
     ),
-    GoRoute(
-      path: '/',
-      builder: (context, state) => const HomeScreen(),
-    ),
-    GoRoute(
-      path: '/admin',
-      builder: (context, state) => const AdminHomeScreen(),
-    ),
-    GoRoute(
-      path: '/profile',
-      builder: (context, state) => const MemberEditScreen(),
-    ),
-    GoRoute(
-      path: '/directory',
-      builder: (context, state) => const MemberDirectoryScreen(),
-    ),
-    GoRoute(
-      path: '/registration',
-      builder: (context, state) => const RegistrationScreen(),
-    ),
-    GoRoute(
-      path: '/notifications',
-      builder: (context, state) => const NotificationScreen(),
-    ),
-    GoRoute(
-      path: '/waiver',
-      builder: (context, state) => const WaiverScreen(),
-    ),
+    GoRoute(path: '/', builder: (context, state) => const HomeScreen()),
+    GoRoute(path: '/admin', builder: (context, state) => const AdminHomeScreen()),
+    GoRoute(path: '/profile', builder: (context, state) => const MemberEditScreen()),
+    GoRoute(path: '/directory', builder: (context, state) => const MemberDirectoryScreen()),
+    GoRoute(path: '/registration', builder: (context, state) => const RegistrationScreen()),
+    GoRoute(path: '/notifications', builder: (context, state) => const NotificationScreen()),
+    GoRoute(path: '/waiver', builder: (context, state) => const WaiverScreen()),
     GoRoute(
       path: '/member-edit/:id',
       builder: (context, state) {
+        // todo: this should never be null....
         final idStr = state.pathParameters['id'];
         final id = idStr != null ? int.tryParse(idStr) : null;
         return MemberEditScreen(memberId: id);
@@ -117,8 +94,7 @@ final router = GoRouter(
     // isGlobalAdminSignal because the signal chain may not have propagated
     // by the time this redirect fires (both listen to the same listenable).
     final scopes = sessionManager.authInfo?.scopeNames ?? {};
-    final isAdmin =
-        scopes.contains('serverpod.admin') || scopes.contains('admin');
+    final isAdmin = scopes.contains('serverpod.admin') || scopes.contains('admin');
 
     if (isAdmin) {
       resetRouterBootstrap(); // Admins don't need the member bootstrap path
@@ -129,19 +105,14 @@ final router = GoRouter(
     // Routes that are intermediate bootstrap destinations.
     // If the user is already on one of these, let them stay — don't
     // re-run bootstrap which would return the same (now stale) result.
-    const bootstrapDestinations = {
-      '/waiver',
-      '/registration',
-      '/section-selection',
-    };
+    const bootstrapDestinations = {'/waiver', '/registration', '/section-selection'};
     if (bootstrapDestinations.contains(currentLocation)) {
       return null;
     }
 
     // This logic only triggers if we are on the login page (after auth)
     // or if we somehow lack a section assignment while being logged in.
-    if (loggingIn ||
-        (sectionSignal.value == null && currentLocation == '/')) {
+    if (loggingIn || (sectionSignal.value == null && currentLocation == '/')) {
       _bootstrapTask ??= _performBootstrap();
       return await _bootstrapTask;
     }
@@ -160,8 +131,7 @@ Future<String?> _performBootstrap() async {
     final sections = await client.section.getSectionsForCurrentUser();
 
     if (member == null || sections.isEmpty) {
-      debugPrint(
-          'Router: Profile missing or no sections. Routing to registration.');
+      debugPrint('Router: Profile missing or no sections. Routing to registration.');
       return '/registration';
     }
 
@@ -178,8 +148,7 @@ Future<String?> _performBootstrap() async {
       debugPrint('Router: Multiple sections found. Routing to selection.');
       return '/section-selection';
     } else {
-      debugPrint(
-          'Router: Single section found. Assigning signal and routing to /');
+      debugPrint('Router: Single section found. Assigning signal and routing to /');
       sectionSignal.value = sections[0];
       return '/';
     }
