@@ -3,3 +3,4 @@ alpine_pod_server/config/google_client_secret.json
 alpine_pod_server/migrations/migration_registry.txt
 .dart_tool/
 .dart_tool/**
+.agents/**

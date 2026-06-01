@@ -34,4 +34,14 @@ issue: when the admin invokes the member-edit screen - the server role check fai
 Notifications:  android, etc. Bulk email. Way of allowing users to subscribe to channels (e.g. ski channel, bike channel, etc).
 
 
-Serverpod - scheduling. 
+Serverpod - scheduling.
+
+
+Bugs:
+
+* Admin - user list does not update if a users profile is edited. Maybe admins should not be able to edit profiles?
+
+
+TODO:
+
+* Data load tool to load templates, sections, users, etc.
