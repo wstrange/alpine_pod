@@ -2,7 +2,7 @@ import 'package:alpine_pod_client/alpine_pod_client.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
-import 'package:signals_flutter/signals_flutter.dart';
+import 'package:signals_hooks/signals_hooks.dart';
 import '../router.dart' show resetRouterBootstrap;
 import '../signals.dart';
 
@@ -12,8 +12,6 @@ class RegistrationScreen extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final formKey = useMemoized(() => GlobalKey<FormState>());
-    final profileValue = userProfileInfoSignal.watch(context);
-    final sectionsValue = allSectionsSignal.watch(context);
 
     final firstNameController = useTextEditingController();
     final lastNameController = useTextEditingController();
@@ -25,7 +23,8 @@ class RegistrationScreen extends HookWidget {
     final selectedSectionIds = useState<Set<int>>({});
 
     // Populate initial values from profile when it becomes available
-    useEffect(() {
+    useSignalEffect(() {
+      final profileValue = userProfileInfoSignal.value;
       if (profileValue is AsyncData && profileValue.value != null) {
         final profile = profileValue.value!;
         if (firstNameController.text.isEmpty &&
@@ -41,8 +40,7 @@ class RegistrationScreen extends HookWidget {
           emailController.text = profile.email ?? '';
         }
       }
-      return null;
-    }, [profileValue]);
+    });
 
     Future<void> submit() async {
       if (!formKey.currentState!.validate()) return;
@@ -154,30 +152,35 @@ class RegistrationScreen extends HookWidget {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
-              switch (sectionsValue) {
-                AsyncError(:final error) =>
-                  Text('Error loading sections: $error'),
-                AsyncLoading() =>
-                  const Center(child: CircularProgressIndicator()),
-                AsyncData(value: final sections) => Column(
-                    children: sections.map((section) {
-                      return CheckboxListTile(
-                        title: Text(section.name),
-                        value: selectedSectionIds.value.contains(section.id),
-                        onChanged: (bool? checked) {
-                          final newIds =
-                              Set<int>.from(selectedSectionIds.value);
-                          if (checked == true) {
-                            newIds.add(section.id!);
-                          } else {
-                            newIds.remove(section.id);
-                          }
-                          selectedSectionIds.value = newIds;
-                        },
-                      );
-                    }).toList(),
-                  ),
-              },
+              SignalBuilder(
+                builder: (context) {
+                  final sectionsValue = allSectionsSignal.value;
+                  return switch (sectionsValue) {
+                    AsyncError(:final error) =>
+                      Text('Error loading sections: $error'),
+                    AsyncLoading() =>
+                      const Center(child: CircularProgressIndicator()),
+                    AsyncData(value: final sections) => Column(
+                        children: sections.map((section) {
+                          return CheckboxListTile(
+                            title: Text(section.name),
+                            value: selectedSectionIds.value.contains(section.id),
+                            onChanged: (bool? checked) {
+                              final newIds =
+                                  Set<int>.from(selectedSectionIds.value);
+                              if (checked == true) {
+                                newIds.add(section.id!);
+                              } else {
+                                newIds.remove(section.id);
+                              }
+                              selectedSectionIds.value = newIds;
+                            },
+                          );
+                        }).toList(),
+                      ),
+                  };
+                },
+              ),
               const SizedBox(height: 32),
               SizedBox(
                 width: double.infinity,

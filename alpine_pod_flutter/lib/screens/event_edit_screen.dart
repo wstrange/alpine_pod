@@ -22,12 +22,6 @@ class EventEditScreen extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final memberState = currentMemberSignal.watch(context);
-    final currentMember = memberState is AsyncData ? memberState.value : null;
-
-    final section = sectionSignal.watch(context);
-    final sid = section?.id;
-
     final titleController = useTextEditingController();
     final descriptionController = useTextEditingController();
     final locationController = useTextEditingController();
@@ -48,8 +42,10 @@ class EventEditScreen extends HookWidget {
 
     final managers = useState<List<Member>>([]);
 
-    // Initialize managers for new event
+    // Initialize managers for new event — read signal value imperatively (not reactively)
     useEffect(() {
+      final memberState = currentMemberSignal.value;
+      final currentMember = memberState is AsyncData ? memberState.value : null;
       if (eventId == null &&
           event == null &&
           currentMember != null &&
@@ -57,7 +53,7 @@ class EventEditScreen extends HookWidget {
         managers.value = [currentMember];
       }
       return null;
-    }, [currentMember]);
+    }, [currentMemberSignal.value]);
 
     // Load event if eventId is provided but event is null
     useEffect(() {
@@ -126,6 +122,12 @@ class EventEditScreen extends HookWidget {
     void save() async {
       final activeEvent = loadedEvent.value ?? event;
       final isCreating = activeEvent == null || activeEvent.id == null;
+
+      // Read signal values imperatively for the save action
+      final section = sectionSignal.value;
+      final sid = section?.id;
+      final memberState = currentMemberSignal.value;
+      final currentMember = memberState is AsyncData ? memberState.value : null;
 
       if (sid == null) {
         return;
@@ -241,6 +243,9 @@ class EventEditScreen extends HookWidget {
         body: Center(child: Text('Error: ${error.value}')),
       );
     }
+
+    // Read section signal value imperatively for the body
+    final sid = sectionSignal.value?.id;
 
     return Scaffold(
       appBar: AppBar(

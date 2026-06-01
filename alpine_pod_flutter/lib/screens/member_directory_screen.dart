@@ -25,7 +25,7 @@ class MemberDirectoryScreen extends HookWidget {
 
     const int pageSize = 50;
 
-    final section = sectionSignal.watch(context);
+    final section = sectionSignal.value;
 
     Future<void> fetchPage({bool reset = false}) async {
       final sectionId = section?.id;
@@ -141,27 +141,29 @@ class MemberDirectoryScreen extends HookWidget {
             ),
           ),
           Expanded(
-            child: Watch((context) {
-              final list = memberships.value;
-              final isInitialLoading = isLoading.value && list.isEmpty;
+            child: SignalBuilder(
+              builder: (context) {
+                final list = memberships.value;
+                final isInitialLoading = isLoading.value && list.isEmpty;
 
-              if (isInitialLoading) {
-                return const Center(child: CircularProgressIndicator());
-              }
+                if (isInitialLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                }
 
-              final currentError = error.value;
-              if (currentError != null && list.isEmpty) {
-                return Center(child: Text('Error: $currentError'));
-              }
+                final currentError = error.value;
+                if (currentError != null && list.isEmpty) {
+                  return Center(child: Text('Error: $currentError'));
+                }
 
-              return MemberDirectoryListWidget(
-                memberships: list,
-                hasMore: hasMore.value,
-                isLoadingMore: isLoading.value && list.isNotEmpty,
-                scrollController: scrollController,
-                onScopesUpdated: updateScopes,
-              );
-            }),
+                return MemberDirectoryListWidget(
+                  memberships: list,
+                  hasMore: hasMore.value,
+                  isLoadingMore: isLoading.value && list.isNotEmpty,
+                  scrollController: scrollController,
+                  onScopesUpdated: updateScopes,
+                );
+              },
+            ),
           ),
         ],
       ),

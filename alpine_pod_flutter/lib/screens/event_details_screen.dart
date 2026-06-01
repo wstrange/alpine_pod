@@ -21,9 +21,6 @@ class EventDetailsScreen extends HookWidget {
       [eventId],
     );
 
-    final eventValue = eventSignal.watch(context);
-    final canCreate = canCreateEventsSignal.watch(context);
-
     return Scaffold(
       appBar: AppBar(
         // title: const Text('${eventValue.}'),
@@ -33,62 +30,82 @@ class EventDetailsScreen extends HookWidget {
             tooltip: 'Home',
             onPressed: () => GoRouter.of(context).go('/'),
           ),
-          ...eventValue.map(
-            data: (event) {
-              final isPast = DateTime.now().isAfter(event.endTime.toLocal());
-              final memberState = currentMemberSignal.watch(context);
-              final currentMember = memberState is AsyncData
-                  ? memberState.value
-                  : null;
+          // Use SignalBuilder to reactively read all needed signals
+          SignalBuilder(
+            builder: (context) {
+              final eventValue = eventSignal.value;
+              final canCreate = canCreateEventsSignal.value;
 
-              final isEventManager =
-                  currentMember != null &&
-                  event.eventManagers?.any(
-                        (m) => m.memberId == currentMember.id,
-                      ) ==
-                      true;
+              return Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ...eventValue.map(
+                    data: (event) {
+                      final isPast =
+                          DateTime.now().isAfter(event.endTime.toLocal());
+                      final memberState = currentMemberSignal.value;
+                      final currentMember = memberState is AsyncData
+                          ? memberState.value
+                          : null;
 
-              final isSectionManager = isSectionManagerSignal.watch(context);
-              final isGlobalAdmin = isGlobalAdminSignal.watch(context);
+                      final isEventManager =
+                          currentMember != null &&
+                          event.eventManagers?.any(
+                                (m) => m.memberId == currentMember.id,
+                              ) ==
+                              true;
 
-              final canEdit =
-                  !isPast &&
-                  (isEventManager || isSectionManager || isGlobalAdmin);
+                      final isSectionManager = isSectionManagerSignal.value;
+                      final isGlobalAdmin = isGlobalAdminSignal.value;
 
-              return [
-                if (canCreate)
-                  IconButton(
-                    icon: const Icon(Icons.copy),
-                    tooltip: 'Copy Event',
-                    onPressed: () {
-                      final clonedEvent = event.copyWith(
-                        id: null,
-                        title: 'Copy of ${event.title}',
-                      );
-                      GoRouter.of(
-                        context,
-                      ).push('/create-event', extra: clonedEvent);
+                      final canEdit =
+                          !isPast &&
+                          (isEventManager ||
+                              isSectionManager ||
+                              isGlobalAdmin);
+
+                      return [
+                        if (canCreate)
+                          IconButton(
+                            icon: const Icon(Icons.copy),
+                            tooltip: 'Copy Event',
+                            onPressed: () {
+                              final clonedEvent = event.copyWith(
+                                id: null,
+                                title: 'Copy of ${event.title}',
+                              );
+                              GoRouter.of(
+                                context,
+                              ).push('/create-event', extra: clonedEvent);
+                            },
+                          ),
+                        if (canEdit)
+                          IconButton(
+                            icon: const Icon(Icons.edit),
+                            tooltip: 'Edit Event',
+                            onPressed: () {
+                              GoRouter.of(context)
+                                  .push('/event-edit/${event.id}');
+                            },
+                          ),
+                      ];
                     },
+                    error: (_, __) => [],
+                    loading: () => [],
                   ),
-                if (canEdit)
-                  IconButton(
-                    icon: const Icon(Icons.edit),
-                    tooltip: 'Edit Event',
-                    onPressed: () {
-                      GoRouter.of(context).push('/event-edit/${event.id}');
-                    },
-                  ),
-              ];
+                ],
+              );
             },
-            error: (_, __) => [],
-            loading: () => [],
           ),
         ],
       ),
-      body: eventValue.map(
-        data: (event) => EventView(event: event),
-        error: (err, _) => Center(child: Text('Error loading event: $err')),
-        loading: () => const Center(child: CircularProgressIndicator()),
+      body: SignalBuilder(
+        builder: (context) => eventSignal.value.map(
+          data: (event) => EventView(event: event),
+          error: (err, _) =>
+              Center(child: Text('Error loading event: $err')),
+          loading: () => const Center(child: CircularProgressIndicator()),
+        ),
       ),
     );
   }

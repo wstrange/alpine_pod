@@ -14,13 +14,13 @@ final authInfoStreamSignal = client.auth.authInfoListenable.toSignal();
 
 final userProfileInfoSignal = futureSignal(() async {
   return await client.modules.serverpod_auth_core.userProfileInfo.get();
-}, dependencies: [authInfoStreamSignal], debugLabel: 'userProfileInfoSignal');
+}, options: AsyncSignalOptions(dependencies: [authInfoStreamSignal], name: 'userProfileInfoSignal'));
 
 final authUserSignal = computed(() {
   final authInfo = authInfoStreamSignal.value;
   if (authInfo == null) return null;
   return client.auth.authInfo;
-}, debugLabel: 'authUserSignal');
+}, options: ComputedOptions(name: 'authUserSignal'));
 
 // Get a list of all sections in the database
 final allSectionsSignal = futureSignal(() async {
@@ -30,12 +30,12 @@ final allSectionsSignal = futureSignal(() async {
 // Get the member record for the current user
 final currentMemberSignal = futureSignal(() async {
   return await client.member.getCurrentMember();
-}, dependencies: [authUserSignal], debugLabel: 'currentMemberSignal');
+}, options: AsyncSignalOptions(dependencies: [authUserSignal], name: 'currentMemberSignal'));
 
 // List of all sections that the current user is a member of
 final allMySectionMembershipsSignal = futureSignal(() async {
   return await client.member.getAllMySectionMemberships();
-}, dependencies: [authUserSignal]);
+}, options: AsyncSignalOptions(dependencies: [authUserSignal]));
 
 // The currently selected section when the user logged in.
 final sectionSignal = signal<Section?>(null);
@@ -46,7 +46,7 @@ final mySectionMembershipSignal = futureSignal(
     if (s == null) return null;
     return await client.member.getMySectionMembership(s.id!);
   },
-  dependencies: [sectionSignal, authUserSignal],
+  options: AsyncSignalOptions(dependencies: [sectionSignal, authUserSignal]),
 );
 
 final isGlobalAdminSignal = computed(
@@ -107,15 +107,17 @@ final currentEventsSignal = futureSignal(
         await client.event.listEvents(s?.id, start, end, onlyMyEvents);
     return events;
   },
-  dependencies: [sectionSignal, selectedDateSignal, showMyEventsOnlySignal],
-  debugLabel: 'currentEventsSignal',
+  options: AsyncSignalOptions(
+    dependencies: [sectionSignal, selectedDateSignal, showMyEventsOnlySignal],
+    name: 'currentEventsSignal',
+  ),
 );
 
 final notificationsSignal = futureSignal(() async {
   final i = authUserSignal.value;
   if (i == null) return <Notification>[];
   return await client.notification.listNotifications();
-}, debugLabel: 'notificationsSignal');
+}, options: AsyncSignalOptions(name: 'notificationsSignal'));
 
 final notificationStreamSignal = streamSignal<List<Notification>>(() async* {
   while (true) {

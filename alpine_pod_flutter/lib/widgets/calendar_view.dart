@@ -12,8 +12,6 @@ class CalendarView extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final selectedDate = selectedDateSignal.watch(context);
-
     // Month helpers
     DateTime getStartOfMonth(DateTime date) {
       return DateTime(date.year, date.month, 1);
@@ -30,67 +28,72 @@ class CalendarView extends HookWidget {
       selectedDateSignal.value = neutralized;
     }
 
-    final startOfMonth = getStartOfMonth(selectedDate);
-    final endOfMonth = getEndOfMonth(selectedDate);
-    final eventsValue = currentEventsSignal.watch(context);
+    return SignalBuilder(
+      builder: (context) {
+        final selectedDate = selectedDateSignal.value;
+        final startOfMonth = getStartOfMonth(selectedDate);
+        final endOfMonth = getEndOfMonth(selectedDate);
+        final eventsValue = currentEventsSignal.value;
 
-    return Column(
-      children: [
-        _buildCompactHeader(
-          context: context,
-          selectedDate: selectedDate,
-          onUpdateDate: updateSelectedDate,
-        ),
-        const SizedBox(height: 4),
-        Expanded(
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.grey[50],
-              borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(32)),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.05),
-                  blurRadius: 10,
-                  offset: const Offset(0, -5),
-                ),
-              ],
+        return Column(
+          children: [
+            _buildCompactHeader(
+              context: context,
+              selectedDate: selectedDate,
+              onUpdateDate: updateSelectedDate,
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: Container(
-                    margin: const EdgeInsets.only(top: 10),
-                    width: 32,
-                    height: 4,
-                    decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(2),
+            const SizedBox(height: 4),
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.grey[50],
+                  borderRadius:
+                      const BorderRadius.vertical(top: Radius.circular(32)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.05),
+                      blurRadius: 10,
+                      offset: const Offset(0, -5),
                     ),
-                  ),
+                  ],
                 ),
-                const SizedBox(height: 8),
-                Expanded(
-                  child: eventsValue.map(
-                    data: (value) =>
-                        _buildEventList(value, startOfMonth, endOfMonth),
-                    error: (error, _) => Center(child: Text('Error: $error')),
-                    loading: () {
-                      final staleValue = currentEventsSignal.peek();
-                      if (staleValue is AsyncData<List<Event>>) {
-                        return _buildEventList(
-                            staleValue.value, startOfMonth, endOfMonth);
-                      }
-                      return const Center(child: CircularProgressIndicator());
-                    },
-                  ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Center(
+                      child: Container(
+                        margin: const EdgeInsets.only(top: 10),
+                        width: 32,
+                        height: 4,
+                        decoration: BoxDecoration(
+                          color: Colors.grey[300],
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Expanded(
+                      child: eventsValue.map(
+                        data: (value) =>
+                            _buildEventList(value, startOfMonth, endOfMonth),
+                        error: (error, _) => Center(child: Text('Error: $error')),
+                        loading: () {
+                          final staleValue = currentEventsSignal.peek();
+                          if (staleValue is AsyncData<List<Event>>) {
+                            return _buildEventList(
+                                staleValue.value, startOfMonth, endOfMonth);
+                          }
+                          return const Center(child: CircularProgressIndicator());
+                        },
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
-          ),
-        ),
-      ],
+          ],
+        );
+      },
     );
   }
 
@@ -137,7 +140,7 @@ class CalendarView extends HookWidget {
             ],
           ),
           const Spacer(),
-          Watch((context) {
+          SignalBuilder(builder: (context) {
             final onlyMyEvents = showMyEventsOnlySignal.value;
             return SegmentedButton<bool>(
               segments: const [

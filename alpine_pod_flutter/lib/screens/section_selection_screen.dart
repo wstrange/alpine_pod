@@ -8,35 +8,38 @@ class SectionSelectionScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final membershipsValue = allMySectionMembershipsSignal.watch(context);
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Select a Section'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: switch (membershipsValue) {
-          AsyncError(:final error) => Center(child: Text('Error $error')),
-          AsyncLoading() => const Center(
-              child: CircularProgressIndicator(),
-            ),
-          AsyncData(value: final memberships) => ListView.builder(
-              itemCount: memberships.length,
-              itemBuilder: (context, index) {
-                final section = memberships[index].section!;
-                return ListTile(
-                  title: Text(section.name),
-                  trailing: const Icon(Icons.chevron_right),
-                  onTap: () {
-                    // Navigate to the home screen for the selected section
-                    sectionSignal.value = section;
-                    context.go('/');
+        child: SignalBuilder(
+          builder: (context) {
+            final membershipsValue = allMySectionMembershipsSignal.value;
+            return switch (membershipsValue) {
+              AsyncError(:final error) => Center(child: Text('Error $error')),
+              AsyncLoading() => const Center(
+                  child: CircularProgressIndicator(),
+                ),
+              AsyncData(value: final memberships) => ListView.builder(
+                  itemCount: memberships.length,
+                  itemBuilder: (context, index) {
+                    final section = memberships[index].section!;
+                    return ListTile(
+                      title: Text(section.name),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () {
+                        // Navigate to the home screen for the selected section
+                        sectionSignal.value = section;
+                        context.go('/');
+                      },
+                    );
                   },
-                );
-              },
-            ),
-        },
+                ),
+            };
+          },
+        ),
       ),
     );
   }

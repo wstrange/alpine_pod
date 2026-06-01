@@ -97,8 +97,6 @@ class _SectionsTab extends HookWidget {
       keys: [reload.value],
     );
 
-    final sections = sectionsSignal.watch(context);
-
     void refresh() => reload.value++;
 
     Future<void> deleteSection(Section s) async {
@@ -144,35 +142,37 @@ class _SectionsTab extends HookWidget {
         label: const Text('New Section'),
         onPressed: () => openDialog(),
       ),
-      body: sections.map(
-        data: (list) {
-          if (list.isEmpty) {
-            return const Center(
-              child: Text(
-                'No sections yet. Create one!',
-                style: TextStyle(color: Colors.white54),
+      body: SignalBuilder(
+        builder: (context) => sectionsSignal.value.map(
+          data: (list) {
+            if (list.isEmpty) {
+              return const Center(
+                child: Text(
+                  'No sections yet. Create one!',
+                  style: TextStyle(color: Colors.white54),
+                ),
+              );
+            }
+            return ListView.separated(
+              padding: const EdgeInsets.fromLTRB(16, 20, 16, 100),
+              itemCount: list.length,
+              separatorBuilder: (_, _) => const SizedBox(height: 10),
+              itemBuilder: (_, i) => _SectionCard(
+                section: list[i],
+                onEdit: () => openDialog(existing: list[i]),
+                onDelete: () => deleteSection(list[i]),
               ),
             );
-          }
-          return ListView.separated(
-            padding: const EdgeInsets.fromLTRB(16, 20, 16, 100),
-            itemCount: list.length,
-            separatorBuilder: (_, _) => const SizedBox(height: 10),
-            itemBuilder: (_, i) => _SectionCard(
-              section: list[i],
-              onEdit: () => openDialog(existing: list[i]),
-              onDelete: () => deleteSection(list[i]),
+          },
+          error: (e, _) => Center(
+            child: Text(
+              'Error: $e',
+              style: const TextStyle(color: Colors.redAccent),
             ),
-          );
-        },
-        error: (e, _) => Center(
-          child: Text(
-            'Error: $e',
-            style: const TextStyle(color: Colors.redAccent),
           ),
-        ),
-        loading: () => const Center(
-          child: CircularProgressIndicator(color: Color(0xFF6C63FF)),
+          loading: () => const Center(
+            child: CircularProgressIndicator(color: Color(0xFF6C63FF)),
+          ),
         ),
       ),
     );
@@ -312,62 +312,64 @@ class _SectionDialog extends HookWidget {
       }
     }
 
-    return Watch((context) {
-      final isSaving = saving.value;
-      return AlertDialog(
-        backgroundColor: const Color(0xFF1A1D27),
-        title: Text(
-          isEdit ? 'Edit Section' : 'New Section',
-          style: const TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        content: SizedBox(
-          width: 400,
-          child: Form(
-            key: formKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _field('Name', nameCtrl, required: true),
-                const SizedBox(height: 12),
-                _field('Description', descCtrl, required: true, maxLines: 2),
-                const SizedBox(height: 12),
-                _field('Location (optional)', locationCtrl),
-                const SizedBox(height: 12),
-                _field('Contact Info (optional)', contactCtrl),
-              ],
+    return SignalBuilder(
+      builder: (context) {
+        final isSaving = saving.value;
+        return AlertDialog(
+          backgroundColor: const Color(0xFF1A1D27),
+          title: Text(
+            isEdit ? 'Edit Section' : 'New Section',
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w700,
             ),
           ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: isSaving ? null : () => Navigator.pop(context),
-            child: const Text(
-              'Cancel',
-              style: TextStyle(color: Colors.white54),
+          content: SizedBox(
+            width: 400,
+            child: Form(
+              key: formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _field('Name', nameCtrl, required: true),
+                  const SizedBox(height: 12),
+                  _field('Description', descCtrl, required: true, maxLines: 2),
+                  const SizedBox(height: 12),
+                  _field('Location (optional)', locationCtrl),
+                  const SizedBox(height: 12),
+                  _field('Contact Info (optional)', contactCtrl),
+                ],
+              ),
             ),
           ),
-          FilledButton(
-            style: FilledButton.styleFrom(
-              backgroundColor: const Color(0xFF6C63FF),
+          actions: [
+            TextButton(
+              onPressed: isSaving ? null : () => Navigator.pop(context),
+              child: const Text(
+                'Cancel',
+                style: TextStyle(color: Colors.white54),
+              ),
             ),
-            onPressed: isSaving ? null : save,
-            child: isSaving
-                ? const SizedBox(
-                    width: 18,
-                    height: 18,
-                    child: CircularProgressIndicator(
-                      color: Colors.white,
-                      strokeWidth: 2,
-                    ),
-                  )
-                : Text(isEdit ? 'Update' : 'Create'),
-          ),
-        ],
-      );
-    });
+            FilledButton(
+              style: FilledButton.styleFrom(
+                backgroundColor: const Color(0xFF6C63FF),
+              ),
+              onPressed: isSaving ? null : save,
+              child: isSaving
+                  ? const SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 2,
+                      ),
+                    )
+                  : Text(isEdit ? 'Update' : 'Create'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Widget _field(
@@ -549,59 +551,61 @@ class _MembersTab extends HookWidget {
           ),
         ),
         Expanded(
-          child: Watch((context) {
-            final list = items.value;
-            final isInitialLoading = isLoading.value && list.isEmpty;
-            final currentError = error.value;
+          child: SignalBuilder(
+            builder: (context) {
+              final list = items.value;
+              final isInitialLoading = isLoading.value && list.isEmpty;
+              final currentError = error.value;
 
-            if (isInitialLoading) {
-              return const Center(
-                child: CircularProgressIndicator(color: Color(0xFF6C63FF)),
-              );
-            }
-
-            if (currentError != null && list.isEmpty) {
-              return Center(
-                child: Text(
-                  'Error: $currentError',
-                  style: const TextStyle(color: Colors.redAccent),
-                ),
-              );
-            }
-
-            if (list.isEmpty) {
-              return const Center(
-                child: Text(
-                  'No members found.',
-                  style: TextStyle(color: Colors.white54),
-                ),
-              );
-            }
-
-            return ListView.separated(
-              controller: scrollController,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              itemCount: list.length + (hasMore.value ? 1 : 0),
-              separatorBuilder: (_, _) => const SizedBox(height: 8),
-              itemBuilder: (_, i) {
-                if (i == list.length) {
-                  return const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 16),
-                    child: Center(
-                      child: CircularProgressIndicator(
-                        color: Color(0xFF6C63FF),
-                        strokeWidth: 2,
-                      ),
-                    ),
-                  );
-                }
-                return _MemberCard(
-                  member: list[i],
-                  onDelete: () => deleteUser(list[i]),
+              if (isInitialLoading) {
+                return const Center(
+                  child: CircularProgressIndicator(color: Color(0xFF6C63FF)),
                 );
-              },
-            );
-          }),
+              }
+
+              if (currentError != null && list.isEmpty) {
+                return Center(
+                  child: Text(
+                    'Error: $currentError',
+                    style: const TextStyle(color: Colors.redAccent),
+                  ),
+                );
+              }
+
+              if (list.isEmpty) {
+                return const Center(
+                  child: Text(
+                    'No members found.',
+                    style: TextStyle(color: Colors.white54),
+                  ),
+                );
+              }
+
+              return ListView.separated(
+                controller: scrollController,
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                itemCount: list.length + (hasMore.value ? 1 : 0),
+                separatorBuilder: (_, _) => const SizedBox(height: 8),
+                itemBuilder: (_, i) {
+                  if (i == list.length) {
+                    return const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 16),
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          color: Color(0xFF6C63FF),
+                          strokeWidth: 2,
+                        ),
+                      ),
+                    );
+                  }
+                  return _MemberCard(
+                    member: list[i],
+                    onDelete: () => deleteUser(list[i]),
+                  );
+                },
+              );
+            },
+          ),
         ),
       ],
     );
@@ -730,8 +734,6 @@ class _TemplatesTab extends HookWidget {
       keys: [reload.value],
     );
 
-    final templates = templatesSignal.watch(context);
-
     void refresh() => reload.value++;
 
     Future<void> deleteTemplate(EventTemplate t) async {
@@ -777,35 +779,37 @@ class _TemplatesTab extends HookWidget {
         label: const Text('New Template'),
         onPressed: () => openDialog(),
       ),
-      body: templates.map(
-        data: (list) {
-          if (list.isEmpty) {
-            return const Center(
-              child: Text(
-                'No templates yet. Create one!',
-                style: TextStyle(color: Colors.white54),
+      body: SignalBuilder(
+        builder: (context) => templatesSignal.value.map(
+          data: (list) {
+            if (list.isEmpty) {
+              return const Center(
+                child: Text(
+                  'No templates yet. Create one!',
+                  style: TextStyle(color: Colors.white54),
+                ),
+              );
+            }
+            return ListView.separated(
+              padding: const EdgeInsets.fromLTRB(16, 20, 16, 100),
+              itemCount: list.length,
+              separatorBuilder: (_, _) => const SizedBox(height: 10),
+              itemBuilder: (_, i) => _TemplateCard(
+                template: list[i],
+                onEdit: () => openDialog(existing: list[i]),
+                onDelete: () => deleteTemplate(list[i]),
               ),
             );
-          }
-          return ListView.separated(
-            padding: const EdgeInsets.fromLTRB(16, 20, 16, 100),
-            itemCount: list.length,
-            separatorBuilder: (_, _) => const SizedBox(height: 10),
-            itemBuilder: (_, i) => _TemplateCard(
-              template: list[i],
-              onEdit: () => openDialog(existing: list[i]),
-              onDelete: () => deleteTemplate(list[i]),
+          },
+          error: (e, _) => Center(
+            child: Text(
+              'Error: $e',
+              style: const TextStyle(color: Colors.redAccent),
             ),
-          );
-        },
-        error: (e, _) => Center(
-          child: Text(
-            'Error: $e',
-            style: const TextStyle(color: Colors.redAccent),
           ),
-        ),
-        loading: () => const Center(
-          child: CircularProgressIndicator(color: Color(0xFF6C63FF)),
+          loading: () => const Center(
+            child: CircularProgressIndicator(color: Color(0xFF6C63FF)),
+          ),
         ),
       ),
     );
@@ -964,83 +968,85 @@ class _TemplateDialog extends HookWidget {
       }
     }
 
-    return Watch((context) {
-      final isSaving = saving.value;
-      return AlertDialog(
-        backgroundColor: const Color(0xFF1A1D27),
-        title: Text(
-          isEdit ? 'Edit Template' : 'New Template',
-          style: const TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.w700,
+    return SignalBuilder(
+      builder: (context) {
+        final isSaving = saving.value;
+        return AlertDialog(
+          backgroundColor: const Color(0xFF1A1D27),
+          title: Text(
+            isEdit ? 'Edit Template' : 'New Template',
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w700,
+            ),
           ),
-        ),
-        content: SizedBox(
-          width: 600,
-          child: Form(
-            key: formKey,
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        flex: 3,
-                        child: _field('Name', nameCtrl, required: true),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        flex: 1,
-                        child: _field(
-                          'Lang (e.g. en, fr)',
-                          languageCtrl,
-                          required: true,
+          content: SizedBox(
+            width: 600,
+            child: Form(
+              key: formKey,
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          flex: 3,
+                          child: _field('Name', nameCtrl, required: true),
                         ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  _field('Description', descCtrl, required: true, maxLines: 2),
-                  const SizedBox(height: 12),
-                  _field(
-                    'Markdown Content',
-                    contentCtrl,
-                    required: true,
-                    maxLines: 15,
-                  ),
-                ],
+                        const SizedBox(width: 12),
+                        Expanded(
+                          flex: 1,
+                          child: _field(
+                            'Lang (e.g. en, fr)',
+                            languageCtrl,
+                            required: true,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    _field('Description', descCtrl, required: true, maxLines: 2),
+                    const SizedBox(height: 12),
+                    _field(
+                      'Markdown Content',
+                      contentCtrl,
+                      required: true,
+                      maxLines: 15,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: isSaving ? null : () => Navigator.pop(context),
-            child: const Text(
-              'Cancel',
-              style: TextStyle(color: Colors.white54),
+          actions: [
+            TextButton(
+              onPressed: isSaving ? null : () => Navigator.pop(context),
+              child: const Text(
+                'Cancel',
+                style: TextStyle(color: Colors.white54),
+              ),
             ),
-          ),
-          FilledButton(
-            style: FilledButton.styleFrom(
-              backgroundColor: const Color(0xFF6C63FF),
+            FilledButton(
+              style: FilledButton.styleFrom(
+                backgroundColor: const Color(0xFF6C63FF),
+              ),
+              onPressed: isSaving ? null : save,
+              child: isSaving
+                  ? const SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 2,
+                      ),
+                    )
+                  : Text(isEdit ? 'Update' : 'Create'),
             ),
-            onPressed: isSaving ? null : save,
-            child: isSaving
-                ? const SizedBox(
-                    width: 18,
-                    height: 18,
-                    child: CircularProgressIndicator(
-                      color: Colors.white,
-                      strokeWidth: 2,
-                    ),
-                  )
-                : Text(isEdit ? 'Update' : 'Create'),
-          ),
-        ],
-      );
-    });
+          ],
+        );
+      },
+    );
   }
 
   Widget _field(

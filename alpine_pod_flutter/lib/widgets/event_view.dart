@@ -41,9 +41,6 @@ class EventView extends HookWidget {
 
     final snapshot = useFuture(detailsFuture);
 
-    final memberState = currentMemberSignal.watch(context);
-    final currentMember = memberState is AsyncData ? memberState.value : null;
-
     Future<void> register() async {
       try {
         final reg = await client.event.registerForEvent(event.id!);
@@ -278,7 +275,7 @@ class EventView extends HookWidget {
           else if (snapshot.hasError)
             Text('Error loading event details: ${snapshot.error}')
           else if (snapshot.hasData)
-            Builder(builder: (context) {
+            SignalBuilder(builder: (context) {
               final detailedEvent = snapshot.data!;
               final confirmed = detailedEvent.eventRegistrations
                       ?.where((r) =>
@@ -292,6 +289,9 @@ class EventView extends HookWidget {
                   [];
               final managers = detailedEvent.eventManagers ?? [];
 
+              final memberState = currentMemberSignal.value;
+              final currentMember = memberState is AsyncData ? memberState.value : null;
+
               final myRegistration = currentMember == null
                   ? null
                   : [...confirmed, ...waitlisted]
@@ -303,8 +303,8 @@ class EventView extends HookWidget {
               final isEventManager = currentMember != null &&
                   managers.any((m) => m.memberId == currentMember.id);
 
-              final isSectionManager = isSectionManagerSignal.watch(context);
-              final isGlobalAdmin = isGlobalAdminSignal.watch(context);
+              final isSectionManager = isSectionManagerSignal.value;
+              final isGlobalAdmin = isGlobalAdminSignal.value;
 
               final canManage =
                   isEventManager || isSectionManager || isGlobalAdmin;

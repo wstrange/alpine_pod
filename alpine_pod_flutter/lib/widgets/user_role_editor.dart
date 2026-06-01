@@ -18,16 +18,6 @@ class UserRoleEditor extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Check permissions
-    final isAdmin = isGlobalAdminSignal.watch(context);
-    final myMemberships =
-        allMySectionMembershipsSignal.watch(context).value ?? [];
-    final isManagerOfThisSection = myMemberships.any(
-      (m) => m.sectionId == sectionId && m.scopes.contains('sectionManager'),
-    );
-
-    final canEdit = isAdmin || isManagerOfThisSection;
-
     // Fetch the target member's memberships and find the one for this section
     final membershipSignal = useFutureSignal(
       () => client.member
@@ -41,10 +31,21 @@ class UserRoleEditor extends HookWidget {
       keys: [memberId, sectionId],
     );
 
-    final membershipValue = membershipSignal.value;
+    return SignalBuilder(
+      builder: (context) {
+        // Check permissions
+        final isAdmin = isGlobalAdminSignal.value;
+        final myMemberships =
+            allMySectionMembershipsSignal.value.value ?? [];
+        final isManagerOfThisSection = myMemberships.any(
+          (m) => m.sectionId == sectionId && m.scopes.contains('sectionManager'),
+        );
 
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 0),
+        final canEdit = isAdmin || isManagerOfThisSection;
+        final membershipValue = membershipSignal.value;
+
+        return Card(
+          margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 0),
       child: Padding(
         padding: const EdgeInsets.all(12.0),
         child: Column(
@@ -98,6 +99,8 @@ class UserRoleEditor extends HookWidget {
           ],
         ),
       ),
+    );
+      },
     );
   }
 }

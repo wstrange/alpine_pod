@@ -26,15 +26,17 @@ class MemberDirectoryListWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Watch current user's scopes for this section to enable/disable edit features
-    isGlobalAdminSignal.watch(context);
-    isSectionManagerSignal.watch(context);
+    return SignalBuilder(
+      builder: (context) {
+        // Register dependencies so the widget rebuilds when scopes change
+        isGlobalAdminSignal.value;
+        isSectionManagerSignal.value;
 
-    if (memberships.isEmpty && !isLoadingMore) {
-      return const Center(child: Text('No members found.'));
-    }
+        if (memberships.isEmpty && !isLoadingMore) {
+          return const Center(child: Text('No members found.'));
+        }
 
-    return ListView.separated(
+        return ListView.separated(
       controller: scrollController,
       shrinkWrap: shrinkWrap,
       physics: physics,
@@ -74,6 +76,8 @@ class MemberDirectoryListWidget extends StatelessWidget {
           isThreeLine: true,
           onTap: () => _showMemberDetails(context, membership),
         );
+      },
+    );
       },
     );
   }
