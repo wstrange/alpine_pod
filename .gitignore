@@ -1,8 +1,4 @@
 alpine_pod_server/config/google_client_secret.json
 **/migrations/
 alpine_pod_server/migrations/migration_registry.txt
-.dart_tool/hooks_runner/objective_c/337ce265dc/.lock
-.dart_tool/hooks_runner/shared/objective_c/.lock
-.dart_tool/hooks_runner/shared/win32/.lock
-.dart_tool/hooks_runner/win32/337ce265dc/.lock
-alpine_pod_server/migrations/migration_registry.txt
+.dart_tool/

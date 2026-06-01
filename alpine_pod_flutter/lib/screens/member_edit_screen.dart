@@ -37,18 +37,26 @@ class MemberEditScreen extends HookWidget {
       ),
       body: SignalBuilder(
         builder: (context) {
-          final AsyncState<Member?> memberValue = memberId == null
-              ? (currentMemberSignal.value as AsyncState<Member?>)
-              : (targetMemberSignal as AsyncState<Member?>);
+          final AsyncState<Member?> memberValue;
+          if (memberId == null) {
+            // currentMemberSignal is AsyncState<dynamic> at runtime,
+            // so map through it to get the correct generic type.
+            memberValue = currentMemberSignal.value.map(
+              data: (d) => AsyncData<Member?>(d as Member?),
+              error: (e, s) => AsyncError<Member?>(e, s),
+              loading: () => AsyncLoading<Member?>(),
+            );
+          } else {
+            memberValue = targetMemberSignal.value;
+          }
 
-          return switch (memberValue) {
-            AsyncError(error: final e) => Center(child: Text('Error: $e')),
-            AsyncLoading() => const Center(child: CircularProgressIndicator()),
-            AsyncData(value: final member) =>
-              member == null
-                  ? const Center(child: Text('Member not found.'))
-                  : _MemberEditForm(member: member, memberId: memberId),
-          };
+          return memberValue.map(
+            data: (member) => member == null
+                ? const Center(child: Text('Member not found.'))
+                : _MemberEditForm(member: member, memberId: memberId),
+            error: (e, _) => Center(child: Text('Error: $e')),
+            loading: () => const Center(child: CircularProgressIndicator()),
+          );
         },
       ),
     );
