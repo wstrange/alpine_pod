@@ -28,8 +28,10 @@ final allSectionsSignal = futureSignal(() async {
 });
 
 // Get the member record for the current user
-final currentMemberSignal = futureSignal(() async {
-  return await client.member.getCurrentMember();
+final currentMemberSignal = futureSignal<Member?>(() async {
+  final m = await client.member.getCurrentMember();
+  print('Fetched current member $m');
+  return m;
 }, options: AsyncSignalOptions(dependencies: [authUserSignal], name: 'currentMemberSignal'));
 
 // List of all sections that the current user is a member of
@@ -40,25 +42,20 @@ final allMySectionMembershipsSignal = futureSignal(() async {
 // The currently selected section when the user logged in.
 final sectionSignal = signal<Section?>(null);
 
-final mySectionMembershipSignal = futureSignal(
-  () async {
-    final s = sectionSignal.value;
-    if (s == null) return null;
-    return await client.member.getMySectionMembership(s.id!);
-  },
-  options: AsyncSignalOptions(dependencies: [sectionSignal, authUserSignal]),
-);
+final mySectionMembershipSignal = futureSignal(() async {
+  final s = sectionSignal.value;
+  if (s == null) return null;
+  return await client.member.getMySectionMembership(s.id!);
+}, options: AsyncSignalOptions(dependencies: [sectionSignal, authUserSignal]));
 
-final isGlobalAdminSignal = computed(
-  () {
-    final x = authUserSignal.value;
-    print('updated isGlobalAdminSignal');
-    if (x == null) return false;
+final isGlobalAdminSignal = computed(() {
+  final x = authUserSignal.value;
+  print('updated isGlobalAdminSignal');
+  if (x == null) return false;
 
-    final scopes = x.scopeNames;
-    return scopes.contains('serverpod.admin') || scopes.contains('admin');
-  },
-);
+  final scopes = x.scopeNames;
+  return scopes.contains('serverpod.admin') || scopes.contains('admin');
+});
 
 final isSectionManagerSignal = computed(() {
   final membership = mySectionMembershipSignal.value.value;
@@ -68,20 +65,15 @@ final isSectionManagerSignal = computed(() {
 final canCreateEventsSignal = computed(() {
   if (isGlobalAdminSignal.value) return true;
   final membership = mySectionMembershipSignal.value.value;
-  return membership?.scopes.contains('sectionManager') == true ||
-      membership?.scopes.contains('eventManager') == true;
+  return membership?.scopes.contains('sectionManager') == true || membership?.scopes.contains('eventManager') == true;
 });
 
 /// selected date in the calendar view
 // todo: Should the signals below be moved into the calendar view widget?
 
-final selectedDateSignal = signal<DateTime>(DateTime.now().copyWith(
-  hour: 0,
-  minute: 0,
-  second: 0,
-  millisecond: 0,
-  microsecond: 0,
-));
+final selectedDateSignal = signal<DateTime>(
+  DateTime.now().copyWith(hour: 0, minute: 0, second: 0, millisecond: 0, microsecond: 0),
+);
 
 final showMyEventsOnlySignal = signal<bool>(false);
 
@@ -91,7 +83,7 @@ final showMyEventsOnlySignal = signal<bool>(false);
 // or pull to refresh?
 
 // needs to be a stream that refreshes every 30 seconds.
-final currentEventsSignal = futureSignal(
+final currentEventsSignal = futureSignal<List<Event>>(
   () async {
     final s = sectionSignal.value;
     final date = selectedDateSignal.value;
@@ -103,8 +95,7 @@ final currentEventsSignal = futureSignal(
     final nextMonthYear = date.month == 12 ? date.year + 1 : date.year;
     final end = DateTime(nextMonthYear, nextMonth, 1);
 
-    final events =
-        await client.event.listEvents(s?.id, start, end, onlyMyEvents);
+    final events = await client.event.listEvents(s?.id, start, end, onlyMyEvents);
     return events;
   },
   options: AsyncSignalOptions(

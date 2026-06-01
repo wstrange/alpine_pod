@@ -30,11 +30,17 @@ final router = GoRouter(
   routes: [
     GoRoute(
       path: '/login',
+      name: 'login',
       builder: (context, state) => SignInScreen(client: client),
     ),
-    GoRoute(path: '/section-selection', builder: (context, state) => const SectionSelectionScreen()),
+    GoRoute(
+      path: '/section-selection',
+      name: 'section-selection',
+      builder: (context, state) => const SectionSelectionScreen(),
+    ),
     GoRoute(
       path: '/event-view/:id',
+      name: 'event-view',
       builder: (context, state) {
         final idStr = state.pathParameters['id'];
         final id = idStr != null ? int.tryParse(idStr) : null;
@@ -44,6 +50,7 @@ final router = GoRouter(
     ),
     GoRoute(
       path: '/event-edit/:id',
+      name: 'event-edit',
       builder: (context, state) {
         final idStr = state.pathParameters['id'];
         final id = idStr != null ? int.tryParse(idStr) : null;
@@ -53,6 +60,7 @@ final router = GoRouter(
     ),
     GoRoute(
       path: '/create-event',
+      name: 'create-event',
       builder: (context, state) {
         final extra = state.extra;
         if (extra is Event) {
@@ -61,19 +69,24 @@ final router = GoRouter(
         return const EventEditScreen();
       },
     ),
-    GoRoute(path: '/', builder: (context, state) => const HomeScreen()),
-    GoRoute(path: '/admin', builder: (context, state) => const AdminHomeScreen()),
-    GoRoute(path: '/profile', builder: (context, state) => const MemberEditScreen()),
-    GoRoute(path: '/directory', builder: (context, state) => const MemberDirectoryScreen()),
-    GoRoute(path: '/registration', builder: (context, state) => const RegistrationScreen()),
-    GoRoute(path: '/notifications', builder: (context, state) => const NotificationScreen()),
-    GoRoute(path: '/waiver', builder: (context, state) => const WaiverScreen()),
+    GoRoute(path: '/', name: 'home', builder: (context, state) => const HomeScreen()),
+    GoRoute(path: '/admin', name: 'admin', builder: (context, state) => const AdminHomeScreen()),
+    GoRoute(path: '/directory', name: 'directory', builder: (context, state) => const MemberDirectoryScreen()),
+    GoRoute(path: '/registration', name: 'registration', builder: (context, state) => const RegistrationScreen()),
+    GoRoute(path: '/notifications', name: 'notifications', builder: (context, state) => const NotificationScreen()),
+    GoRoute(path: '/waiver', name: 'waiver', builder: (context, state) => const WaiverScreen()),
     GoRoute(
       path: '/member-edit/:id',
+      name: 'member-edit',
       builder: (context, state) {
         // todo: this should never be null....
         final idStr = state.pathParameters['id'];
         final id = idStr != null ? int.tryParse(idStr) : null;
+        if (id == null) {
+          // ????
+          print('id is null!!!!!!!!!!!!!!');
+          return const HomeScreen();
+        }
         return MemberEditScreen(memberId: id);
       },
     ),

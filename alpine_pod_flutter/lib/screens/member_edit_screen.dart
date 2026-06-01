@@ -7,18 +7,13 @@ import '../signals.dart';
 import '../widgets/user_role_editor.dart';
 
 class MemberEditScreen extends HookWidget {
-  final int? memberId;
-  const MemberEditScreen({super.key, this.memberId});
+  final int memberId;
+  const MemberEditScreen({super.key, required this.memberId});
 
   @override
   Widget build(BuildContext context) {
     // Always call hooks unconditionally to maintain consistent hook order.
-    final targetMemberSignal = useFutureSignal<Member?>(
-      () => memberId != null
-          ? client.member.getMember(memberId!)
-          : Future<Member?>.value(null),
-      keys: [memberId],
-    );
+    final targetMemberSignal = useFutureSignal<Member?>(() => client.member.getMember(memberId), keys: [memberId]);
 
     return Scaffold(
       appBar: AppBar(
@@ -33,31 +28,13 @@ class MemberEditScreen extends HookWidget {
             }
           },
         ),
-        title: Text(memberId == null ? 'Edit Profile' : 'Edit Member'),
+        title: const Text('Edit Profile'),
       ),
-      body: SignalBuilder(
-        builder: (context) {
-          final AsyncState<Member?> memberValue;
-          if (memberId == null) {
-            // currentMemberSignal is AsyncState<dynamic> at runtime,
-            // so map through it to get the correct generic type.
-            memberValue = currentMemberSignal.value.map(
-              data: (d) => AsyncData<Member?>(d as Member?),
-              error: (e, s) => AsyncError<Member?>(e, s),
-              loading: () => AsyncLoading<Member?>(),
-            );
-          } else {
-            memberValue = targetMemberSignal.value;
-          }
-
-          return memberValue.map(
-            data: (member) => member == null
-                ? const Center(child: Text('Member not found.'))
-                : _MemberEditForm(member: member, memberId: memberId),
-            error: (e, _) => Center(child: Text('Error: $e')),
-            loading: () => const Center(child: CircularProgressIndicator()),
-          );
-        },
+      body: targetMemberSignal.value.map(
+        data: (Member? member) =>
+            member == null ? const Center(child: Text('Member not found')) : _MemberEditForm(member: member),
+        error: (e, _) => Center(child: Text('Error: $e')),
+        loading: () => const Center(child: CircularProgressIndicator()),
       ),
     );
   }
@@ -65,35 +42,21 @@ class MemberEditScreen extends HookWidget {
 
 class _MemberEditForm extends HookWidget {
   final Member member;
-  final int? memberId;
-  const _MemberEditForm({required this.member, this.memberId});
+  const _MemberEditForm({required this.member});
 
   @override
   Widget build(BuildContext context) {
-    final firstNameController = useTextEditingController(
-      text: member.firstName,
-    );
+    final memberId = member.id!;
+    final firstNameController = useTextEditingController(text: member.firstName);
     final lastNameController = useTextEditingController(text: member.lastName);
-    final displayNameController = useTextEditingController(
-      text: member.displayName,
-    );
+    final displayNameController = useTextEditingController(text: member.displayName);
     final bioController = useTextEditingController(text: member.bio);
     final emailController = useTextEditingController(text: member.email);
-    final phoneNumberController = useTextEditingController(
-      text: member.phoneNumber,
-    );
-    final emergencyContactNameController = useTextEditingController(
-      text: member.emergencyContactName,
-    );
-    final emergencyContactPhoneController = useTextEditingController(
-      text: member.emergencyContactPhone,
-    );
-    final medicalConditionsController = useTextEditingController(
-      text: member.medicalConditions,
-    );
-    final certificationsController = useTextEditingController(
-      text: member.certifications,
-    );
+    final phoneNumberController = useTextEditingController(text: member.phoneNumber);
+    final emergencyContactNameController = useTextEditingController(text: member.emergencyContactName);
+    final emergencyContactPhoneController = useTextEditingController(text: member.emergencyContactPhone);
+    final medicalConditionsController = useTextEditingController(text: member.medicalConditions);
+    final certificationsController = useTextEditingController(text: member.certifications);
 
     // Re-initialize controllers if the member changes (e.g. after a refresh or navigation)
     useValueChanged<Member, void>(member, (_, _) {
@@ -111,9 +74,7 @@ class _MemberEditForm extends HookWidget {
 
     final reloadMemberships = useSignal(0);
     final membershipsFutureSignal = useFutureSignal(
-      () => memberId != null
-          ? client.member.getMemberSectionMemberships(memberId!)
-          : Future.value(<SectionMembership>[]),
+      () => client.member.getMemberSectionMemberships(memberId),
       keys: [memberId, reloadMemberships.value],
     );
 
@@ -133,14 +94,8 @@ class _MemberEditForm extends HookWidget {
         );
         await client.member.updateMember(updatedMember);
 
-        if (memberId == null) {
-          currentMemberSignal.setValue(updatedMember);
-        }
-
         if (context.mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(const SnackBar(content: Text('Profile saved')));
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Profile saved')));
           final router = GoRouter.of(context);
           if (router.canPop()) {
             router.pop();
@@ -150,9 +105,7 @@ class _MemberEditForm extends HookWidget {
         }
       } catch (e) {
         if (context.mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text('Failed to save profile: $e')));
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to save profile: $e')));
         }
       }
     }
@@ -172,9 +125,7 @@ class _MemberEditForm extends HookWidget {
 
     return SignalBuilder(
       builder: (context) {
-        final membershipsValue = memberId == null
-            ? allMySectionMembershipsSignal.value
-            : membershipsFutureSignal.value;
+        final membershipsValue = membershipsFutureSignal.value;
 
         final allSectionsValue = allSectionsSignal.value;
         final isGlobalAdmin = isGlobalAdminSignal.value;
@@ -213,33 +164,22 @@ class _MemberEditForm extends HookWidget {
                     ),
                     TextFormField(
                       controller: emergencyContactNameController,
-                      decoration: const InputDecoration(
-                        labelText: 'Emergency Contact Name',
-                      ),
+                      decoration: const InputDecoration(labelText: 'Emergency Contact Name'),
                     ),
                     TextFormField(
                       controller: emergencyContactPhoneController,
-                      decoration: const InputDecoration(
-                        labelText: 'Emergency Contact Phone',
-                      ),
+                      decoration: const InputDecoration(labelText: 'Emergency Contact Phone'),
                     ),
                     TextFormField(
                       controller: medicalConditionsController,
-                      decoration: const InputDecoration(
-                        labelText: 'Medical Conditions',
-                      ),
+                      decoration: const InputDecoration(labelText: 'Medical Conditions'),
                     ),
                     TextFormField(
                       controller: certificationsController,
-                      decoration: const InputDecoration(
-                        labelText: 'Certifications',
-                      ),
+                      decoration: const InputDecoration(labelText: 'Certifications'),
                     ),
                     const SizedBox(height: 24),
-                    const Text(
-                      'Sections and Roles',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
+                    const Text('Sections and Roles', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                     const SizedBox(height: 8),
                     switch (membershipsValue) {
                       AsyncError(error: final e) => Text('Error loading roles: $e'),
@@ -247,8 +187,7 @@ class _MemberEditForm extends HookWidget {
                       AsyncData(value: final memberships) => Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          if (memberships.isEmpty)
-                            const Text('No section memberships found.'),
+                          if (memberships.isEmpty) const Text('No section memberships found.'),
                           ...memberships.map(
                             (m) => UserRoleEditor(
                               memberId: m.memberId,
@@ -256,13 +195,11 @@ class _MemberEditForm extends HookWidget {
                               sectionName: m.section?.name,
                             ),
                           ),
-                          if (isGlobalAdmin && memberId != null) ...[
+                          if (isGlobalAdmin) ...[
                             const SizedBox(height: 16),
                             switch (allSectionsValue) {
                               AsyncData(value: final allSections) => () {
-                                final currentSectionIds = memberships
-                                    .map((m) => m.sectionId)
-                                    .toSet();
+                                final currentSectionIds = memberships.map((m) => m.sectionId).toSet();
                                 final availableSections = allSections
                                     .where((s) => !currentSectionIds.contains(s.id))
                                     .toList();
@@ -273,36 +210,32 @@ class _MemberEditForm extends HookWidget {
 
                                 return ElevatedButton.icon(
                                   onPressed: () async {
-                                    final selectedSection =
-                                        await showDialog<Section>(
-                                          context: context,
-                                          builder: (context) => AlertDialog(
-                                            title: const Text('Add to Section'),
-                                            content: SizedBox(
-                                              width: double.maxFinite,
-                                              child: ListView.builder(
-                                                shrinkWrap: true,
-                                                itemCount: availableSections.length,
-                                                itemBuilder: (context, index) {
-                                                  final s =
-                                                      availableSections[index];
-                                                  return ListTile(
-                                                    title: Text(s.name),
-                                                    onTap: () =>
-                                                        Navigator.pop(context, s),
-                                                  );
-                                                },
-                                              ),
-                                            ),
+                                    final selectedSection = await showDialog<Section>(
+                                      context: context,
+                                      builder: (context) => AlertDialog(
+                                        title: const Text('Add to Section'),
+                                        content: SizedBox(
+                                          width: double.maxFinite,
+                                          child: ListView.builder(
+                                            shrinkWrap: true,
+                                            itemCount: availableSections.length,
+                                            itemBuilder: (context, index) {
+                                              final s = availableSections[index];
+                                              return ListTile(
+                                                title: Text(s.name),
+                                                onTap: () => Navigator.pop(context, s),
+                                              );
+                                            },
                                           ),
-                                        );
+                                        ),
+                                      ),
+                                    );
 
-                                    if (selectedSection != null &&
-                                        context.mounted) {
+                                    if (selectedSection != null && context.mounted) {
                                       try {
                                         await client.member.addMemberToSection(
                                           SectionMembership(
-                                            memberId: memberId!,
+                                            memberId: memberId,
                                             sectionId: selectedSection.id!,
                                             scopes: {'member'},
                                           ),
@@ -312,13 +245,7 @@ class _MemberEditForm extends HookWidget {
                                         if (context.mounted) {
                                           ScaffoldMessenger.of(
                                             context,
-                                          ).showSnackBar(
-                                            SnackBar(
-                                              content: Text(
-                                                'Failed to add to section: $e',
-                                              ),
-                                            ),
-                                          );
+                                          ).showSnackBar(SnackBar(content: Text('Failed to add to section: $e')));
                                         }
                                       }
                                     }
@@ -354,16 +281,8 @@ class _MemberEditForm extends HookWidget {
                     icon: const Icon(Icons.close),
                     label: const Text('Cancel'),
                   ),
-                  ElevatedButton.icon(
-                    onPressed: reset,
-                    icon: const Icon(Icons.refresh),
-                    label: const Text('Reset'),
-                  ),
-                  ElevatedButton.icon(
-                    onPressed: save,
-                    icon: const Icon(Icons.save),
-                    label: const Text('Save'),
-                  ),
+                  ElevatedButton.icon(onPressed: reset, icon: const Icon(Icons.refresh), label: const Text('Reset')),
+                  ElevatedButton.icon(onPressed: save, icon: const Icon(Icons.save), label: const Text('Save')),
                 ],
               ),
             ),
