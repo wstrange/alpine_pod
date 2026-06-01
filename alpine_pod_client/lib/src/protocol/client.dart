@@ -24,9 +24,11 @@ import 'package:alpine_pod_client/src/protocol/event_manager.dart' as _i9;
 import 'package:alpine_pod_client/src/protocol/event_template.dart' as _i10;
 import 'package:alpine_pod_client/src/protocol/section_membership.dart' as _i11;
 import 'package:alpine_pod_client/src/protocol/notification.dart' as _i12;
-import 'package:alpine_pod_client/src/protocol/registration_status.dart'
+import 'package:alpine_pod_client/src/protocol/notification_preference.dart'
     as _i13;
-import 'protocol.dart' as _i14;
+import 'package:alpine_pod_client/src/protocol/registration_status.dart'
+    as _i14;
+import 'protocol.dart' as _i15;
 
 /// {@category Endpoint}
 class EndpointEmailIdp extends _i1.EndpointEmailIdpBase {
@@ -738,6 +740,65 @@ class EndpointNotification extends _i2.EndpointRef {
     'createTestNotification',
     {},
   );
+
+  /// Retrieves the current user's notification preferences.
+  _i3.Future<_i13.NotificationPreference> getPreferences() =>
+      caller.callServerEndpoint<_i13.NotificationPreference>(
+        'notification',
+        'getPreferences',
+        {},
+      );
+
+  /// Updates the user's channel preferences.
+  _i3.Future<_i13.NotificationPreference> updatePreferences(
+    _i13.NotificationPreference preferences,
+  ) => caller.callServerEndpoint<_i13.NotificationPreference>(
+    'notification',
+    'updatePreferences',
+    {'preferences': preferences},
+  );
+
+  /// Registers or updates an FCM token for push notifications (linked to the authenticated userId).
+  _i3.Future<void> registerFcmToken(
+    String token, {
+    String? deviceId,
+  }) => caller.callServerEndpoint<void>(
+    'notification',
+    'registerFcmToken',
+    {
+      'token': token,
+      'deviceId': deviceId,
+    },
+  );
+
+  /// Unregisters/removes an FCM token.
+  _i3.Future<void> unregisterFcmToken(String token) =>
+      caller.callServerEndpoint<void>(
+        'notification',
+        'unregisterFcmToken',
+        {'token': token},
+      );
+
+  /// Subscribes/unsubscribes to/from specific event types globally.
+  _i3.Future<void> subscribeToEventType(
+    String eventType, {
+    required bool subscribe,
+  }) => caller.callServerEndpoint<void>(
+    'notification',
+    'subscribeToEventType',
+    {
+      'eventType': eventType,
+      'subscribe': subscribe,
+    },
+  );
+
+  /// Gets all subscribed event types for the current user.
+  _i3.Future<List<String>> getSubscribedEventTypes() =>
+      caller.callServerEndpoint<List<String>>(
+        'notification',
+        'getSubscribedEventTypes',
+        {},
+      );
 }
 
 /// {@category Endpoint}
@@ -750,7 +811,7 @@ class EndpointRegistration extends _i2.EndpointRef {
   /// Approve or reject a registration
   _i3.Future<_i8.EventRegistration> updateRegistrationStatus(
     int registrationId,
-    _i13.RegistrationStatus newStatus, {
+    _i14.RegistrationStatus newStatus, {
     String? notes,
   }) => caller.callServerEndpoint<_i8.EventRegistration>(
     'registration',
@@ -846,7 +907,7 @@ class Client extends _i2.ServerpodClientShared {
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
          host,
-         _i14.Protocol(),
+         _i15.Protocol(),
          securityContext: securityContext,
          streamingConnectionTimeout: streamingConnectionTimeout,
          connectionTimeout: connectionTimeout,

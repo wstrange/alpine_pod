@@ -65,6 +65,12 @@ notification:
   - markAsRead:
   - deleteNotification:
   - createTestNotification:
+  - getPreferences:
+  - updatePreferences:
+  - registerFcmToken:
+  - unregisterFcmToken:
+  - subscribeToEventType:
+  - getSubscribedEventTypes:
 registration:
   - updateRegistrationStatus:
   - registerForEvent:

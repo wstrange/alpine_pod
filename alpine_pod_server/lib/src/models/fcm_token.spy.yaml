@@ -1,0 +1,13 @@
+class: FcmToken
+table: fcm_tokens
+fields:
+  user: module:serverpod_auth_core:AuthUser?, relation(onDelete=Cascade)
+  token: String
+  deviceId: String?
+  updatedAt: DateTime, default=now
+indexes:
+  token_idx:
+    fields: token
+    unique: true
+  fcm_user_idx:
+    fields: userId

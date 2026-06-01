@@ -119,4 +119,8 @@ See the alpine_pod_flutter/README.md.
 ## Use Cases (prompt instructions)
 
 * When creating or editing an event, we need a way to edit the list of event managers for the event. The creator of an event should be added by default. Any current event manager should be allowed to add another user as an event manager.  If a user a sectionAdmin , they should be able to edit the event managers for any event, even if they did not create it.
-* 
+
+
+## Notifications
+
+The app should support notifications. The user should be able to select recieving notifications as an email, push notification, or in-app notification. The user should be able to select the events that they want to receive notifications for, or the sections that they want to receive notifications for.   The server uses Firebase Cloud Messaging. Create the required serverpod schema and methods to support this use case.

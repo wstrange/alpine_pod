@@ -135,9 +135,9 @@
     },
     {
       "name": "code_assets",
-      "rootUri": "file:///Users/warren/.pub-cache/hosted/pub.dev/code_assets-1.0.0",
+      "rootUri": "file:///Users/warren/.pub-cache/hosted/pub.dev/code_assets-1.2.0",
       "packageUri": "lib/",
-      "languageVersion": "3.9"
+      "languageVersion": "3.10"
     },
     {
       "name": "collection",
@@ -189,15 +189,15 @@
     },
     {
       "name": "dbus",
-      "rootUri": "file:///Users/warren/.pub-cache/hosted/pub.dev/dbus-0.7.12",
+      "rootUri": "file:///Users/warren/.pub-cache/hosted/pub.dev/dbus-0.7.13",
       "packageUri": "lib/",
       "languageVersion": "2.17"
     },
     {
       "name": "desktop_webview_window",
-      "rootUri": "file:///Users/warren/.pub-cache/hosted/pub.dev/desktop_webview_window-0.2.3",
+      "rootUri": "file:///Users/warren/.pub-cache/hosted/pub.dev/desktop_webview_window-0.3.0",
       "packageUri": "lib/",
-      "languageVersion": "2.14"
+      "languageVersion": "3.5"
     },
     {
       "name": "email_validator",
@@ -303,19 +303,19 @@
     },
     {
       "name": "flutter_secure_storage",
-      "rootUri": "file:///Users/warren/.pub-cache/hosted/pub.dev/flutter_secure_storage-10.2.0",
+      "rootUri": "file:///Users/warren/.pub-cache/hosted/pub.dev/flutter_secure_storage-10.3.1",
       "packageUri": "lib/",
       "languageVersion": "3.3"
     },
     {
       "name": "flutter_secure_storage_darwin",
-      "rootUri": "file:///Users/warren/.pub-cache/hosted/pub.dev/flutter_secure_storage_darwin-0.3.1",
+      "rootUri": "file:///Users/warren/.pub-cache/hosted/pub.dev/flutter_secure_storage_darwin-0.3.2",
       "packageUri": "lib/",
       "languageVersion": "3.3"
     },
     {
       "name": "flutter_secure_storage_linux",
-      "rootUri": "file:///Users/warren/.pub-cache/hosted/pub.dev/flutter_secure_storage_linux-3.0.0",
+      "rootUri": "file:///Users/warren/.pub-cache/hosted/pub.dev/flutter_secure_storage_linux-3.0.1",
       "packageUri": "lib/",
       "languageVersion": "3.3"
     },
@@ -333,7 +333,7 @@
     },
     {
       "name": "flutter_secure_storage_windows",
-      "rootUri": "file:///Users/warren/.pub-cache/hosted/pub.dev/flutter_secure_storage_windows-4.2.1",
+      "rootUri": "file:///Users/warren/.pub-cache/hosted/pub.dev/flutter_secure_storage_windows-4.2.2",
       "packageUri": "lib/",
       "languageVersion": "3.3"
     },
@@ -351,7 +351,7 @@
     },
     {
       "name": "flutter_web_auth_2",
-      "rootUri": "file:///Users/warren/.pub-cache/hosted/pub.dev/flutter_web_auth_2-5.0.2",
+      "rootUri": "file:///Users/warren/.pub-cache/hosted/pub.dev/flutter_web_auth_2-5.0.3",
       "packageUri": "lib/",
       "languageVersion": "3.5"
     },
@@ -465,7 +465,7 @@
     },
     {
       "name": "hooks",
-      "rootUri": "file:///Users/warren/.pub-cache/hosted/pub.dev/hooks-1.0.3",
+      "rootUri": "file:///Users/warren/.pub-cache/hosted/pub.dev/hooks-2.0.0",
       "packageUri": "lib/",
       "languageVersion": "3.10"
     },
@@ -489,7 +489,7 @@
     },
     {
       "name": "image",
-      "rootUri": "file:///Users/warren/.pub-cache/hosted/pub.dev/image-4.8.0",
+      "rootUri": "file:///Users/warren/.pub-cache/hosted/pub.dev/image-4.9.1",
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
@@ -554,6 +554,12 @@
       "languageVersion": "3.4"
     },
     {
+      "name": "mailer",
+      "rootUri": "file:///Users/warren/.pub-cache/hosted/pub.dev/mailer-7.1.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
       "name": "markdown",
       "rootUri": "file:///Users/warren/.pub-cache/hosted/pub.dev/markdown-7.3.1",
       "packageUri": "lib/",
@@ -590,12 +596,6 @@
       "languageVersion": "3.9"
     },
     {
-      "name": "native_toolchain_c",
-      "rootUri": "file:///Users/warren/.pub-cache/hosted/pub.dev/native_toolchain_c-0.17.6",
-      "packageUri": "lib/",
-      "languageVersion": "3.10"
-    },
-    {
       "name": "nested",
       "rootUri": "file:///Users/warren/.pub-cache/hosted/pub.dev/nested-1.0.0",
       "packageUri": "lib/",
@@ -615,7 +615,7 @@
     },
     {
       "name": "objective_c",
-      "rootUri": "file:///Users/warren/.pub-cache/hosted/pub.dev/objective_c-9.3.0",
+      "rootUri": "file:///Users/warren/.pub-cache/hosted/pub.dev/objective_c-9.4.1",
       "packageUri": "lib/",
       "languageVersion": "3.10"
     },
@@ -729,7 +729,7 @@
     },
     {
       "name": "preact_signals",
-      "rootUri": "file:///Users/warren/.pub-cache/hosted/pub.dev/preact_signals-1.9.4",
+      "rootUri": "file:///Users/warren/.pub-cache/hosted/pub.dev/preact_signals-7.0.0",
       "packageUri": "lib/",
       "languageVersion": "3.5"
     },
@@ -756,6 +756,12 @@
       "rootUri": "file:///Users/warren/.pub-cache/hosted/pub.dev/pubspec_parse-1.5.0",
       "packageUri": "lib/",
       "languageVersion": "3.6"
+    },
+    {
+      "name": "punycoder",
+      "rootUri": "file:///Users/warren/.pub-cache/hosted/pub.dev/punycoder-0.2.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.7"
     },
     {
       "name": "record_use",
@@ -933,25 +939,25 @@
     },
     {
       "name": "signals",
-      "rootUri": "file:///Users/warren/.pub-cache/hosted/pub.dev/signals-6.3.0",
+      "rootUri": "file:///Users/warren/.pub-cache/hosted/pub.dev/signals-7.1.0",
       "packageUri": "lib/",
       "languageVersion": "3.5"
     },
     {
       "name": "signals_core",
-      "rootUri": "file:///Users/warren/.pub-cache/hosted/pub.dev/signals_core-6.2.1",
+      "rootUri": "file:///Users/warren/.pub-cache/hosted/pub.dev/signals_core-7.0.0",
       "packageUri": "lib/",
       "languageVersion": "3.5"
     },
     {
       "name": "signals_flutter",
-      "rootUri": "file:///Users/warren/.pub-cache/hosted/pub.dev/signals_flutter-6.3.0",
+      "rootUri": "file:///Users/warren/.pub-cache/hosted/pub.dev/signals_flutter-7.1.0",
       "packageUri": "lib/",
       "languageVersion": "3.5"
     },
     {
       "name": "signals_hooks",
-      "rootUri": "file:///Users/warren/.pub-cache/hosted/pub.dev/signals_hooks-0.4.0",
+      "rootUri": "file:///Users/warren/.pub-cache/hosted/pub.dev/signals_hooks-7.1.0",
       "packageUri": "lib/",
       "languageVersion": "3.5"
     },
@@ -1058,6 +1064,12 @@
       "languageVersion": "3.5"
     },
     {
+      "name": "unorm_dart",
+      "rootUri": "file:///Users/warren/.pub-cache/hosted/pub.dev/unorm_dart-0.3.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "url_launcher",
       "rootUri": "file:///Users/warren/.pub-cache/hosted/pub.dev/url_launcher-6.3.2",
       "packageUri": "lib/",
@@ -1065,9 +1077,9 @@
     },
     {
       "name": "url_launcher_android",
-      "rootUri": "file:///Users/warren/.pub-cache/hosted/pub.dev/url_launcher_android-6.3.29",
+      "rootUri": "file:///Users/warren/.pub-cache/hosted/pub.dev/url_launcher_android-6.3.30",
       "packageUri": "lib/",
-      "languageVersion": "3.9"
+      "languageVersion": "3.10"
     },
     {
       "name": "url_launcher_ios",
@@ -1125,9 +1137,9 @@
     },
     {
       "name": "vector_graphics_compiler",
-      "rootUri": "file:///Users/warren/.pub-cache/hosted/pub.dev/vector_graphics_compiler-1.2.3",
+      "rootUri": "file:///Users/warren/.pub-cache/hosted/pub.dev/vector_graphics_compiler-1.2.5",
       "packageUri": "lib/",
-      "languageVersion": "3.9"
+      "languageVersion": "3.10"
     },
     {
       "name": "vector_math",
@@ -1179,7 +1191,7 @@
     },
     {
       "name": "win32",
-      "rootUri": "file:///Users/warren/.pub-cache/hosted/pub.dev/win32-6.2.0",
+      "rootUri": "file:///Users/warren/.pub-cache/hosted/pub.dev/win32-6.3.0",
       "packageUri": "lib/",
       "languageVersion": "3.10"
     },
@@ -1197,9 +1209,9 @@
     },
     {
       "name": "xml",
-      "rootUri": "file:///Users/warren/.pub-cache/hosted/pub.dev/xml-6.6.1",
+      "rootUri": "file:///Users/warren/.pub-cache/hosted/pub.dev/xml-7.0.1",
       "packageUri": "lib/",
-      "languageVersion": "3.8"
+      "languageVersion": "3.11"
     },
     {
       "name": "yaml",

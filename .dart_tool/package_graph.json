@@ -53,6 +53,7 @@
       "name": "alpine_pod_server",
       "version": "0.0.0",
       "dependencies": [
+        "mailer",
         "serverpod",
         "serverpod_auth_idp_server"
       ],
@@ -159,6 +160,21 @@
         "vm_service",
         "web_socket",
         "yaml"
+      ]
+    },
+    {
+      "name": "mailer",
+      "version": "7.1.0",
+      "dependencies": [
+        "async",
+        "crypto",
+        "intl",
+        "logging",
+        "meta",
+        "mime",
+        "path",
+        "punycoder",
+        "unorm_dart"
       ]
     },
     {
@@ -287,7 +303,7 @@
     },
     {
       "name": "signals_hooks",
-      "version": "0.4.0",
+      "version": "7.1.0",
       "dependencies": [
         "flutter",
         "flutter_hooks",
@@ -303,7 +319,7 @@
     },
     {
       "name": "signals_flutter",
-      "version": "6.3.0",
+      "version": "7.1.0",
       "dependencies": [
         "flutter",
         "signals_core"
@@ -311,11 +327,12 @@
     },
     {
       "name": "signals",
-      "version": "6.3.0",
+      "version": "7.1.0",
       "dependencies": [
         "flutter",
         "signals_core",
-        "signals_flutter"
+        "signals_flutter",
+        "signals_hooks"
       ]
     },
     {
@@ -868,6 +885,21 @@
       "dependencies": []
     },
     {
+      "name": "unorm_dart",
+      "version": "0.3.2",
+      "dependencies": []
+    },
+    {
+      "name": "punycoder",
+      "version": "0.2.2",
+      "dependencies": []
+    },
+    {
+      "name": "mime",
+      "version": "2.0.0",
+      "dependencies": []
+    },
+    {
       "name": "watcher",
       "version": "1.2.1",
       "dependencies": [
@@ -886,11 +918,6 @@
       "dependencies": [
         "collection"
       ]
-    },
-    {
-      "name": "mime",
-      "version": "2.0.0",
-      "dependencies": []
     },
     {
       "name": "json_annotation",
@@ -1106,9 +1133,10 @@
     },
     {
       "name": "url_launcher_android",
-      "version": "6.3.29",
+      "version": "6.3.30",
       "dependencies": [
         "flutter",
+        "meta",
         "url_launcher_platform_interface"
       ]
     },
@@ -1122,7 +1150,7 @@
     },
     {
       "name": "signals_core",
-      "version": "6.2.1",
+      "version": "7.0.0",
       "dependencies": [
         "meta",
         "preact_signals"
@@ -1138,7 +1166,7 @@
     },
     {
       "name": "flutter_secure_storage",
-      "version": "10.2.0",
+      "version": "10.3.1",
       "dependencies": [
         "flutter",
         "flutter_secure_storage_darwin",
@@ -1210,7 +1238,7 @@
     },
     {
       "name": "flutter_web_auth_2",
-      "version": "5.0.2",
+      "version": "5.0.3",
       "dependencies": [
         "desktop_webview_window",
         "flutter",
@@ -1360,10 +1388,9 @@
     },
     {
       "name": "image",
-      "version": "4.8.0",
+      "version": "4.9.1",
       "dependencies": [
         "archive",
-        "meta",
         "xml"
       ]
     },
@@ -1554,14 +1581,14 @@
     },
     {
       "name": "preact_signals",
-      "version": "1.9.4",
+      "version": "7.0.0",
       "dependencies": [
         "meta"
       ]
     },
     {
       "name": "flutter_secure_storage_windows",
-      "version": "4.2.1",
+      "version": "4.2.2",
       "dependencies": [
         "ffi",
         "flutter",
@@ -1592,7 +1619,7 @@
     },
     {
       "name": "flutter_secure_storage_linux",
-      "version": "3.0.0",
+      "version": "3.0.1",
       "dependencies": [
         "flutter",
         "flutter_secure_storage_platform_interface"
@@ -1600,7 +1627,7 @@
     },
     {
       "name": "flutter_secure_storage_darwin",
-      "version": "0.3.1",
+      "version": "0.3.2",
       "dependencies": [
         "flutter",
         "plugin_platform_interface"
@@ -1684,7 +1711,7 @@
     },
     {
       "name": "desktop_webview_window",
-      "version": "0.2.3",
+      "version": "0.3.0",
       "dependencies": [
         "flutter",
         "path"
@@ -1692,7 +1719,7 @@
     },
     {
       "name": "vector_graphics_compiler",
-      "version": "1.2.3",
+      "version": "1.2.5",
       "dependencies": [
         "args",
         "meta",
@@ -1734,7 +1761,7 @@
     },
     {
       "name": "xml",
-      "version": "6.6.1",
+      "version": "7.0.1",
       "dependencies": [
         "collection",
         "meta",
@@ -1761,16 +1788,11 @@
     },
     {
       "name": "win32",
-      "version": "6.2.0",
+      "version": "6.3.0",
       "dependencies": [
-        "code_assets",
-        "crypto",
         "ffi",
         "ffi_leak_tracker",
-        "hooks",
-        "logging",
-        "meta",
-        "native_toolchain_c"
+        "meta"
       ]
     },
     {
@@ -1833,7 +1855,7 @@
     },
     {
       "name": "dbus",
-      "version": "0.7.12",
+      "version": "0.7.13",
       "dependencies": [
         "args",
         "ffi",
@@ -1859,43 +1881,10 @@
       ]
     },
     {
-      "name": "native_toolchain_c",
-      "version": "0.17.6",
-      "dependencies": [
-        "code_assets",
-        "glob",
-        "hooks",
-        "logging",
-        "meta",
-        "pub_semver"
-      ]
-    },
-    {
-      "name": "hooks",
-      "version": "1.0.3",
-      "dependencies": [
-        "collection",
-        "crypto",
-        "logging",
-        "meta",
-        "pub_semver",
-        "record_use",
-        "yaml"
-      ]
-    },
-    {
       "name": "ffi_leak_tracker",
       "version": "0.1.2",
       "dependencies": [
         "ffi"
-      ]
-    },
-    {
-      "name": "code_assets",
-      "version": "1.0.0",
-      "dependencies": [
-        "collection",
-        "hooks"
       ]
     },
     {
@@ -1908,14 +1897,14 @@
     },
     {
       "name": "objective_c",
-      "version": "9.3.0",
+      "version": "9.4.1",
       "dependencies": [
         "code_assets",
         "collection",
         "ffi",
         "hooks",
         "logging",
-        "native_toolchain_c",
+        "meta",
         "pub_semver"
       ]
     },
@@ -1938,6 +1927,27 @@
         "package_config",
         "path",
         "plugin_platform_interface"
+      ]
+    },
+    {
+      "name": "hooks",
+      "version": "2.0.0",
+      "dependencies": [
+        "collection",
+        "crypto",
+        "logging",
+        "meta",
+        "pub_semver",
+        "record_use",
+        "yaml"
+      ]
+    },
+    {
+      "name": "code_assets",
+      "version": "1.2.0",
+      "dependencies": [
+        "collection",
+        "hooks"
       ]
     },
     {
