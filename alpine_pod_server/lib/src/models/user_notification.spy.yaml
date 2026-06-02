@@ -1,0 +1,13 @@
+class: UserNotification
+table: user_notification
+fields:
+  user: module:serverpod_auth_core:AuthUser?, relation(onDelete=Cascade)
+  notificationId: int, relation(parent=notification)
+  notification: Notification?, relation
+  isRead: bool, default=false
+  isSeen: bool, default=false
+  readAt: DateTime?
+  createdAt: DateTime
+indexes:
+  user_feed_idx:
+    fields: userId, createdAt

@@ -10,10 +10,7 @@ class EventManagerEndpoint extends Endpoint {
   // We removed global requiredScopes so that we can verify permissions
   // per section/event.
 
-  Future<EventManager> assignEventManager(
-    Session session,
-    EventManager eventManager,
-  ) async {
+  Future<EventManager> assignEventManager(Session session, EventManager eventManager) async {
     // Get the event to check section
     final event = await Event.db.findById(session, eventManager.eventId!);
     if (event == null) throw Exception('Event not found');
@@ -22,24 +19,18 @@ class EventManagerEndpoint extends Endpoint {
     if (callerInfo == null) throw Exception('Not authenticated');
 
     bool isGlobalAdmin = session.isGlobalAdmin();
-    bool isSectionManager = callerInfo
-        .scopesFor(event.sectionId)
-        .contains('sectionManager');
+    bool isSectionManager = callerInfo.scopesFor(event.sectionId).contains('sectionManager');
 
     // Check if caller is an event manager for this specific event
     final isEventManager =
         await EventManager.db.findFirstRow(
           session,
-          where: (t) =>
-              t.eventId.equals(event.id!) &
-              t.memberId.equals(callerInfo.member.id!),
+          where: (t) => t.eventId.equals(event.id!) & t.memberId.equals(callerInfo.member.id!),
         ) !=
         null;
 
     if (!isGlobalAdmin && !isSectionManager && !isEventManager) {
-      throw Exception(
-        'You do not have permission to manage event managers for this event',
-      );
+      throw Exception('You do not have permission to manage event managers for this event');
     }
 
     // Check if event has already ended
@@ -55,9 +46,7 @@ class EventManagerEndpoint extends Endpoint {
     // Check if assignment already exists
     final existing = await EventManager.db.findFirstRow(
       session,
-      where: (t) =>
-          t.eventId.equals(eventManager.eventId!) &
-          t.memberId.equals(eventManager.memberId!),
+      where: (t) => t.eventId.equals(eventManager.eventId!) & t.memberId.equals(eventManager.memberId!),
     );
     if (existing != null) {
       throw Exception('Member is already an event manager for this event');
@@ -70,15 +59,10 @@ class EventManagerEndpoint extends Endpoint {
   }
 
   /// Check if an event has any event managers assigned
-  Future<bool> _hasOtherEventManagers(
-    Session session,
-    int eventId,
-    int excludeMemberId,
-  ) async {
+  Future<bool> _hasOtherEventManagers(Session session, int eventId, int excludeMemberId) async {
     final otherLeader = await EventManager.db.findFirstRow(
       session,
-      where: (t) =>
-          t.eventId.equals(eventId) & t.memberId.notEquals(excludeMemberId),
+      where: (t) => t.eventId.equals(eventId) & t.memberId.notEquals(excludeMemberId),
     );
     return otherLeader != null;
   }
@@ -96,10 +80,7 @@ class EventManagerEndpoint extends Endpoint {
     return registrationCount > 0;
   }
 
-  Future<void> removeEventManager(
-    Session session,
-    EventManager eventManager,
-  ) async {
+  Future<void> removeEventManager(Session session, EventManager eventManager) async {
     // Get the event to check section
     final event = await Event.db.findById(session, eventManager.eventId!);
     if (event == null) throw Exception('Event not found');
@@ -108,45 +89,31 @@ class EventManagerEndpoint extends Endpoint {
     if (callerInfo == null) throw Exception('Not authenticated');
 
     bool isGlobalAdmin = session.isGlobalAdmin();
-    bool isSectionManager = callerInfo
-        .scopesFor(event.sectionId)
-        .contains('sectionManager');
+    bool isSectionManager = callerInfo.scopesFor(event.sectionId).contains('sectionManager');
 
     // Check if caller is an event manager for this specific event
     final isEventManager =
         await EventManager.db.findFirstRow(
           session,
-          where: (t) =>
-              t.eventId.equals(event.id!) &
-              t.memberId.equals(callerInfo.member.id!),
+          where: (t) => t.eventId.equals(event.id!) & t.memberId.equals(callerInfo.member.id!),
         ) !=
         null;
 
     if (!isGlobalAdmin && !isSectionManager && !isEventManager) {
-      throw Exception(
-        'You do not have permission to manage event managers for this event',
-      );
+      throw Exception('You do not have permission to manage event managers for this event');
     }
 
     // Find the assignment
     final existing = await EventManager.db.findFirstRow(
       session,
-      where: (t) =>
-          t.eventId.equals(eventManager.eventId!) &
-          t.memberId.equals(eventManager.memberId!),
+      where: (t) => t.eventId.equals(eventManager.eventId!) & t.memberId.equals(eventManager.memberId!),
     );
     if (existing == null) return;
 
     // Check if this is the last event manager and there are active registrations
-    if (!await _hasOtherEventManagers(
-          session,
-          eventManager.eventId!,
-          eventManager.memberId!,
-        ) &&
+    if (!await _hasOtherEventManagers(session, eventManager.eventId!, eventManager.memberId!) &&
         await _hasActiveRegistrations(session, eventManager.eventId!)) {
-      throw Exception(
-        'Cannot remove the last event manager while the event has active registrations',
-      );
+      throw Exception('Cannot remove the last event manager while the event has active registrations');
     }
 
     await EventManager.db.deleteRow(session, existing);
@@ -154,15 +121,9 @@ class EventManagerEndpoint extends Endpoint {
 
   /// Add a member to an event on behalf of an event manager.
   /// The calling user must be an event manager for this event.
-  Future<EventRegistration> addMemberToEvent(
-    Session session,
-    int eventId,
-    int memberId,
-  ) async {
+  Future<EventRegistration> addMemberToEvent(Session session, int eventId, int memberId) async {
     if (!await cache.canManageEvent(session, eventId)) {
-      throw Exception(
-        'You do not have permission to add members to this event',
-      );
+      throw Exception('You do not have permission to add members to this event');
     }
 
     // Check the target member exists
@@ -189,24 +150,19 @@ class EventManagerEndpoint extends Endpoint {
     final callerInfo = await cache.getMemberInfo(session);
     if (callerInfo == null) throw Exception('Not authenticated');
 
-    session.log(
-      'Event manager ${callerInfo.member.id} added member $memberId to event $eventId, $registration',
-    );
+    session.log('Event manager ${callerInfo.member.id} added member $memberId to event $eventId, $registration');
 
     final saved = await EventRegistration.db.insertRow(session, registration);
 
     // Notify member they were added to the event
-    await notificationService.notifyRegistrationApproved(session, saved);
+    // await notificationService.notifyRegistrationApproved(session, saved);
 
     return saved;
   }
 
   /// Remove a member from an event on behalf of an event manager.
   /// The calling user must be an event manager for the related event.
-  Future<void> removeMemberFromEvent(
-    Session session,
-    int registrationId,
-  ) async {
+  Future<void> removeMemberFromEvent(Session session, int registrationId) async {
     final callerInfo = await cache.getMemberInfo(session);
     if (callerInfo == null) throw Exception('Not authenticated');
 
@@ -214,40 +170,24 @@ class EventManagerEndpoint extends Endpoint {
     if (reg == null) throw Exception('Registration not found');
 
     if (!await cache.canManageEvent(session, reg.eventId)) {
-      throw Exception(
-        'You do not have permission to manage members for this event',
-      );
+      throw Exception('You do not have permission to manage members for this event');
     }
 
     await EventRegistration.db.deleteRow(session, reg);
 
     // Notify member they were removed from the event
-    await notificationService.notifyRegistrationRemoved(session, reg);
+    // await notificationService.notifyRegistrationRemoved(session, reg);
 
-    session.log(
-      'Event manager ${callerInfo.member.id} removed registration $registrationId',
-    );
+    session.log('Event manager ${callerInfo.member.id} removed registration $registrationId');
   }
 
-  Future<List<EventManager>> listEventManagers(
-    Session session,
-    int eventId,
-  ) async {
-    return await EventManager.db.find(
-      session,
-      where: (t) => t.eventId.equals(eventId),
-    );
+  Future<List<EventManager>> listEventManagers(Session session, int eventId) async {
+    return await EventManager.db.find(session, where: (t) => t.eventId.equals(eventId));
   }
 
-  Future<List<Event>> listEventManagerEvents(
-    Session session,
-    int memberId,
-  ) async {
+  Future<List<Event>> listEventManagerEvents(Session session, int memberId) async {
     // Get all events where this member is an event manager
-    final eventManagerAssignments = await EventManager.db.find(
-      session,
-      where: (t) => t.memberId.equals(memberId),
-    );
+    final eventManagerAssignments = await EventManager.db.find(session, where: (t) => t.memberId.equals(memberId));
 
     if (eventManagerAssignments.isEmpty) return [];
 
@@ -261,25 +201,16 @@ class EventManagerEndpoint extends Endpoint {
   }
 
   /// List events in a section that have no event managers assigned
-  Future<List<Event>> listEventsWithoutEventManager(
-    Session session,
-    int sectionId,
-  ) async {
+  Future<List<Event>> listEventsWithoutEventManager(Session session, int sectionId) async {
     // Check if member has permission to view section events
 
     // First get all events in the section
-    final sectionEvents = await Event.db.find(
-      session,
-      where: (e) => e.sectionId.equals(sectionId),
-    );
+    final sectionEvents = await Event.db.find(session, where: (e) => e.sectionId.equals(sectionId));
 
     // For each event, check if it has any event managers
     final result = <Event>[];
     for (final event in sectionEvents) {
-      final hasLeader = await EventManager.db.findFirstRow(
-        session,
-        where: (t) => t.eventId.equals(event.id!),
-      );
+      final hasLeader = await EventManager.db.findFirstRow(session, where: (t) => t.eventId.equals(event.id!));
       if (hasLeader == null) {
         result.add(event);
       }
@@ -289,17 +220,11 @@ class EventManagerEndpoint extends Endpoint {
   }
 
   /// List all event managers for events in a section
-  Future<List<EventManager>> listSectionEventManagers(
-    Session session,
-    int sectionId,
-  ) async {
+  Future<List<EventManager>> listSectionEventManagers(Session session, int sectionId) async {
     // Check if member can view section details
 
     // First get all events in the section
-    final sectionEvents = await Event.db.find(
-      session,
-      where: (e) => e.sectionId.equals(sectionId),
-    );
+    final sectionEvents = await Event.db.find(session, where: (e) => e.sectionId.equals(sectionId));
 
     if (sectionEvents.isEmpty) return [];
 
@@ -307,9 +232,7 @@ class EventManagerEndpoint extends Endpoint {
     final eventIds = sectionEvents.map((e) => e.id!).toList();
 
     // Build query for all event managers of these events
-    final eventConditions = eventIds.map(
-      (id) => EventManager.t.eventId.equals(id),
-    );
+    final eventConditions = eventIds.map((id) => EventManager.t.eventId.equals(id));
     final whereClause = eventConditions.reduce((acc, e) => acc | e);
 
     return await EventManager.db.find(session, where: (_) => whereClause);
@@ -317,10 +240,7 @@ class EventManagerEndpoint extends Endpoint {
 
   /// Approve a waitlisted registration, moving it to confirmed.
   /// The calling user must be an event manager for the event.
-  Future<EventRegistration> approveRegistration(
-    Session session,
-    int registrationId,
-  ) async {
+  Future<EventRegistration> approveRegistration(Session session, int registrationId) async {
     final callerInfo = await cache.getMemberInfo(session);
     if (callerInfo == null) throw Exception('Not authenticated');
 
@@ -332,9 +252,7 @@ class EventManagerEndpoint extends Endpoint {
     }
 
     if (!await cache.canManageEvent(session, reg.eventId)) {
-      throw Exception(
-        'You do not have permission to manage members for this event',
-      );
+      throw Exception('You do not have permission to manage members for this event');
     }
 
     final updated = reg.copyWith(
@@ -346,11 +264,9 @@ class EventManagerEndpoint extends Endpoint {
     final saved = await EventRegistration.db.updateRow(session, updated);
 
     // Notify member they were approved
-    await notificationService.notifyRegistrationApproved(session, saved);
+    // await notificationService.notifyRegistrationApproved(session, saved);
 
-    session.log(
-      'Event manager ${callerInfo.member.id} approved registration $registrationId',
-    );
+    session.log('Event manager ${callerInfo.member.id} approved registration $registrationId');
     return saved;
   }
 }

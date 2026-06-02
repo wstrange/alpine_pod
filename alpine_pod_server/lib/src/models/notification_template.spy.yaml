@@ -1,0 +1,14 @@
+class: NotificationTemplate
+table: notification_template
+fields:
+  name: String
+  titleTemplate: String
+  bodyTemplate: String
+  htmlTemplate: String?
+  createdAt: DateTime
+  updatedAt: DateTime
+
+indexes:
+  name_idx:
+    fields: name
+    unique: true

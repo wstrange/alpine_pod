@@ -54,6 +54,7 @@
       "version": "0.0.0",
       "dependencies": [
         "mailer",
+        "mustache_template",
         "serverpod",
         "serverpod_auth_idp_server"
       ],
@@ -161,6 +162,11 @@
         "web_socket",
         "yaml"
       ]
+    },
+    {
+      "name": "mustache_template",
+      "version": "2.0.4",
+      "dependencies": []
     },
     {
       "name": "mailer",
@@ -873,11 +879,6 @@
         "stack_trace",
         "stream_channel"
       ]
-    },
-    {
-      "name": "mustache_template",
-      "version": "2.0.4",
-      "dependencies": []
     },
     {
       "name": "args",

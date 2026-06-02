@@ -1,13 +1,9 @@
 class: Notification
-table: notifications
+table: notification
 fields:
-  title: String
-  message: String
-  timestamp: DateTime
-  read: bool
-  memberId: int, relation(parent=members)
-  attachments: String?
-  eventId: int?, relation(parent=events)
-indexes:
-  member_idx:
-    fields: memberId
+  templateId: int, relation(parent=notification_template)
+  template: NotificationTemplate?, relation
+  # actorId: module:serverpod_auth_core:AuthUser?, relation(onDelete=Cascade)
+  data: Map<String, String>
+  actionUrl: String?
+  createdAt: DateTime

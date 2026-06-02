@@ -15,45 +15,48 @@ import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart'
     as _i2;
 import 'package:alpine_pod_client/src/protocol/protocol.dart' as _i3;
 
-abstract class NotificationPreference implements _i1.SerializableModel {
-  NotificationPreference._({
+abstract class UserNotificationPreference implements _i1.SerializableModel {
+  UserNotificationPreference._({
     this.id,
     required this.userId,
     this.user,
-    bool? enableEmail,
-    bool? enablePush,
-    bool? enableInApp,
-  }) : enableEmail = enableEmail ?? true,
-       enablePush = enablePush ?? true,
-       enableInApp = enableInApp ?? true;
+    required this.notificationType,
+    bool? allowInApp,
+    bool? allowEmail,
+    bool? allowPush,
+  }) : allowInApp = allowInApp ?? true,
+       allowEmail = allowEmail ?? true,
+       allowPush = allowPush ?? true;
 
-  factory NotificationPreference({
+  factory UserNotificationPreference({
     int? id,
     required _i1.UuidValue userId,
     _i2.AuthUser? user,
-    bool? enableEmail,
-    bool? enablePush,
-    bool? enableInApp,
-  }) = _NotificationPreferenceImpl;
+    required String notificationType,
+    bool? allowInApp,
+    bool? allowEmail,
+    bool? allowPush,
+  }) = _UserNotificationPreferenceImpl;
 
-  factory NotificationPreference.fromJson(
+  factory UserNotificationPreference.fromJson(
     Map<String, dynamic> jsonSerialization,
   ) {
-    return NotificationPreference(
+    return UserNotificationPreference(
       id: jsonSerialization['id'] as int?,
       userId: _i1.UuidValueJsonExtension.fromJson(jsonSerialization['userId']),
       user: jsonSerialization['user'] == null
           ? null
           : _i3.Protocol().deserialize<_i2.AuthUser>(jsonSerialization['user']),
-      enableEmail: jsonSerialization['enableEmail'] == null
+      notificationType: jsonSerialization['notificationType'] as String,
+      allowInApp: jsonSerialization['allowInApp'] == null
           ? null
-          : _i1.BoolJsonExtension.fromJson(jsonSerialization['enableEmail']),
-      enablePush: jsonSerialization['enablePush'] == null
+          : _i1.BoolJsonExtension.fromJson(jsonSerialization['allowInApp']),
+      allowEmail: jsonSerialization['allowEmail'] == null
           ? null
-          : _i1.BoolJsonExtension.fromJson(jsonSerialization['enablePush']),
-      enableInApp: jsonSerialization['enableInApp'] == null
+          : _i1.BoolJsonExtension.fromJson(jsonSerialization['allowEmail']),
+      allowPush: jsonSerialization['allowPush'] == null
           ? null
-          : _i1.BoolJsonExtension.fromJson(jsonSerialization['enableInApp']),
+          : _i1.BoolJsonExtension.fromJson(jsonSerialization['allowPush']),
     );
   }
 
@@ -66,33 +69,37 @@ abstract class NotificationPreference implements _i1.SerializableModel {
 
   _i2.AuthUser? user;
 
-  bool enableEmail;
+  String notificationType;
 
-  bool enablePush;
+  bool allowInApp;
 
-  bool enableInApp;
+  bool allowEmail;
 
-  /// Returns a shallow copy of this [NotificationPreference]
+  bool allowPush;
+
+  /// Returns a shallow copy of this [UserNotificationPreference]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
-  NotificationPreference copyWith({
+  UserNotificationPreference copyWith({
     int? id,
     _i1.UuidValue? userId,
     _i2.AuthUser? user,
-    bool? enableEmail,
-    bool? enablePush,
-    bool? enableInApp,
+    String? notificationType,
+    bool? allowInApp,
+    bool? allowEmail,
+    bool? allowPush,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
-      '__className__': 'NotificationPreference',
+      '__className__': 'UserNotificationPreference',
       if (id != null) 'id': id,
       'userId': userId.toJson(),
       if (user != null) 'user': user?.toJson(),
-      'enableEmail': enableEmail,
-      'enablePush': enablePush,
-      'enableInApp': enableInApp,
+      'notificationType': notificationType,
+      'allowInApp': allowInApp,
+      'allowEmail': allowEmail,
+      'allowPush': allowPush,
     };
   }
 
@@ -104,42 +111,46 @@ abstract class NotificationPreference implements _i1.SerializableModel {
 
 class _Undefined {}
 
-class _NotificationPreferenceImpl extends NotificationPreference {
-  _NotificationPreferenceImpl({
+class _UserNotificationPreferenceImpl extends UserNotificationPreference {
+  _UserNotificationPreferenceImpl({
     int? id,
     required _i1.UuidValue userId,
     _i2.AuthUser? user,
-    bool? enableEmail,
-    bool? enablePush,
-    bool? enableInApp,
+    required String notificationType,
+    bool? allowInApp,
+    bool? allowEmail,
+    bool? allowPush,
   }) : super._(
          id: id,
          userId: userId,
          user: user,
-         enableEmail: enableEmail,
-         enablePush: enablePush,
-         enableInApp: enableInApp,
+         notificationType: notificationType,
+         allowInApp: allowInApp,
+         allowEmail: allowEmail,
+         allowPush: allowPush,
        );
 
-  /// Returns a shallow copy of this [NotificationPreference]
+  /// Returns a shallow copy of this [UserNotificationPreference]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
   @override
-  NotificationPreference copyWith({
+  UserNotificationPreference copyWith({
     Object? id = _Undefined,
     _i1.UuidValue? userId,
     Object? user = _Undefined,
-    bool? enableEmail,
-    bool? enablePush,
-    bool? enableInApp,
+    String? notificationType,
+    bool? allowInApp,
+    bool? allowEmail,
+    bool? allowPush,
   }) {
-    return NotificationPreference(
+    return UserNotificationPreference(
       id: id is int? ? id : this.id,
       userId: userId ?? this.userId,
       user: user is _i2.AuthUser? ? user : this.user?.copyWith(),
-      enableEmail: enableEmail ?? this.enableEmail,
-      enablePush: enablePush ?? this.enablePush,
-      enableInApp: enableInApp ?? this.enableInApp,
+      notificationType: notificationType ?? this.notificationType,
+      allowInApp: allowInApp ?? this.allowInApp,
+      allowEmail: allowEmail ?? this.allowEmail,
+      allowPush: allowPush ?? this.allowPush,
     );
   }
 }

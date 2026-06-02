@@ -8,46 +8,51 @@
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
 // ignore_for_file: invalid_use_of_internal_member
+// ignore_for_file: unnecessary_null_comparison
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
+import 'notification_template.dart' as _i2;
+import 'package:alpine_pod_server/src/generated/protocol.dart' as _i3;
 
 abstract class Notification
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   Notification._({
     this.id,
-    required this.title,
-    required this.message,
-    required this.timestamp,
-    required this.read,
-    required this.memberId,
-    this.attachments,
-    this.eventId,
+    required this.templateId,
+    required this.templateId,
+    this.template,
+    required this.data,
+    this.actionUrl,
+    required this.createdAt,
   });
 
   factory Notification({
     int? id,
-    required String title,
-    required String message,
-    required DateTime timestamp,
-    required bool read,
-    required int memberId,
-    String? attachments,
-    int? eventId,
+    required int templateId,
+    required int templateId,
+    _i2.NotificationTemplate? template,
+    required Map<String, String> data,
+    String? actionUrl,
+    required DateTime createdAt,
   }) = _NotificationImpl;
 
   factory Notification.fromJson(Map<String, dynamic> jsonSerialization) {
     return Notification(
       id: jsonSerialization['id'] as int?,
-      title: jsonSerialization['title'] as String,
-      message: jsonSerialization['message'] as String,
-      timestamp: _i1.DateTimeJsonExtension.fromJson(
-        jsonSerialization['timestamp'],
+      templateId: jsonSerialization['templateId'] as int,
+      template: jsonSerialization['template'] == null
+          ? null
+          : _i3.Protocol().deserialize<_i2.NotificationTemplate>(
+              jsonSerialization['template'],
+            ),
+      data: _i3.Protocol().deserialize<Map<String, String>>(
+        jsonSerialization['data'],
       ),
-      read: _i1.BoolJsonExtension.fromJson(jsonSerialization['read']),
-      memberId: jsonSerialization['memberId'] as int,
-      attachments: jsonSerialization['attachments'] as String?,
-      eventId: jsonSerialization['eventId'] as int?,
+      actionUrl: jsonSerialization['actionUrl'] as String?,
+      createdAt: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['createdAt'],
+      ),
     );
   }
 
@@ -58,19 +63,17 @@ abstract class Notification
   @override
   int? id;
 
-  String title;
+  int templateId;
 
-  String message;
+  int templateId;
 
-  DateTime timestamp;
+  _i2.NotificationTemplate? template;
 
-  bool read;
+  Map<String, String> data;
 
-  int memberId;
+  String? actionUrl;
 
-  String? attachments;
-
-  int? eventId;
+  DateTime createdAt;
 
   @override
   _i1.Table<int?> get table => t;
@@ -80,26 +83,24 @@ abstract class Notification
   @_i1.useResult
   Notification copyWith({
     int? id,
-    String? title,
-    String? message,
-    DateTime? timestamp,
-    bool? read,
-    int? memberId,
-    String? attachments,
-    int? eventId,
+    int? templateId,
+    int? templateId,
+    _i2.NotificationTemplate? template,
+    Map<String, String>? data,
+    String? actionUrl,
+    DateTime? createdAt,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
       '__className__': 'Notification',
       if (id != null) 'id': id,
-      'title': title,
-      'message': message,
-      'timestamp': timestamp.toJson(),
-      'read': read,
-      'memberId': memberId,
-      if (attachments != null) 'attachments': attachments,
-      if (eventId != null) 'eventId': eventId,
+      'templateId': templateId,
+      'templateId': templateId,
+      if (template != null) 'template': template?.toJson(),
+      'data': data.toJson(),
+      if (actionUrl != null) 'actionUrl': actionUrl,
+      'createdAt': createdAt.toJson(),
     };
   }
 
@@ -108,18 +109,19 @@ abstract class Notification
     return {
       '__className__': 'Notification',
       if (id != null) 'id': id,
-      'title': title,
-      'message': message,
-      'timestamp': timestamp.toJson(),
-      'read': read,
-      'memberId': memberId,
-      if (attachments != null) 'attachments': attachments,
-      if (eventId != null) 'eventId': eventId,
+      'templateId': templateId,
+      'templateId': templateId,
+      if (template != null) 'template': template?.toJsonForProtocol(),
+      'data': data.toJson(),
+      if (actionUrl != null) 'actionUrl': actionUrl,
+      'createdAt': createdAt.toJson(),
     };
   }
 
-  static NotificationInclude include() {
-    return NotificationInclude._();
+  static NotificationInclude include({
+    _i2.NotificationTemplateInclude? template,
+  }) {
+    return NotificationInclude._(template: template);
   }
 
   static NotificationIncludeList includeList({
@@ -153,22 +155,19 @@ class _Undefined {}
 class _NotificationImpl extends Notification {
   _NotificationImpl({
     int? id,
-    required String title,
-    required String message,
-    required DateTime timestamp,
-    required bool read,
-    required int memberId,
-    String? attachments,
-    int? eventId,
+    required int templateId,
+    required int templateId,
+    _i2.NotificationTemplate? template,
+    required Map<String, String> data,
+    String? actionUrl,
+    required DateTime createdAt,
   }) : super._(
          id: id,
-         title: title,
-         message: message,
-         timestamp: timestamp,
-         read: read,
-         memberId: memberId,
-         attachments: attachments,
-         eventId: eventId,
+         templateId: templateId,
+         template: template,
+         data: data,
+         actionUrl: actionUrl,
+         createdAt: createdAt,
        );
 
   /// Returns a shallow copy of this [Notification]
@@ -177,23 +176,32 @@ class _NotificationImpl extends Notification {
   @override
   Notification copyWith({
     Object? id = _Undefined,
-    String? title,
-    String? message,
-    DateTime? timestamp,
-    bool? read,
-    int? memberId,
-    Object? attachments = _Undefined,
-    Object? eventId = _Undefined,
+    int? templateId,
+    int? templateId,
+    Object? template = _Undefined,
+    Map<String, String>? data,
+    Object? actionUrl = _Undefined,
+    DateTime? createdAt,
   }) {
     return Notification(
       id: id is int? ? id : this.id,
-      title: title ?? this.title,
-      message: message ?? this.message,
-      timestamp: timestamp ?? this.timestamp,
-      read: read ?? this.read,
-      memberId: memberId ?? this.memberId,
-      attachments: attachments is String? ? attachments : this.attachments,
-      eventId: eventId is int? ? eventId : this.eventId,
+      templateId: templateId ?? this.templateId,
+      template: template is _i2.NotificationTemplate?
+          ? template
+          : this.template?.copyWith(),
+      data:
+          data ??
+          this.data.map(
+            (
+              key0,
+              value0,
+            ) => MapEntry(
+              key0,
+              value0,
+            ),
+          ),
+      actionUrl: actionUrl is String? ? actionUrl : this.actionUrl,
+      createdAt: createdAt ?? this.createdAt,
     );
   }
 }
@@ -201,110 +209,115 @@ class _NotificationImpl extends Notification {
 class NotificationUpdateTable extends _i1.UpdateTable<NotificationTable> {
   NotificationUpdateTable(super.table);
 
-  _i1.ColumnValue<String, String> title(String value) => _i1.ColumnValue(
-    table.title,
+  _i1.ColumnValue<int, int> templateId(int value) => _i1.ColumnValue(
+    table.templateId,
     value,
   );
 
-  _i1.ColumnValue<String, String> message(String value) => _i1.ColumnValue(
-    table.message,
+  _i1.ColumnValue<int, int> templateId(int value) => _i1.ColumnValue(
+    table.templateId,
     value,
   );
 
-  _i1.ColumnValue<DateTime, DateTime> timestamp(DateTime value) =>
+  _i1.ColumnValue<Map<String, String>, Map<String, String>> data(
+    Map<String, String> value,
+  ) => _i1.ColumnValue(
+    table.data,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> actionUrl(String? value) => _i1.ColumnValue(
+    table.actionUrl,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> createdAt(DateTime value) =>
       _i1.ColumnValue(
-        table.timestamp,
+        table.createdAt,
         value,
       );
-
-  _i1.ColumnValue<bool, bool> read(bool value) => _i1.ColumnValue(
-    table.read,
-    value,
-  );
-
-  _i1.ColumnValue<int, int> memberId(int value) => _i1.ColumnValue(
-    table.memberId,
-    value,
-  );
-
-  _i1.ColumnValue<String, String> attachments(String? value) => _i1.ColumnValue(
-    table.attachments,
-    value,
-  );
-
-  _i1.ColumnValue<int, int> eventId(int? value) => _i1.ColumnValue(
-    table.eventId,
-    value,
-  );
 }
 
 class NotificationTable extends _i1.Table<int?> {
-  NotificationTable({super.tableRelation}) : super(tableName: 'notifications') {
+  NotificationTable({super.tableRelation}) : super(tableName: 'notification') {
     updateTable = NotificationUpdateTable(this);
-    title = _i1.ColumnString(
-      'title',
+    templateId = _i1.ColumnInt(
+      'templateId',
       this,
     );
-    message = _i1.ColumnString(
-      'message',
+    templateId = _i1.ColumnInt(
+      'templateId',
       this,
     );
-    timestamp = _i1.ColumnDateTime(
-      'timestamp',
+    data = _i1.ColumnSerializable<Map<String, String>>(
+      'data',
       this,
     );
-    read = _i1.ColumnBool(
-      'read',
+    actionUrl = _i1.ColumnString(
+      'actionUrl',
       this,
     );
-    memberId = _i1.ColumnInt(
-      'memberId',
-      this,
-    );
-    attachments = _i1.ColumnString(
-      'attachments',
-      this,
-    );
-    eventId = _i1.ColumnInt(
-      'eventId',
+    createdAt = _i1.ColumnDateTime(
+      'createdAt',
       this,
     );
   }
 
   late final NotificationUpdateTable updateTable;
 
-  late final _i1.ColumnString title;
+  late final _i1.ColumnInt templateId;
 
-  late final _i1.ColumnString message;
+  late final _i1.ColumnInt templateId;
 
-  late final _i1.ColumnDateTime timestamp;
+  _i2.NotificationTemplateTable? _template;
 
-  late final _i1.ColumnBool read;
+  late final _i1.ColumnSerializable<Map<String, String>> data;
 
-  late final _i1.ColumnInt memberId;
+  late final _i1.ColumnString actionUrl;
 
-  late final _i1.ColumnString attachments;
+  late final _i1.ColumnDateTime createdAt;
 
-  late final _i1.ColumnInt eventId;
+  _i2.NotificationTemplateTable get template {
+    if (_template != null) return _template!;
+    _template = _i1.createRelationTable(
+      relationFieldName: 'template',
+      field: Notification.t.templateId,
+      foreignField: _i2.NotificationTemplate.t.id,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i2.NotificationTemplateTable(tableRelation: foreignTableRelation),
+    );
+    return _template!;
+  }
 
   @override
   List<_i1.Column> get columns => [
     id,
-    title,
-    message,
-    timestamp,
-    read,
-    memberId,
-    attachments,
-    eventId,
+    templateId,
+    templateId,
+    data,
+    actionUrl,
+    createdAt,
   ];
+
+  @override
+  _i1.Table? getRelationTable(String relationField) {
+    if (relationField == 'template') {
+      return template;
+    }
+    return null;
+  }
 }
 
 class NotificationInclude extends _i1.IncludeObject {
-  NotificationInclude._();
+  NotificationInclude._({_i2.NotificationTemplateInclude? template}) {
+    _template = template;
+  }
+
+  _i2.NotificationTemplateInclude? _template;
 
   @override
-  Map<String, _i1.Include?> get includes => {};
+  Map<String, _i1.Include?> get includes => {'template': _template};
 
   @override
   _i1.Table<int?> get table => Notification.t;
@@ -332,6 +345,8 @@ class NotificationIncludeList extends _i1.IncludeList {
 
 class NotificationRepository {
   const NotificationRepository._();
+
+  final attachRow = const NotificationAttachRowRepository._();
 
   /// Returns a list of [Notification]s matching the given query parameters.
   ///
@@ -364,6 +379,7 @@ class NotificationRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<NotificationTable>? orderByList,
     _i1.Transaction? transaction,
+    NotificationInclude? include,
     _i1.LockMode? lockMode,
     _i1.LockBehavior? lockBehavior,
   }) async {
@@ -375,6 +391,7 @@ class NotificationRepository {
       limit: limit,
       offset: offset,
       transaction: transaction,
+      include: include,
       lockMode: lockMode,
       lockBehavior: lockBehavior,
     );
@@ -405,6 +422,7 @@ class NotificationRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<NotificationTable>? orderByList,
     _i1.Transaction? transaction,
+    NotificationInclude? include,
     _i1.LockMode? lockMode,
     _i1.LockBehavior? lockBehavior,
   }) async {
@@ -415,6 +433,7 @@ class NotificationRepository {
       orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
+      include: include,
       lockMode: lockMode,
       lockBehavior: lockBehavior,
     );
@@ -425,12 +444,14 @@ class NotificationRepository {
     _i1.DatabaseSession session,
     int id, {
     _i1.Transaction? transaction,
+    NotificationInclude? include,
     _i1.LockMode? lockMode,
     _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<Notification>(
       id,
       transaction: transaction,
+      include: include,
       lockMode: lockMode,
       lockBehavior: lockBehavior,
     );
@@ -612,6 +633,33 @@ class NotificationRepository {
       where: where(Notification.t),
       lockMode: lockMode,
       lockBehavior: lockBehavior,
+      transaction: transaction,
+    );
+  }
+}
+
+class NotificationAttachRowRepository {
+  const NotificationAttachRowRepository._();
+
+  /// Creates a relation between the given [Notification] and [NotificationTemplate]
+  /// by setting the [Notification]'s foreign key `templateId` to refer to the [NotificationTemplate].
+  Future<void> template(
+    _i1.DatabaseSession session,
+    Notification notification,
+    _i2.NotificationTemplate template, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (notification.id == null) {
+      throw ArgumentError.notNull('notification.id');
+    }
+    if (template.id == null) {
+      throw ArgumentError.notNull('template.id');
+    }
+
+    var $notification = notification.copyWith(templateId: template.id);
+    await session.db.updateRow<Notification>(
+      $notification,
+      columns: [Notification.t.templateId],
       transaction: transaction,
     );
   }

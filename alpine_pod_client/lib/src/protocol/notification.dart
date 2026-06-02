@@ -11,42 +11,46 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import 'notification_template.dart' as _i2;
+import 'package:alpine_pod_client/src/protocol/protocol.dart' as _i3;
 
 abstract class Notification implements _i1.SerializableModel {
   Notification._({
     this.id,
-    required this.title,
-    required this.message,
-    required this.timestamp,
-    required this.read,
-    required this.memberId,
-    this.attachments,
-    this.eventId,
+    required this.templateId,
+    required this.templateId,
+    this.template,
+    required this.data,
+    this.actionUrl,
+    required this.createdAt,
   });
 
   factory Notification({
     int? id,
-    required String title,
-    required String message,
-    required DateTime timestamp,
-    required bool read,
-    required int memberId,
-    String? attachments,
-    int? eventId,
+    required int templateId,
+    required int templateId,
+    _i2.NotificationTemplate? template,
+    required Map<String, String> data,
+    String? actionUrl,
+    required DateTime createdAt,
   }) = _NotificationImpl;
 
   factory Notification.fromJson(Map<String, dynamic> jsonSerialization) {
     return Notification(
       id: jsonSerialization['id'] as int?,
-      title: jsonSerialization['title'] as String,
-      message: jsonSerialization['message'] as String,
-      timestamp: _i1.DateTimeJsonExtension.fromJson(
-        jsonSerialization['timestamp'],
+      templateId: jsonSerialization['templateId'] as int,
+      template: jsonSerialization['template'] == null
+          ? null
+          : _i3.Protocol().deserialize<_i2.NotificationTemplate>(
+              jsonSerialization['template'],
+            ),
+      data: _i3.Protocol().deserialize<Map<String, String>>(
+        jsonSerialization['data'],
       ),
-      read: _i1.BoolJsonExtension.fromJson(jsonSerialization['read']),
-      memberId: jsonSerialization['memberId'] as int,
-      attachments: jsonSerialization['attachments'] as String?,
-      eventId: jsonSerialization['eventId'] as int?,
+      actionUrl: jsonSerialization['actionUrl'] as String?,
+      createdAt: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['createdAt'],
+      ),
     );
   }
 
@@ -55,45 +59,41 @@ abstract class Notification implements _i1.SerializableModel {
   /// the id will be null.
   int? id;
 
-  String title;
+  int templateId;
 
-  String message;
+  int templateId;
 
-  DateTime timestamp;
+  _i2.NotificationTemplate? template;
 
-  bool read;
+  Map<String, String> data;
 
-  int memberId;
+  String? actionUrl;
 
-  String? attachments;
-
-  int? eventId;
+  DateTime createdAt;
 
   /// Returns a shallow copy of this [Notification]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
   Notification copyWith({
     int? id,
-    String? title,
-    String? message,
-    DateTime? timestamp,
-    bool? read,
-    int? memberId,
-    String? attachments,
-    int? eventId,
+    int? templateId,
+    int? templateId,
+    _i2.NotificationTemplate? template,
+    Map<String, String>? data,
+    String? actionUrl,
+    DateTime? createdAt,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
       '__className__': 'Notification',
       if (id != null) 'id': id,
-      'title': title,
-      'message': message,
-      'timestamp': timestamp.toJson(),
-      'read': read,
-      'memberId': memberId,
-      if (attachments != null) 'attachments': attachments,
-      if (eventId != null) 'eventId': eventId,
+      'templateId': templateId,
+      'templateId': templateId,
+      if (template != null) 'template': template?.toJson(),
+      'data': data.toJson(),
+      if (actionUrl != null) 'actionUrl': actionUrl,
+      'createdAt': createdAt.toJson(),
     };
   }
 
@@ -108,22 +108,19 @@ class _Undefined {}
 class _NotificationImpl extends Notification {
   _NotificationImpl({
     int? id,
-    required String title,
-    required String message,
-    required DateTime timestamp,
-    required bool read,
-    required int memberId,
-    String? attachments,
-    int? eventId,
+    required int templateId,
+    required int templateId,
+    _i2.NotificationTemplate? template,
+    required Map<String, String> data,
+    String? actionUrl,
+    required DateTime createdAt,
   }) : super._(
          id: id,
-         title: title,
-         message: message,
-         timestamp: timestamp,
-         read: read,
-         memberId: memberId,
-         attachments: attachments,
-         eventId: eventId,
+         templateId: templateId,
+         template: template,
+         data: data,
+         actionUrl: actionUrl,
+         createdAt: createdAt,
        );
 
   /// Returns a shallow copy of this [Notification]
@@ -132,23 +129,32 @@ class _NotificationImpl extends Notification {
   @override
   Notification copyWith({
     Object? id = _Undefined,
-    String? title,
-    String? message,
-    DateTime? timestamp,
-    bool? read,
-    int? memberId,
-    Object? attachments = _Undefined,
-    Object? eventId = _Undefined,
+    int? templateId,
+    int? templateId,
+    Object? template = _Undefined,
+    Map<String, String>? data,
+    Object? actionUrl = _Undefined,
+    DateTime? createdAt,
   }) {
     return Notification(
       id: id is int? ? id : this.id,
-      title: title ?? this.title,
-      message: message ?? this.message,
-      timestamp: timestamp ?? this.timestamp,
-      read: read ?? this.read,
-      memberId: memberId ?? this.memberId,
-      attachments: attachments is String? ? attachments : this.attachments,
-      eventId: eventId is int? ? eventId : this.eventId,
+      templateId: templateId ?? this.templateId,
+      template: template is _i2.NotificationTemplate?
+          ? template
+          : this.template?.copyWith(),
+      data:
+          data ??
+          this.data.map(
+            (
+              key0,
+              value0,
+            ) => MapEntry(
+              key0,
+              value0,
+            ),
+          ),
+      actionUrl: actionUrl is String? ? actionUrl : this.actionUrl,
+      createdAt: createdAt ?? this.createdAt,
     );
   }
 }

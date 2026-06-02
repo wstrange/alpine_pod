@@ -1,0 +1,12 @@
+class: UserNotificationPreference
+table: user_notification_preference
+fields:
+  user: module:serverpod_auth_core:AuthUser?, relation(onDelete=Cascade)
+  notificationType: String
+  allowInApp: bool, default=true
+  allowEmail: bool, default=true
+  allowPush: bool, default=true
+indexes:
+  user_type_unique_idx:
+    fields: userId, notificationType
+    unique: true

@@ -109,13 +109,13 @@ final currentEventsSignal = futureSignal<List<Event>>(
 final notificationsSignal = futureSignal(() async {
   final i = authUserSignal.value;
   if (i == null) return <Notification>[];
-  return await client.notification.listNotifications();
+  return await client.notification.getMyFeed(limit: 10, offset: 0);
 }, options: AsyncSignalOptions(name: 'notificationsSignal'));
 
-final notificationStreamSignal = streamSignal<List<Notification>>(() async* {
+final notificationStreamSignal = streamSignal<List<UserNotification>>(() async* {
   while (true) {
-    if (!sessionManager.isAuthenticated) yield <Notification>[];
-    final n = await client.notification.listNotifications();
+    if (!sessionManager.isAuthenticated) yield <UserNotification>[];
+    final n = await client.notification.getMyFeed(limit: 10, offset: 0);
     yield n;
     await Future.delayed(const Duration(seconds: 30));
   }

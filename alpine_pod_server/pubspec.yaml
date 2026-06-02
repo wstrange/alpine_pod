@@ -10,6 +10,7 @@ resolution: workspace
 
 dependencies:
   mailer: ^7.1.0
+  mustache_template: ^2.0.4
   serverpod: 3.4.8
   serverpod_auth_idp_server: 3.4.8
 

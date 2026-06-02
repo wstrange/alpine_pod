@@ -24,11 +24,9 @@ import 'package:alpine_pod_server/src/generated/event_manager.dart' as _i9;
 import 'package:alpine_pod_server/src/generated/event_template.dart' as _i10;
 import 'package:alpine_pod_server/src/generated/section_membership.dart'
     as _i11;
-import 'package:alpine_pod_server/src/generated/notification.dart' as _i12;
-import 'package:alpine_pod_server/src/generated/notification_preference.dart'
-    as _i13;
+import 'package:alpine_pod_server/src/generated/user_notification.dart' as _i12;
 import 'package:alpine_pod_server/src/generated/registration_status.dart'
-    as _i14;
+    as _i13;
 import 'package:alpine_pod_server/src/generated/protocol.dart';
 import 'package:alpine_pod_server/src/generated/endpoints.dart';
 export 'package:serverpod_test/serverpod_test_public_exports.dart';
@@ -2030,21 +2028,26 @@ class _NotificationEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i3.Future<List<_i12.Notification>> listNotifications(
-    _i1.TestSessionBuilder sessionBuilder,
-  ) async {
+  _i3.Future<List<_i12.UserNotification>> getMyFeed(
+    _i1.TestSessionBuilder sessionBuilder, {
+    required int limit,
+    required int offset,
+  }) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
           (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
             endpoint: 'notification',
-            method: 'listNotifications',
+            method: 'getMyFeed',
           );
       try {
         var _localCallContext = await _endpointDispatch.getMethodCallContext(
           createSessionCallback: (_) => _localUniqueSession,
           endpointPath: 'notification',
-          methodName: 'listNotifications',
-          parameters: _i1.testObjectToJson({}),
+          methodName: 'getMyFeed',
+          parameters: _i1.testObjectToJson({
+            'limit': limit,
+            'offset': offset,
+          }),
           serializationManager: _serializationManager,
         );
         var _localReturnValue =
@@ -2052,7 +2055,7 @@ class _NotificationEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<List<_i12.Notification>>);
+                as _i3.Future<List<_i12.UserNotification>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2062,7 +2065,7 @@ class _NotificationEndpoint {
 
   _i3.Future<bool> markAsRead(
     _i1.TestSessionBuilder sessionBuilder,
-    int id,
+    int userNotificationId,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -2075,163 +2078,8 @@ class _NotificationEndpoint {
           createSessionCallback: (_) => _localUniqueSession,
           endpointPath: 'notification',
           methodName: 'markAsRead',
-          parameters: _i1.testObjectToJson({'id': id}),
-          serializationManager: _serializationManager,
-        );
-        var _localReturnValue =
-            await (_localCallContext.method.call(
-                  _localUniqueSession,
-                  _localCallContext.arguments,
-                )
-                as _i3.Future<bool>);
-        return _localReturnValue;
-      } finally {
-        await _localUniqueSession.close();
-      }
-    });
-  }
-
-  _i3.Future<bool> deleteNotification(
-    _i1.TestSessionBuilder sessionBuilder,
-    int id,
-  ) async {
-    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
-      var _localUniqueSession =
-          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
-            endpoint: 'notification',
-            method: 'deleteNotification',
-          );
-      try {
-        var _localCallContext = await _endpointDispatch.getMethodCallContext(
-          createSessionCallback: (_) => _localUniqueSession,
-          endpointPath: 'notification',
-          methodName: 'deleteNotification',
-          parameters: _i1.testObjectToJson({'id': id}),
-          serializationManager: _serializationManager,
-        );
-        var _localReturnValue =
-            await (_localCallContext.method.call(
-                  _localUniqueSession,
-                  _localCallContext.arguments,
-                )
-                as _i3.Future<bool>);
-        return _localReturnValue;
-      } finally {
-        await _localUniqueSession.close();
-      }
-    });
-  }
-
-  _i3.Future<void> createTestNotification(
-    _i1.TestSessionBuilder sessionBuilder,
-  ) async {
-    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
-      var _localUniqueSession =
-          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
-            endpoint: 'notification',
-            method: 'createTestNotification',
-          );
-      try {
-        var _localCallContext = await _endpointDispatch.getMethodCallContext(
-          createSessionCallback: (_) => _localUniqueSession,
-          endpointPath: 'notification',
-          methodName: 'createTestNotification',
-          parameters: _i1.testObjectToJson({}),
-          serializationManager: _serializationManager,
-        );
-        var _localReturnValue =
-            await (_localCallContext.method.call(
-                  _localUniqueSession,
-                  _localCallContext.arguments,
-                )
-                as _i3.Future<void>);
-        return _localReturnValue;
-      } finally {
-        await _localUniqueSession.close();
-      }
-    });
-  }
-
-  _i3.Future<_i13.NotificationPreference> getPreferences(
-    _i1.TestSessionBuilder sessionBuilder,
-  ) async {
-    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
-      var _localUniqueSession =
-          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
-            endpoint: 'notification',
-            method: 'getPreferences',
-          );
-      try {
-        var _localCallContext = await _endpointDispatch.getMethodCallContext(
-          createSessionCallback: (_) => _localUniqueSession,
-          endpointPath: 'notification',
-          methodName: 'getPreferences',
-          parameters: _i1.testObjectToJson({}),
-          serializationManager: _serializationManager,
-        );
-        var _localReturnValue =
-            await (_localCallContext.method.call(
-                  _localUniqueSession,
-                  _localCallContext.arguments,
-                )
-                as _i3.Future<_i13.NotificationPreference>);
-        return _localReturnValue;
-      } finally {
-        await _localUniqueSession.close();
-      }
-    });
-  }
-
-  _i3.Future<_i13.NotificationPreference> updatePreferences(
-    _i1.TestSessionBuilder sessionBuilder,
-    _i13.NotificationPreference preferences,
-  ) async {
-    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
-      var _localUniqueSession =
-          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
-            endpoint: 'notification',
-            method: 'updatePreferences',
-          );
-      try {
-        var _localCallContext = await _endpointDispatch.getMethodCallContext(
-          createSessionCallback: (_) => _localUniqueSession,
-          endpointPath: 'notification',
-          methodName: 'updatePreferences',
-          parameters: _i1.testObjectToJson({'preferences': preferences}),
-          serializationManager: _serializationManager,
-        );
-        var _localReturnValue =
-            await (_localCallContext.method.call(
-                  _localUniqueSession,
-                  _localCallContext.arguments,
-                )
-                as _i3.Future<_i13.NotificationPreference>);
-        return _localReturnValue;
-      } finally {
-        await _localUniqueSession.close();
-      }
-    });
-  }
-
-  _i3.Future<void> registerFcmToken(
-    _i1.TestSessionBuilder sessionBuilder,
-    String token, {
-    String? deviceId,
-  }) async {
-    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
-      var _localUniqueSession =
-          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
-            endpoint: 'notification',
-            method: 'registerFcmToken',
-          );
-      try {
-        var _localCallContext = await _endpointDispatch.getMethodCallContext(
-          createSessionCallback: (_) => _localUniqueSession,
-          endpointPath: 'notification',
-          methodName: 'registerFcmToken',
           parameters: _i1.testObjectToJson({
-            'token': token,
-            'deviceId': deviceId,
+            'userNotificationId': userNotificationId,
           }),
           serializationManager: _serializationManager,
         );
@@ -2240,103 +2088,7 @@ class _NotificationEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<void>);
-        return _localReturnValue;
-      } finally {
-        await _localUniqueSession.close();
-      }
-    });
-  }
-
-  _i3.Future<void> unregisterFcmToken(
-    _i1.TestSessionBuilder sessionBuilder,
-    String token,
-  ) async {
-    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
-      var _localUniqueSession =
-          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
-            endpoint: 'notification',
-            method: 'unregisterFcmToken',
-          );
-      try {
-        var _localCallContext = await _endpointDispatch.getMethodCallContext(
-          createSessionCallback: (_) => _localUniqueSession,
-          endpointPath: 'notification',
-          methodName: 'unregisterFcmToken',
-          parameters: _i1.testObjectToJson({'token': token}),
-          serializationManager: _serializationManager,
-        );
-        var _localReturnValue =
-            await (_localCallContext.method.call(
-                  _localUniqueSession,
-                  _localCallContext.arguments,
-                )
-                as _i3.Future<void>);
-        return _localReturnValue;
-      } finally {
-        await _localUniqueSession.close();
-      }
-    });
-  }
-
-  _i3.Future<void> subscribeToEventType(
-    _i1.TestSessionBuilder sessionBuilder,
-    String eventType, {
-    required bool subscribe,
-  }) async {
-    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
-      var _localUniqueSession =
-          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
-            endpoint: 'notification',
-            method: 'subscribeToEventType',
-          );
-      try {
-        var _localCallContext = await _endpointDispatch.getMethodCallContext(
-          createSessionCallback: (_) => _localUniqueSession,
-          endpointPath: 'notification',
-          methodName: 'subscribeToEventType',
-          parameters: _i1.testObjectToJson({
-            'eventType': eventType,
-            'subscribe': subscribe,
-          }),
-          serializationManager: _serializationManager,
-        );
-        var _localReturnValue =
-            await (_localCallContext.method.call(
-                  _localUniqueSession,
-                  _localCallContext.arguments,
-                )
-                as _i3.Future<void>);
-        return _localReturnValue;
-      } finally {
-        await _localUniqueSession.close();
-      }
-    });
-  }
-
-  _i3.Future<List<String>> getSubscribedEventTypes(
-    _i1.TestSessionBuilder sessionBuilder,
-  ) async {
-    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
-      var _localUniqueSession =
-          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
-            endpoint: 'notification',
-            method: 'getSubscribedEventTypes',
-          );
-      try {
-        var _localCallContext = await _endpointDispatch.getMethodCallContext(
-          createSessionCallback: (_) => _localUniqueSession,
-          endpointPath: 'notification',
-          methodName: 'getSubscribedEventTypes',
-          parameters: _i1.testObjectToJson({}),
-          serializationManager: _serializationManager,
-        );
-        var _localReturnValue =
-            await (_localCallContext.method.call(
-                  _localUniqueSession,
-                  _localCallContext.arguments,
-                )
-                as _i3.Future<List<String>>);
+                as _i3.Future<bool>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2358,7 +2110,7 @@ class _RegistrationEndpoint {
   _i3.Future<_i8.EventRegistration> updateRegistrationStatus(
     _i1.TestSessionBuilder sessionBuilder,
     int registrationId,
-    _i14.RegistrationStatus newStatus, {
+    _i13.RegistrationStatus newStatus, {
     String? notes,
   }) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {

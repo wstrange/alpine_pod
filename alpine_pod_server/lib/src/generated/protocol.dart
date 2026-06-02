@@ -25,20 +25,22 @@ import 'event_type_subscription.dart' as _i10;
 import 'fcm_token.dart' as _i11;
 import 'member.dart' as _i12;
 import 'notification.dart' as _i13;
-import 'notification_preference.dart' as _i14;
+import 'notification_template.dart' as _i14;
 import 'registration_status.dart' as _i15;
 import 'section.dart' as _i16;
 import 'section_membership.dart' as _i17;
-import 'package:alpine_pod_server/src/generated/section.dart' as _i18;
-import 'package:alpine_pod_server/src/generated/event.dart' as _i19;
-import 'package:alpine_pod_server/src/generated/event_manager.dart' as _i20;
-import 'package:alpine_pod_server/src/generated/event_template.dart' as _i21;
+import 'user_notification.dart' as _i18;
+import 'user_notification_preference.dart' as _i19;
+import 'package:alpine_pod_server/src/generated/section.dart' as _i20;
+import 'package:alpine_pod_server/src/generated/event.dart' as _i21;
+import 'package:alpine_pod_server/src/generated/event_manager.dart' as _i22;
+import 'package:alpine_pod_server/src/generated/event_template.dart' as _i23;
 import 'package:alpine_pod_server/src/generated/section_membership.dart'
-    as _i22;
-import 'package:alpine_pod_server/src/generated/member.dart' as _i23;
-import 'package:alpine_pod_server/src/generated/notification.dart' as _i24;
+    as _i24;
+import 'package:alpine_pod_server/src/generated/member.dart' as _i25;
+import 'package:alpine_pod_server/src/generated/user_notification.dart' as _i26;
 import 'package:alpine_pod_server/src/generated/event_registration.dart'
-    as _i25;
+    as _i27;
 export 'event.dart';
 export 'event_document.dart';
 export 'event_manager.dart';
@@ -48,10 +50,12 @@ export 'event_type_subscription.dart';
 export 'fcm_token.dart';
 export 'member.dart';
 export 'notification.dart';
-export 'notification_preference.dart';
+export 'notification_template.dart';
 export 'registration_status.dart';
 export 'section.dart';
 export 'section_membership.dart';
+export 'user_notification.dart';
+export 'user_notification_preference.dart';
 
 class Protocol extends _i1.SerializationManagerServer {
   Protocol._();
@@ -968,91 +972,7 @@ class Protocol extends _i1.SerializationManagerServer {
       managed: true,
     ),
     _i2.TableDefinition(
-      name: 'notification_preferences',
-      dartName: 'NotificationPreference',
-      schema: 'public',
-      module: 'alpine_pod',
-      columns: [
-        _i2.ColumnDefinition(
-          name: 'id',
-          columnType: _i2.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int?',
-          columnDefault:
-              'nextval(\'notification_preferences_id_seq\'::regclass)',
-        ),
-        _i2.ColumnDefinition(
-          name: 'userId',
-          columnType: _i2.ColumnType.uuid,
-          isNullable: false,
-          dartType: 'UuidValue',
-        ),
-        _i2.ColumnDefinition(
-          name: 'enableEmail',
-          columnType: _i2.ColumnType.boolean,
-          isNullable: false,
-          dartType: 'bool',
-          columnDefault: 'true',
-        ),
-        _i2.ColumnDefinition(
-          name: 'enablePush',
-          columnType: _i2.ColumnType.boolean,
-          isNullable: false,
-          dartType: 'bool',
-          columnDefault: 'true',
-        ),
-        _i2.ColumnDefinition(
-          name: 'enableInApp',
-          columnType: _i2.ColumnType.boolean,
-          isNullable: false,
-          dartType: 'bool',
-          columnDefault: 'true',
-        ),
-      ],
-      foreignKeys: [
-        _i2.ForeignKeyDefinition(
-          constraintName: 'notification_preferences_fk_0',
-          columns: ['userId'],
-          referenceTable: 'serverpod_auth_core_user',
-          referenceTableSchema: 'public',
-          referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.cascade,
-          matchType: null,
-        ),
-      ],
-      indexes: [
-        _i2.IndexDefinition(
-          indexName: 'notification_preferences_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            ),
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        ),
-        _i2.IndexDefinition(
-          indexName: 'preference_user_idx',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'userId',
-            ),
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: false,
-        ),
-      ],
-      managed: true,
-    ),
-    _i2.TableDefinition(
-      name: 'notifications',
+      name: 'notification',
       dartName: 'Notification',
       schema: 'public',
       module: 'alpine_pod',
@@ -1062,56 +982,44 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.bigint,
           isNullable: false,
           dartType: 'int?',
-          columnDefault: 'nextval(\'notifications_id_seq\'::regclass)',
+          columnDefault: 'nextval(\'notification_id_seq\'::regclass)',
         ),
         _i2.ColumnDefinition(
-          name: 'title',
-          columnType: _i2.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-        _i2.ColumnDefinition(
-          name: 'message',
-          columnType: _i2.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-        _i2.ColumnDefinition(
-          name: 'timestamp',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
-          isNullable: false,
-          dartType: 'DateTime',
-        ),
-        _i2.ColumnDefinition(
-          name: 'read',
-          columnType: _i2.ColumnType.boolean,
-          isNullable: false,
-          dartType: 'bool',
-        ),
-        _i2.ColumnDefinition(
-          name: 'memberId',
+          name: 'templateId',
           columnType: _i2.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
         ),
         _i2.ColumnDefinition(
-          name: 'attachments',
+          name: 'templateId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'data',
+          columnType: _i2.ColumnType.json,
+          isNullable: false,
+          dartType: 'Map<String,String>',
+        ),
+        _i2.ColumnDefinition(
+          name: 'actionUrl',
           columnType: _i2.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
         _i2.ColumnDefinition(
-          name: 'eventId',
-          columnType: _i2.ColumnType.bigint,
-          isNullable: true,
-          dartType: 'int?',
+          name: 'createdAt',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
         ),
       ],
       foreignKeys: [
         _i2.ForeignKeyDefinition(
-          constraintName: 'notifications_fk_0',
-          columns: ['memberId'],
-          referenceTable: 'members',
+          constraintName: 'notification_fk_0',
+          columns: ['templateId'],
+          referenceTable: 'notification_template',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
           onUpdate: _i2.ForeignKeyAction.noAction,
@@ -1119,9 +1027,9 @@ class Protocol extends _i1.SerializationManagerServer {
           matchType: null,
         ),
         _i2.ForeignKeyDefinition(
-          constraintName: 'notifications_fk_1',
-          columns: ['eventId'],
-          referenceTable: 'events',
+          constraintName: 'notification_fk_1',
+          columns: ['templateId'],
+          referenceTable: 'notification_template',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
           onUpdate: _i2.ForeignKeyAction.noAction,
@@ -1131,7 +1039,75 @@ class Protocol extends _i1.SerializationManagerServer {
       ],
       indexes: [
         _i2.IndexDefinition(
-          indexName: 'notifications_pkey',
+          indexName: 'notification_pkey',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'id',
+            ),
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: true,
+        ),
+      ],
+      managed: true,
+    ),
+    _i2.TableDefinition(
+      name: 'notification_template',
+      dartName: 'NotificationTemplate',
+      schema: 'public',
+      module: 'alpine_pod',
+      columns: [
+        _i2.ColumnDefinition(
+          name: 'id',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'nextval(\'notification_template_id_seq\'::regclass)',
+        ),
+        _i2.ColumnDefinition(
+          name: 'name',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'titleTemplate',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'bodyTemplate',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'htmlTemplate',
+          columnType: _i2.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'createdAt',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+        _i2.ColumnDefinition(
+          name: 'updatedAt',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _i2.IndexDefinition(
+          indexName: 'notification_template_pkey',
           tableSpace: null,
           elements: [
             _i2.IndexElementDefinition(
@@ -1144,16 +1120,16 @@ class Protocol extends _i1.SerializationManagerServer {
           isPrimary: true,
         ),
         _i2.IndexDefinition(
-          indexName: 'member_idx',
+          indexName: 'name_idx',
           tableSpace: null,
           elements: [
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
-              definition: 'memberId',
+              definition: 'name',
             ),
           ],
           type: 'btree',
-          isUnique: false,
+          isUnique: true,
           isPrimary: false,
         ),
       ],
@@ -1335,6 +1311,224 @@ class Protocol extends _i1.SerializationManagerServer {
       ],
       managed: true,
     ),
+    _i2.TableDefinition(
+      name: 'user_notification',
+      dartName: 'UserNotification',
+      schema: 'public',
+      module: 'alpine_pod',
+      columns: [
+        _i2.ColumnDefinition(
+          name: 'id',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'nextval(\'user_notification_id_seq\'::regclass)',
+        ),
+        _i2.ColumnDefinition(
+          name: 'userId',
+          columnType: _i2.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
+        ),
+        _i2.ColumnDefinition(
+          name: 'notificationId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'notificationId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'isRead',
+          columnType: _i2.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
+        ),
+        _i2.ColumnDefinition(
+          name: 'isSeen',
+          columnType: _i2.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
+        ),
+        _i2.ColumnDefinition(
+          name: 'readAt',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: true,
+          dartType: 'DateTime?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'createdAt',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+      ],
+      foreignKeys: [
+        _i2.ForeignKeyDefinition(
+          constraintName: 'user_notification_fk_0',
+          columns: ['userId'],
+          referenceTable: 'serverpod_auth_core_user',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _i2.ForeignKeyAction.noAction,
+          onDelete: _i2.ForeignKeyAction.cascade,
+          matchType: null,
+        ),
+        _i2.ForeignKeyDefinition(
+          constraintName: 'user_notification_fk_1',
+          columns: ['notificationId'],
+          referenceTable: 'notification',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _i2.ForeignKeyAction.noAction,
+          onDelete: _i2.ForeignKeyAction.noAction,
+          matchType: null,
+        ),
+        _i2.ForeignKeyDefinition(
+          constraintName: 'user_notification_fk_2',
+          columns: ['notificationId'],
+          referenceTable: 'notification',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _i2.ForeignKeyAction.noAction,
+          onDelete: _i2.ForeignKeyAction.noAction,
+          matchType: null,
+        ),
+      ],
+      indexes: [
+        _i2.IndexDefinition(
+          indexName: 'user_notification_pkey',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'id',
+            ),
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: true,
+        ),
+        _i2.IndexDefinition(
+          indexName: 'user_feed_idx',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'userId',
+            ),
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'createdAt',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _i2.TableDefinition(
+      name: 'user_notification_preference',
+      dartName: 'UserNotificationPreference',
+      schema: 'public',
+      module: 'alpine_pod',
+      columns: [
+        _i2.ColumnDefinition(
+          name: 'id',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault:
+              'nextval(\'user_notification_preference_id_seq\'::regclass)',
+        ),
+        _i2.ColumnDefinition(
+          name: 'userId',
+          columnType: _i2.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
+        ),
+        _i2.ColumnDefinition(
+          name: 'notificationType',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'allowInApp',
+          columnType: _i2.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'true',
+        ),
+        _i2.ColumnDefinition(
+          name: 'allowEmail',
+          columnType: _i2.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'true',
+        ),
+        _i2.ColumnDefinition(
+          name: 'allowPush',
+          columnType: _i2.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'true',
+        ),
+      ],
+      foreignKeys: [
+        _i2.ForeignKeyDefinition(
+          constraintName: 'user_notification_preference_fk_0',
+          columns: ['userId'],
+          referenceTable: 'serverpod_auth_core_user',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _i2.ForeignKeyAction.noAction,
+          onDelete: _i2.ForeignKeyAction.cascade,
+          matchType: null,
+        ),
+      ],
+      indexes: [
+        _i2.IndexDefinition(
+          indexName: 'user_notification_preference_pkey',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'id',
+            ),
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: true,
+        ),
+        _i2.IndexDefinition(
+          indexName: 'user_type_unique_idx',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'userId',
+            ),
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'notificationType',
+            ),
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
     ..._i3.Protocol.targetTableDefinitions,
     ..._i4.Protocol.targetTableDefinitions,
     ..._i2.Protocol.targetTableDefinitions,
@@ -1394,8 +1588,8 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i13.Notification) {
       return _i13.Notification.fromJson(data) as T;
     }
-    if (t == _i14.NotificationPreference) {
-      return _i14.NotificationPreference.fromJson(data) as T;
+    if (t == _i14.NotificationTemplate) {
+      return _i14.NotificationTemplate.fromJson(data) as T;
     }
     if (t == _i15.RegistrationStatus) {
       return _i15.RegistrationStatus.fromJson(data) as T;
@@ -1405,6 +1599,12 @@ class Protocol extends _i1.SerializationManagerServer {
     }
     if (t == _i17.SectionMembership) {
       return _i17.SectionMembership.fromJson(data) as T;
+    }
+    if (t == _i18.UserNotification) {
+      return _i18.UserNotification.fromJson(data) as T;
+    }
+    if (t == _i19.UserNotificationPreference) {
+      return _i19.UserNotificationPreference.fromJson(data) as T;
     }
     if (t == _i1.getType<_i5.Event?>()) {
       return (data != null ? _i5.Event.fromJson(data) : null) as T;
@@ -1434,8 +1634,8 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i1.getType<_i13.Notification?>()) {
       return (data != null ? _i13.Notification.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i14.NotificationPreference?>()) {
-      return (data != null ? _i14.NotificationPreference.fromJson(data) : null)
+    if (t == _i1.getType<_i14.NotificationTemplate?>()) {
+      return (data != null ? _i14.NotificationTemplate.fromJson(data) : null)
           as T;
     }
     if (t == _i1.getType<_i15.RegistrationStatus?>()) {
@@ -1447,6 +1647,15 @@ class Protocol extends _i1.SerializationManagerServer {
     }
     if (t == _i1.getType<_i17.SectionMembership?>()) {
       return (data != null ? _i17.SectionMembership.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i18.UserNotification?>()) {
+      return (data != null ? _i18.UserNotification.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i19.UserNotificationPreference?>()) {
+      return (data != null
+              ? _i19.UserNotificationPreference.fromJson(data)
+              : null)
+          as T;
     }
     if (t == List<_i8.EventRegistration>) {
       return (data as List)
@@ -1476,11 +1685,17 @@ class Protocol extends _i1.SerializationManagerServer {
               : null)
           as T;
     }
+    if (t == Map<String, String>) {
+      return (data as Map).map(
+            (k, v) => MapEntry(deserialize<String>(k), deserialize<String>(v)),
+          )
+          as T;
+    }
     if (t == Set<String>) {
       return (data as List).map((e) => deserialize<String>(e)).toSet() as T;
     }
-    if (t == List<_i18.Section>) {
-      return (data as List).map((e) => deserialize<_i18.Section>(e)).toList()
+    if (t == List<_i20.Section>) {
+      return (data as List).map((e) => deserialize<_i20.Section>(e)).toList()
           as T;
     }
     if (t == List<int>) {
@@ -1492,47 +1707,44 @@ class Protocol extends _i1.SerializationManagerServer {
               : null)
           as T;
     }
-    if (t == List<_i19.Event>) {
-      return (data as List).map((e) => deserialize<_i19.Event>(e)).toList()
+    if (t == List<_i21.Event>) {
+      return (data as List).map((e) => deserialize<_i21.Event>(e)).toList()
           as T;
     }
-    if (t == List<_i20.EventManager>) {
+    if (t == List<_i22.EventManager>) {
       return (data as List)
-              .map((e) => deserialize<_i20.EventManager>(e))
+              .map((e) => deserialize<_i22.EventManager>(e))
               .toList()
           as T;
     }
-    if (t == List<_i21.EventTemplate>) {
+    if (t == List<_i23.EventTemplate>) {
       return (data as List)
-              .map((e) => deserialize<_i21.EventTemplate>(e))
+              .map((e) => deserialize<_i23.EventTemplate>(e))
               .toList()
           as T;
     }
-    if (t == List<_i22.SectionMembership>) {
+    if (t == List<_i24.SectionMembership>) {
       return (data as List)
-              .map((e) => deserialize<_i22.SectionMembership>(e))
+              .map((e) => deserialize<_i24.SectionMembership>(e))
               .toList()
           as T;
     }
-    if (t == List<_i23.Member>) {
-      return (data as List).map((e) => deserialize<_i23.Member>(e)).toList()
+    if (t == List<_i25.Member>) {
+      return (data as List).map((e) => deserialize<_i25.Member>(e)).toList()
           as T;
     }
     if (t == Set<String>) {
       return (data as List).map((e) => deserialize<String>(e)).toSet() as T;
     }
-    if (t == List<_i24.Notification>) {
+    if (t == List<_i26.UserNotification>) {
       return (data as List)
-              .map((e) => deserialize<_i24.Notification>(e))
+              .map((e) => deserialize<_i26.UserNotification>(e))
               .toList()
           as T;
     }
-    if (t == List<String>) {
-      return (data as List).map((e) => deserialize<String>(e)).toList() as T;
-    }
-    if (t == List<_i25.EventRegistration>) {
+    if (t == List<_i27.EventRegistration>) {
       return (data as List)
-              .map((e) => deserialize<_i25.EventRegistration>(e))
+              .map((e) => deserialize<_i27.EventRegistration>(e))
               .toList()
           as T;
     }
@@ -1559,10 +1771,12 @@ class Protocol extends _i1.SerializationManagerServer {
       _i11.FcmToken => 'FcmToken',
       _i12.Member => 'Member',
       _i13.Notification => 'Notification',
-      _i14.NotificationPreference => 'NotificationPreference',
+      _i14.NotificationTemplate => 'NotificationTemplate',
       _i15.RegistrationStatus => 'RegistrationStatus',
       _i16.Section => 'Section',
       _i17.SectionMembership => 'SectionMembership',
+      _i18.UserNotification => 'UserNotification',
+      _i19.UserNotificationPreference => 'UserNotificationPreference',
       _ => null,
     };
   }
@@ -1595,14 +1809,18 @@ class Protocol extends _i1.SerializationManagerServer {
         return 'Member';
       case _i13.Notification():
         return 'Notification';
-      case _i14.NotificationPreference():
-        return 'NotificationPreference';
+      case _i14.NotificationTemplate():
+        return 'NotificationTemplate';
       case _i15.RegistrationStatus():
         return 'RegistrationStatus';
       case _i16.Section():
         return 'Section';
       case _i17.SectionMembership():
         return 'SectionMembership';
+      case _i18.UserNotification():
+        return 'UserNotification';
+      case _i19.UserNotificationPreference():
+        return 'UserNotificationPreference';
     }
     className = _i2.Protocol().getClassNameForObject(data);
     if (className != null) {
@@ -1652,8 +1870,8 @@ class Protocol extends _i1.SerializationManagerServer {
     if (dataClassName == 'Notification') {
       return deserialize<_i13.Notification>(data['data']);
     }
-    if (dataClassName == 'NotificationPreference') {
-      return deserialize<_i14.NotificationPreference>(data['data']);
+    if (dataClassName == 'NotificationTemplate') {
+      return deserialize<_i14.NotificationTemplate>(data['data']);
     }
     if (dataClassName == 'RegistrationStatus') {
       return deserialize<_i15.RegistrationStatus>(data['data']);
@@ -1663,6 +1881,12 @@ class Protocol extends _i1.SerializationManagerServer {
     }
     if (dataClassName == 'SectionMembership') {
       return deserialize<_i17.SectionMembership>(data['data']);
+    }
+    if (dataClassName == 'UserNotification') {
+      return deserialize<_i18.UserNotification>(data['data']);
+    }
+    if (dataClassName == 'UserNotificationPreference') {
+      return deserialize<_i19.UserNotificationPreference>(data['data']);
     }
     if (dataClassName.startsWith('serverpod.')) {
       data['className'] = dataClassName.substring(10);
@@ -1718,12 +1942,16 @@ class Protocol extends _i1.SerializationManagerServer {
         return _i12.Member.t;
       case _i13.Notification:
         return _i13.Notification.t;
-      case _i14.NotificationPreference:
-        return _i14.NotificationPreference.t;
+      case _i14.NotificationTemplate:
+        return _i14.NotificationTemplate.t;
       case _i16.Section:
         return _i16.Section.t;
       case _i17.SectionMembership:
         return _i17.SectionMembership.t;
+      case _i18.UserNotification:
+        return _i18.UserNotification.t;
+      case _i19.UserNotificationPreference:
+        return _i19.UserNotificationPreference.t;
     }
     return null;
   }
