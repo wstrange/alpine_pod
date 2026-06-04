@@ -23,8 +23,6 @@ class NotificationService {
     required Map<String, String> templateData,
     String? actionUrl,
   }) async {
-    // session ??= await getSession();
-
     final template = await NotificationTemplate.db.findFirstRow(session, where: (t) => t.name.equals(templateName));
     if (template == null) {
       throw Exception('Template "$templateName" not found.');
@@ -112,7 +110,7 @@ class NotificationService {
     }
     await dispatchNotification(
       session: session,
-      templateName: 'registration-removed',
+      templateName: 'registration-cancelled',
       recipientUserIds: [id],
       templateData: {
         'title': 'Registration Cancelled for ${er.event?.title ?? 'Event'}',
