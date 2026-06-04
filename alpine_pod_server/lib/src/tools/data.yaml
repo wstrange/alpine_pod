@@ -1,0 +1,17 @@
+sections:
+  - name: Calgary
+    description: Calgary Section
+    location: Room 101
+    contactInfo: 555-121-23456
+
+eventTemplates:
+  - name: standard-hike
+    description: Standard hike event template
+    content: Bring layers and water.
+    language: en
+
+notificationTemplates:
+  - name: event-created
+    titleTemplate: "Event Created: {{title}}"
+    bodyTemplate: "{{body}}"
+    htmlTemplate: "<p>{{body}}</p>"

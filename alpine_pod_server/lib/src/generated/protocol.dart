@@ -991,12 +991,6 @@ class Protocol extends _i1.SerializationManagerServer {
           dartType: 'int',
         ),
         _i2.ColumnDefinition(
-          name: 'templateId',
-          columnType: _i2.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
-        _i2.ColumnDefinition(
           name: 'data',
           columnType: _i2.ColumnType.json,
           isNullable: false,
@@ -1018,16 +1012,6 @@ class Protocol extends _i1.SerializationManagerServer {
       foreignKeys: [
         _i2.ForeignKeyDefinition(
           constraintName: 'notification_fk_0',
-          columns: ['templateId'],
-          referenceTable: 'notification_template',
-          referenceTableSchema: 'public',
-          referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
-          matchType: null,
-        ),
-        _i2.ForeignKeyDefinition(
-          constraintName: 'notification_fk_1',
           columns: ['templateId'],
           referenceTable: 'notification_template',
           referenceTableSchema: 'public',
@@ -1337,12 +1321,6 @@ class Protocol extends _i1.SerializationManagerServer {
           dartType: 'int',
         ),
         _i2.ColumnDefinition(
-          name: 'notificationId',
-          columnType: _i2.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
-        _i2.ColumnDefinition(
           name: 'isRead',
           columnType: _i2.ColumnType.boolean,
           isNullable: false,
@@ -1382,16 +1360,6 @@ class Protocol extends _i1.SerializationManagerServer {
         ),
         _i2.ForeignKeyDefinition(
           constraintName: 'user_notification_fk_1',
-          columns: ['notificationId'],
-          referenceTable: 'notification',
-          referenceTableSchema: 'public',
-          referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
-          matchType: null,
-        ),
-        _i2.ForeignKeyDefinition(
-          constraintName: 'user_notification_fk_2',
           columns: ['notificationId'],
           referenceTable: 'notification',
           referenceTableSchema: 'public',

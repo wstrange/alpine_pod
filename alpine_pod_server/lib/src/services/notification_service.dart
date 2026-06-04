@@ -4,15 +4,26 @@ import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_auth_idp_server/core.dart';
 import '../generated/protocol.dart';
 
+final notificationService = NotificationService();
+
 class NotificationService {
-  static Future<void> dispatchNotification({
-    required Session session,
+  Session? _session;
+
+  Future<Session> getSession() async {
+    return _session ??= await Serverpod.instance.createSession();
+  }
+
+  // NOTE: cant be done unawaited as the endpoint will return.
+  // Consider using FutureCall or Internal session.
+  Future<void> dispatchNotification({
     required String templateName,
     required List<UuidValue> recipientUserIds,
     AuthUser? actorId,
     required Map<String, String> templateData,
     String? actionUrl,
   }) async {
+    final session = await getSession();
+
     final template = await NotificationTemplate.db.findFirstRow(session, where: (t) => t.name.equals(templateName));
     if (template == null) throw Exception('Template "$templateName" not found.');
 
@@ -69,6 +80,65 @@ class NotificationService {
         }
       }
     });
+  }
+
+  void notifyRegistrationApproved(Session session, EventRegistration er) async {
+    final id = er.member?.userId;
+    final session = await getSession();
+
+    if (id == null) {
+      session.log('Cant notify user of registration. User id not present for member ${er.memberId}');
+      return;
+    }
+    await dispatchNotification(
+      templateName: 'registration-approved',
+      recipientUserIds: [id],
+      templateData: {
+        'title': 'Registration Approved for ${er.event?.title ?? 'Event'}',
+        'body': 'Your registration for "${er.event?.title ?? 'Event'}" has been approved.',
+      },
+    );
+  }
+
+  void notifyRegistrationRemoved(Session session, EventRegistration er) async {
+    final id = er.member?.userId;
+    final session = await getSession();
+
+    if (id == null) {
+      session.log('Cant notify user of registration. User id not present for member ${er.memberId}');
+      return;
+    }
+    await dispatchNotification(
+      templateName: 'registration-removed',
+      recipientUserIds: [id],
+      templateData: {
+        'title': 'Registration Cancelled for ${er.event?.title ?? 'Event'}',
+        'body': 'Your registration for "${er.event?.title ?? 'Event'}" has been cancelled.',
+      },
+    );
+  }
+
+  void notifyEventCreated(Session session, Event createdEvent) async {
+    final session = await getSession();
+    // all section users....
+    final memberships = await SectionMembership.db.find(
+      session,
+      where: (sm) => sm.sectionId.equals(createdEvent.sectionId),
+      include: SectionMembership.include(
+        member: Member.include(),
+      ),
+    );
+
+    final recipientUserIds = memberships.map((membership) => membership.member?.userId).nonNulls.toList();
+
+    await dispatchNotification(
+      templateName: 'event-created',
+      recipientUserIds: recipientUserIds,
+      templateData: {
+        'title': 'Event Created: ${createdEvent.title}',
+        'body': 'A new event titled "${createdEvent.title}" has been created.',
+      },
+    );
   }
 }
 

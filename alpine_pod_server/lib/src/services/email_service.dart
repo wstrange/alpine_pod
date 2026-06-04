@@ -1,9 +1,9 @@
 import 'package:serverpod/serverpod.dart';
 
 class EmailService {
-  static final String _apiKey = Serverpod.instance.getPassword('resendApiKey') ?? '';
-  static const String _apiEndpoint = 'https://resend.com';
-  static const String _fromAddress = 'notifications@yourdomain.com';
+  // static final String _apiKey = Serverpod.instance.getPassword('resendApiKey') ?? '';
+  // static const String _apiEndpoint = 'https://resend.com';
+  // static const String _fromAddress = 'notifications@yourdomain.com';
 
   static Future<void> sendHtmlEmail({
     required Session session,
@@ -11,10 +11,12 @@ class EmailService {
     required String subject,
     required String htmlBody,
   }) async {
-    if (_apiKey.isEmpty) {
-      session.log('Email delivery skipped: "resendApiKey" is missing in passwords.yaml.', level: LogLevel.warning);
-      return;
-    }
+    // if (_apiKey.isEmpty) {
+    //   session.log('Email delivery skipped: "resendApiKey" is missing in passwords.yaml.', level: LogLevel.warning);
+    //   return;
+    // }
+
+    session.log('Send email: $recipientEmail, $subject, $htmlBody ');
 
     // todo: fix
 

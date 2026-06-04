@@ -155,7 +155,7 @@ class EventManagerEndpoint extends Endpoint {
     final saved = await EventRegistration.db.insertRow(session, registration);
 
     // Notify member they were added to the event
-    // await notificationService.notifyRegistrationApproved(session, saved);
+    notificationService.notifyRegistrationApproved(session, saved);
 
     return saved;
   }
@@ -176,7 +176,7 @@ class EventManagerEndpoint extends Endpoint {
     await EventRegistration.db.deleteRow(session, reg);
 
     // Notify member they were removed from the event
-    // await notificationService.notifyRegistrationRemoved(session, reg);
+    notificationService.notifyRegistrationRemoved(session, reg);
 
     session.log('Event manager ${callerInfo.member.id} removed registration $registrationId');
   }
@@ -264,7 +264,7 @@ class EventManagerEndpoint extends Endpoint {
     final saved = await EventRegistration.db.updateRow(session, updated);
 
     // Notify member they were approved
-    // await notificationService.notifyRegistrationApproved(session, saved);
+    notificationService.notifyRegistrationApproved(session, saved);
 
     session.log('Event manager ${callerInfo.member.id} approved registration $registrationId');
     return saved;

@@ -20,7 +20,6 @@ abstract class Notification
   Notification._({
     this.id,
     required this.templateId,
-    required this.templateId,
     this.template,
     required this.data,
     this.actionUrl,
@@ -29,7 +28,6 @@ abstract class Notification
 
   factory Notification({
     int? id,
-    required int templateId,
     required int templateId,
     _i2.NotificationTemplate? template,
     required Map<String, String> data,
@@ -65,8 +63,6 @@ abstract class Notification
 
   int templateId;
 
-  int templateId;
-
   _i2.NotificationTemplate? template;
 
   Map<String, String> data;
@@ -84,7 +80,6 @@ abstract class Notification
   Notification copyWith({
     int? id,
     int? templateId,
-    int? templateId,
     _i2.NotificationTemplate? template,
     Map<String, String>? data,
     String? actionUrl,
@@ -95,7 +90,6 @@ abstract class Notification
     return {
       '__className__': 'Notification',
       if (id != null) 'id': id,
-      'templateId': templateId,
       'templateId': templateId,
       if (template != null) 'template': template?.toJson(),
       'data': data.toJson(),
@@ -109,7 +103,6 @@ abstract class Notification
     return {
       '__className__': 'Notification',
       if (id != null) 'id': id,
-      'templateId': templateId,
       'templateId': templateId,
       if (template != null) 'template': template?.toJsonForProtocol(),
       'data': data.toJson(),
@@ -156,7 +149,6 @@ class _NotificationImpl extends Notification {
   _NotificationImpl({
     int? id,
     required int templateId,
-    required int templateId,
     _i2.NotificationTemplate? template,
     required Map<String, String> data,
     String? actionUrl,
@@ -176,7 +168,6 @@ class _NotificationImpl extends Notification {
   @override
   Notification copyWith({
     Object? id = _Undefined,
-    int? templateId,
     int? templateId,
     Object? template = _Undefined,
     Map<String, String>? data,
@@ -214,11 +205,6 @@ class NotificationUpdateTable extends _i1.UpdateTable<NotificationTable> {
     value,
   );
 
-  _i1.ColumnValue<int, int> templateId(int value) => _i1.ColumnValue(
-    table.templateId,
-    value,
-  );
-
   _i1.ColumnValue<Map<String, String>, Map<String, String>> data(
     Map<String, String> value,
   ) => _i1.ColumnValue(
@@ -245,10 +231,6 @@ class NotificationTable extends _i1.Table<int?> {
       'templateId',
       this,
     );
-    templateId = _i1.ColumnInt(
-      'templateId',
-      this,
-    );
     data = _i1.ColumnSerializable<Map<String, String>>(
       'data',
       this,
@@ -264,8 +246,6 @@ class NotificationTable extends _i1.Table<int?> {
   }
 
   late final NotificationUpdateTable updateTable;
-
-  late final _i1.ColumnInt templateId;
 
   late final _i1.ColumnInt templateId;
 
@@ -293,7 +273,6 @@ class NotificationTable extends _i1.Table<int?> {
   @override
   List<_i1.Column> get columns => [
     id,
-    templateId,
     templateId,
     data,
     actionUrl,

@@ -58,7 +58,7 @@ class NotificationScreen extends HookWidget {
                     final url = notification.notification?.actionUrl;
 
                     final template =
-                        notification.notification.template ??
+                        notification.notification?.template ??
                         NotificationTemplate(
                           name: 'fixme',
                           titleTemplate: 'fixme',

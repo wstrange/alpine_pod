@@ -22,7 +22,6 @@ abstract class UserNotification implements _i1.SerializableModel {
     required this.userId,
     this.user,
     required this.notificationId,
-    required this.notificationId,
     this.notification,
     bool? isRead,
     bool? isSeen,
@@ -35,7 +34,6 @@ abstract class UserNotification implements _i1.SerializableModel {
     int? id,
     required _i1.UuidValue userId,
     _i2.AuthUser? user,
-    required int notificationId,
     required int notificationId,
     _i3.Notification? notification,
     bool? isRead,
@@ -83,8 +81,6 @@ abstract class UserNotification implements _i1.SerializableModel {
 
   int notificationId;
 
-  int notificationId;
-
   _i3.Notification? notification;
 
   bool isRead;
@@ -103,7 +99,6 @@ abstract class UserNotification implements _i1.SerializableModel {
     _i1.UuidValue? userId,
     _i2.AuthUser? user,
     int? notificationId,
-    int? notificationId,
     _i3.Notification? notification,
     bool? isRead,
     bool? isSeen,
@@ -117,7 +112,6 @@ abstract class UserNotification implements _i1.SerializableModel {
       if (id != null) 'id': id,
       'userId': userId.toJson(),
       if (user != null) 'user': user?.toJson(),
-      'notificationId': notificationId,
       'notificationId': notificationId,
       if (notification != null) 'notification': notification?.toJson(),
       'isRead': isRead,
@@ -140,7 +134,6 @@ class _UserNotificationImpl extends UserNotification {
     int? id,
     required _i1.UuidValue userId,
     _i2.AuthUser? user,
-    required int notificationId,
     required int notificationId,
     _i3.Notification? notification,
     bool? isRead,
@@ -167,7 +160,6 @@ class _UserNotificationImpl extends UserNotification {
     Object? id = _Undefined,
     _i1.UuidValue? userId,
     Object? user = _Undefined,
-    int? notificationId,
     int? notificationId,
     Object? notification = _Undefined,
     bool? isRead,

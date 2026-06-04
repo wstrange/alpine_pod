@@ -18,7 +18,6 @@ abstract class Notification implements _i1.SerializableModel {
   Notification._({
     this.id,
     required this.templateId,
-    required this.templateId,
     this.template,
     required this.data,
     this.actionUrl,
@@ -27,7 +26,6 @@ abstract class Notification implements _i1.SerializableModel {
 
   factory Notification({
     int? id,
-    required int templateId,
     required int templateId,
     _i2.NotificationTemplate? template,
     required Map<String, String> data,
@@ -61,8 +59,6 @@ abstract class Notification implements _i1.SerializableModel {
 
   int templateId;
 
-  int templateId;
-
   _i2.NotificationTemplate? template;
 
   Map<String, String> data;
@@ -77,7 +73,6 @@ abstract class Notification implements _i1.SerializableModel {
   Notification copyWith({
     int? id,
     int? templateId,
-    int? templateId,
     _i2.NotificationTemplate? template,
     Map<String, String>? data,
     String? actionUrl,
@@ -88,7 +83,6 @@ abstract class Notification implements _i1.SerializableModel {
     return {
       '__className__': 'Notification',
       if (id != null) 'id': id,
-      'templateId': templateId,
       'templateId': templateId,
       if (template != null) 'template': template?.toJson(),
       'data': data.toJson(),
@@ -109,7 +103,6 @@ class _NotificationImpl extends Notification {
   _NotificationImpl({
     int? id,
     required int templateId,
-    required int templateId,
     _i2.NotificationTemplate? template,
     required Map<String, String> data,
     String? actionUrl,
@@ -129,7 +122,6 @@ class _NotificationImpl extends Notification {
   @override
   Notification copyWith({
     Object? id = _Undefined,
-    int? templateId,
     int? templateId,
     Object? template = _Undefined,
     Map<String, String>? data,

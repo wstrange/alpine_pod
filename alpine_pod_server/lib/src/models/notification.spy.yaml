@@ -1,7 +1,6 @@
 class: Notification
 table: notification
 fields:
-  templateId: int, relation(parent=notification_template)
   template: NotificationTemplate?, relation
   # actorId: module:serverpod_auth_core:AuthUser?, relation(onDelete=Cascade)
   data: Map<String, String>

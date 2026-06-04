@@ -100,7 +100,7 @@ class EventEndpoint extends Endpoint {
     });
 
     /// Notify interested members.
-    // unawaited(notificationService.notifyEventCreated(session, createdEvent));
+    notificationService.notifyEventCreated(session, createdEvent);
 
     return createdEvent;
   }
@@ -283,15 +283,14 @@ class EventEndpoint extends Endpoint {
       return created;
     });
 
-    // unawaited(
-    //   notificationService.sendNotification(
-    //     session,
-    //     memberId: member.id!,
-    //     title: 'Registered',
-    //     message: 'Registered for event ${event.title}',
-    //     eventId: created.eventId,
-    //   ),
-    // );
+    unawaited(
+      notificationService.dispatchNotification(
+        templateName: 'event_registered',
+        recipientUserIds: [member.userId],
+        templateData: {'event_name': event.title, 'event_url': '/event-view/${event.id}'},
+        actionUrl: '/event-view/${event.id}',
+      ),
+    );
 
     return created;
   }

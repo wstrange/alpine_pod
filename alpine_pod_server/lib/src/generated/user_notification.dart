@@ -24,7 +24,6 @@ abstract class UserNotification
     required this.userId,
     this.user,
     required this.notificationId,
-    required this.notificationId,
     this.notification,
     bool? isRead,
     bool? isSeen,
@@ -37,7 +36,6 @@ abstract class UserNotification
     int? id,
     required _i1.UuidValue userId,
     _i2.AuthUser? user,
-    required int notificationId,
     required int notificationId,
     _i3.Notification? notification,
     bool? isRead,
@@ -87,8 +85,6 @@ abstract class UserNotification
 
   int notificationId;
 
-  int notificationId;
-
   _i3.Notification? notification;
 
   bool isRead;
@@ -110,7 +106,6 @@ abstract class UserNotification
     _i1.UuidValue? userId,
     _i2.AuthUser? user,
     int? notificationId,
-    int? notificationId,
     _i3.Notification? notification,
     bool? isRead,
     bool? isSeen,
@@ -124,7 +119,6 @@ abstract class UserNotification
       if (id != null) 'id': id,
       'userId': userId.toJson(),
       if (user != null) 'user': user?.toJson(),
-      'notificationId': notificationId,
       'notificationId': notificationId,
       if (notification != null) 'notification': notification?.toJson(),
       'isRead': isRead,
@@ -141,7 +135,6 @@ abstract class UserNotification
       if (id != null) 'id': id,
       'userId': userId.toJson(),
       if (user != null) 'user': user?.toJsonForProtocol(),
-      'notificationId': notificationId,
       'notificationId': notificationId,
       if (notification != null)
         'notification': notification?.toJsonForProtocol(),
@@ -196,7 +189,6 @@ class _UserNotificationImpl extends UserNotification {
     required _i1.UuidValue userId,
     _i2.AuthUser? user,
     required int notificationId,
-    required int notificationId,
     _i3.Notification? notification,
     bool? isRead,
     bool? isSeen,
@@ -222,7 +214,6 @@ class _UserNotificationImpl extends UserNotification {
     Object? id = _Undefined,
     _i1.UuidValue? userId,
     Object? user = _Undefined,
-    int? notificationId,
     int? notificationId,
     Object? notification = _Undefined,
     bool? isRead,
@@ -255,11 +246,6 @@ class UserNotificationUpdateTable
         table.userId,
         value,
       );
-
-  _i1.ColumnValue<int, int> notificationId(int value) => _i1.ColumnValue(
-    table.notificationId,
-    value,
-  );
 
   _i1.ColumnValue<int, int> notificationId(int value) => _i1.ColumnValue(
     table.notificationId,
@@ -301,10 +287,6 @@ class UserNotificationTable extends _i1.Table<int?> {
       'notificationId',
       this,
     );
-    notificationId = _i1.ColumnInt(
-      'notificationId',
-      this,
-    );
     isRead = _i1.ColumnBool(
       'isRead',
       this,
@@ -330,8 +312,6 @@ class UserNotificationTable extends _i1.Table<int?> {
   late final _i1.ColumnUuid userId;
 
   _i2.AuthUserTable? _user;
-
-  late final _i1.ColumnInt notificationId;
 
   late final _i1.ColumnInt notificationId;
 
@@ -375,7 +355,6 @@ class UserNotificationTable extends _i1.Table<int?> {
   List<_i1.Column> get columns => [
     id,
     userId,
-    notificationId,
     notificationId,
     isRead,
     isSeen,

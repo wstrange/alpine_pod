@@ -61,9 +61,9 @@ class RegistrationEndpoint extends Endpoint {
 
     // Notify member of status changes
     if (newStatus == RegistrationStatus.confirmed) {
-      // await notificationService.notifyRegistrationApproved(session, saved);
+      notificationService.notifyRegistrationApproved(session, saved);
     } else if (newStatus == RegistrationStatus.cancelled) {
-      // await notificationService.notifyRegistrationRemoved(session, saved);
+      notificationService.notifyRegistrationRemoved(session, saved);
     }
 
     return saved;
