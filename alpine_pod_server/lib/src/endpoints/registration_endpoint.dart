@@ -8,11 +8,16 @@ import '../services/notification_service.dart';
 
 class RegistrationEndpoint extends Endpoint {
   /// Determines the initial registration status based on event settings and capacity
-  RegistrationStatus _determineRegistrationStatus({required bool requiresApproval, required bool isFull}) {
+  RegistrationStatus _determineRegistrationStatus({
+    required bool requiresApproval,
+    required bool isFull,
+  }) {
     if (isFull) {
       return RegistrationStatus.waitlisted;
     }
-    return requiresApproval ? RegistrationStatus.pending : RegistrationStatus.confirmed;
+    return requiresApproval
+        ? RegistrationStatus.pending
+        : RegistrationStatus.confirmed;
   }
 
   /// Gets the next available waitlist position for an event
@@ -43,10 +48,13 @@ class RegistrationEndpoint extends Endpoint {
 
       final currentConfirmed = await EventRegistration.db.count(
         session,
-        where: (t) => t.eventId.equals(reg.eventId) & t.registrationStatus.equals(RegistrationStatus.confirmed),
+        where: (t) =>
+            t.eventId.equals(reg.eventId) &
+            t.registrationStatus.equals(RegistrationStatus.confirmed),
       );
 
-      if (event.maxParticipants != null && currentConfirmed >= event.maxParticipants!) {
+      if (event.maxParticipants != null &&
+          currentConfirmed >= event.maxParticipants!) {
         throw Exception('Event is full');
       }
     }
@@ -61,15 +69,18 @@ class RegistrationEndpoint extends Endpoint {
 
     // Notify member of status changes
     if (newStatus == RegistrationStatus.confirmed) {
-      notificationService.notifyRegistrationApproved(session, saved);
+      await notificationService.notifyRegistrationApproved(session, saved);
     } else if (newStatus == RegistrationStatus.cancelled) {
-      notificationService.notifyRegistrationRemoved(session, saved);
+      await notificationService.notifyRegistrationRemoved(session, saved);
     }
 
     return saved;
   }
 
-  Future<EventRegistration> registerForEvent(Session session, EventRegistration registration) async {
+  Future<EventRegistration> registerForEvent(
+    Session session,
+    EventRegistration registration,
+  ) async {
     // Validate session and get member
 
     final memberInfo = await cache.getMemberInfo(session);
@@ -83,7 +94,8 @@ class RegistrationEndpoint extends Endpoint {
     // Check if member is already registered
     final existingReg = await EventRegistration.db.findFirstRow(
       session,
-      where: (t) => t.eventId.equals(event.id) & t.memberId.equals(memberInfo.member.id!),
+      where: (t) =>
+          t.eventId.equals(event.id) & t.memberId.equals(memberInfo.member.id!),
     );
     if (existingReg != null) {
       throw Exception('Already registered for this event');
@@ -104,23 +116,35 @@ class RegistrationEndpoint extends Endpoint {
     return saved;
   }
 
-  Future<EventRegistration> _createRegistration(Session session, EventRegistration registration, Event event) async {
+  Future<EventRegistration> _createRegistration(
+    Session session,
+    EventRegistration registration,
+    Event event,
+  ) async {
     // Get current registration count
     final currentConfirmed = await EventRegistration.db.count(
       session,
-      where: (t) => t.eventId.equals(registration.eventId) & t.registrationStatus.equals(RegistrationStatus.confirmed),
+      where: (t) =>
+          t.eventId.equals(registration.eventId) &
+          t.registrationStatus.equals(RegistrationStatus.confirmed),
     );
 
     // Check if event is at capacity
     final isFull = currentConfirmed >= event.maxParticipants!;
 
     // Determine initial registration status
-    final status = _determineRegistrationStatus(requiresApproval: event.requiresApproval, isFull: isFull);
+    final status = _determineRegistrationStatus(
+      requiresApproval: event.requiresApproval,
+      isFull: isFull,
+    );
 
     // Get waitlist position if needed
     int? waitlistPosition;
     if (status == RegistrationStatus.waitlisted) {
-      waitlistPosition = await _getNextWaitlistPosition(session, event.id ?? registration.eventId);
+      waitlistPosition = await _getNextWaitlistPosition(
+        session,
+        event.id ?? registration.eventId,
+      );
     }
 
     // Create validated registration with computed fields
@@ -145,7 +169,10 @@ class RegistrationEndpoint extends Endpoint {
     // await notificationService.notifyRegistrationRemoved(session, reg);
   }
 
-  Future<List<EventRegistration>> getRegistrationsForEvent(Session session, int eventId) async {
+  Future<List<EventRegistration>> getRegistrationsForEvent(
+    Session session,
+    int eventId,
+  ) async {
     return await EventRegistration.db.find(
       session,
       where: (t) => t.eventId.equals(eventId),

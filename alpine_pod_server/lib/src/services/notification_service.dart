@@ -16,16 +16,19 @@ class NotificationService {
   // NOTE: cant be done unawaited as the endpoint will return.
   // Consider using FutureCall or Internal session.
   Future<void> dispatchNotification({
+    required Session session,
     required String templateName,
     required List<UuidValue> recipientUserIds,
     AuthUser? actorId,
     required Map<String, String> templateData,
     String? actionUrl,
   }) async {
-    final session = await getSession();
+    // session ??= await getSession();
 
     final template = await NotificationTemplate.db.findFirstRow(session, where: (t) => t.name.equals(templateName));
-    if (template == null) throw Exception('Template "$templateName" not found.');
+    if (template == null) {
+      throw Exception('Template "$templateName" not found.');
+    }
 
     final parsedTitle = Template(template.titleTemplate).renderString(templateData);
     final parsedBody = Template(template.bodyTemplate).renderString(templateData);
@@ -82,15 +85,15 @@ class NotificationService {
     });
   }
 
-  void notifyRegistrationApproved(Session session, EventRegistration er) async {
+  Future<void> notifyRegistrationApproved(Session session, EventRegistration er) async {
     final id = er.member?.userId;
-    final session = await getSession();
 
     if (id == null) {
       session.log('Cant notify user of registration. User id not present for member ${er.memberId}');
       return;
     }
     await dispatchNotification(
+      session: session,
       templateName: 'registration-approved',
       recipientUserIds: [id],
       templateData: {
@@ -100,15 +103,15 @@ class NotificationService {
     );
   }
 
-  void notifyRegistrationRemoved(Session session, EventRegistration er) async {
+  Future<void> notifyRegistrationRemoved(Session session, EventRegistration er) async {
     final id = er.member?.userId;
-    final session = await getSession();
 
     if (id == null) {
       session.log('Cant notify user of registration. User id not present for member ${er.memberId}');
       return;
     }
     await dispatchNotification(
+      session: session,
       templateName: 'registration-removed',
       recipientUserIds: [id],
       templateData: {
@@ -118,20 +121,18 @@ class NotificationService {
     );
   }
 
-  void notifyEventCreated(Session session, Event createdEvent) async {
-    final session = await getSession();
+  Future<void> notifyEventCreated(Session session, Event createdEvent) async {
     // all section users....
     final memberships = await SectionMembership.db.find(
       session,
       where: (sm) => sm.sectionId.equals(createdEvent.sectionId),
-      include: SectionMembership.include(
-        member: Member.include(),
-      ),
+      include: SectionMembership.include(member: Member.include()),
     );
 
     final recipientUserIds = memberships.map((membership) => membership.member?.userId).nonNulls.toList();
 
     await dispatchNotification(
+      session: session,
       templateName: 'event-created',
       recipientUserIds: recipientUserIds,
       templateData: {
