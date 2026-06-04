@@ -364,12 +364,14 @@ class EndpointEvent extends _i2.EndpointRef {
   _i3.Future<_i7.Event> createEvent(
     _i7.Event event, {
     List<int>? additionalManagerIds,
+    required bool notifyNewEvent,
   }) => caller.callServerEndpoint<_i7.Event>(
     'event',
     'createEvent',
     {
       'event': event,
       'additionalManagerIds': additionalManagerIds,
+      'notifyNewEvent': notifyNewEvent,
     },
   );
 

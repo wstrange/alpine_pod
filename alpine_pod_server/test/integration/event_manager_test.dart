@@ -12,17 +12,12 @@ void main() {
 
   withServerpod('EventManager Tests', (sessionBuilder, endpoints) {
     Serverpod.instance.initializeAuthServices(
-      identityProviderBuilders: [
-        EmailIdpConfig(
-          secretHashPepper: 'emailSecretHashPepper',
-        ),
-      ],
+      identityProviderBuilders: [EmailIdpConfig(secretHashPepper: 'emailSecretHashPepper')],
       tokenManagerBuilders: [
         JwtConfig(
           refreshTokenHashPepper: 'jwtRefreshTokenHashPepper',
           algorithm: JwtAlgorithm.hmacSha512(
-            SecretKey(
-                'jwtHmacSha512PrivateKey-MustBeLongEnoughFor-HMAC-SHA512-Tests'),
+            SecretKey('jwtHmacSha512PrivateKey-MustBeLongEnoughFor-HMAC-SHA512-Tests'),
           ),
         ),
       ],
@@ -36,15 +31,14 @@ void main() {
     setUp(() async {
       // Create an AuthUser first to get a real ID
       final session = sessionBuilder.build();
-      final authUser = await AuthServices.instance.authUsers.create(
-        session,
-      );
+      final authUser = await AuthServices.instance.authUsers.create(session);
 
       adminAuth = sessionBuilder.copyWith(
-        authentication: AuthenticationOverride.authenticationInfo(
-          authUser.id.toString(),
-          {Scope.admin, CustomScope.eventManager, CustomScope.member},
-        ),
+        authentication: AuthenticationOverride.authenticationInfo(authUser.id.toString(), {
+          Scope.admin,
+          CustomScope.eventManager,
+          CustomScope.member,
+        }),
       );
 
       // Create a section
@@ -55,18 +49,13 @@ void main() {
 
       member = await endpoints.member.createMember(
         adminAuth,
-        genData.member(
-            userId: authUser.id, email: 'test-${Uuid().v4()}@example.com'),
+        genData.member(userId: authUser.id, email: 'test-${Uuid().v4()}@example.com'),
       );
 
       // Assign member to section
       await endpoints.member.addMemberToSection(
         adminAuth,
-        SectionMembership(
-          sectionId: section.id!,
-          memberId: member.id!,
-          scopes: {CustomScope.member.name!},
-        ),
+        SectionMembership(sectionId: section.id!, memberId: member.id!, scopes: {CustomScope.member.name!}),
       );
 
       // Create an event
@@ -84,65 +73,44 @@ void main() {
           minimumParticipants: 1,
           maxParticipants: 10,
         ),
+        notifyNewEvent: false,
       );
     });
 
     test('Assign and list event managers', () async {
       // Creator is already assigned as a manager
-      final initialManagers = await endpoints.eventManager.listEventManagers(
-        adminAuth,
-        event.id!,
-      );
+      final initialManagers = await endpoints.eventManager.listEventManagers(adminAuth, event.id!);
       expect(initialManagers.length, equals(1));
 
       // Create another member to assign
       final session = sessionBuilder.build();
-      final otherAuthUser = await AuthServices.instance.authUsers.create(
-        session,
-      );
+      final otherAuthUser = await AuthServices.instance.authUsers.create(session);
       final otherMember = await endpoints.member.createMember(
         adminAuth,
-        genData.member(
-            userId: otherAuthUser.id,
-            email: 'other-${Uuid().v4()}@example.com'),
+        genData.member(userId: otherAuthUser.id, email: 'other-${Uuid().v4()}@example.com'),
       );
 
-      final manager = EventManager(
-        eventId: event.id!,
-        memberId: otherMember.id!,
-      );
+      final manager = EventManager(eventId: event.id!, memberId: otherMember.id!);
 
-      final assigned = await endpoints.eventManager.assignEventManager(
-        adminAuth,
-        manager,
-      );
+      final assigned = await endpoints.eventManager.assignEventManager(adminAuth, manager);
 
       expect(assigned.id, isNotNull);
       expect(assigned.eventId, equals(event.id));
       expect(assigned.memberId, equals(otherMember.id));
 
-      final managers = await endpoints.eventManager.listEventManagers(
-        adminAuth,
-        event.id!,
-      );
+      final managers = await endpoints.eventManager.listEventManagers(adminAuth, event.id!);
 
       expect(managers.length, equals(2));
     });
 
     test('Remove event manager', () async {
-      final manager = EventManager(
-        eventId: event.id!,
-        memberId: member.id!,
-      );
+      final manager = EventManager(eventId: event.id!, memberId: member.id!);
 
       // Note: We can't remove the last manager if there are active registrations,
       // but here there are none.
       await endpoints.eventManager.removeEventManager(adminAuth, manager);
 
-      final managers = await endpoints.eventManager.listEventManagers(
-        adminAuth,
-        event.id!,
-      );
+      final managers = await endpoints.eventManager.listEventManagers(adminAuth, event.id!);
       expect(managers.isEmpty, isTrue);
     });
   });

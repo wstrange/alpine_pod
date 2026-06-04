@@ -173,6 +173,7 @@ class EventEditScreen extends HookWidget {
           savedEvent = await client.event.createEvent(
             eventToSave,
             additionalManagerIds: additionalManagerIds.isEmpty ? null : additionalManagerIds,
+            notifyNewEvent: true,
           );
         } else {
           savedEvent = await client.event.updateEvent(eventToSave);

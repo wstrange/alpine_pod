@@ -18,6 +18,8 @@ final uuid = Uuid();
 final numEvents = 10;
 final numUsers = 20;
 
+List<UuidValue> createdUserIds = [];
+
 const fallbackNotificationTypes = {'event-created', 'registration-approved', 'registration-removed'};
 
 void main() {
@@ -64,7 +66,7 @@ void main() {
         await session.db.unsafeSimpleExecute(r'TRUNCATE public.serverpod_auth_idp_email_account CASCADE');
         await session.db.unsafeSimpleExecute(r'TRUNCATE public.section_memberships CASCADE');
         await session.db.unsafeSimpleExecute(r'TRUNCATE public.members CASCADE');
-      }, skip: true); // we only run this as needed
+      }, skip: false); // we only run this as needed
 
       test('Create Default Sections', () async {
         for (final s in [
@@ -128,9 +130,7 @@ void main() {
         print('Added Admin to National section');
       });
 
-      List<UuidValue> createdUserIds = [];
-
-      test('Create test users', () async {
+      test('Create test Users', () async {
         final session = authSession.build();
         // get the sections..
         final sections = await endpoints.admin.listSections(authSession);
@@ -165,7 +165,7 @@ void main() {
               userId: au.id,
             ),
           );
-          print('Created member profile: $m');
+          // print('Created member profile: $m');
 
           var scopes = <String>{CustomScope.sectionManager.name!, CustomScope.member.name!};
 
@@ -179,7 +179,7 @@ void main() {
         }
       }, timeout: Timeout(Duration(minutes: 10)));
 
-      test('Create 100 sample events', () async {
+      test('Create Sample events', () async {
         final sections = await endpoints.admin.listSections(authSession);
         final calgary = sections.firstWhere((s) => s.name == 'Calgary');
         //final edmonton = sections.firstWhere((s) => s.name == 'Edmonton');
@@ -229,6 +229,7 @@ void main() {
               minimumParticipants: 1,
               maxParticipants: 4,
             ),
+            notifyNewEvent: false,
           );
         }
         print('Created  sample events.');

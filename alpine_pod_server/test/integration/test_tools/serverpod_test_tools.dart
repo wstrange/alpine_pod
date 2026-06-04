@@ -927,6 +927,7 @@ class _EventEndpoint {
     _i1.TestSessionBuilder sessionBuilder,
     _i7.Event event, {
     List<int>? additionalManagerIds,
+    required bool notifyNewEvent,
   }) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -942,6 +943,7 @@ class _EventEndpoint {
           parameters: _i1.testObjectToJson({
             'event': event,
             'additionalManagerIds': additionalManagerIds,
+            'notifyNewEvent': notifyNewEvent,
           }),
           serializationManager: _serializationManager,
         );

@@ -540,6 +540,11 @@ class Endpoints extends _i1.EndpointDispatch {
               type: _i1.getType<List<int>?>(),
               nullable: true,
             ),
+            'notifyNewEvent': _i1.ParameterDescription(
+              name: 'notifyNewEvent',
+              type: _i1.getType<bool>(),
+              nullable: false,
+            ),
           },
           call:
               (
@@ -549,6 +554,7 @@ class Endpoints extends _i1.EndpointDispatch {
                 session,
                 params['event'],
                 additionalManagerIds: params['additionalManagerIds'],
+                notifyNewEvent: params['notifyNewEvent'],
               ),
         ),
         'getEvent': _i1.MethodConnector(
