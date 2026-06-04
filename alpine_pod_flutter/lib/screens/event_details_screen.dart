@@ -56,7 +56,11 @@ class EventDetailsScreen extends HookWidget {
                             icon: const Icon(Icons.copy),
                             tooltip: 'Copy Event',
                             onPressed: () {
-                              final clonedEvent = event.copyWith(id: null, title: 'Copy of ${event.title}');
+                              final clonedEvent = event.copyWith(
+                                id: null,
+                                title: 'Copy of ${event.title}',
+                                published: false,
+                              );
                               GoRouter.of(context).push('/create-event', extra: clonedEvent);
                             },
                           ),

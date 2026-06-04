@@ -41,7 +41,7 @@ This is a multi-tenant application to manage users who belong to one more alpine
 * Events can have recurring schedules (e.g., weekly, monthly) to facilitate regular activities.
 * Events are of a specific type (e.g., hike, climb, ski, social). The event type should be an enumerated value.
 * Some events may allow direct registration. Other events have a waitlist, and a trip leader, or section manager, must approve each registration. The schema should support this use case.
-
+* When created an event should initially be in draft. The event manager should be able to publish an event. Show the draft/publish on the event edit screen.   Draft events should not show up on the event list. Only when the user selects "my events" and they an event manager for the event should they
 
 ### Users
 
@@ -124,3 +124,4 @@ See the alpine_pod_flutter/README.md.
 ## Notifications
 
 The app should support notifications. The user should be able to select recieving notifications as an email, push notification, or in-app notification. The user should be able to select the events that they want to receive notifications for, or the sections that they want to receive notifications for.   The server uses Firebase Cloud Messaging. Create the required serverpod schema and methods to support this use case.
+

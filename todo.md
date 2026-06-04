@@ -46,52 +46,8 @@ Bugs:
 
 TODO:
 
-* Data load tool to load templates, sections, users, etc.
+* events can be draft or published. How do we show diff, and not show draft events in list view?
+* only the creator can see draft events.
+* only when published is event notified to other members.
 
-sample code
-```dart
 
-import 'package:serverpod/serverpod.dart';
-import 'package:mailer/mailer.dart';
-import 'package:mailer/smtp_server.dart';
-import '../generated/protocol.dart'; // Import generated models
-
-class SendEmailsCall extends FutureCall {
-  // Methods must return Future<void> and have a Session as the first param
-  Future<void> sendNotificationBatch(Session session, EmailBatch batch) async {
-    final smtpServer = SmtpServer('localhost', port: 1025); // Mailpit
-
-    // 1. Fetch your hundred users from the DB using the IDs passed in
-    final users = await User.db.find(
-      session,
-      where: (t) => t.id.inSet(batch.recipientIds.toSet()),
-    );
-
-    // 2. Process in chunks of 25 to prevent socket/network exhaustion
-    const batchSize = 25;
-    for (var i = 0; i < users.length; i += batchSize) {
-      final chunk = users.sublist(
-        i, i + batchSize > users.length ? users.length : i + batchSize
-      );
-
-      await Future.wait(chunk.map((user) async {
-        final message = Message()
-          ..from = Address('events@myapp.com', 'Event Organizer')
-          ..recipients.add(user.email)
-          ..subject = 'Hey ${user.name}, new event: ${batch.eventTitle}!'
-          ..html = '<p>${batch.eventDescription}</p>';
-
-        try {
-          await send(message, smtpServer);
-        } catch (e) {
-          // Serverpod captures print statements directly into its log viewer
-          session.log('Failed to send email to ${user.email}: $e', level: LogLevel.error);
-        }
-      }));
-
-      // Give the event loop a small breather between network bursts
-      await Future.delayed(Duration(milliseconds: 50));
-    }
-  }
-}
-```

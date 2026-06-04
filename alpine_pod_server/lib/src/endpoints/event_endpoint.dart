@@ -105,7 +105,9 @@ class EventEndpoint extends Endpoint {
     });
 
     /// Notify interested members.
-    await notificationService.notifyEventCreated(session, createdEvent);
+    if (notifyNewEvent && createdEvent.published) {
+      await notificationService.notifyEventCreated(session, createdEvent);
+    }
 
     return createdEvent;
   }
@@ -149,7 +151,12 @@ class EventEndpoint extends Endpoint {
       }
     }
 
-    return await Event.db.updateRow(session, event);
+    final wasPublished = existing.published;
+    final updated = await Event.db.updateRow(session, event);
+    if (!wasPublished && updated.published) {
+      await notificationService.notifyEventCreated(session, updated);
+    }
+    return updated;
   }
 
   Future<void> deleteEvent(Session session, int id) async {
@@ -195,11 +202,14 @@ class EventEndpoint extends Endpoint {
         }
 
         if (onlyMyEvents == true && authInfo != null) {
-          // Filter to only events where the user is a manager or registrant
-          where =
-              where &
-              (t.eventManagers.any((m) => m.member.user.id.equals(authInfo.authUserId)) |
-                  t.eventRegistrations.any((r) => r.member.user.id.equals(authInfo.authUserId)));
+          // Filter to only events where the user is a manager (can see draft/published)
+          // or registrant (can only see published)
+          where = where & (
+            t.eventManagers.any((m) => m.member.user.id.equals(authInfo.authUserId)) |
+            (t.eventRegistrations.any((r) => r.member.user.id.equals(authInfo.authUserId)) & t.published.equals(true))
+          );
+        } else {
+          where = where & t.published.equals(true);
         }
 
         return where;

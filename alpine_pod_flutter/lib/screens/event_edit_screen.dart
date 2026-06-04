@@ -33,6 +33,7 @@ class EventEditScreen extends HookWidget {
     final carpoolTime = useState<DateTime?>(event?.carpoolTime);
     final selectedType = useState<String>(event?.type ?? eventTypes.first);
     final requiresApproval = useState<bool>(event?.requiresApproval ?? true);
+    final published = useState<bool>(event?.published ?? false);
 
     final loadedEvent = useState<Event?>(event);
     final isLoading = useState<bool>(false);
@@ -86,6 +87,7 @@ class EventEditScreen extends HookWidget {
         maxParticipantsController.text = (e.maxParticipants).toString();
         selectedType.value = e.type;
         requiresApproval.value = e.requiresApproval;
+        published.value = e.published;
 
         // Load managers from the event if they are included
         if (e.eventManagers != null) {
@@ -108,6 +110,7 @@ class EventEditScreen extends HookWidget {
       maxParticipantsController.text = (e?.maxParticipants ?? 8).toString();
       selectedType.value = e?.type ?? eventTypes.first;
       requiresApproval.value = e?.requiresApproval ?? true;
+      published.value = e?.published ?? false;
     }
 
     void save() async {
@@ -145,6 +148,7 @@ class EventEditScreen extends HookWidget {
             requiresApproval: requiresApproval.value,
             minimumParticipants: minParticipants,
             maxParticipants: maxParticipants,
+            published: published.value,
           ) ??
           Event(
             sectionId: sid,
@@ -159,6 +163,7 @@ class EventEditScreen extends HookWidget {
             requiresApproval: requiresApproval.value,
             minimumParticipants: minParticipants,
             maxParticipants: maxParticipants,
+            published: published.value,
           );
 
       try {
@@ -362,6 +367,18 @@ class EventEditScreen extends HookWidget {
               ),
               value: requiresApproval.value,
               onChanged: (val) => requiresApproval.value = val,
+            ),
+            SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              secondary: const Icon(Icons.publish_outlined),
+              title: const Text('Published'),
+              subtitle: Text(
+                published.value
+                    ? 'Event is published and visible to members'
+                    : 'Event is a draft and only visible to event managers',
+              ),
+              value: published.value,
+              onChanged: (val) => published.value = val,
             ),
             const Divider(),
             Row(
