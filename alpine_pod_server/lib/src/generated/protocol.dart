@@ -39,8 +39,10 @@ import 'package:alpine_pod_server/src/generated/section_membership.dart'
     as _i24;
 import 'package:alpine_pod_server/src/generated/member.dart' as _i25;
 import 'package:alpine_pod_server/src/generated/user_notification.dart' as _i26;
-import 'package:alpine_pod_server/src/generated/event_registration.dart'
+import 'package:alpine_pod_server/src/generated/user_notification_preference.dart'
     as _i27;
+import 'package:alpine_pod_server/src/generated/event_registration.dart'
+    as _i28;
 export 'event.dart';
 export 'event_document.dart';
 export 'event_manager.dart';
@@ -1277,6 +1279,13 @@ class Protocol extends _i1.DatabaseSerializationManager {
           dartType: 'bool',
           columnDefault: 'true',
         ),
+        _i2.ColumnDefinition(
+          name: 'allowSms',
+          columnType: _i2.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'true',
+        ),
       ],
       foreignKeys: [
         _i2.ForeignKeyDefinition(
@@ -1524,9 +1533,15 @@ class Protocol extends _i1.DatabaseSerializationManager {
               .toList()
           as T;
     }
-    if (t == List<_i27.EventRegistration>) {
+    if (t == List<_i27.UserNotificationPreference>) {
       return (data as List)
-              .map((e) => deserialize<_i27.EventRegistration>(e))
+              .map((e) => deserialize<_i27.UserNotificationPreference>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_i28.EventRegistration>) {
+      return (data as List)
+              .map((e) => deserialize<_i28.EventRegistration>(e))
               .toList()
           as T;
     }

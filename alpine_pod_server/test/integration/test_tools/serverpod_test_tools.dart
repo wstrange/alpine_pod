@@ -26,8 +26,10 @@ import 'package:alpine_pod_server/src/generated/event_template.dart' as _i11;
 import 'package:alpine_pod_server/src/generated/section_membership.dart'
     as _i12;
 import 'package:alpine_pod_server/src/generated/user_notification.dart' as _i13;
-import 'package:alpine_pod_server/src/generated/registration_status.dart'
+import 'package:alpine_pod_server/src/generated/user_notification_preference.dart'
     as _i14;
+import 'package:alpine_pod_server/src/generated/registration_status.dart'
+    as _i15;
 import 'package:alpine_pod_server/src/generated/protocol.dart';
 import 'package:alpine_pod_server/src/generated/endpoints.dart';
 export 'package:serverpod_test/serverpod_test_public_exports.dart';
@@ -2144,6 +2146,67 @@ class _NotificationEndpoint {
       }
     });
   }
+
+  _i4.Future<List<_i14.UserNotificationPreference>> getMyPreferences(
+    _i1.TestSessionBuilder sessionBuilder,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'notification',
+            method: 'getMyPreferences',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'notification',
+          methodName: 'getMyPreferences',
+          parameters: _i1.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i4.Future<List<_i14.UserNotificationPreference>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i4.Future<_i14.UserNotificationPreference> savePreference(
+    _i1.TestSessionBuilder sessionBuilder,
+    _i14.UserNotificationPreference preference,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'notification',
+            method: 'savePreference',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'notification',
+          methodName: 'savePreference',
+          parameters: _i1.testObjectToJson({'preference': preference}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i4.Future<_i14.UserNotificationPreference>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
 }
 
 class _RegistrationEndpoint {
@@ -2159,7 +2222,7 @@ class _RegistrationEndpoint {
   _i4.Future<_i9.EventRegistration> updateRegistrationStatus(
     _i1.TestSessionBuilder sessionBuilder,
     int registrationId,
-    _i14.RegistrationStatus newStatus, {
+    _i15.RegistrationStatus newStatus, {
     String? notes,
   }) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {

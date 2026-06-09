@@ -64,6 +64,8 @@ member:
 notification:
   - getMyFeed:
   - markAsRead:
+  - getMyPreferences:
+  - savePreference:
 registration:
   - updateRegistrationStatus:
   - registerForEvent:

@@ -6,6 +6,7 @@ fields:
   allowInApp: bool, default=true
   allowEmail: bool, default=true
   allowPush: bool, default=true
+  allowSms: bool, default=true
 indexes:
   user_type_unique_idx:
     fields: userId, notificationType

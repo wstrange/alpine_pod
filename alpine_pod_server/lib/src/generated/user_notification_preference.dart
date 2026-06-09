@@ -26,9 +26,11 @@ abstract class UserNotificationPreference
     bool? allowInApp,
     bool? allowEmail,
     bool? allowPush,
+    bool? allowSms,
   }) : allowInApp = allowInApp ?? true,
        allowEmail = allowEmail ?? true,
-       allowPush = allowPush ?? true;
+       allowPush = allowPush ?? true,
+       allowSms = allowSms ?? true;
 
   factory UserNotificationPreference({
     int? id,
@@ -38,6 +40,7 @@ abstract class UserNotificationPreference
     bool? allowInApp,
     bool? allowEmail,
     bool? allowPush,
+    bool? allowSms,
   }) = _UserNotificationPreferenceImpl;
 
   factory UserNotificationPreference.fromJson(
@@ -59,6 +62,9 @@ abstract class UserNotificationPreference
       allowPush: jsonSerialization['allowPush'] == null
           ? null
           : _i1.BoolJsonExtension.fromJson(jsonSerialization['allowPush']),
+      allowSms: jsonSerialization['allowSms'] == null
+          ? null
+          : _i1.BoolJsonExtension.fromJson(jsonSerialization['allowSms']),
     );
   }
 
@@ -81,6 +87,8 @@ abstract class UserNotificationPreference
 
   bool allowPush;
 
+  bool allowSms;
+
   @override
   _i1.Table<int?> get table => t;
 
@@ -95,6 +103,7 @@ abstract class UserNotificationPreference
     bool? allowInApp,
     bool? allowEmail,
     bool? allowPush,
+    bool? allowSms,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -107,6 +116,7 @@ abstract class UserNotificationPreference
       'allowInApp': allowInApp,
       'allowEmail': allowEmail,
       'allowPush': allowPush,
+      'allowSms': allowSms,
     };
   }
 
@@ -121,6 +131,7 @@ abstract class UserNotificationPreference
       'allowInApp': allowInApp,
       'allowEmail': allowEmail,
       'allowPush': allowPush,
+      'allowSms': allowSms,
     };
   }
 
@@ -169,6 +180,7 @@ class _UserNotificationPreferenceImpl extends UserNotificationPreference {
     bool? allowInApp,
     bool? allowEmail,
     bool? allowPush,
+    bool? allowSms,
   }) : super._(
          id: id,
          userId: userId,
@@ -177,6 +189,7 @@ class _UserNotificationPreferenceImpl extends UserNotificationPreference {
          allowInApp: allowInApp,
          allowEmail: allowEmail,
          allowPush: allowPush,
+         allowSms: allowSms,
        );
 
   /// Returns a shallow copy of this [UserNotificationPreference]
@@ -191,6 +204,7 @@ class _UserNotificationPreferenceImpl extends UserNotificationPreference {
     bool? allowInApp,
     bool? allowEmail,
     bool? allowPush,
+    bool? allowSms,
   }) {
     return UserNotificationPreference(
       id: id is int? ? id : this.id,
@@ -200,6 +214,7 @@ class _UserNotificationPreferenceImpl extends UserNotificationPreference {
       allowInApp: allowInApp ?? this.allowInApp,
       allowEmail: allowEmail ?? this.allowEmail,
       allowPush: allowPush ?? this.allowPush,
+      allowSms: allowSms ?? this.allowSms,
     );
   }
 }
@@ -234,6 +249,11 @@ class UserNotificationPreferenceUpdateTable
     table.allowPush,
     value,
   );
+
+  _i1.ColumnValue<bool, bool> allowSms(bool value) => _i1.ColumnValue(
+    table.allowSms,
+    value,
+  );
 }
 
 class UserNotificationPreferenceTable extends _i1.Table<int?> {
@@ -263,6 +283,11 @@ class UserNotificationPreferenceTable extends _i1.Table<int?> {
       this,
       hasDefault: true,
     );
+    allowSms = _i1.ColumnBool(
+      'allowSms',
+      this,
+      hasDefault: true,
+    );
   }
 
   late final UserNotificationPreferenceUpdateTable updateTable;
@@ -278,6 +303,8 @@ class UserNotificationPreferenceTable extends _i1.Table<int?> {
   late final _i1.ColumnBool allowEmail;
 
   late final _i1.ColumnBool allowPush;
+
+  late final _i1.ColumnBool allowSms;
 
   _i2.AuthUserTable get user {
     if (_user != null) return _user!;
@@ -300,6 +327,7 @@ class UserNotificationPreferenceTable extends _i1.Table<int?> {
     allowInApp,
     allowEmail,
     allowPush,
+    allowSms,
   ];
 
   @override

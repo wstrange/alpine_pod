@@ -35,3 +35,10 @@ notificationTemplates:
     titleTemplate: "Your registration for {{title}} has been approved"
     bodyTemplate: "{{body}}"
     htmlTemplate: "<p>{{body}}</p>"
+
+  - name: event-registered
+    titleTemplate: "You registered for {{title}}"
+    bodyTemplate: "You registered for {{title}}"
+    htmlTemplate: "You registered for {{title}}"
+
+

@@ -24,9 +24,11 @@ abstract class UserNotificationPreference implements _i1.SerializableModel {
     bool? allowInApp,
     bool? allowEmail,
     bool? allowPush,
+    bool? allowSms,
   }) : allowInApp = allowInApp ?? true,
        allowEmail = allowEmail ?? true,
-       allowPush = allowPush ?? true;
+       allowPush = allowPush ?? true,
+       allowSms = allowSms ?? true;
 
   factory UserNotificationPreference({
     int? id,
@@ -36,6 +38,7 @@ abstract class UserNotificationPreference implements _i1.SerializableModel {
     bool? allowInApp,
     bool? allowEmail,
     bool? allowPush,
+    bool? allowSms,
   }) = _UserNotificationPreferenceImpl;
 
   factory UserNotificationPreference.fromJson(
@@ -57,6 +60,9 @@ abstract class UserNotificationPreference implements _i1.SerializableModel {
       allowPush: jsonSerialization['allowPush'] == null
           ? null
           : _i1.BoolJsonExtension.fromJson(jsonSerialization['allowPush']),
+      allowSms: jsonSerialization['allowSms'] == null
+          ? null
+          : _i1.BoolJsonExtension.fromJson(jsonSerialization['allowSms']),
     );
   }
 
@@ -77,6 +83,8 @@ abstract class UserNotificationPreference implements _i1.SerializableModel {
 
   bool allowPush;
 
+  bool allowSms;
+
   /// Returns a shallow copy of this [UserNotificationPreference]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
@@ -88,6 +96,7 @@ abstract class UserNotificationPreference implements _i1.SerializableModel {
     bool? allowInApp,
     bool? allowEmail,
     bool? allowPush,
+    bool? allowSms,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -100,6 +109,7 @@ abstract class UserNotificationPreference implements _i1.SerializableModel {
       'allowInApp': allowInApp,
       'allowEmail': allowEmail,
       'allowPush': allowPush,
+      'allowSms': allowSms,
     };
   }
 
@@ -120,6 +130,7 @@ class _UserNotificationPreferenceImpl extends UserNotificationPreference {
     bool? allowInApp,
     bool? allowEmail,
     bool? allowPush,
+    bool? allowSms,
   }) : super._(
          id: id,
          userId: userId,
@@ -128,6 +139,7 @@ class _UserNotificationPreferenceImpl extends UserNotificationPreference {
          allowInApp: allowInApp,
          allowEmail: allowEmail,
          allowPush: allowPush,
+         allowSms: allowSms,
        );
 
   /// Returns a shallow copy of this [UserNotificationPreference]
@@ -142,6 +154,7 @@ class _UserNotificationPreferenceImpl extends UserNotificationPreference {
     bool? allowInApp,
     bool? allowEmail,
     bool? allowPush,
+    bool? allowSms,
   }) {
     return UserNotificationPreference(
       id: id is int? ? id : this.id,
@@ -151,6 +164,7 @@ class _UserNotificationPreferenceImpl extends UserNotificationPreference {
       allowInApp: allowInApp ?? this.allowInApp,
       allowEmail: allowEmail ?? this.allowEmail,
       allowPush: allowPush ?? this.allowPush,
+      allowSms: allowSms ?? this.allowSms,
     );
   }
 }

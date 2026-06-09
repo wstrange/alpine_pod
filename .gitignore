@@ -6,3 +6,5 @@ alpine_pod_server/migrations/migration_registry.txt
 .agents/**
 alpine_pod_server/tmp/**
 alpine_pod_server/.serverpod/**
+**/generated/**
+alpine_pod_client/lib/src/**

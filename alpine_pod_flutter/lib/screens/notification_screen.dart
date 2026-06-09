@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:signals_flutter/signals_flutter.dart';
 import '../signals.dart';
+import '../widgets/notification_preferences_dialog.dart';
 
 class NotificationScreen extends HookWidget {
   const NotificationScreen({super.key});
@@ -18,6 +19,14 @@ class NotificationScreen extends HookWidget {
           appBar: AppBar(
             title: const Text('Notifications'),
             actions: [
+              IconButton(icon: const Icon(Icons.home_outlined), tooltip: 'Home', onPressed: () => context.go('/')),
+              IconButton(
+                icon: const Icon(Icons.settings_outlined),
+                tooltip: 'Preferences',
+                onPressed: () {
+                  showDialog(context: context, builder: (context) => const NotificationPreferencesDialog());
+                },
+              ),
               if (notificationsState.value != null && notificationsState.value!.isNotEmpty)
                 IconButton(
                   icon: const Icon(Icons.done_all),

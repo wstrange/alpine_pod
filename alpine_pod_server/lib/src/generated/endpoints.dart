@@ -27,14 +27,16 @@ import 'package:alpine_pod_server/src/generated/event_template.dart' as _i14;
 import 'package:alpine_pod_server/src/generated/member.dart' as _i15;
 import 'package:alpine_pod_server/src/generated/section_membership.dart'
     as _i16;
-import 'package:alpine_pod_server/src/generated/registration_status.dart'
+import 'package:alpine_pod_server/src/generated/user_notification_preference.dart'
     as _i17;
-import 'package:alpine_pod_server/src/generated/event_registration.dart'
+import 'package:alpine_pod_server/src/generated/registration_status.dart'
     as _i18;
-import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart'
+import 'package:alpine_pod_server/src/generated/event_registration.dart'
     as _i19;
-import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
+import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart'
     as _i20;
+import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
+    as _i21;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override
@@ -1305,6 +1307,35 @@ class Endpoints extends _i1.EndpointDispatch {
                     params['userNotificationId'],
                   ),
         ),
+        'getMyPreferences': _i1.MethodConnector(
+          name: 'getMyPreferences',
+          params: {},
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['notification'] as _i8.NotificationEndpoint)
+                  .getMyPreferences(session),
+        ),
+        'savePreference': _i1.MethodConnector(
+          name: 'savePreference',
+          params: {
+            'preference': _i1.ParameterDescription(
+              name: 'preference',
+              type: _i1.getType<_i17.UserNotificationPreference>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['notification'] as _i8.NotificationEndpoint)
+                  .savePreference(
+                    session,
+                    params['preference'],
+                  ),
+        ),
       },
     );
     connectors['registration'] = _i1.EndpointConnector(
@@ -1321,7 +1352,7 @@ class Endpoints extends _i1.EndpointDispatch {
             ),
             'newStatus': _i1.ParameterDescription(
               name: 'newStatus',
-              type: _i1.getType<_i17.RegistrationStatus>(),
+              type: _i1.getType<_i18.RegistrationStatus>(),
               nullable: false,
             ),
             'notes': _i1.ParameterDescription(
@@ -1347,7 +1378,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'registration': _i1.ParameterDescription(
               name: 'registration',
-              type: _i1.getType<_i18.EventRegistration>(),
+              type: _i1.getType<_i19.EventRegistration>(),
               nullable: false,
             ),
           },
@@ -1446,9 +1477,9 @@ class Endpoints extends _i1.EndpointDispatch {
         ),
       },
     );
-    modules['serverpod_auth_idp'] = _i19.Endpoints()
+    modules['serverpod_auth_idp'] = _i20.Endpoints()
       ..initializeEndpoints(server);
-    modules['serverpod_auth_core'] = _i20.Endpoints()
+    modules['serverpod_auth_core'] = _i21.Endpoints()
       ..initializeEndpoints(server);
   }
 }

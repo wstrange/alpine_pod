@@ -84,16 +84,16 @@ class NotificationService {
   }
 
   Future<void> notifyRegistrationApproved(Session session, EventRegistration er) async {
-    final id = er.member?.userId;
+    final member = await Member.db.findById(session, er.memberId);
 
-    if (id == null) {
-      session.log('Cant notify user of registration. User id not present for member ${er.memberId}');
+    if (member == null) {
+      session.log('Cant notify user of registration. Member not found ${er.memberId}');
       return;
     }
     await dispatchNotification(
       session: session,
       templateName: 'registration-approved',
-      recipientUserIds: [id],
+      recipientUserIds: [member.userId],
       templateData: {
         'title': 'Registration Approved for ${er.event?.title ?? 'Event'}',
         'body': 'Your registration for "${er.event?.title ?? 'Event'}" has been approved.',
@@ -102,16 +102,16 @@ class NotificationService {
   }
 
   Future<void> notifyRegistrationRemoved(Session session, EventRegistration er) async {
-    final id = er.member?.userId;
+    final member = await Member.db.findById(session, er.memberId);
 
-    if (id == null) {
-      session.log('Cant notify user of registration. User id not present for member ${er.memberId}');
+    if (member == null) {
+      session.log('Cant notify user of registration. Member not found ${er.memberId}');
       return;
     }
     await dispatchNotification(
       session: session,
       templateName: 'registration-cancelled',
-      recipientUserIds: [id],
+      recipientUserIds: [member.userId],
       templateData: {
         'title': 'Registration Cancelled for ${er.event?.title ?? 'Event'}',
         'body': 'Your registration for "${er.event?.title ?? 'Event'}" has been cancelled.',

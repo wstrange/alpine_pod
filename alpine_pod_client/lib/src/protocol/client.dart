@@ -24,10 +24,12 @@ import 'package:alpine_pod_client/src/protocol/event_manager.dart' as _i9;
 import 'package:alpine_pod_client/src/protocol/event_template.dart' as _i10;
 import 'package:alpine_pod_client/src/protocol/section_membership.dart' as _i11;
 import 'package:alpine_pod_client/src/protocol/user_notification.dart' as _i12;
-import 'package:alpine_pod_client/src/protocol/registration_status.dart'
+import 'package:alpine_pod_client/src/protocol/user_notification_preference.dart'
     as _i13;
-import 'package:http/http.dart' as _i14;
-import 'protocol.dart' as _i15;
+import 'package:alpine_pod_client/src/protocol/registration_status.dart'
+    as _i14;
+import 'package:http/http.dart' as _i15;
+import 'protocol.dart' as _i16;
 
 /// {@category Endpoint}
 class EndpointEmailIdp extends _i1.EndpointEmailIdpBase {
@@ -752,6 +754,21 @@ class EndpointNotification extends _i2.EndpointRef {
         'markAsRead',
         {'userNotificationId': userNotificationId},
       );
+
+  _i3.Future<List<_i13.UserNotificationPreference>> getMyPreferences() =>
+      caller.callServerEndpoint<List<_i13.UserNotificationPreference>>(
+        'notification',
+        'getMyPreferences',
+        {},
+      );
+
+  _i3.Future<_i13.UserNotificationPreference> savePreference(
+    _i13.UserNotificationPreference preference,
+  ) => caller.callServerEndpoint<_i13.UserNotificationPreference>(
+    'notification',
+    'savePreference',
+    {'preference': preference},
+  );
 }
 
 /// {@category Endpoint}
@@ -764,7 +781,7 @@ class EndpointRegistration extends _i2.EndpointRef {
   /// Approve or reject a registration
   _i3.Future<_i8.EventRegistration> updateRegistrationStatus(
     int registrationId,
-    _i13.RegistrationStatus newStatus, {
+    _i14.RegistrationStatus newStatus, {
     String? notes,
   }) => caller.callServerEndpoint<_i8.EventRegistration>(
     'registration',
@@ -858,10 +875,10 @@ class Client extends _i2.ServerpodClientShared {
     onFailedCall,
     Function(_i2.MethodCallContext)? onSucceededCall,
     bool? disconnectStreamsOnLostInternetConnection,
-    _i14.Client? httpClientOverride,
+    _i15.Client? httpClientOverride,
   }) : super(
          host,
-         _i15.Protocol(),
+         _i16.Protocol(),
          securityContext: securityContext,
          streamingConnectionTimeout: streamingConnectionTimeout,
          connectionTimeout: connectionTimeout,

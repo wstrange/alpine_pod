@@ -106,9 +106,9 @@ final currentEventsSignal = futureSignal<List<Event>>(
   ),
 );
 
-final notificationsSignal = futureSignal(() async {
+final notificationsSignal = futureSignal<List<UserNotification>>(() async {
   final i = authUserSignal.value;
-  if (i == null) return <Notification>[];
+  if (i == null) return <UserNotification>[];
   return await client.notification.getMyFeed(limit: 10, offset: 0);
 }, options: AsyncSignalOptions(name: 'notificationsSignal'));
 
@@ -122,6 +122,15 @@ final notificationStreamSignal = streamSignal<List<UserNotification>>(() async* 
 });
 
 final unreadNotificationsCountSignal = computed(() {
-  final notifications = notificationsSignal.value.value ?? [];
-  return notifications.where((n) => !n.read).length;
+  final state = notificationsSignal.value;
+  if (state is AsyncData<List<UserNotification>>) {
+    return state.value.where((n) => !n.isRead).length;
+  }
+  return 0;
 });
+
+final notificationPreferencesSignal = futureSignal<List<UserNotificationPreference>>(() async {
+  final i = authUserSignal.value;
+  if (i == null) return <UserNotificationPreference>[];
+  return await client.notification.getMyPreferences();
+}, options: AsyncSignalOptions(name: 'notificationPreferencesSignal'));

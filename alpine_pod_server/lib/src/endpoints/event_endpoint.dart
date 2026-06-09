@@ -101,6 +101,8 @@ class EventEndpoint extends Endpoint {
         }
       }
 
+      await notificationService.notifyEventCreated(session, createdEvent);
+
       return createdEvent;
     });
 
@@ -204,10 +206,11 @@ class EventEndpoint extends Endpoint {
         if (onlyMyEvents == true && authInfo != null) {
           // Filter to only events where the user is a manager (can see draft/published)
           // or registrant (can only see published)
-          where = where & (
-            t.eventManagers.any((m) => m.member.user.id.equals(authInfo.authUserId)) |
-            (t.eventRegistrations.any((r) => r.member.user.id.equals(authInfo.authUserId)) & t.published.equals(true))
-          );
+          where =
+              where &
+              (t.eventManagers.any((m) => m.member.user.id.equals(authInfo.authUserId)) |
+                  (t.eventRegistrations.any((r) => r.member.user.id.equals(authInfo.authUserId)) &
+                      t.published.equals(true)));
         } else {
           where = where & t.published.equals(true);
         }
@@ -301,7 +304,7 @@ class EventEndpoint extends Endpoint {
     unawaited(
       notificationService.dispatchNotification(
         session: session,
-        templateName: 'event_registered',
+        templateName: 'event-registered',
         recipientUserIds: [member.userId],
         templateData: {'event_name': event.title, 'event_url': '/event-view/${event.id}'},
         actionUrl: '/event-view/${event.id}',
