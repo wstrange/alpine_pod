@@ -5,3 +5,4 @@ alpine_pod_server/migrations/migration_registry.txt
 .dart_tool/**
 .agents/**
 alpine_pod_server/tmp/**
+alpine_pod_server/.serverpod/**

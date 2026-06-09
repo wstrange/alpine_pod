@@ -11,6 +11,7 @@ refreshJwtTokens:
   - refreshAccessToken:
 googleIdp:
   - login:
+  - loginWithCode:
   - hasAccount:
 facebookIdp:
   - login:

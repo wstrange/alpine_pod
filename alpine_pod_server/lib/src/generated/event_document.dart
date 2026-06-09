@@ -111,6 +111,7 @@ abstract class EventDocument
     int? limit,
     int? offset,
     _i1.OrderByBuilder<EventDocumentTable>? orderBy,
+    @Deprecated('Use desc() on the orderBy column instead.')
     bool orderDescending = false,
     _i1.OrderByListBuilder<EventDocumentTable>? orderByList,
     EventDocumentInclude? include,
@@ -120,7 +121,8 @@ abstract class EventDocument
       limit: limit,
       offset: offset,
       orderBy: orderBy?.call(EventDocument.t),
-      orderDescending: orderDescending,
+      orderDescending: // ignore: deprecated_member_use_from_same_package
+          orderDescending,
       orderByList: orderByList?.call(EventDocument.t),
       include: include,
     );
@@ -269,6 +271,7 @@ class EventDocumentIncludeList extends _i1.IncludeList {
     super.limit,
     super.offset,
     super.orderBy,
+    @Deprecated('Use desc() on the orderBy column instead.')
     super.orderDescending,
     super.orderByList,
     super.include,
@@ -314,6 +317,7 @@ class EventDocumentRepository {
     int? limit,
     int? offset,
     _i1.OrderByBuilder<EventDocumentTable>? orderBy,
+    @Deprecated('Use desc() on the orderBy column instead.')
     bool orderDescending = false,
     _i1.OrderByListBuilder<EventDocumentTable>? orderByList,
     _i1.Transaction? transaction,
@@ -324,7 +328,8 @@ class EventDocumentRepository {
       where: where?.call(EventDocument.t),
       orderBy: orderBy?.call(EventDocument.t),
       orderByList: orderByList?.call(EventDocument.t),
-      orderDescending: orderDescending,
+      orderDescending: // ignore: deprecated_member_use
+          orderDescending,
       limit: limit,
       offset: offset,
       transaction: transaction,
@@ -355,6 +360,7 @@ class EventDocumentRepository {
     _i1.WhereExpressionBuilder<EventDocumentTable>? where,
     int? offset,
     _i1.OrderByBuilder<EventDocumentTable>? orderBy,
+    @Deprecated('Use desc() on the orderBy column instead.')
     bool orderDescending = false,
     _i1.OrderByListBuilder<EventDocumentTable>? orderByList,
     _i1.Transaction? transaction,
@@ -365,7 +371,8 @@ class EventDocumentRepository {
       where: where?.call(EventDocument.t),
       orderBy: orderBy?.call(EventDocument.t),
       orderByList: orderByList?.call(EventDocument.t),
-      orderDescending: orderDescending,
+      orderDescending: // ignore: deprecated_member_use
+          orderDescending,
       offset: offset,
       transaction: transaction,
       lockMode: lockMode,
@@ -422,6 +429,69 @@ class EventDocumentRepository {
   }) async {
     return session.db.insertRow<EventDocument>(
       row,
+      transaction: transaction,
+    );
+  }
+
+  /// Upserts all [EventDocument]s in the list and returns the resulting rows.
+  ///
+  /// If a row conflicts on the given [conflictColumns], the existing row is
+  /// updated with the new values. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies to rows matching the
+  /// given expression. Conflicting rows that don't match are skipped and not
+  /// returned, so the resulting list may be shorter than [rows].
+  ///
+  /// The returned [EventDocument]s will have their `id` fields set.
+  ///
+  /// This is an atomic operation, meaning that if one of the rows fails,
+  /// none of the rows will be affected.
+  Future<List<EventDocument>> upsert(
+    _i1.DatabaseSession session,
+    List<EventDocument> rows, {
+    required _i1.ColumnSelections<EventDocumentTable> conflictColumns,
+    _i1.ColumnSelections<EventDocumentTable>? updateColumns,
+    _i1.WhereExpressionBuilder<EventDocumentTable>? updateWhere,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.upsert<EventDocument>(
+      rows,
+      conflictColumns: conflictColumns(EventDocument.t),
+      updateColumns: updateColumns?.call(EventDocument.t),
+      updateWhere: updateWhere?.call(EventDocument.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Upserts a single [EventDocument] and returns the resulting row.
+  ///
+  /// If the row conflicts on the given [conflictColumns], the existing row is
+  /// updated. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies when the existing
+  /// row matches the expression. Returns `null` if no row was affected — for
+  /// example when [updateWhere] does not match the conflicting row.
+  ///
+  /// The returned [EventDocument] will have its `id` field set.
+  Future<EventDocument?> upsertRow(
+    _i1.DatabaseSession session,
+    EventDocument row, {
+    required _i1.ColumnSelections<EventDocumentTable> conflictColumns,
+    _i1.ColumnSelections<EventDocumentTable>? updateColumns,
+    _i1.WhereExpressionBuilder<EventDocumentTable>? updateWhere,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.upsertRow<EventDocument>(
+      row,
+      conflictColumns: conflictColumns(EventDocument.t),
+      updateColumns: updateColumns?.call(EventDocument.t),
+      updateWhere: updateWhere?.call(EventDocument.t),
       transaction: transaction,
     );
   }
@@ -485,6 +555,7 @@ class EventDocumentRepository {
     int? offset,
     _i1.OrderByBuilder<EventDocumentTable>? orderBy,
     _i1.OrderByListBuilder<EventDocumentTable>? orderByList,
+    @Deprecated('Use desc() on the orderBy column instead.')
     bool orderDescending = false,
     _i1.Transaction? transaction,
   }) async {
@@ -495,21 +566,34 @@ class EventDocumentRepository {
       offset: offset,
       orderBy: orderBy?.call(EventDocument.t),
       orderByList: orderByList?.call(EventDocument.t),
-      orderDescending: orderDescending,
+      orderDescending: // ignore: deprecated_member_use
+          orderDescending,
       transaction: transaction,
     );
   }
 
   /// Deletes all [EventDocument]s in the list and returns the deleted rows.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
   Future<List<EventDocument>> delete(
     _i1.DatabaseSession session,
     List<EventDocument> rows, {
+    _i1.OrderByBuilder<EventDocumentTable>? orderBy,
+    @Deprecated('Use desc() on the orderBy column instead.')
+    bool orderDescending = false,
+    _i1.OrderByListBuilder<EventDocumentTable>? orderByList,
     _i1.Transaction? transaction,
   }) async {
     return session.db.delete<EventDocument>(
       rows,
+      orderBy: orderBy?.call(EventDocument.t),
+      orderByList: orderByList?.call(EventDocument.t),
+      orderDescending: // ignore: deprecated_member_use
+          orderDescending,
       transaction: transaction,
     );
   }
@@ -527,13 +611,24 @@ class EventDocumentRepository {
   }
 
   /// Deletes all rows matching the [where] expression.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
   Future<List<EventDocument>> deleteWhere(
     _i1.DatabaseSession session, {
     required _i1.WhereExpressionBuilder<EventDocumentTable> where,
+    _i1.OrderByBuilder<EventDocumentTable>? orderBy,
+    @Deprecated('Use desc() on the orderBy column instead.')
+    bool orderDescending = false,
+    _i1.OrderByListBuilder<EventDocumentTable>? orderByList,
     _i1.Transaction? transaction,
   }) async {
     return session.db.deleteWhere<EventDocument>(
       where: where(EventDocument.t),
+      orderBy: orderBy?.call(EventDocument.t),
+      orderByList: orderByList?.call(EventDocument.t),
+      orderDescending: // ignore: deprecated_member_use
+          orderDescending,
       transaction: transaction,
     );
   }

@@ -32,9 +32,12 @@ database:
   host: localhost
   # port: 8090
   # name: alpine_pod
-  port: 9090
+  # port: 9090
+  port: 8090
   name: alpine_pod_test
   user: postgres
+  dataPath: .serverpod/development/pgdata
+
   #requireSsl: true # defaults to false
   #isUnixSocket: true # defaults to false
 

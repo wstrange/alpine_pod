@@ -8,7 +8,7 @@
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
 // ignore_for_file: invalid_use_of_internal_member
-// ignore_for_file: unnecessary_null_comparison
+// ignore_for_file: dead_code, unnecessary_null_comparison
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
@@ -265,6 +265,7 @@ abstract class Member implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     int? limit,
     int? offset,
     _i1.OrderByBuilder<MemberTable>? orderBy,
+    @Deprecated('Use desc() on the orderBy column instead.')
     bool orderDescending = false,
     _i1.OrderByListBuilder<MemberTable>? orderByList,
     MemberInclude? include,
@@ -274,7 +275,8 @@ abstract class Member implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       limit: limit,
       offset: offset,
       orderBy: orderBy?.call(Member.t),
-      orderDescending: orderDescending,
+      orderDescending: // ignore: deprecated_member_use_from_same_package
+          orderDescending,
       orderByList: orderByList?.call(Member.t),
       include: include,
     );
@@ -753,6 +755,7 @@ class MemberIncludeList extends _i1.IncludeList {
     super.limit,
     super.offset,
     super.orderBy,
+    @Deprecated('Use desc() on the orderBy column instead.')
     super.orderDescending,
     super.orderByList,
     super.include,
@@ -802,6 +805,7 @@ class MemberRepository {
     int? limit,
     int? offset,
     _i1.OrderByBuilder<MemberTable>? orderBy,
+    @Deprecated('Use desc() on the orderBy column instead.')
     bool orderDescending = false,
     _i1.OrderByListBuilder<MemberTable>? orderByList,
     _i1.Transaction? transaction,
@@ -813,7 +817,8 @@ class MemberRepository {
       where: where?.call(Member.t),
       orderBy: orderBy?.call(Member.t),
       orderByList: orderByList?.call(Member.t),
-      orderDescending: orderDescending,
+      orderDescending: // ignore: deprecated_member_use
+          orderDescending,
       limit: limit,
       offset: offset,
       transaction: transaction,
@@ -845,6 +850,7 @@ class MemberRepository {
     _i1.WhereExpressionBuilder<MemberTable>? where,
     int? offset,
     _i1.OrderByBuilder<MemberTable>? orderBy,
+    @Deprecated('Use desc() on the orderBy column instead.')
     bool orderDescending = false,
     _i1.OrderByListBuilder<MemberTable>? orderByList,
     _i1.Transaction? transaction,
@@ -856,7 +862,8 @@ class MemberRepository {
       where: where?.call(Member.t),
       orderBy: orderBy?.call(Member.t),
       orderByList: orderByList?.call(Member.t),
-      orderDescending: orderDescending,
+      orderDescending: // ignore: deprecated_member_use
+          orderDescending,
       offset: offset,
       transaction: transaction,
       include: include,
@@ -920,6 +927,69 @@ class MemberRepository {
     );
   }
 
+  /// Upserts all [Member]s in the list and returns the resulting rows.
+  ///
+  /// If a row conflicts on the given [conflictColumns], the existing row is
+  /// updated with the new values. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies to rows matching the
+  /// given expression. Conflicting rows that don't match are skipped and not
+  /// returned, so the resulting list may be shorter than [rows].
+  ///
+  /// The returned [Member]s will have their `id` fields set.
+  ///
+  /// This is an atomic operation, meaning that if one of the rows fails,
+  /// none of the rows will be affected.
+  Future<List<Member>> upsert(
+    _i1.DatabaseSession session,
+    List<Member> rows, {
+    required _i1.ColumnSelections<MemberTable> conflictColumns,
+    _i1.ColumnSelections<MemberTable>? updateColumns,
+    _i1.WhereExpressionBuilder<MemberTable>? updateWhere,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.upsert<Member>(
+      rows,
+      conflictColumns: conflictColumns(Member.t),
+      updateColumns: updateColumns?.call(Member.t),
+      updateWhere: updateWhere?.call(Member.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Upserts a single [Member] and returns the resulting row.
+  ///
+  /// If the row conflicts on the given [conflictColumns], the existing row is
+  /// updated. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies when the existing
+  /// row matches the expression. Returns `null` if no row was affected — for
+  /// example when [updateWhere] does not match the conflicting row.
+  ///
+  /// The returned [Member] will have its `id` field set.
+  Future<Member?> upsertRow(
+    _i1.DatabaseSession session,
+    Member row, {
+    required _i1.ColumnSelections<MemberTable> conflictColumns,
+    _i1.ColumnSelections<MemberTable>? updateColumns,
+    _i1.WhereExpressionBuilder<MemberTable>? updateWhere,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.upsertRow<Member>(
+      row,
+      conflictColumns: conflictColumns(Member.t),
+      updateColumns: updateColumns?.call(Member.t),
+      updateWhere: updateWhere?.call(Member.t),
+      transaction: transaction,
+    );
+  }
+
   /// Updates all [Member]s in the list and returns the updated rows. If
   /// [columns] is provided, only those columns will be updated. Defaults to
   /// all columns.
@@ -979,6 +1049,7 @@ class MemberRepository {
     int? offset,
     _i1.OrderByBuilder<MemberTable>? orderBy,
     _i1.OrderByListBuilder<MemberTable>? orderByList,
+    @Deprecated('Use desc() on the orderBy column instead.')
     bool orderDescending = false,
     _i1.Transaction? transaction,
   }) async {
@@ -989,21 +1060,34 @@ class MemberRepository {
       offset: offset,
       orderBy: orderBy?.call(Member.t),
       orderByList: orderByList?.call(Member.t),
-      orderDescending: orderDescending,
+      orderDescending: // ignore: deprecated_member_use
+          orderDescending,
       transaction: transaction,
     );
   }
 
   /// Deletes all [Member]s in the list and returns the deleted rows.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
   Future<List<Member>> delete(
     _i1.DatabaseSession session,
     List<Member> rows, {
+    _i1.OrderByBuilder<MemberTable>? orderBy,
+    @Deprecated('Use desc() on the orderBy column instead.')
+    bool orderDescending = false,
+    _i1.OrderByListBuilder<MemberTable>? orderByList,
     _i1.Transaction? transaction,
   }) async {
     return session.db.delete<Member>(
       rows,
+      orderBy: orderBy?.call(Member.t),
+      orderByList: orderByList?.call(Member.t),
+      orderDescending: // ignore: deprecated_member_use
+          orderDescending,
       transaction: transaction,
     );
   }
@@ -1021,13 +1105,24 @@ class MemberRepository {
   }
 
   /// Deletes all rows matching the [where] expression.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
   Future<List<Member>> deleteWhere(
     _i1.DatabaseSession session, {
     required _i1.WhereExpressionBuilder<MemberTable> where,
+    _i1.OrderByBuilder<MemberTable>? orderBy,
+    @Deprecated('Use desc() on the orderBy column instead.')
+    bool orderDescending = false,
+    _i1.OrderByListBuilder<MemberTable>? orderByList,
     _i1.Transaction? transaction,
   }) async {
     return session.db.deleteWhere<Member>(
       where: where(Member.t),
+      orderBy: orderBy?.call(Member.t),
+      orderByList: orderByList?.call(Member.t),
+      orderDescending: // ignore: deprecated_member_use
+          orderDescending,
       transaction: transaction,
     );
   }

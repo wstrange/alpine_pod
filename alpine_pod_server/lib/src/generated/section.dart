@@ -101,6 +101,7 @@ abstract class Section
     int? limit,
     int? offset,
     _i1.OrderByBuilder<SectionTable>? orderBy,
+    @Deprecated('Use desc() on the orderBy column instead.')
     bool orderDescending = false,
     _i1.OrderByListBuilder<SectionTable>? orderByList,
     SectionInclude? include,
@@ -110,7 +111,8 @@ abstract class Section
       limit: limit,
       offset: offset,
       orderBy: orderBy?.call(Section.t),
-      orderDescending: orderDescending,
+      orderDescending: // ignore: deprecated_member_use_from_same_package
+          orderDescending,
       orderByList: orderByList?.call(Section.t),
       include: include,
     );
@@ -241,6 +243,7 @@ class SectionIncludeList extends _i1.IncludeList {
     super.limit,
     super.offset,
     super.orderBy,
+    @Deprecated('Use desc() on the orderBy column instead.')
     super.orderDescending,
     super.orderByList,
     super.include,
@@ -286,6 +289,7 @@ class SectionRepository {
     int? limit,
     int? offset,
     _i1.OrderByBuilder<SectionTable>? orderBy,
+    @Deprecated('Use desc() on the orderBy column instead.')
     bool orderDescending = false,
     _i1.OrderByListBuilder<SectionTable>? orderByList,
     _i1.Transaction? transaction,
@@ -296,7 +300,8 @@ class SectionRepository {
       where: where?.call(Section.t),
       orderBy: orderBy?.call(Section.t),
       orderByList: orderByList?.call(Section.t),
-      orderDescending: orderDescending,
+      orderDescending: // ignore: deprecated_member_use
+          orderDescending,
       limit: limit,
       offset: offset,
       transaction: transaction,
@@ -327,6 +332,7 @@ class SectionRepository {
     _i1.WhereExpressionBuilder<SectionTable>? where,
     int? offset,
     _i1.OrderByBuilder<SectionTable>? orderBy,
+    @Deprecated('Use desc() on the orderBy column instead.')
     bool orderDescending = false,
     _i1.OrderByListBuilder<SectionTable>? orderByList,
     _i1.Transaction? transaction,
@@ -337,7 +343,8 @@ class SectionRepository {
       where: where?.call(Section.t),
       orderBy: orderBy?.call(Section.t),
       orderByList: orderByList?.call(Section.t),
-      orderDescending: orderDescending,
+      orderDescending: // ignore: deprecated_member_use
+          orderDescending,
       offset: offset,
       transaction: transaction,
       lockMode: lockMode,
@@ -394,6 +401,69 @@ class SectionRepository {
   }) async {
     return session.db.insertRow<Section>(
       row,
+      transaction: transaction,
+    );
+  }
+
+  /// Upserts all [Section]s in the list and returns the resulting rows.
+  ///
+  /// If a row conflicts on the given [conflictColumns], the existing row is
+  /// updated with the new values. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies to rows matching the
+  /// given expression. Conflicting rows that don't match are skipped and not
+  /// returned, so the resulting list may be shorter than [rows].
+  ///
+  /// The returned [Section]s will have their `id` fields set.
+  ///
+  /// This is an atomic operation, meaning that if one of the rows fails,
+  /// none of the rows will be affected.
+  Future<List<Section>> upsert(
+    _i1.DatabaseSession session,
+    List<Section> rows, {
+    required _i1.ColumnSelections<SectionTable> conflictColumns,
+    _i1.ColumnSelections<SectionTable>? updateColumns,
+    _i1.WhereExpressionBuilder<SectionTable>? updateWhere,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.upsert<Section>(
+      rows,
+      conflictColumns: conflictColumns(Section.t),
+      updateColumns: updateColumns?.call(Section.t),
+      updateWhere: updateWhere?.call(Section.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Upserts a single [Section] and returns the resulting row.
+  ///
+  /// If the row conflicts on the given [conflictColumns], the existing row is
+  /// updated. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies when the existing
+  /// row matches the expression. Returns `null` if no row was affected — for
+  /// example when [updateWhere] does not match the conflicting row.
+  ///
+  /// The returned [Section] will have its `id` field set.
+  Future<Section?> upsertRow(
+    _i1.DatabaseSession session,
+    Section row, {
+    required _i1.ColumnSelections<SectionTable> conflictColumns,
+    _i1.ColumnSelections<SectionTable>? updateColumns,
+    _i1.WhereExpressionBuilder<SectionTable>? updateWhere,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.upsertRow<Section>(
+      row,
+      conflictColumns: conflictColumns(Section.t),
+      updateColumns: updateColumns?.call(Section.t),
+      updateWhere: updateWhere?.call(Section.t),
       transaction: transaction,
     );
   }
@@ -457,6 +527,7 @@ class SectionRepository {
     int? offset,
     _i1.OrderByBuilder<SectionTable>? orderBy,
     _i1.OrderByListBuilder<SectionTable>? orderByList,
+    @Deprecated('Use desc() on the orderBy column instead.')
     bool orderDescending = false,
     _i1.Transaction? transaction,
   }) async {
@@ -467,21 +538,34 @@ class SectionRepository {
       offset: offset,
       orderBy: orderBy?.call(Section.t),
       orderByList: orderByList?.call(Section.t),
-      orderDescending: orderDescending,
+      orderDescending: // ignore: deprecated_member_use
+          orderDescending,
       transaction: transaction,
     );
   }
 
   /// Deletes all [Section]s in the list and returns the deleted rows.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
   Future<List<Section>> delete(
     _i1.DatabaseSession session,
     List<Section> rows, {
+    _i1.OrderByBuilder<SectionTable>? orderBy,
+    @Deprecated('Use desc() on the orderBy column instead.')
+    bool orderDescending = false,
+    _i1.OrderByListBuilder<SectionTable>? orderByList,
     _i1.Transaction? transaction,
   }) async {
     return session.db.delete<Section>(
       rows,
+      orderBy: orderBy?.call(Section.t),
+      orderByList: orderByList?.call(Section.t),
+      orderDescending: // ignore: deprecated_member_use
+          orderDescending,
       transaction: transaction,
     );
   }
@@ -499,13 +583,24 @@ class SectionRepository {
   }
 
   /// Deletes all rows matching the [where] expression.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
   Future<List<Section>> deleteWhere(
     _i1.DatabaseSession session, {
     required _i1.WhereExpressionBuilder<SectionTable> where,
+    _i1.OrderByBuilder<SectionTable>? orderBy,
+    @Deprecated('Use desc() on the orderBy column instead.')
+    bool orderDescending = false,
+    _i1.OrderByListBuilder<SectionTable>? orderByList,
     _i1.Transaction? transaction,
   }) async {
     return session.db.deleteWhere<Section>(
       where: where(Section.t),
+      orderBy: orderBy?.call(Section.t),
+      orderByList: orderByList?.call(Section.t),
+      orderDescending: // ignore: deprecated_member_use
+          orderDescending,
       transaction: transaction,
     );
   }

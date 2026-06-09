@@ -87,25 +87,30 @@ This is a multi-tenant application to manage users who belong to one more alpine
 
 ## Instructions on how to generate the schema, server and client code
 
-To generate the database schema, server code, and client code for the alpine_pod application, follow these steps:
+TThe user starts the server and Flutter app with `serverpod start`. NEVER start the server yourself, instead STOP and ask the user to start it. When the server is running, interact with it through the `serverpod` MCP. `serverpod start` automatically handles hot reload for both the server and the app (as soon as files change).
 
-* These commands are run from the server directory: alpine_pod_server
-* To run the development database,from the alpine_pod_sever directory, use the following command:
-  * `docker compose up -d`
-* Anytime a .spy.yaml file is changed, run the command `serverpod generate`.
-* Model files (example users.spy.yaml) are located in `lib/src/models/`
-* Generated protocol files are located in `lib/src/generated/` and `lib/src/generated/`
-* After making changes to the models, run the following commands to apply migrations to the database:
-  * `serverpod create-migration`
-    * This will create a new migration file based on the changes made to the models.
-  * `dart bin/main.dart --apply-migrations`
-  * Ask me before you apply migrations.
-  * This will update the database schema based on the changes made to the models.
-* Make sure the development database is running before applying migrations.
-* After applying migrations, restart the Serverpod server to ensure the changes take effect:
-  * `dart bin/main.dart`
+ALWAYS use the MCP server instead of the command line. Use the MCP server to:
 
-If you make any changes make sure they are in a new git branch.
+- `create_migration` and `apply_migrations` for database (after you change data models).
+- `tail_server_logs` to read logs from the server.
+- `tail_flutter_logs` to read raw stdout/stderr from the Flutter app.
+- `hot_restart` will restart the server and the Flutter app. ALWAYS call it after doing changes in the Flutter app that may not work with normal hot reload (which is automatically applied).
+- `get_flutter_app_dtd` (Dart tooling daemon) for connecting to the app through the `dart` MCP.
+
+Checklist after doing changes:
+
+1. `dart analyze` (`dart` MCP)
+2. `dart format` (`dart` MCP)
+3. `create_migration` and `apply_migrations` (only if necessary)
+4. Do `serverpod` MCP `hot_restart` if required (hot reload is done automatically). Will also hot restart Flutter app
+5. Run tests, if applicable (`dart` MCP)
+6. Check `serverpod` MCP `tail_server_logs` and `tail_flutter_logs` for any issues.
+
+If the user asks you to test the app:
+
+1. Use `get_flutter_app_dtd` (`serverpod` MCP) to get the Flutter app's DTD
+2. Pass the DTD to `connect_dart_tooling_daemon` (`dart` MCP) to connect to the app
+3. Use `flutter_driver` (`dart` MCP) to navigate through the app
 
 ## UI
 

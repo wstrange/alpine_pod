@@ -31,9 +31,10 @@ webServer:
 # This is the database setup for your test server.
 database:
   host: localhost
-  port: 9090
+  port: 8090
   name: alpine_pod_test
   user: postgres
+  dataPath: .serverpod/development/pgdata
 
 # This is the setup for your Redis test instance.
 redis:

@@ -8,7 +8,7 @@
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
 // ignore_for_file: invalid_use_of_internal_member
-// ignore_for_file: unnecessary_null_comparison
+// ignore_for_file: dead_code, unnecessary_null_comparison
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
@@ -160,6 +160,7 @@ abstract class UserNotification
     int? limit,
     int? offset,
     _i1.OrderByBuilder<UserNotificationTable>? orderBy,
+    @Deprecated('Use desc() on the orderBy column instead.')
     bool orderDescending = false,
     _i1.OrderByListBuilder<UserNotificationTable>? orderByList,
     UserNotificationInclude? include,
@@ -169,7 +170,8 @@ abstract class UserNotification
       limit: limit,
       offset: offset,
       orderBy: orderBy?.call(UserNotification.t),
-      orderDescending: orderDescending,
+      orderDescending: // ignore: deprecated_member_use_from_same_package
+          orderDescending,
       orderByList: orderByList?.call(UserNotification.t),
       include: include,
     );
@@ -403,6 +405,7 @@ class UserNotificationIncludeList extends _i1.IncludeList {
     super.limit,
     super.offset,
     super.orderBy,
+    @Deprecated('Use desc() on the orderBy column instead.')
     super.orderDescending,
     super.orderByList,
     super.include,
@@ -450,6 +453,7 @@ class UserNotificationRepository {
     int? limit,
     int? offset,
     _i1.OrderByBuilder<UserNotificationTable>? orderBy,
+    @Deprecated('Use desc() on the orderBy column instead.')
     bool orderDescending = false,
     _i1.OrderByListBuilder<UserNotificationTable>? orderByList,
     _i1.Transaction? transaction,
@@ -461,7 +465,8 @@ class UserNotificationRepository {
       where: where?.call(UserNotification.t),
       orderBy: orderBy?.call(UserNotification.t),
       orderByList: orderByList?.call(UserNotification.t),
-      orderDescending: orderDescending,
+      orderDescending: // ignore: deprecated_member_use
+          orderDescending,
       limit: limit,
       offset: offset,
       transaction: transaction,
@@ -493,6 +498,7 @@ class UserNotificationRepository {
     _i1.WhereExpressionBuilder<UserNotificationTable>? where,
     int? offset,
     _i1.OrderByBuilder<UserNotificationTable>? orderBy,
+    @Deprecated('Use desc() on the orderBy column instead.')
     bool orderDescending = false,
     _i1.OrderByListBuilder<UserNotificationTable>? orderByList,
     _i1.Transaction? transaction,
@@ -504,7 +510,8 @@ class UserNotificationRepository {
       where: where?.call(UserNotification.t),
       orderBy: orderBy?.call(UserNotification.t),
       orderByList: orderByList?.call(UserNotification.t),
-      orderDescending: orderDescending,
+      orderDescending: // ignore: deprecated_member_use
+          orderDescending,
       offset: offset,
       transaction: transaction,
       include: include,
@@ -564,6 +571,69 @@ class UserNotificationRepository {
   }) async {
     return session.db.insertRow<UserNotification>(
       row,
+      transaction: transaction,
+    );
+  }
+
+  /// Upserts all [UserNotification]s in the list and returns the resulting rows.
+  ///
+  /// If a row conflicts on the given [conflictColumns], the existing row is
+  /// updated with the new values. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies to rows matching the
+  /// given expression. Conflicting rows that don't match are skipped and not
+  /// returned, so the resulting list may be shorter than [rows].
+  ///
+  /// The returned [UserNotification]s will have their `id` fields set.
+  ///
+  /// This is an atomic operation, meaning that if one of the rows fails,
+  /// none of the rows will be affected.
+  Future<List<UserNotification>> upsert(
+    _i1.DatabaseSession session,
+    List<UserNotification> rows, {
+    required _i1.ColumnSelections<UserNotificationTable> conflictColumns,
+    _i1.ColumnSelections<UserNotificationTable>? updateColumns,
+    _i1.WhereExpressionBuilder<UserNotificationTable>? updateWhere,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.upsert<UserNotification>(
+      rows,
+      conflictColumns: conflictColumns(UserNotification.t),
+      updateColumns: updateColumns?.call(UserNotification.t),
+      updateWhere: updateWhere?.call(UserNotification.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Upserts a single [UserNotification] and returns the resulting row.
+  ///
+  /// If the row conflicts on the given [conflictColumns], the existing row is
+  /// updated. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies when the existing
+  /// row matches the expression. Returns `null` if no row was affected — for
+  /// example when [updateWhere] does not match the conflicting row.
+  ///
+  /// The returned [UserNotification] will have its `id` field set.
+  Future<UserNotification?> upsertRow(
+    _i1.DatabaseSession session,
+    UserNotification row, {
+    required _i1.ColumnSelections<UserNotificationTable> conflictColumns,
+    _i1.ColumnSelections<UserNotificationTable>? updateColumns,
+    _i1.WhereExpressionBuilder<UserNotificationTable>? updateWhere,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.upsertRow<UserNotification>(
+      row,
+      conflictColumns: conflictColumns(UserNotification.t),
+      updateColumns: updateColumns?.call(UserNotification.t),
+      updateWhere: updateWhere?.call(UserNotification.t),
       transaction: transaction,
     );
   }
@@ -629,6 +699,7 @@ class UserNotificationRepository {
     int? offset,
     _i1.OrderByBuilder<UserNotificationTable>? orderBy,
     _i1.OrderByListBuilder<UserNotificationTable>? orderByList,
+    @Deprecated('Use desc() on the orderBy column instead.')
     bool orderDescending = false,
     _i1.Transaction? transaction,
   }) async {
@@ -639,21 +710,34 @@ class UserNotificationRepository {
       offset: offset,
       orderBy: orderBy?.call(UserNotification.t),
       orderByList: orderByList?.call(UserNotification.t),
-      orderDescending: orderDescending,
+      orderDescending: // ignore: deprecated_member_use
+          orderDescending,
       transaction: transaction,
     );
   }
 
   /// Deletes all [UserNotification]s in the list and returns the deleted rows.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
   Future<List<UserNotification>> delete(
     _i1.DatabaseSession session,
     List<UserNotification> rows, {
+    _i1.OrderByBuilder<UserNotificationTable>? orderBy,
+    @Deprecated('Use desc() on the orderBy column instead.')
+    bool orderDescending = false,
+    _i1.OrderByListBuilder<UserNotificationTable>? orderByList,
     _i1.Transaction? transaction,
   }) async {
     return session.db.delete<UserNotification>(
       rows,
+      orderBy: orderBy?.call(UserNotification.t),
+      orderByList: orderByList?.call(UserNotification.t),
+      orderDescending: // ignore: deprecated_member_use
+          orderDescending,
       transaction: transaction,
     );
   }
@@ -671,13 +755,24 @@ class UserNotificationRepository {
   }
 
   /// Deletes all rows matching the [where] expression.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
   Future<List<UserNotification>> deleteWhere(
     _i1.DatabaseSession session, {
     required _i1.WhereExpressionBuilder<UserNotificationTable> where,
+    _i1.OrderByBuilder<UserNotificationTable>? orderBy,
+    @Deprecated('Use desc() on the orderBy column instead.')
+    bool orderDescending = false,
+    _i1.OrderByListBuilder<UserNotificationTable>? orderByList,
     _i1.Transaction? transaction,
   }) async {
     return session.db.deleteWhere<UserNotification>(
       where: where(UserNotification.t),
+      orderBy: orderBy?.call(UserNotification.t),
+      orderByList: orderByList?.call(UserNotification.t),
+      orderDescending: // ignore: deprecated_member_use
+          orderDescending,
       transaction: transaction,
     );
   }

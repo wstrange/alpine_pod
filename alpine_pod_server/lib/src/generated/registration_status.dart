@@ -16,7 +16,8 @@ enum RegistrationStatus implements _i1.SerializableModel {
   pending,
   confirmed,
   cancelled,
-  waitlisted;
+  waitlisted
+  ;
 
   static RegistrationStatus fromJson(String name) {
     switch (name) {

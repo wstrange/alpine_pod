@@ -26,7 +26,8 @@ import 'package:alpine_pod_client/src/protocol/section_membership.dart' as _i11;
 import 'package:alpine_pod_client/src/protocol/user_notification.dart' as _i12;
 import 'package:alpine_pod_client/src/protocol/registration_status.dart'
     as _i13;
-import 'protocol.dart' as _i14;
+import 'package:http/http.dart' as _i14;
+import 'protocol.dart' as _i15;
 
 /// {@category Endpoint}
 class EndpointEmailIdp extends _i1.EndpointEmailIdpBase {
@@ -252,6 +253,28 @@ class EndpointGoogleIdp extends _i1.EndpointGoogleIdpBase {
     {
       'idToken': idToken,
       'accessToken': accessToken,
+    },
+  );
+
+  /// Validates a Google authorization code from the web OAuth2 PKCE flow and
+  /// either logs in the associated user or creates a new account.
+  ///
+  /// This is the web counterpart of [login], which accepts an ID token directly
+  /// (used on native platforms via the `google_sign_in` package).
+  ///
+  /// If a new user is created an associated [UserProfile] is also created.
+  @override
+  _i3.Future<_i4.AuthSuccess> loginWithCode({
+    required String code,
+    required String codeVerifier,
+    required String redirectUri,
+  }) => caller.callServerEndpoint<_i4.AuthSuccess>(
+    'googleIdp',
+    'loginWithCode',
+    {
+      'code': code,
+      'codeVerifier': codeVerifier,
+      'redirectUri': redirectUri,
     },
   );
 
@@ -835,9 +858,10 @@ class Client extends _i2.ServerpodClientShared {
     onFailedCall,
     Function(_i2.MethodCallContext)? onSucceededCall,
     bool? disconnectStreamsOnLostInternetConnection,
+    _i14.Client? httpClientOverride,
   }) : super(
          host,
-         _i14.Protocol(),
+         _i15.Protocol(),
          securityContext: securityContext,
          streamingConnectionTimeout: streamingConnectionTimeout,
          connectionTimeout: connectionTimeout,
@@ -845,6 +869,7 @@ class Client extends _i2.ServerpodClientShared {
          onSucceededCall: onSucceededCall,
          disconnectStreamsOnLostInternetConnection:
              disconnectStreamsOnLostInternetConnection,
+         httpClientOverride: httpClientOverride,
        ) {
     emailIdp = EndpointEmailIdp(this);
     refreshJwtTokens = EndpointRefreshJwtTokens(this);

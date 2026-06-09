@@ -8,7 +8,7 @@
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
 // ignore_for_file: invalid_use_of_internal_member
-// ignore_for_file: unnecessary_null_comparison
+// ignore_for_file: dead_code, unnecessary_null_comparison
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
@@ -125,6 +125,7 @@ abstract class EventManager
     int? limit,
     int? offset,
     _i1.OrderByBuilder<EventManagerTable>? orderBy,
+    @Deprecated('Use desc() on the orderBy column instead.')
     bool orderDescending = false,
     _i1.OrderByListBuilder<EventManagerTable>? orderByList,
     EventManagerInclude? include,
@@ -134,7 +135,8 @@ abstract class EventManager
       limit: limit,
       offset: offset,
       orderBy: orderBy?.call(EventManager.t),
-      orderDescending: orderDescending,
+      orderDescending: // ignore: deprecated_member_use_from_same_package
+          orderDescending,
       orderByList: orderByList?.call(EventManager.t),
       include: include,
     );
@@ -313,6 +315,7 @@ class EventManagerIncludeList extends _i1.IncludeList {
     super.limit,
     super.offset,
     super.orderBy,
+    @Deprecated('Use desc() on the orderBy column instead.')
     super.orderDescending,
     super.orderByList,
     super.include,
@@ -360,6 +363,7 @@ class EventManagerRepository {
     int? limit,
     int? offset,
     _i1.OrderByBuilder<EventManagerTable>? orderBy,
+    @Deprecated('Use desc() on the orderBy column instead.')
     bool orderDescending = false,
     _i1.OrderByListBuilder<EventManagerTable>? orderByList,
     _i1.Transaction? transaction,
@@ -371,7 +375,8 @@ class EventManagerRepository {
       where: where?.call(EventManager.t),
       orderBy: orderBy?.call(EventManager.t),
       orderByList: orderByList?.call(EventManager.t),
-      orderDescending: orderDescending,
+      orderDescending: // ignore: deprecated_member_use
+          orderDescending,
       limit: limit,
       offset: offset,
       transaction: transaction,
@@ -403,6 +408,7 @@ class EventManagerRepository {
     _i1.WhereExpressionBuilder<EventManagerTable>? where,
     int? offset,
     _i1.OrderByBuilder<EventManagerTable>? orderBy,
+    @Deprecated('Use desc() on the orderBy column instead.')
     bool orderDescending = false,
     _i1.OrderByListBuilder<EventManagerTable>? orderByList,
     _i1.Transaction? transaction,
@@ -414,7 +420,8 @@ class EventManagerRepository {
       where: where?.call(EventManager.t),
       orderBy: orderBy?.call(EventManager.t),
       orderByList: orderByList?.call(EventManager.t),
-      orderDescending: orderDescending,
+      orderDescending: // ignore: deprecated_member_use
+          orderDescending,
       offset: offset,
       transaction: transaction,
       include: include,
@@ -478,6 +485,69 @@ class EventManagerRepository {
     );
   }
 
+  /// Upserts all [EventManager]s in the list and returns the resulting rows.
+  ///
+  /// If a row conflicts on the given [conflictColumns], the existing row is
+  /// updated with the new values. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies to rows matching the
+  /// given expression. Conflicting rows that don't match are skipped and not
+  /// returned, so the resulting list may be shorter than [rows].
+  ///
+  /// The returned [EventManager]s will have their `id` fields set.
+  ///
+  /// This is an atomic operation, meaning that if one of the rows fails,
+  /// none of the rows will be affected.
+  Future<List<EventManager>> upsert(
+    _i1.DatabaseSession session,
+    List<EventManager> rows, {
+    required _i1.ColumnSelections<EventManagerTable> conflictColumns,
+    _i1.ColumnSelections<EventManagerTable>? updateColumns,
+    _i1.WhereExpressionBuilder<EventManagerTable>? updateWhere,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.upsert<EventManager>(
+      rows,
+      conflictColumns: conflictColumns(EventManager.t),
+      updateColumns: updateColumns?.call(EventManager.t),
+      updateWhere: updateWhere?.call(EventManager.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Upserts a single [EventManager] and returns the resulting row.
+  ///
+  /// If the row conflicts on the given [conflictColumns], the existing row is
+  /// updated. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies when the existing
+  /// row matches the expression. Returns `null` if no row was affected — for
+  /// example when [updateWhere] does not match the conflicting row.
+  ///
+  /// The returned [EventManager] will have its `id` field set.
+  Future<EventManager?> upsertRow(
+    _i1.DatabaseSession session,
+    EventManager row, {
+    required _i1.ColumnSelections<EventManagerTable> conflictColumns,
+    _i1.ColumnSelections<EventManagerTable>? updateColumns,
+    _i1.WhereExpressionBuilder<EventManagerTable>? updateWhere,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.upsertRow<EventManager>(
+      row,
+      conflictColumns: conflictColumns(EventManager.t),
+      updateColumns: updateColumns?.call(EventManager.t),
+      updateWhere: updateWhere?.call(EventManager.t),
+      transaction: transaction,
+    );
+  }
+
   /// Updates all [EventManager]s in the list and returns the updated rows. If
   /// [columns] is provided, only those columns will be updated. Defaults to
   /// all columns.
@@ -537,6 +607,7 @@ class EventManagerRepository {
     int? offset,
     _i1.OrderByBuilder<EventManagerTable>? orderBy,
     _i1.OrderByListBuilder<EventManagerTable>? orderByList,
+    @Deprecated('Use desc() on the orderBy column instead.')
     bool orderDescending = false,
     _i1.Transaction? transaction,
   }) async {
@@ -547,21 +618,34 @@ class EventManagerRepository {
       offset: offset,
       orderBy: orderBy?.call(EventManager.t),
       orderByList: orderByList?.call(EventManager.t),
-      orderDescending: orderDescending,
+      orderDescending: // ignore: deprecated_member_use
+          orderDescending,
       transaction: transaction,
     );
   }
 
   /// Deletes all [EventManager]s in the list and returns the deleted rows.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
   Future<List<EventManager>> delete(
     _i1.DatabaseSession session,
     List<EventManager> rows, {
+    _i1.OrderByBuilder<EventManagerTable>? orderBy,
+    @Deprecated('Use desc() on the orderBy column instead.')
+    bool orderDescending = false,
+    _i1.OrderByListBuilder<EventManagerTable>? orderByList,
     _i1.Transaction? transaction,
   }) async {
     return session.db.delete<EventManager>(
       rows,
+      orderBy: orderBy?.call(EventManager.t),
+      orderByList: orderByList?.call(EventManager.t),
+      orderDescending: // ignore: deprecated_member_use
+          orderDescending,
       transaction: transaction,
     );
   }
@@ -579,13 +663,24 @@ class EventManagerRepository {
   }
 
   /// Deletes all rows matching the [where] expression.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
   Future<List<EventManager>> deleteWhere(
     _i1.DatabaseSession session, {
     required _i1.WhereExpressionBuilder<EventManagerTable> where,
+    _i1.OrderByBuilder<EventManagerTable>? orderBy,
+    @Deprecated('Use desc() on the orderBy column instead.')
+    bool orderDescending = false,
+    _i1.OrderByListBuilder<EventManagerTable>? orderByList,
     _i1.Transaction? transaction,
   }) async {
     return session.db.deleteWhere<EventManager>(
       where: where(EventManager.t),
+      orderBy: orderBy?.call(EventManager.t),
+      orderByList: orderByList?.call(EventManager.t),
+      orderDescending: // ignore: deprecated_member_use
+          orderDescending,
       transaction: transaction,
     );
   }

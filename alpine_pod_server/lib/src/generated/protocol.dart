@@ -57,12 +57,12 @@ export 'section_membership.dart';
 export 'user_notification.dart';
 export 'user_notification_preference.dart';
 
-class Protocol extends _i1.SerializationManagerServer {
+class Protocol extends _i1.DatabaseSerializationManager {
   Protocol._();
 
   factory Protocol() => _instance;
 
-  static final Protocol _instance = Protocol._();
+  static final Protocol _instance = Protocol._().._registerHostProtocols();
 
   static final List<_i2.TableDefinition> targetTableDefinitions = [
     _i2.TableDefinition(
@@ -76,7 +76,7 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.bigint,
           isNullable: false,
           dartType: 'int?',
-          columnDefault: 'nextval(\'event_documents_id_seq\'::regclass)',
+          columnDefault: 'serial',
         ),
         _i2.ColumnDefinition(
           name: 'eventId',
@@ -112,19 +112,6 @@ class Protocol extends _i1.SerializationManagerServer {
       foreignKeys: [],
       indexes: [
         _i2.IndexDefinition(
-          indexName: 'event_documents_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            ),
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        ),
-        _i2.IndexDefinition(
           indexName: 'event_document_idx',
           tableSpace: null,
           elements: [
@@ -151,7 +138,7 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.bigint,
           isNullable: false,
           dartType: 'int?',
-          columnDefault: 'nextval(\'event_managers_id_seq\'::regclass)',
+          columnDefault: 'serial',
         ),
         _i2.ColumnDefinition(
           name: 'eventId',
@@ -196,19 +183,6 @@ class Protocol extends _i1.SerializationManagerServer {
       ],
       indexes: [
         _i2.IndexDefinition(
-          indexName: 'event_managers_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            ),
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        ),
-        _i2.IndexDefinition(
           indexName: 'event_manager_idx',
           tableSpace: null,
           elements: [
@@ -239,7 +213,7 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.bigint,
           isNullable: false,
           dartType: 'int?',
-          columnDefault: 'nextval(\'event_registrations_id_seq\'::regclass)',
+          columnDefault: 'serial',
         ),
         _i2.ColumnDefinition(
           name: 'memberId',
@@ -307,7 +281,7 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.text,
           isNullable: false,
           dartType: 'String',
-          columnDefault: '\'N/A\'::text',
+          columnDefault: '\'N/A\'',
         ),
         _i2.ColumnDefinition(
           name: 'paymentAmount',
@@ -353,19 +327,6 @@ class Protocol extends _i1.SerializationManagerServer {
         ),
       ],
       indexes: [
-        _i2.IndexDefinition(
-          indexName: 'event_registrations_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            ),
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        ),
         _i2.IndexDefinition(
           indexName: 'user_event_idx',
           tableSpace: null,
@@ -414,7 +375,7 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.bigint,
           isNullable: false,
           dartType: 'int?',
-          columnDefault: 'nextval(\'event_templates_id_seq\'::regclass)',
+          columnDefault: 'serial',
         ),
         _i2.ColumnDefinition(
           name: 'name',
@@ -439,25 +400,11 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.text,
           isNullable: false,
           dartType: 'String',
-          columnDefault: '\'en\'::text',
+          columnDefault: '\'en\'',
         ),
       ],
       foreignKeys: [],
-      indexes: [
-        _i2.IndexDefinition(
-          indexName: 'event_templates_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            ),
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        ),
-      ],
+      indexes: [],
       managed: true,
     ),
     _i2.TableDefinition(
@@ -471,8 +418,7 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.bigint,
           isNullable: false,
           dartType: 'int?',
-          columnDefault:
-              'nextval(\'event_type_subscriptions_id_seq\'::regclass)',
+          columnDefault: 'serial',
         ),
         _i2.ColumnDefinition(
           name: 'userId',
@@ -500,19 +446,6 @@ class Protocol extends _i1.SerializationManagerServer {
         ),
       ],
       indexes: [
-        _i2.IndexDefinition(
-          indexName: 'event_type_subscriptions_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            ),
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        ),
         _i2.IndexDefinition(
           indexName: 'user_event_type_idx',
           tableSpace: null,
@@ -544,7 +477,7 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.bigint,
           isNullable: false,
           dartType: 'int?',
-          columnDefault: 'nextval(\'events_id_seq\'::regclass)',
+          columnDefault: 'serial',
         ),
         _i2.ColumnDefinition(
           name: 'title',
@@ -667,19 +600,6 @@ class Protocol extends _i1.SerializationManagerServer {
       ],
       indexes: [
         _i2.IndexDefinition(
-          indexName: 'events_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            ),
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        ),
-        _i2.IndexDefinition(
           indexName: 'upcoming_events_idx',
           tableSpace: null,
           elements: [
@@ -719,7 +639,7 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.bigint,
           isNullable: false,
           dartType: 'int?',
-          columnDefault: 'nextval(\'fcm_tokens_id_seq\'::regclass)',
+          columnDefault: 'serial',
         ),
         _i2.ColumnDefinition(
           name: 'userId',
@@ -744,7 +664,7 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.timestampWithoutTimeZone,
           isNullable: false,
           dartType: 'DateTime',
-          columnDefault: 'CURRENT_TIMESTAMP',
+          columnDefault: 'now',
         ),
       ],
       foreignKeys: [
@@ -760,19 +680,6 @@ class Protocol extends _i1.SerializationManagerServer {
         ),
       ],
       indexes: [
-        _i2.IndexDefinition(
-          indexName: 'fcm_tokens_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            ),
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        ),
         _i2.IndexDefinition(
           indexName: 'token_idx',
           tableSpace: null,
@@ -813,7 +720,7 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.bigint,
           isNullable: false,
           dartType: 'int?',
-          columnDefault: 'nextval(\'members_id_seq\'::regclass)',
+          columnDefault: 'serial',
         ),
         _i2.ColumnDefinition(
           name: 'userId',
@@ -862,7 +769,7 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.text,
           isNullable: false,
           dartType: 'String',
-          columnDefault: '\'active\'::text',
+          columnDefault: '\'active\'',
         ),
         _i2.ColumnDefinition(
           name: 'profilePictureUrl',
@@ -893,7 +800,7 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.timestampWithoutTimeZone,
           isNullable: false,
           dartType: 'DateTime',
-          columnDefault: '\'1970-01-01 00:00:00\'::timestamp without time zone',
+          columnDefault: '1970-01-01T00:00:00.000Z',
         ),
         _i2.ColumnDefinition(
           name: 'certifications',
@@ -906,14 +813,14 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.timestampWithoutTimeZone,
           isNullable: false,
           dartType: 'DateTime',
-          columnDefault: 'CURRENT_TIMESTAMP',
+          columnDefault: 'now',
         ),
         _i2.ColumnDefinition(
           name: 'updatedAt',
           columnType: _i2.ColumnType.timestampWithoutTimeZone,
           isNullable: false,
           dartType: 'DateTime',
-          columnDefault: 'CURRENT_TIMESTAMP',
+          columnDefault: 'now',
         ),
       ],
       foreignKeys: [
@@ -929,19 +836,6 @@ class Protocol extends _i1.SerializationManagerServer {
         ),
       ],
       indexes: [
-        _i2.IndexDefinition(
-          indexName: 'members_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            ),
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        ),
         _i2.IndexDefinition(
           indexName: 'authuser_idx',
           tableSpace: null,
@@ -982,7 +876,7 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.bigint,
           isNullable: false,
           dartType: 'int?',
-          columnDefault: 'nextval(\'notification_id_seq\'::regclass)',
+          columnDefault: 'serial',
         ),
         _i2.ColumnDefinition(
           name: 'templateId',
@@ -1021,21 +915,7 @@ class Protocol extends _i1.SerializationManagerServer {
           matchType: null,
         ),
       ],
-      indexes: [
-        _i2.IndexDefinition(
-          indexName: 'notification_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            ),
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        ),
-      ],
+      indexes: [],
       managed: true,
     ),
     _i2.TableDefinition(
@@ -1049,7 +929,7 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.bigint,
           isNullable: false,
           dartType: 'int?',
-          columnDefault: 'nextval(\'notification_template_id_seq\'::regclass)',
+          columnDefault: 'serial',
         ),
         _i2.ColumnDefinition(
           name: 'name',
@@ -1091,19 +971,6 @@ class Protocol extends _i1.SerializationManagerServer {
       foreignKeys: [],
       indexes: [
         _i2.IndexDefinition(
-          indexName: 'notification_template_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            ),
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        ),
-        _i2.IndexDefinition(
           indexName: 'name_idx',
           tableSpace: null,
           elements: [
@@ -1130,7 +997,7 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.bigint,
           isNullable: false,
           dartType: 'int?',
-          columnDefault: 'nextval(\'section_memberships_id_seq\'::regclass)',
+          columnDefault: 'serial',
         ),
         _i2.ColumnDefinition(
           name: 'memberId',
@@ -1155,7 +1022,7 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.timestampWithoutTimeZone,
           isNullable: false,
           dartType: 'DateTime',
-          columnDefault: 'CURRENT_TIMESTAMP',
+          columnDefault: 'now',
         ),
         _i2.ColumnDefinition(
           name: 'sourceSystem',
@@ -1194,19 +1061,6 @@ class Protocol extends _i1.SerializationManagerServer {
       ],
       indexes: [
         _i2.IndexDefinition(
-          indexName: 'section_memberships_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            ),
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        ),
-        _i2.IndexDefinition(
           indexName: 'user_section_unique_idx',
           tableSpace: null,
           elements: [
@@ -1237,7 +1091,7 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.bigint,
           isNullable: false,
           dartType: 'int?',
-          columnDefault: 'nextval(\'sections_id_seq\'::regclass)',
+          columnDefault: 'serial',
         ),
         _i2.ColumnDefinition(
           name: 'name',
@@ -1267,19 +1121,6 @@ class Protocol extends _i1.SerializationManagerServer {
       foreignKeys: [],
       indexes: [
         _i2.IndexDefinition(
-          indexName: 'sections_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            ),
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        ),
-        _i2.IndexDefinition(
           indexName: 'idx_sections_name',
           tableSpace: null,
           elements: [
@@ -1306,7 +1147,7 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.bigint,
           isNullable: false,
           dartType: 'int?',
-          columnDefault: 'nextval(\'user_notification_id_seq\'::regclass)',
+          columnDefault: 'serial',
         ),
         _i2.ColumnDefinition(
           name: 'userId',
@@ -1371,19 +1212,6 @@ class Protocol extends _i1.SerializationManagerServer {
       ],
       indexes: [
         _i2.IndexDefinition(
-          indexName: 'user_notification_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            ),
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        ),
-        _i2.IndexDefinition(
           indexName: 'user_feed_idx',
           tableSpace: null,
           elements: [
@@ -1414,8 +1242,7 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.bigint,
           isNullable: false,
           dartType: 'int?',
-          columnDefault:
-              'nextval(\'user_notification_preference_id_seq\'::regclass)',
+          columnDefault: 'serial',
         ),
         _i2.ColumnDefinition(
           name: 'userId',
@@ -1464,19 +1291,6 @@ class Protocol extends _i1.SerializationManagerServer {
         ),
       ],
       indexes: [
-        _i2.IndexDefinition(
-          indexName: 'user_notification_preference_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            ),
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        ),
         _i2.IndexDefinition(
           indexName: 'user_type_unique_idx',
           tableSpace: null,
@@ -1790,17 +1604,21 @@ class Protocol extends _i1.SerializationManagerServer {
       case _i19.UserNotificationPreference():
         return 'UserNotificationPreference';
     }
-    className = _i2.Protocol().getClassNameForObject(data);
-    if (className != null) {
-      return 'serverpod.$className';
-    }
     className = _i3.Protocol().getClassNameForObject(data);
     if (className != null) {
-      return 'serverpod_auth_idp.$className';
+      return className.contains('.')
+          ? className
+          : 'serverpod_auth_idp.$className';
     }
     className = _i4.Protocol().getClassNameForObject(data);
     if (className != null) {
-      return 'serverpod_auth_core.$className';
+      return className.contains('.')
+          ? className
+          : 'serverpod_auth_core.$className';
+    }
+    className = _i2.Protocol().getClassNameForObject(data);
+    if (className != null) {
+      return className.contains('.') ? className : 'serverpod.$className';
     }
     return null;
   }
@@ -1856,10 +1674,6 @@ class Protocol extends _i1.SerializationManagerServer {
     if (dataClassName == 'UserNotificationPreference') {
       return deserialize<_i19.UserNotificationPreference>(data['data']);
     }
-    if (dataClassName.startsWith('serverpod.')) {
-      data['className'] = dataClassName.substring(10);
-      return _i2.Protocol().deserializeByClassName(data);
-    }
     if (dataClassName.startsWith('serverpod_auth_idp.')) {
       data['className'] = dataClassName.substring(19);
       return _i3.Protocol().deserializeByClassName(data);
@@ -1868,7 +1682,16 @@ class Protocol extends _i1.SerializationManagerServer {
       data['className'] = dataClassName.substring(20);
       return _i4.Protocol().deserializeByClassName(data);
     }
+    if (dataClassName.startsWith('serverpod.')) {
+      data['className'] = dataClassName.substring(10);
+      return _i2.Protocol().deserializeByClassName(data);
+    }
     return super.deserializeByClassName(data);
+  }
+
+  void _registerHostProtocols() {
+    _i3.Protocol().registerHostProtocol('alpine_pod', this);
+    _i4.Protocol().registerHostProtocol('alpine_pod', this);
   }
 
   @override

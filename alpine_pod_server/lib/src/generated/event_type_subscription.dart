@@ -8,7 +8,7 @@
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
 // ignore_for_file: invalid_use_of_internal_member
-// ignore_for_file: unnecessary_null_comparison
+// ignore_for_file: dead_code, unnecessary_null_comparison
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
@@ -101,6 +101,7 @@ abstract class EventTypeSubscription
     int? limit,
     int? offset,
     _i1.OrderByBuilder<EventTypeSubscriptionTable>? orderBy,
+    @Deprecated('Use desc() on the orderBy column instead.')
     bool orderDescending = false,
     _i1.OrderByListBuilder<EventTypeSubscriptionTable>? orderByList,
     EventTypeSubscriptionInclude? include,
@@ -110,7 +111,8 @@ abstract class EventTypeSubscription
       limit: limit,
       offset: offset,
       orderBy: orderBy?.call(EventTypeSubscription.t),
-      orderDescending: orderDescending,
+      orderDescending: // ignore: deprecated_member_use_from_same_package
+          orderDescending,
       orderByList: orderByList?.call(EventTypeSubscription.t),
       include: include,
     );
@@ -243,6 +245,7 @@ class EventTypeSubscriptionIncludeList extends _i1.IncludeList {
     super.limit,
     super.offset,
     super.orderBy,
+    @Deprecated('Use desc() on the orderBy column instead.')
     super.orderDescending,
     super.orderByList,
     super.include,
@@ -290,6 +293,7 @@ class EventTypeSubscriptionRepository {
     int? limit,
     int? offset,
     _i1.OrderByBuilder<EventTypeSubscriptionTable>? orderBy,
+    @Deprecated('Use desc() on the orderBy column instead.')
     bool orderDescending = false,
     _i1.OrderByListBuilder<EventTypeSubscriptionTable>? orderByList,
     _i1.Transaction? transaction,
@@ -301,7 +305,8 @@ class EventTypeSubscriptionRepository {
       where: where?.call(EventTypeSubscription.t),
       orderBy: orderBy?.call(EventTypeSubscription.t),
       orderByList: orderByList?.call(EventTypeSubscription.t),
-      orderDescending: orderDescending,
+      orderDescending: // ignore: deprecated_member_use
+          orderDescending,
       limit: limit,
       offset: offset,
       transaction: transaction,
@@ -333,6 +338,7 @@ class EventTypeSubscriptionRepository {
     _i1.WhereExpressionBuilder<EventTypeSubscriptionTable>? where,
     int? offset,
     _i1.OrderByBuilder<EventTypeSubscriptionTable>? orderBy,
+    @Deprecated('Use desc() on the orderBy column instead.')
     bool orderDescending = false,
     _i1.OrderByListBuilder<EventTypeSubscriptionTable>? orderByList,
     _i1.Transaction? transaction,
@@ -344,7 +350,8 @@ class EventTypeSubscriptionRepository {
       where: where?.call(EventTypeSubscription.t),
       orderBy: orderBy?.call(EventTypeSubscription.t),
       orderByList: orderByList?.call(EventTypeSubscription.t),
-      orderDescending: orderDescending,
+      orderDescending: // ignore: deprecated_member_use
+          orderDescending,
       offset: offset,
       transaction: transaction,
       include: include,
@@ -404,6 +411,69 @@ class EventTypeSubscriptionRepository {
   }) async {
     return session.db.insertRow<EventTypeSubscription>(
       row,
+      transaction: transaction,
+    );
+  }
+
+  /// Upserts all [EventTypeSubscription]s in the list and returns the resulting rows.
+  ///
+  /// If a row conflicts on the given [conflictColumns], the existing row is
+  /// updated with the new values. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies to rows matching the
+  /// given expression. Conflicting rows that don't match are skipped and not
+  /// returned, so the resulting list may be shorter than [rows].
+  ///
+  /// The returned [EventTypeSubscription]s will have their `id` fields set.
+  ///
+  /// This is an atomic operation, meaning that if one of the rows fails,
+  /// none of the rows will be affected.
+  Future<List<EventTypeSubscription>> upsert(
+    _i1.DatabaseSession session,
+    List<EventTypeSubscription> rows, {
+    required _i1.ColumnSelections<EventTypeSubscriptionTable> conflictColumns,
+    _i1.ColumnSelections<EventTypeSubscriptionTable>? updateColumns,
+    _i1.WhereExpressionBuilder<EventTypeSubscriptionTable>? updateWhere,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.upsert<EventTypeSubscription>(
+      rows,
+      conflictColumns: conflictColumns(EventTypeSubscription.t),
+      updateColumns: updateColumns?.call(EventTypeSubscription.t),
+      updateWhere: updateWhere?.call(EventTypeSubscription.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Upserts a single [EventTypeSubscription] and returns the resulting row.
+  ///
+  /// If the row conflicts on the given [conflictColumns], the existing row is
+  /// updated. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies when the existing
+  /// row matches the expression. Returns `null` if no row was affected — for
+  /// example when [updateWhere] does not match the conflicting row.
+  ///
+  /// The returned [EventTypeSubscription] will have its `id` field set.
+  Future<EventTypeSubscription?> upsertRow(
+    _i1.DatabaseSession session,
+    EventTypeSubscription row, {
+    required _i1.ColumnSelections<EventTypeSubscriptionTable> conflictColumns,
+    _i1.ColumnSelections<EventTypeSubscriptionTable>? updateColumns,
+    _i1.WhereExpressionBuilder<EventTypeSubscriptionTable>? updateWhere,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.upsertRow<EventTypeSubscription>(
+      row,
+      conflictColumns: conflictColumns(EventTypeSubscription.t),
+      updateColumns: updateColumns?.call(EventTypeSubscription.t),
+      updateWhere: updateWhere?.call(EventTypeSubscription.t),
       transaction: transaction,
     );
   }
@@ -469,6 +539,7 @@ class EventTypeSubscriptionRepository {
     int? offset,
     _i1.OrderByBuilder<EventTypeSubscriptionTable>? orderBy,
     _i1.OrderByListBuilder<EventTypeSubscriptionTable>? orderByList,
+    @Deprecated('Use desc() on the orderBy column instead.')
     bool orderDescending = false,
     _i1.Transaction? transaction,
   }) async {
@@ -479,21 +550,34 @@ class EventTypeSubscriptionRepository {
       offset: offset,
       orderBy: orderBy?.call(EventTypeSubscription.t),
       orderByList: orderByList?.call(EventTypeSubscription.t),
-      orderDescending: orderDescending,
+      orderDescending: // ignore: deprecated_member_use
+          orderDescending,
       transaction: transaction,
     );
   }
 
   /// Deletes all [EventTypeSubscription]s in the list and returns the deleted rows.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
   Future<List<EventTypeSubscription>> delete(
     _i1.DatabaseSession session,
     List<EventTypeSubscription> rows, {
+    _i1.OrderByBuilder<EventTypeSubscriptionTable>? orderBy,
+    @Deprecated('Use desc() on the orderBy column instead.')
+    bool orderDescending = false,
+    _i1.OrderByListBuilder<EventTypeSubscriptionTable>? orderByList,
     _i1.Transaction? transaction,
   }) async {
     return session.db.delete<EventTypeSubscription>(
       rows,
+      orderBy: orderBy?.call(EventTypeSubscription.t),
+      orderByList: orderByList?.call(EventTypeSubscription.t),
+      orderDescending: // ignore: deprecated_member_use
+          orderDescending,
       transaction: transaction,
     );
   }
@@ -511,13 +595,24 @@ class EventTypeSubscriptionRepository {
   }
 
   /// Deletes all rows matching the [where] expression.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
   Future<List<EventTypeSubscription>> deleteWhere(
     _i1.DatabaseSession session, {
     required _i1.WhereExpressionBuilder<EventTypeSubscriptionTable> where,
+    _i1.OrderByBuilder<EventTypeSubscriptionTable>? orderBy,
+    @Deprecated('Use desc() on the orderBy column instead.')
+    bool orderDescending = false,
+    _i1.OrderByListBuilder<EventTypeSubscriptionTable>? orderByList,
     _i1.Transaction? transaction,
   }) async {
     return session.db.deleteWhere<EventTypeSubscription>(
       where: where(EventTypeSubscription.t),
+      orderBy: orderBy?.call(EventTypeSubscription.t),
+      orderByList: orderByList?.call(EventTypeSubscription.t),
+      orderDescending: // ignore: deprecated_member_use
+          orderDescending,
       transaction: transaction,
     );
   }
