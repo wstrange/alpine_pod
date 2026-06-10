@@ -301,12 +301,13 @@ class EventEndpoint extends Endpoint {
       return created;
     });
 
+    // todo: fix this
     unawaited(
       notificationService.dispatchNotification(
         session: session,
         templateName: 'event-registered',
         recipientUserIds: [member.userId],
-        templateData: {'event_name': event.title, 'event_url': '/event-view/${event.id}'},
+        templateData: {'title': event.title, 'event_url': '/event-view/${event.id}'},
         actionUrl: '/event-view/${event.id}',
       ),
     );
