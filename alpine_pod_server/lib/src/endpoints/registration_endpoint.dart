@@ -99,7 +99,7 @@ class RegistrationEndpoint extends Endpoint {
     final saved = await _createRegistration(session, validatedReg, event);
 
     // Notify event manager of new registration
-    // await notificationService.notifyNewRegistration(session, saved);
+    await notificationService.notifyNewRegistration(session, saved);
 
     return saved;
   }
@@ -142,7 +142,7 @@ class RegistrationEndpoint extends Endpoint {
     await EventRegistration.db.deleteRow(session, reg);
     session.log('Deleted Registration $reg');
 
-    // await notificationService.notifyRegistrationRemoved(session, reg);
+    await notificationService.notifyRegistrationRemoved(session, reg);
   }
 
   Future<List<EventRegistration>> getRegistrationsForEvent(Session session, int eventId) async {

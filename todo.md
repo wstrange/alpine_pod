@@ -46,8 +46,6 @@ Bugs:
 
 TODO:
 
-* events can be draft or published. How do we show diff, and not show draft events in list view?
-* only the creator can see draft events.
-* only when published is event notified to other members.
-
+* review notifications. Need to distinguis notifying user vs. the event creator. etc.
+* review boilerplate, etc
 

@@ -41,4 +41,7 @@ notificationTemplates:
     bodyTemplate: "You registered for {{title}}"
     htmlTemplate: "You registered for {{title}}"
 
-
+  - name: event-new-registration
+    titleTemplate: "New registration for {{title}}"
+    bodyTemplate: "New registration for {{title}}"
+    htmlTemplate: "New registration for {{title}}"

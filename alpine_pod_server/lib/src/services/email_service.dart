@@ -16,7 +16,7 @@ class EmailService {
     //   return;
     // }
 
-    session.log('Send email: $recipientEmail, $subject, $htmlBody ');
+    session.log('Send email: $recipientEmail, subject: $subject, body: $htmlBody ');
 
     // todo: fix
 

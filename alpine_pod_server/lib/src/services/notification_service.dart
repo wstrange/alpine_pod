@@ -108,14 +108,16 @@ class NotificationService {
       session.log('Cant notify user of registration. Member not found ${er.memberId}');
       return;
     }
+
+    // get the event title
+    final event = await Event.db.findById(session, er.eventId);
+    final title = event?.title ?? 'Event';
+
     await dispatchNotification(
       session: session,
       templateName: 'registration-cancelled',
       recipientUserIds: [member.userId],
-      templateData: {
-        'title': 'Registration Cancelled for ${er.event?.title ?? 'Event'}',
-        'body': 'Your registration for "${er.event?.title ?? 'Event'}" has been cancelled.',
-      },
+      templateData: {'title': title, 'body': 'Your registration for $title has been cancelled.'},
     );
   }
 
@@ -136,6 +138,30 @@ class NotificationService {
       templateData: {
         'title': 'Event Created: ${createdEvent.title}',
         'body': 'A new event titled "${createdEvent.title}" has been created.',
+      },
+    );
+  }
+
+  Future<void> notifyNewRegistration(Session session, EventRegistration er) async {
+    final member = await Member.db.findById(session, er.memberId);
+    if (member == null) {
+      session.log(' Member not found ${er.memberId}');
+      return;
+    }
+
+    // get the event owners to notify
+    final managers = await EventManager.db.find(session, where: (em) => em.eventId.equals(er.eventId));
+
+    final recipientUserIds = managers.map((manager) => manager.member?.userId).nonNulls.toList();
+
+    print('event notifu!~!~!!! ${er.event?.title ?? 'Even t'}');
+    await dispatchNotification(
+      session: session,
+      templateName: 'event-new-registration',
+      recipientUserIds: recipientUserIds,
+      templateData: {
+        'title': 'New registraiton for event: ${er.event?.title ?? 'Event'}',
+        'body': 'New registration for "${er.event?.title ?? 'Event'}".',
       },
     );
   }
