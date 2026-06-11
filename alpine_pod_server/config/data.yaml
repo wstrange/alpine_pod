@@ -45,3 +45,13 @@ notificationTemplates:
     titleTemplate: "New registration for {{title}}"
     bodyTemplate: "New registration for {{title}}"
     htmlTemplate: "New registration for {{title}}"
+
+  - name: registration-cancelled-manager
+    titleTemplate: "Registration Cancelled: {{title}}"
+    bodyTemplate: "A registration for {{title}} has been cancelled."
+    htmlTemplate: "<p>A registration for {{title}} has been cancelled.</p>"
+
+  - name: registration-approved-manager
+    titleTemplate: "Registration Approved: {{title}}"
+    bodyTemplate: "A registration for {{title}} has been approved."
+    htmlTemplate: "<p>A registration for {{title}} has been approved.</p>"

@@ -46,7 +46,4 @@ Bugs:
 
 TODO:
 
-* review notifications. Need to distinguis notifying user vs. the event creator. etc.
-* review boilerplate, etc
-* users should be able to opt in by type (new event, registration cancelled, etc..). Maybe simplify??
-
+* should probably notify evetn creator of draft status

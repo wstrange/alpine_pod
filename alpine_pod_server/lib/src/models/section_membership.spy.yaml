@@ -8,6 +8,8 @@ fields:
   syncedAt: DateTime, default=now
   sourceSystem: String?
   scopes: Set<String>
+  # We simplify this by having the notifications be blanket for all sections.
+  # sendNewEventNotifications: bool, default=false
 indexes:
   user_section_unique_idx:
     fields: memberId, sectionId

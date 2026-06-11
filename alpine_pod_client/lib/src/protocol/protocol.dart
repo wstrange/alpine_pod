@@ -33,13 +33,11 @@ import 'package:alpine_pod_client/src/protocol/event_template.dart' as _i20;
 import 'package:alpine_pod_client/src/protocol/section_membership.dart' as _i21;
 import 'package:alpine_pod_client/src/protocol/member.dart' as _i22;
 import 'package:alpine_pod_client/src/protocol/user_notification.dart' as _i23;
-import 'package:alpine_pod_client/src/protocol/user_notification_preference.dart'
-    as _i24;
-import 'package:alpine_pod_client/src/protocol/event_registration.dart' as _i25;
+import 'package:alpine_pod_client/src/protocol/event_registration.dart' as _i24;
 import 'package:serverpod_auth_idp_client/serverpod_auth_idp_client.dart'
-    as _i26;
+    as _i25;
 import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart'
-    as _i27;
+    as _i26;
 export 'event.dart';
 export 'event_document.dart';
 export 'event_manager.dart';
@@ -272,23 +270,17 @@ class Protocol extends _i1.SerializationManager {
               .toList()
           as T;
     }
-    if (t == List<_i24.UserNotificationPreference>) {
+    if (t == List<_i24.EventRegistration>) {
       return (data as List)
-              .map((e) => deserialize<_i24.UserNotificationPreference>(e))
-              .toList()
-          as T;
-    }
-    if (t == List<_i25.EventRegistration>) {
-      return (data as List)
-              .map((e) => deserialize<_i25.EventRegistration>(e))
+              .map((e) => deserialize<_i24.EventRegistration>(e))
               .toList()
           as T;
     }
     try {
-      return _i26.Protocol().deserialize<T>(data, t);
+      return _i25.Protocol().deserialize<T>(data, t);
     } on _i1.DeserializationTypeNotFoundException catch (_) {}
     try {
-      return _i27.Protocol().deserialize<T>(data, t);
+      return _i26.Protocol().deserialize<T>(data, t);
     } on _i1.DeserializationTypeNotFoundException catch (_) {}
     return super.deserialize<T>(data, t);
   }
@@ -355,13 +347,13 @@ class Protocol extends _i1.SerializationManager {
       case _i16.UserNotificationPreference():
         return 'UserNotificationPreference';
     }
-    className = _i26.Protocol().getClassNameForObject(data);
+    className = _i25.Protocol().getClassNameForObject(data);
     if (className != null) {
       return className.contains('.')
           ? className
           : 'serverpod_auth_idp.$className';
     }
-    className = _i27.Protocol().getClassNameForObject(data);
+    className = _i26.Protocol().getClassNameForObject(data);
     if (className != null) {
       return className.contains('.')
           ? className
@@ -423,18 +415,18 @@ class Protocol extends _i1.SerializationManager {
     }
     if (dataClassName.startsWith('serverpod_auth_idp.')) {
       data['className'] = dataClassName.substring(19);
-      return _i26.Protocol().deserializeByClassName(data);
+      return _i25.Protocol().deserializeByClassName(data);
     }
     if (dataClassName.startsWith('serverpod_auth_core.')) {
       data['className'] = dataClassName.substring(20);
-      return _i27.Protocol().deserializeByClassName(data);
+      return _i26.Protocol().deserializeByClassName(data);
     }
     return super.deserializeByClassName(data);
   }
 
   void _registerHostProtocols() {
+    _i25.Protocol().registerHostProtocol('alpine_pod', this);
     _i26.Protocol().registerHostProtocol('alpine_pod', this);
-    _i27.Protocol().registerHostProtocol('alpine_pod', this);
   }
 
   @override
@@ -450,10 +442,10 @@ class Protocol extends _i1.SerializationManager {
       return null;
     }
     try {
-      return _i26.Protocol().mapRecordToJson(record);
+      return _i25.Protocol().mapRecordToJson(record);
     } catch (_) {}
     try {
-      return _i27.Protocol().mapRecordToJson(record);
+      return _i26.Protocol().mapRecordToJson(record);
     } catch (_) {}
     throw Exception('Unsupported record type ${record.runtimeType}');
   }

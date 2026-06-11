@@ -154,9 +154,13 @@ class EventEndpoint extends Endpoint {
     }
 
     final wasPublished = existing.published;
+    final wasCancelled = existing.cancelled;
     final updated = await Event.db.updateRow(session, event);
     if (!wasPublished && updated.published) {
       await notificationService.notifyEventCreated(session, updated);
+    }
+    if (!wasCancelled && updated.cancelled) {
+      await notificationService.notifyEventCancelled(session, updated);
     }
     return updated;
   }
@@ -301,16 +305,19 @@ class EventEndpoint extends Endpoint {
       return created;
     });
 
-    // todo: fix this
-    unawaited(
-      notificationService.dispatchNotification(
+    if (created.registrationStatus == RegistrationStatus.waitlisted) {
+      await notificationService.notifyRegistrationWaitlisted(session, created);
+    } else {
+      await notificationService.dispatchNotification(
         session: session,
         templateName: 'event-registered',
         recipientUserIds: [member.userId],
         templateData: {'title': event.title, 'event_url': '/event-view/${event.id}'},
         actionUrl: '/event-view/${event.id}',
-      ),
-    );
+      );
+    }
+
+    await notificationService.notifyNewRegistration(session, created);
 
     return created;
   }

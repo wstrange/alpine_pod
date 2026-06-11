@@ -17,6 +17,7 @@ fields:
   minimumParticipants: int, default=0
   maxParticipants: int, default=8
   cancellationDeadline: DateTime?
+  cancelled: bool, default=false
   section: Section?, relation
   # Whether it is visible on the public event list
   published: bool, default=false

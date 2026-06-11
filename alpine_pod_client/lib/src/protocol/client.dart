@@ -755,8 +755,8 @@ class EndpointNotification extends _i2.EndpointRef {
         {'userNotificationId': userNotificationId},
       );
 
-  _i3.Future<List<_i13.UserNotificationPreference>> getMyPreferences() =>
-      caller.callServerEndpoint<List<_i13.UserNotificationPreference>>(
+  _i3.Future<_i13.UserNotificationPreference> getMyPreferences() =>
+      caller.callServerEndpoint<_i13.UserNotificationPreference>(
         'notification',
         'getMyPreferences',
         {},
@@ -768,6 +768,18 @@ class EndpointNotification extends _i2.EndpointRef {
     'notification',
     'savePreference',
     {'preference': preference},
+  );
+
+  _i3.Future<void> registerFcmToken(
+    String token, {
+    String? deviceId,
+  }) => caller.callServerEndpoint<void>(
+    'notification',
+    'registerFcmToken',
+    {
+      'token': token,
+      'deviceId': deviceId,
+    },
   );
 }
 

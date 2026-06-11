@@ -26,6 +26,7 @@ class EventEditScreen extends HookWidget {
     final locationController = useTextEditingController();
     final carpoolLocationController = useTextEditingController();
     final minParticipantsController = useTextEditingController();
+    final formKey = useMemoized(() => GlobalKey<FormState>());
     final maxParticipantsController = useTextEditingController();
 
     final startTime = useState<DateTime>(event?.startTime ?? DateTime.now());
@@ -106,7 +107,7 @@ class EventEditScreen extends HookWidget {
       startTime.value = e?.startTime ?? DateTime.now();
       endTime.value = e?.endTime ?? DateTime.now().add(const Duration(hours: 8));
       carpoolTime.value = e?.carpoolTime;
-      minParticipantsController.text = (e?.minimumParticipants ?? 0).toString();
+      minParticipantsController.text = (e?.minimumParticipants ?? 1).toString();
       maxParticipantsController.text = (e?.maxParticipants ?? 8).toString();
       selectedType.value = e?.type ?? eventTypes.first;
       requiresApproval.value = e?.requiresApproval ?? true;
@@ -114,6 +115,8 @@ class EventEditScreen extends HookWidget {
     }
 
     void save() async {
+      if (!formKey.currentState!.validate()) return;
+
       final activeEvent = loadedEvent.value ?? event;
       final isCreating = activeEvent == null || activeEvent.id == null;
 
@@ -243,11 +246,19 @@ class EventEditScreen extends HookWidget {
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
+        child: Form(
+          key: formKey,
+          child: Column(
           children: [
             TextFormField(
               controller: titleController,
               decoration: const InputDecoration(labelText: 'Title'),
+              validator: (value) {
+                if (value == null || value.trim().isEmpty) {
+                  return 'Title is required';
+                }
+                return null;
+              },
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -289,6 +300,12 @@ class EventEditScreen extends HookWidget {
               decoration: const InputDecoration(hintText: 'Enter event description (supports markdown)'),
               maxLines: 30,
               minLines: 5,
+              validator: (value) {
+                if (value == null || value.trim().isEmpty) {
+                  return 'Description is required';
+                }
+                return null;
+              },
             ),
             TextFormField(
               controller: locationController,
@@ -391,6 +408,17 @@ class EventEditScreen extends HookWidget {
                       prefixIcon: Icon(Icons.person_outline),
                     ),
                     keyboardType: TextInputType.number,
+                    validator: (value) {
+                      final min = int.tryParse(value ?? '');
+                      if (min == null || min < 1) {
+                        return 'Must be at least 1';
+                      }
+                      final max = int.tryParse(maxParticipantsController.text);
+                      if (max != null && min > max) {
+                        return 'Must be ≤ max';
+                      }
+                      return null;
+                    },
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -402,6 +430,17 @@ class EventEditScreen extends HookWidget {
                       prefixIcon: Icon(Icons.people_outline),
                     ),
                     keyboardType: TextInputType.number,
+                    validator: (value) {
+                      final max = int.tryParse(value ?? '');
+                      if (max == null || max < 1) {
+                        return 'Must be at least 1';
+                      }
+                      final min = int.tryParse(minParticipantsController.text);
+                      if (min != null && max < min) {
+                        return 'Must be ≥ min';
+                      }
+                      return null;
+                    },
                   ),
                 ),
               ],
@@ -459,6 +498,7 @@ class EventEditScreen extends HookWidget {
                 onChanged: (newList) => managers.value = newList,
               ),
           ],
+        ),
         ),
       ),
       persistentFooterButtons: [

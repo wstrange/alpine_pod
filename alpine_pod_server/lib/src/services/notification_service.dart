@@ -13,6 +13,13 @@ class NotificationService {
     return _session ??= await Serverpod.instance.createSession();
   }
 
+  static const alwaysNotifyTypes = {
+    'registration-approved',
+    'registration-cancelled',
+    'add-to-waitlist',
+    'event-cancelled',
+  };
+
   // NOTE: cant be done unawaited as the endpoint will return.
   // Consider using FutureCall or Internal session.
   Future<void> dispatchNotification({
@@ -52,10 +59,15 @@ class NotificationService {
       for (final targetId in recipientUserIds) {
         final preferred = await UserNotificationPreference.db.findFirstRow(
           session,
-          where: (p) => p.userId.equals(targetId) & p.notificationType.equals(templateName),
+          where: (p) => p.userId.equals(targetId),
         );
 
-        if (preferred == null || preferred.allowInApp) {
+        final isAlwaysNotify = alwaysNotifyTypes.contains(templateName);
+        final allowInApp = isAlwaysNotify ? true : (preferred?.allowInApp ?? true);
+        final allowEmail = isAlwaysNotify ? true : (preferred?.allowEmail ?? true);
+        final allowPush = isAlwaysNotify ? true : (preferred?.allowPush ?? true);
+
+        if (allowInApp) {
           await UserNotification.db.insertRow(
             session,
             UserNotification(userId: targetId, notificationId: coreNotification.id!, createdAt: now),
@@ -63,7 +75,7 @@ class NotificationService {
           );
         }
 
-        if ((preferred == null || preferred.allowEmail) && parsedHtml != null) {
+        if (allowEmail && parsedHtml != null) {
           final member = await Member.db.findFirstRow(
             session,
             where: (m) => m.userId.equals(targetId),
@@ -79,38 +91,50 @@ class NotificationService {
             );
           }
         }
+
+        if (allowPush) {
+          final fcmTokens = await FcmToken.db.find(
+            session,
+            where: (t) => t.userId.equals(targetId),
+            transaction: transaction,
+          );
+          for (final fcm in fcmTokens) {
+            session.log(
+              '[FCM Push] Sent to user=$targetId device=${fcm.deviceId} token=${fcm.token}: '
+              'title="$parsedTitle", body="$parsedBody"',
+            );
+          }
+        }
       }
     });
   }
 
   Future<void> notifyRegistrationApproved(Session session, EventRegistration er) async {
     final member = await Member.db.findById(session, er.memberId);
-
     if (member == null) {
       session.log('Cant notify user of registration. Member not found ${er.memberId}');
       return;
     }
+
+    final event = er.event ?? await Event.db.findById(session, er.eventId);
+    final title = event?.title ?? 'Event';
+
     await dispatchNotification(
       session: session,
       templateName: 'registration-approved',
       recipientUserIds: [member.userId],
-      templateData: {
-        'title': 'Registration Approved for ${er.event?.title ?? 'Event'}',
-        'body': 'Your registration for "${er.event?.title ?? 'Event'}" has been approved.',
-      },
+      templateData: {'title': title, 'body': 'Your registration for "$title" has been approved.'},
     );
   }
 
   Future<void> notifyRegistrationRemoved(Session session, EventRegistration er) async {
     final member = await Member.db.findById(session, er.memberId);
-
     if (member == null) {
       session.log('Cant notify user of registration. Member not found ${er.memberId}');
       return;
     }
 
-    // get the event title
-    final event = await Event.db.findById(session, er.eventId);
+    final event = er.event ?? await Event.db.findById(session, er.eventId);
     final title = event?.title ?? 'Event';
 
     await dispatchNotification(
@@ -121,22 +145,73 @@ class NotificationService {
     );
   }
 
+  Future<void> notifyRegistrationWaitlisted(Session session, EventRegistration er) async {
+    final member = await Member.db.findById(session, er.memberId);
+    if (member == null) {
+      session.log('Cant notify user of registration. Member not found ${er.memberId}');
+      return;
+    }
+
+    final event = er.event ?? await Event.db.findById(session, er.eventId);
+    final title = event?.title ?? 'Event';
+
+    await dispatchNotification(
+      session: session,
+      templateName: 'add-to-waitlist',
+      recipientUserIds: [member.userId],
+      templateData: {'title': title, 'body': 'You have been added to the waitlist for $title.'},
+    );
+  }
+
+  Future<void> notifyEventCancelled(Session session, Event event) async {
+    final registrations = await EventRegistration.db.find(
+      session,
+      where: (er) => er.eventId.equals(event.id),
+      include: EventRegistration.include(member: Member.include()),
+    );
+    final recipientUserIds = registrations.map((r) => r.member?.userId).nonNulls.toList();
+    if (recipientUserIds.isEmpty) return;
+
+    await dispatchNotification(
+      session: session,
+      templateName: 'event-cancelled',
+      recipientUserIds: recipientUserIds,
+      templateData: {'title': event.title, 'body': 'The event "${event.title}" has been cancelled.'},
+    );
+  }
+
   Future<void> notifyEventCreated(Session session, Event createdEvent) async {
-    // all section users....
     final memberships = await SectionMembership.db.find(
       session,
       where: (sm) => sm.sectionId.equals(createdEvent.sectionId),
       include: SectionMembership.include(member: Member.include()),
     );
 
-    final recipientUserIds = memberships.map((membership) => membership.member?.userId).nonNulls.toList();
+    final memberUserIds = memberships.map((sm) => sm.member?.userId).nonNulls.toList();
+    if (memberUserIds.isEmpty) return;
+
+    final preferences = await UserNotificationPreference.db.find(
+      session,
+      where: (p) => p.userId.inSet(memberUserIds.toSet()),
+    );
+    final prefMap = {for (final p in preferences) p.userId: p};
+
+    final recipientUserIds = memberUserIds.where((userId) {
+      final pref = prefMap[userId];
+      if (pref == null) {
+        return true;
+      }
+      return pref.newEvents;
+    }).toList();
+
+    if (recipientUserIds.isEmpty) return;
 
     await dispatchNotification(
       session: session,
       templateName: 'event-created',
       recipientUserIds: recipientUserIds,
       templateData: {
-        'title': 'Event Created: ${createdEvent.title}',
+        'title': createdEvent.title,
         'body': 'A new event titled "${createdEvent.title}" has been created.',
       },
     );
@@ -149,124 +224,66 @@ class NotificationService {
       return;
     }
 
+    final event = er.event ?? await Event.db.findById(session, er.eventId);
+    final title = event?.title ?? 'Event';
+
     // get the event owners to notify
-    final managers = await EventManager.db.find(session, where: (em) => em.eventId.equals(er.eventId));
+    final managers = await EventManager.db.find(
+      session,
+      where: (em) => em.eventId.equals(er.eventId),
+      include: EventManager.include(member: Member.include()),
+    );
 
     final recipientUserIds = managers.map((manager) => manager.member?.userId).nonNulls.toList();
+    if (recipientUserIds.isEmpty) return;
 
-    print('event notifu!~!~!!! ${er.event?.title ?? 'Even t'}');
     await dispatchNotification(
       session: session,
       templateName: 'event-new-registration',
       recipientUserIds: recipientUserIds,
-      templateData: {
-        'title': 'New registraiton for event: ${er.event?.title ?? 'Event'}',
-        'body': 'New registration for "${er.event?.title ?? 'Event'}".',
-      },
+      templateData: {'title': title, 'body': '${member.displayName} signed up for "$title".'},
+    );
+  }
+
+  Future<void> notifyManagersRegistrationCancelled(Session session, EventRegistration er) async {
+    final member = await Member.db.findById(session, er.memberId);
+    if (member == null) return;
+    final event = er.event ?? await Event.db.findById(session, er.eventId);
+    final title = event?.title ?? 'Event';
+    final managers = await EventManager.db.find(
+      session,
+      where: (em) => em.eventId.equals(er.eventId),
+      include: EventManager.include(member: Member.include()),
+    );
+    final recipientUserIds = managers.map((m) => m.member?.userId).nonNulls.toList();
+    if (recipientUserIds.isEmpty) return;
+
+    await dispatchNotification(
+      session: session,
+      templateName: 'registration-cancelled-manager',
+      recipientUserIds: recipientUserIds,
+      templateData: {'title': title, 'body': '${member.displayName} cancelled registration for "$title".'},
+    );
+  }
+
+  Future<void> notifyManagersRegistrationApproved(Session session, EventRegistration er) async {
+    final member = await Member.db.findById(session, er.memberId);
+    if (member == null) return;
+    final event = er.event ?? await Event.db.findById(session, er.eventId);
+    final title = event?.title ?? 'Event';
+    final managers = await EventManager.db.find(
+      session,
+      where: (em) => em.eventId.equals(er.eventId),
+      include: EventManager.include(member: Member.include()),
+    );
+    final recipientUserIds = managers.map((m) => m.member?.userId).nonNulls.toList();
+    if (recipientUserIds.isEmpty) return;
+
+    await dispatchNotification(
+      session: session,
+      templateName: 'registration-approved-manager',
+      recipientUserIds: recipientUserIds,
+      templateData: {'title': title, 'body': '${member.displayName}\'s registration for "$title" has been approved.'},
     );
   }
 }
-
-//   static final NotificationService _instance = NotificationService._internal();
-//   factory NotificationService() => _instance;
-//   NotificationService._internal();
-
-//   /// Sends a notification to a specific member.
-//   /// Currently stubs out email and mobile delivery by logging to the console.
-//   Future<void> sendNotification(
-//     Session session, {
-//     required int memberId,
-//     required String title,
-//     required String message,
-//     int? eventId,
-//   }) async {
-//     // 1. Log the notification (Stub for Email/Mobile)
-//     // This causes an error as session is no longer valid.
-//     session.log('NOTIFICATION [Member: $memberId, Event: $eventId]: $title - $message', level: LogLevel.info);
-
-//     // print(
-//     //   'NOTIFICATION [Member: $memberId, Event: $eventId]: $title - $message',
-//     // );
-
-//     // 2. Persist the notification in the database
-//     final notification = Notification(
-//       memberId: memberId,
-//       eventId: eventId,
-//       title: title,
-//       message: message,
-//       timestamp: DateTime.now(),
-//       read: false,
-//     );
-
-//     await Notification.db.insertRow(session, notification);
-
-//     // todo: Send email...
-
-//   }
-
-//   /// Notify member they have been approved for an event.
-//   Future<void> notifyRegistrationApproved(Session session, EventRegistration registration) async {
-//     final event = await Event.db.findById(session, registration.eventId);
-//     if (event == null) return;
-
-//     await sendNotification(
-//       session,
-//       memberId: registration.memberId,
-//       title: 'Registration Approved',
-//       message: 'Your registration for "${event.title}" has been approved.',
-//       eventId: event.id,
-//     );
-//   }
-
-//   /// Notify member they have been removed from an event.
-//   Future<void> notifyRegistrationRemoved(Session session, EventRegistration registration) async {
-//     final event = await Event.db.findById(session, registration.eventId);
-//     if (event == null) return;
-
-//     await sendNotification(
-//       session,
-//       memberId: registration.memberId,
-//       title: 'Registration Cancelled',
-//       message: 'Your registration for "${event.title}" has been cancelled or you have been removed.',
-//       eventId: event.id,
-//     );
-//   }
-
-//   /// Notify event managers of a new registration.
-//   Future<void> notifyNewRegistration(Session session, EventRegistration registration) async {
-//     final event = await Event.db.findById(session, registration.eventId);
-//     if (event == null) return;
-
-//     final member = await Member.db.findById(session, registration.memberId);
-//     if (member == null) return;
-
-//     final managers = await EventManager.db.find(session, where: (t) => t.eventId.equals(event.id!));
-
-//     final memberName = member.displayName ?? '${member.firstName} ${member.lastName}';
-
-//     for (final manager in managers) {
-//       await sendNotification(
-//         session,
-//         memberId: manager.memberId,
-//         title: 'New Registration',
-//         message: '$memberName has registered for "${event.title}".',
-//         eventId: event.id,
-//       );
-//     }
-//   }
-
-//   Future<void> notifyEventCreated(Session session, Event event) async {
-//     await sendGroupNotification(session, event.sectionId, 'New event posted', 'Event ${event.title} has been posted');
-//   }
-
-//   Future<void> sendGroupNotification(Session session, int sectionId, String title, String message) async {
-//     // get all the members
-//     final memberships = await SectionMembership.db.find(session, where: (t) => t.sectionId.equals(sectionId));
-
-//     for (final membership in memberships) {
-//       await sendNotification(session, memberId: membership.memberId, title: title, message: message);
-//     }
-//   }
-// }
-
-// final notificationService = NotificationService();

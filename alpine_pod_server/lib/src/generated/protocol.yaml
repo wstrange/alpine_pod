@@ -66,6 +66,7 @@ notification:
   - markAsRead:
   - getMyPreferences:
   - savePreference:
+  - registerFcmToken:
 registration:
   - updateRegistrationStatus:
   - registerForEvent:

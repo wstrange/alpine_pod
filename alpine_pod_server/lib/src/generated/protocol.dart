@@ -39,10 +39,8 @@ import 'package:alpine_pod_server/src/generated/section_membership.dart'
     as _i24;
 import 'package:alpine_pod_server/src/generated/member.dart' as _i25;
 import 'package:alpine_pod_server/src/generated/user_notification.dart' as _i26;
-import 'package:alpine_pod_server/src/generated/user_notification_preference.dart'
-    as _i27;
 import 'package:alpine_pod_server/src/generated/event_registration.dart'
-    as _i28;
+    as _i27;
 export 'event.dart';
 export 'event_document.dart';
 export 'event_manager.dart';
@@ -573,6 +571,13 @@ class Protocol extends _i1.DatabaseSerializationManager {
           columnType: _i2.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'cancelled',
+          columnType: _i2.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
         ),
         _i2.ColumnDefinition(
           name: 'sectionId',
@@ -1253,12 +1258,6 @@ class Protocol extends _i1.DatabaseSerializationManager {
           dartType: 'UuidValue',
         ),
         _i2.ColumnDefinition(
-          name: 'notificationType',
-          columnType: _i2.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-        _i2.ColumnDefinition(
           name: 'allowInApp',
           columnType: _i2.ColumnType.boolean,
           isNullable: false,
@@ -1284,6 +1283,13 @@ class Protocol extends _i1.DatabaseSerializationManager {
           columnType: _i2.ColumnType.boolean,
           isNullable: false,
           dartType: 'bool',
+          columnDefault: 'false',
+        ),
+        _i2.ColumnDefinition(
+          name: 'newEvents',
+          columnType: _i2.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
           columnDefault: 'true',
         ),
       ],
@@ -1306,11 +1312,11 @@ class Protocol extends _i1.DatabaseSerializationManager {
           elements: [
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
-              definition: 'userId',
+              definition: 'id',
             ),
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
-              definition: 'notificationType',
+              definition: 'userId',
             ),
           ],
           type: 'btree',
@@ -1533,15 +1539,9 @@ class Protocol extends _i1.DatabaseSerializationManager {
               .toList()
           as T;
     }
-    if (t == List<_i27.UserNotificationPreference>) {
+    if (t == List<_i27.EventRegistration>) {
       return (data as List)
-              .map((e) => deserialize<_i27.UserNotificationPreference>(e))
-              .toList()
-          as T;
-    }
-    if (t == List<_i28.EventRegistration>) {
-      return (data as List)
-              .map((e) => deserialize<_i28.EventRegistration>(e))
+              .map((e) => deserialize<_i27.EventRegistration>(e))
               .toList()
           as T;
     }

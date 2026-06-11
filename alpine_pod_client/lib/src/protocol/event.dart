@@ -34,6 +34,7 @@ abstract class Event implements _i1.SerializableModel {
     int? minimumParticipants,
     int? maxParticipants,
     this.cancellationDeadline,
+    bool? cancelled,
     required this.sectionId,
     this.section,
     bool? published,
@@ -42,6 +43,7 @@ abstract class Event implements _i1.SerializableModel {
   }) : requiresApproval = requiresApproval ?? true,
        minimumParticipants = minimumParticipants ?? 0,
        maxParticipants = maxParticipants ?? 8,
+       cancelled = cancelled ?? false,
        published = published ?? false;
 
   factory Event({
@@ -61,6 +63,7 @@ abstract class Event implements _i1.SerializableModel {
     int? minimumParticipants,
     int? maxParticipants,
     DateTime? cancellationDeadline,
+    bool? cancelled,
     required int sectionId,
     _i2.Section? section,
     bool? published,
@@ -109,6 +112,9 @@ abstract class Event implements _i1.SerializableModel {
           : _i1.DateTimeJsonExtension.fromJson(
               jsonSerialization['cancellationDeadline'],
             ),
+      cancelled: jsonSerialization['cancelled'] == null
+          ? null
+          : _i1.BoolJsonExtension.fromJson(jsonSerialization['cancelled']),
       sectionId: jsonSerialization['sectionId'] as int,
       section: jsonSerialization['section'] == null
           ? null
@@ -166,6 +172,8 @@ abstract class Event implements _i1.SerializableModel {
 
   DateTime? cancellationDeadline;
 
+  bool cancelled;
+
   int sectionId;
 
   _i2.Section? section;
@@ -196,6 +204,7 @@ abstract class Event implements _i1.SerializableModel {
     int? minimumParticipants,
     int? maxParticipants,
     DateTime? cancellationDeadline,
+    bool? cancelled,
     int? sectionId,
     _i2.Section? section,
     bool? published,
@@ -225,6 +234,7 @@ abstract class Event implements _i1.SerializableModel {
       'maxParticipants': maxParticipants,
       if (cancellationDeadline != null)
         'cancellationDeadline': cancellationDeadline?.toJson(),
+      'cancelled': cancelled,
       'sectionId': sectionId,
       if (section != null) 'section': section?.toJson(),
       'published': published,
@@ -263,6 +273,7 @@ class _EventImpl extends Event {
     int? minimumParticipants,
     int? maxParticipants,
     DateTime? cancellationDeadline,
+    bool? cancelled,
     required int sectionId,
     _i2.Section? section,
     bool? published,
@@ -285,6 +296,7 @@ class _EventImpl extends Event {
          minimumParticipants: minimumParticipants,
          maxParticipants: maxParticipants,
          cancellationDeadline: cancellationDeadline,
+         cancelled: cancelled,
          sectionId: sectionId,
          section: section,
          published: published,
@@ -313,6 +325,7 @@ class _EventImpl extends Event {
     int? minimumParticipants,
     int? maxParticipants,
     Object? cancellationDeadline = _Undefined,
+    bool? cancelled,
     int? sectionId,
     Object? section = _Undefined,
     bool? published,
@@ -348,6 +361,7 @@ class _EventImpl extends Event {
       cancellationDeadline: cancellationDeadline is DateTime?
           ? cancellationDeadline
           : this.cancellationDeadline,
+      cancelled: cancelled ?? this.cancelled,
       sectionId: sectionId ?? this.sectionId,
       section: section is _i2.Section? ? section : this.section?.copyWith(),
       published: published ?? this.published,

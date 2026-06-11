@@ -129,8 +129,6 @@ final unreadNotificationsCountSignal = computed(() {
   return 0;
 });
 
-final notificationPreferencesSignal = futureSignal<List<UserNotificationPreference>>(() async {
-  final i = authUserSignal.value;
-  if (i == null) return <UserNotificationPreference>[];
+final notificationPreferencesSignal = futureSignal<UserNotificationPreference>(() async {
   return await client.notification.getMyPreferences();
 }, options: AsyncSignalOptions(name: 'notificationPreferencesSignal'));

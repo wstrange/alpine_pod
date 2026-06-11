@@ -2147,7 +2147,7 @@ class _NotificationEndpoint {
     });
   }
 
-  _i4.Future<List<_i14.UserNotificationPreference>> getMyPreferences(
+  _i4.Future<_i14.UserNotificationPreference> getMyPreferences(
     _i1.TestSessionBuilder sessionBuilder,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
@@ -2169,7 +2169,7 @@ class _NotificationEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i4.Future<List<_i14.UserNotificationPreference>>);
+                as _i4.Future<_i14.UserNotificationPreference>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2201,6 +2201,41 @@ class _NotificationEndpoint {
                   _localCallContext.arguments,
                 )
                 as _i4.Future<_i14.UserNotificationPreference>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i4.Future<void> registerFcmToken(
+    _i1.TestSessionBuilder sessionBuilder,
+    String token, {
+    String? deviceId,
+  }) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'notification',
+            method: 'registerFcmToken',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'notification',
+          methodName: 'registerFcmToken',
+          parameters: _i1.testObjectToJson({
+            'token': token,
+            'deviceId': deviceId,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i4.Future<void>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

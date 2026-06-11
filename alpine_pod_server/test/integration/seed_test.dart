@@ -214,7 +214,7 @@ void main() {
           final startTime = s.copyWith(hour: 8, minute: 0, second: 0);
           final endTime = startTime.add(const Duration(hours: 8));
 
-          await endpoints.event.createEvent(
+          final ev = await endpoints.event.createEvent(
             userAuthSession,
             Event(
               title: 'Sample Event #${i + 1} (${section.name})',
@@ -231,6 +231,7 @@ void main() {
             ),
             notifyNewEvent: false,
           );
+          print('created ev ${ev.title}');
         }
         print('Created  sample events.');
       });
@@ -252,30 +253,12 @@ void main() {
 }
 
 Future<void> enableAllNotificationsForUser(Session session, UuidValue userId) async {
-  final templates = await NotificationTemplate.db.find(session);
-  final notificationTypes = templates.map((template) => template.name).toSet();
-  if (notificationTypes.isEmpty) {
-    notificationTypes.addAll(fallbackNotificationTypes);
-  }
-
-  for (final notificationType in notificationTypes) {
-    final existing = await UserNotificationPreference.db.findFirstRow(
-      session,
-      where: (preference) => preference.userId.equals(userId) & preference.notificationType.equals(notificationType),
-    );
-
-    final preference = UserNotificationPreference(
-      userId: userId,
-      notificationType: notificationType,
-      allowInApp: true,
-      allowEmail: true,
-      allowPush: true,
-    );
-
-    if (existing == null) {
-      await UserNotificationPreference.db.insertRow(session, preference);
-    } else {
-      await UserNotificationPreference.db.updateRow(session, preference.copyWith(id: existing.id));
-    }
-  }
+  final preference = UserNotificationPreference(
+    userId: userId,
+    newEvents: true,
+    allowInApp: true,
+    allowEmail: true,
+    allowPush: true,
+  );
+  await UserNotificationPreference.db.insertRow(session, preference);
 }

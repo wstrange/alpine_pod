@@ -35,6 +35,7 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     int? minimumParticipants,
     int? maxParticipants,
     this.cancellationDeadline,
+    bool? cancelled,
     required this.sectionId,
     this.section,
     bool? published,
@@ -43,6 +44,7 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   }) : requiresApproval = requiresApproval ?? true,
        minimumParticipants = minimumParticipants ?? 0,
        maxParticipants = maxParticipants ?? 8,
+       cancelled = cancelled ?? false,
        published = published ?? false;
 
   factory Event({
@@ -62,6 +64,7 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     int? minimumParticipants,
     int? maxParticipants,
     DateTime? cancellationDeadline,
+    bool? cancelled,
     required int sectionId,
     _i2.Section? section,
     bool? published,
@@ -110,6 +113,9 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
           : _i1.DateTimeJsonExtension.fromJson(
               jsonSerialization['cancellationDeadline'],
             ),
+      cancelled: jsonSerialization['cancelled'] == null
+          ? null
+          : _i1.BoolJsonExtension.fromJson(jsonSerialization['cancelled']),
       sectionId: jsonSerialization['sectionId'] as int,
       section: jsonSerialization['section'] == null
           ? null
@@ -169,6 +175,8 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
 
   DateTime? cancellationDeadline;
 
+  bool cancelled;
+
   int sectionId;
 
   _i2.Section? section;
@@ -202,6 +210,7 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     int? minimumParticipants,
     int? maxParticipants,
     DateTime? cancellationDeadline,
+    bool? cancelled,
     int? sectionId,
     _i2.Section? section,
     bool? published,
@@ -231,6 +240,7 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       'maxParticipants': maxParticipants,
       if (cancellationDeadline != null)
         'cancellationDeadline': cancellationDeadline?.toJson(),
+      'cancelled': cancelled,
       'sectionId': sectionId,
       if (section != null) 'section': section?.toJson(),
       'published': published,
@@ -266,6 +276,7 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       'maxParticipants': maxParticipants,
       if (cancellationDeadline != null)
         'cancellationDeadline': cancellationDeadline?.toJson(),
+      'cancelled': cancelled,
       'sectionId': sectionId,
       if (section != null) 'section': section?.toJsonForProtocol(),
       'published': published,
@@ -340,6 +351,7 @@ class _EventImpl extends Event {
     int? minimumParticipants,
     int? maxParticipants,
     DateTime? cancellationDeadline,
+    bool? cancelled,
     required int sectionId,
     _i2.Section? section,
     bool? published,
@@ -362,6 +374,7 @@ class _EventImpl extends Event {
          minimumParticipants: minimumParticipants,
          maxParticipants: maxParticipants,
          cancellationDeadline: cancellationDeadline,
+         cancelled: cancelled,
          sectionId: sectionId,
          section: section,
          published: published,
@@ -390,6 +403,7 @@ class _EventImpl extends Event {
     int? minimumParticipants,
     int? maxParticipants,
     Object? cancellationDeadline = _Undefined,
+    bool? cancelled,
     int? sectionId,
     Object? section = _Undefined,
     bool? published,
@@ -425,6 +439,7 @@ class _EventImpl extends Event {
       cancellationDeadline: cancellationDeadline is DateTime?
           ? cancellationDeadline
           : this.cancellationDeadline,
+      cancelled: cancelled ?? this.cancelled,
       sectionId: sectionId ?? this.sectionId,
       section: section is _i2.Section? ? section : this.section?.copyWith(),
       published: published ?? this.published,
@@ -525,6 +540,11 @@ class EventUpdateTable extends _i1.UpdateTable<EventTable> {
         value,
       );
 
+  _i1.ColumnValue<bool, bool> cancelled(bool value) => _i1.ColumnValue(
+    table.cancelled,
+    value,
+  );
+
   _i1.ColumnValue<int, int> sectionId(int value) => _i1.ColumnValue(
     table.sectionId,
     value,
@@ -602,6 +622,11 @@ class EventTable extends _i1.Table<int?> {
       'cancellationDeadline',
       this,
     );
+    cancelled = _i1.ColumnBool(
+      'cancelled',
+      this,
+      hasDefault: true,
+    );
     sectionId = _i1.ColumnInt(
       'sectionId',
       this,
@@ -644,6 +669,8 @@ class EventTable extends _i1.Table<int?> {
   late final _i1.ColumnInt maxParticipants;
 
   late final _i1.ColumnDateTime cancellationDeadline;
+
+  late final _i1.ColumnBool cancelled;
 
   late final _i1.ColumnInt sectionId;
 
@@ -754,6 +781,7 @@ class EventTable extends _i1.Table<int?> {
     minimumParticipants,
     maxParticipants,
     cancellationDeadline,
+    cancelled,
     sectionId,
     published,
   ];

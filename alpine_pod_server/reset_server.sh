@@ -2,21 +2,26 @@
 
 # Reset script for alpine_pod server environment
 
+ # we now use embedded postgres
+
 # Stop and remove containers and volumes
-echo "--- Stopping and removing docker containers and volumes ---"
-docker compose down -v
+# echo "--- Stopping and removing docker containers and volumes ---"
+# docker compose down -v
+
+
+pkill serverpod
 
 # Delete migrations
 echo "--- Deleting existing migrations ---"
 rm -rf migrations/*
 
-# Start containers
-echo "--- Starting docker containers ---"
-docker compose up -d
+echo "--- Deleting existing database ---"
+rm -rf .serverpod/development/*
 
-# Wait for database to be ready
-echo "--- Waiting for database to be ready (10s) ---"
-sleep 10
+# Start containers
+# echo "--- Starting docker containers ---"
+# # docker compose up -d
+
 
 # Generate code
 echo "--- Running serverpod generate ---"
@@ -33,5 +38,9 @@ serverpod create-migration
 # Run seeding test
 echo "--- Seeding database with sample data ---"
 dart test test/integration/seed_test.dart
+
+
+# Load data
+dart run bin/load_data.dart config/data.yaml
 
 echo "--- Reset complete ---"

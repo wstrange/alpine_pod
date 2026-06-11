@@ -59,11 +59,15 @@ class RegistrationEndpoint extends Endpoint {
 
     final saved = await EventRegistration.db.updateRow(session, updated);
 
-    // Notify member of status changes
+    // Notify member and managers of status changes
     if (newStatus == RegistrationStatus.confirmed) {
       await notificationService.notifyRegistrationApproved(session, saved);
+      await notificationService.notifyManagersRegistrationApproved(session, saved);
     } else if (newStatus == RegistrationStatus.cancelled) {
       await notificationService.notifyRegistrationRemoved(session, saved);
+      await notificationService.notifyManagersRegistrationCancelled(session, saved);
+    } else if (newStatus == RegistrationStatus.waitlisted) {
+      await notificationService.notifyRegistrationWaitlisted(session, saved);
     }
 
     return saved;
@@ -100,6 +104,18 @@ class RegistrationEndpoint extends Endpoint {
 
     // Notify event manager of new registration
     await notificationService.notifyNewRegistration(session, saved);
+
+    if (saved.registrationStatus == RegistrationStatus.waitlisted) {
+      await notificationService.notifyRegistrationWaitlisted(session, saved);
+    } else {
+      await notificationService.dispatchNotification(
+        session: session,
+        templateName: 'event-registered',
+        recipientUserIds: [memberInfo.member.userId],
+        templateData: {'title': event.title, 'event_url': '/event-view/${event.id}'},
+        actionUrl: '/event-view/${event.id}',
+      );
+    }
 
     return saved;
   }
@@ -143,6 +159,7 @@ class RegistrationEndpoint extends Endpoint {
     session.log('Deleted Registration $reg');
 
     await notificationService.notifyRegistrationRemoved(session, reg);
+    await notificationService.notifyManagersRegistrationCancelled(session, reg);
   }
 
   Future<List<EventRegistration>> getRegistrationsForEvent(Session session, int eventId) async {

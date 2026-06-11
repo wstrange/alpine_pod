@@ -37,67 +37,68 @@ class NotificationEndpoint extends Endpoint {
     return true;
   }
 
-  Future<List<UserNotificationPreference>> getMyPreferences(Session session) async {
+  Future<UserNotificationPreference> getMyPreferences(Session session) async {
     final authInfo = session.authenticated;
     final currentUserId = authInfo!.authUserId;
 
-    final existing = await UserNotificationPreference.db.find(
+    final existing = await UserNotificationPreference.db.findFirstRow(
       session,
       where: (t) => t.userId.equals(currentUserId),
     );
 
-    final types = [
-      'event-created',
-      'event-cancelled',
-      'add-to-waitlist',
-      'registration-cancelled',
-      'registration-approved',
-      'event-registered'
-    ];
+    if (existing != null) return existing;
 
-    final Map<String, UserNotificationPreference> prefsMap = {
-      for (var p in existing) p.notificationType: p
-    };
-
-    final List<UserNotificationPreference> result = [];
-    for (final type in types) {
-      if (prefsMap.containsKey(type)) {
-        result.add(prefsMap[type]!);
-      } else {
-        result.add(UserNotificationPreference(
-          userId: currentUserId,
-          notificationType: type,
-          allowInApp: true,
-          allowEmail: true,
-          allowPush: true,
-          allowSms: true,
-        ));
-      }
-    }
-    return result;
+    final u = await UserNotificationPreference.db.insertRow(
+      session,
+      UserNotificationPreference(
+        userId: currentUserId,
+        allowEmail: true,
+        allowInApp: true,
+        allowPush: true,
+        allowSms: false,
+      ),
+    );
+    return u;
   }
 
-  Future<UserNotificationPreference> savePreference(
-    Session session,
-    UserNotificationPreference preference,
-  ) async {
+  Future<UserNotificationPreference> savePreference(Session session, UserNotificationPreference preference) async {
     final authInfo = session.authenticated;
     final currentUserId = authInfo!.authUserId;
 
     preference.userId = currentUserId;
 
+    // upsert
+
     if (preference.id == null) {
-      final existing = await UserNotificationPreference.db.findFirstRow(
-        session,
-        where: (t) => t.userId.equals(currentUserId) & t.notificationType.equals(preference.notificationType),
-      );
-      if (existing != null) {
-        preference.id = existing.id;
-        return await UserNotificationPreference.db.updateRow(session, preference);
-      }
-      return await UserNotificationPreference.db.insertRow(session, preference);
+      await UserNotificationPreference.db.insertRow(session, preference);
     } else {
-      return await UserNotificationPreference.db.updateRow(session, preference);
+      await UserNotificationPreference.db.updateRow(session, preference);
+    }
+
+    return preference;
+  }
+
+  Future<void> registerFcmToken(Session session, String token, {String? deviceId}) async {
+    final authInfo = session.authenticated;
+    if (authInfo == null) {
+      throw Exception('Not authenticated');
+    }
+    final userId = authInfo.authUserId;
+
+    final existing = await FcmToken.db.findFirstRow(session, where: (t) => t.token.equals(token));
+
+    if (existing != null) {
+      final updated = existing.copyWith(
+        userId: userId,
+        deviceId: deviceId ?? existing.deviceId,
+        updatedAt: DateTime.now(),
+      );
+      await FcmToken.db.updateRow(session, updated);
+    } else {
+      await FcmToken.db.insertRow(
+        session,
+        FcmToken(userId: userId, token: token, deviceId: deviceId, updatedAt: DateTime.now()),
+      );
     }
   }
 }

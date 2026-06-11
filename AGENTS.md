@@ -128,5 +128,12 @@ See the alpine_pod_flutter/README.md.
 
 ## Notifications
 
-The app should support notifications. The user should be able to select recieving notifications as an email, push notification, or in-app notification. The user should be able to select the events that they want to receive notifications for, or the sections that they want to receive notifications for.   The server uses Firebase Cloud Messaging. Create the required serverpod schema and methods to support this use case.
+* The server uses Firebase Cloud Messaging for push notifications.
+* Users can elect to get notifications by Email, Push, or In-App.   Default to Email, In App and Push.
+* Users can view their notification history.
+* Users always get notifications when their registration status changes or if the event is cancelled.
+* event mangagers get notified anytime someone signs up for event, cancels their registrations, or is approved (possibly by another manager)
+* Users may opt in to recieving notifications of any new events in their section. For now, we won't filter by event type, but the schema should support it in the future.
+
+
 

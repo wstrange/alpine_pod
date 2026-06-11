@@ -10,8 +10,7 @@ class MemberEndpoint extends Endpoint {
       return null;
     }
 
-    var m = await Member.db.findFirstRow(session,
-        where: (t) => t.user.id.equals(authInfo.authUserId));
+    var m = await Member.db.findFirstRow(session, where: (t) => t.user.id.equals(authInfo.authUserId));
     return m;
   }
 
@@ -32,35 +31,24 @@ class MemberEndpoint extends Endpoint {
     }
 
     // Ensure the email is unique
-    final existing = await Member.db.findFirstRow(
-      session,
-      where: (t) => t.email.equals(member.email),
-    );
+    final existing = await Member.db.findFirstRow(session, where: (t) => t.email.equals(member.email));
     if (existing != null) {
       throw Exception('A member with that email already exists');
     }
 
     // Ensure createdAt is set to now
-    final toInsert = member.copyWith(
-      createdAt: DateTime.now(),
-    );
+    final toInsert = member.copyWith(createdAt: DateTime.now());
 
     final created = await Member.db.insertRow(session, toInsert);
 
     return created;
   }
 
-  Future<SectionMembership> addMemberToSection(
-    Session session,
-    SectionMembership membership,
-  ) async {
+  Future<SectionMembership> addMemberToSection(Session session, SectionMembership membership) async {
     // Set syncedAt to current time
-    final validatedMembership = membership.copyWith(
-      syncedAt: DateTime.now(),
-    );
+    final validatedMembership = membership.copyWith(syncedAt: DateTime.now());
 
-    final result =
-        await SectionMembership.db.insertRow(session, validatedMembership);
+    final result = await SectionMembership.db.insertRow(session, validatedMembership);
 
     // Sync global scopes
     await _syncUserScopes(session, membership.memberId);
@@ -68,15 +56,10 @@ class MemberEndpoint extends Endpoint {
     return result;
   }
 
-  Future<void> removeMemberFromSection(
-    Session session,
-    SectionMembership membership,
-  ) async {
+  Future<void> removeMemberFromSection(Session session, SectionMembership membership) async {
     await SectionMembership.db.deleteWhere(
       session,
-      where: (t) =>
-          t.memberId.equals(membership.memberId) &
-          t.sectionId.equals(membership.sectionId),
+      where: (t) => t.memberId.equals(membership.memberId) & t.sectionId.equals(membership.sectionId),
     );
 
     // Sync global scopes
@@ -94,10 +77,7 @@ class MemberEndpoint extends Endpoint {
     return await Member.db.findById(session, id);
   }
 
-  Future<List<SectionMembership>> getMemberSectionMemberships(
-    Session session,
-    int memberId,
-  ) async {
+  Future<List<SectionMembership>> getMemberSectionMemberships(Session session, int memberId) async {
     final callerInfo = await cache.getMemberInfo(session);
     if (callerInfo == null) throw Exception('Not authenticated');
 
@@ -108,9 +88,7 @@ class MemberEndpoint extends Endpoint {
     return await SectionMembership.db.find(
       session,
       where: (t) => t.memberId.equals(memberId),
-      include: SectionMembership.include(
-        section: Section.include(),
-      ),
+      include: SectionMembership.include(section: Section.include()),
     );
   }
 
@@ -128,10 +106,7 @@ class MemberEndpoint extends Endpoint {
 
     // Prevent changing the userId associated with the member record
     // even for admins, to keep the link to the Auth record stable.
-    final toUpdate = member.copyWith(
-      userId: existing.userId,
-      updatedAt: DateTime.now(),
-    );
+    final toUpdate = member.copyWith(userId: existing.userId, updatedAt: DateTime.now());
 
     final updated = await Member.db.updateRow(session, toUpdate);
 
@@ -152,10 +127,7 @@ class MemberEndpoint extends Endpoint {
       throw Exception('Not authenticated');
     }
 
-    final updated = currentMember.copyWith(
-      waiverSignedDate: DateTime.now(),
-      updatedAt: DateTime.now(),
-    );
+    final updated = currentMember.copyWith(waiverSignedDate: DateTime.now(), updatedAt: DateTime.now());
 
     return await Member.db.updateRow(session, updated);
   }
@@ -184,9 +156,7 @@ class MemberEndpoint extends Endpoint {
         session,
         where: (t) {
           if (filter != null && filter.isNotEmpty) {
-            return t.firstName.ilike('%$filter%') |
-                t.lastName.ilike('%$filter%') |
-                t.email.ilike('%$filter%');
+            return t.firstName.ilike('%$filter%') | t.lastName.ilike('%$filter%') | t.email.ilike('%$filter%');
           }
           return Constant.bool(true);
         },
@@ -218,16 +188,15 @@ class MemberEndpoint extends Endpoint {
             ? t.sectionId.equals(targetSectionIds.first)
             : t.sectionId.inSet(targetSectionIds);
         if (filter != null && filter.isNotEmpty) {
-          expr = expr &
+          expr =
+              expr &
               (t.member.firstName.ilike('%$filter%') |
                   t.member.lastName.ilike('%$filter%') |
                   t.member.email.ilike('%$filter%'));
         }
         return expr;
       },
-      include: SectionMembership.include(
-        member: Member.include(),
-      ),
+      include: SectionMembership.include(member: Member.include()),
       orderBy: (t) => t.member.lastName,
       // For a single section the DB handles limit + offset directly.
       // For multi-section we must deduplicate first, so fetch everything
@@ -249,8 +218,7 @@ class MemberEndpoint extends Endpoint {
       }
     }
 
-    final result = memberMap.values.toList()
-      ..sort((a, b) => a.lastName.compareTo(b.lastName));
+    final result = memberMap.values.toList()..sort((a, b) => a.lastName.compareTo(b.lastName));
 
     if (offset >= result.length) return [];
     final end = (offset + limit).clamp(0, result.length);
@@ -273,16 +241,15 @@ class MemberEndpoint extends Endpoint {
       where: (t) {
         var expr = t.sectionId.equals(sectionId);
         if (filter != null && filter.isNotEmpty) {
-          expr = expr &
+          expr =
+              expr &
               (t.member.firstName.ilike('%$filter%') |
                   t.member.lastName.ilike('%$filter%') |
                   t.member.email.ilike('%$filter%'));
         }
         return expr;
       },
-      include: SectionMembership.include(
-        member: Member.include(),
-      ),
+      include: SectionMembership.include(member: Member.include()),
       orderBy: (t) => t.member.lastName,
       limit: limit,
       offset: offset,
@@ -290,34 +257,25 @@ class MemberEndpoint extends Endpoint {
   }
 
   /// Get the active user's membership details (and scopes) for a specific section.
-  Future<SectionMembership?> getMySectionMembership(
-    Session session,
-    int sectionId,
-  ) async {
+  Future<SectionMembership?> getMySectionMembership(Session session, int sectionId) async {
     final callerInfo = await cache.getMemberInfo(session);
     if (callerInfo == null) return null;
 
     return await SectionMembership.db.findFirstRow(
       session,
-      where: (t) =>
-          t.memberId.equals(callerInfo.member.id) &
-          t.sectionId.equals(sectionId),
+      where: (t) => t.memberId.equals(callerInfo.member.id) & t.sectionId.equals(sectionId),
     );
   }
 
   /// Get all the active user's membership details across all sections.
-  Future<List<SectionMembership>> getAllMySectionMemberships(
-    Session session,
-  ) async {
+  Future<List<SectionMembership>> getAllMySectionMemberships(Session session) async {
     final callerInfo = await cache.getMemberInfo(session);
     if (callerInfo == null) return [];
 
     return await SectionMembership.db.find(
       session,
       where: (t) => t.memberId.equals(callerInfo.member.id),
-      include: SectionMembership.include(
-        section: Section.include(),
-      ),
+      include: SectionMembership.include(section: Section.include()),
     );
   }
 
@@ -333,8 +291,7 @@ class MemberEndpoint extends Endpoint {
     if (callerInfo == null) throw Exception('Not authenticated');
 
     if (!session.isGlobalAdmin() && !callerInfo.isSectionManager(sectionId)) {
-      throw Exception(
-          'You do not have permission to manage scopes in this section');
+      throw Exception('You do not have permission to manage scopes in this section');
     }
 
     // Find the membership to update
@@ -352,10 +309,7 @@ class MemberEndpoint extends Endpoint {
     if (targetMember == null) throw Exception('Target member not found');
 
     // Update the SectionMembership row
-    final updatedMembership = membership.copyWith(
-      scopes: newScopes.toSet(),
-      syncedAt: DateTime.now(),
-    );
+    final updatedMembership = membership.copyWith(scopes: newScopes.toSet(), syncedAt: DateTime.now());
     await SectionMembership.db.updateRow(session, updatedMembership);
 
     // Sync global scopes
@@ -369,21 +323,13 @@ class MemberEndpoint extends Endpoint {
     final targetMember = await Member.db.findById(session, memberId);
     if (targetMember == null) return;
 
-    final allMemberships = await SectionMembership.db.find(
-      session,
-      where: (t) => t.memberId.equals(memberId),
-    );
+    final allMemberships = await SectionMembership.db.find(session, where: (t) => t.memberId.equals(memberId));
 
     // Fetch the existing user to preserve global/admin scopes
-    final authUser = await AuthServices.instance.authUsers.get(
-      session,
-      authUserId: targetMember.userId,
-    );
+    final authUser = await AuthServices.instance.authUsers.get(session, authUserId: targetMember.userId);
 
     // Keep global/admin scopes that are not managed by section memberships
-    final preservedScopes = authUser.scopeNames
-        .where((s) => s == 'serverpod.admin' || s == 'admin')
-        .toSet();
+    final preservedScopes = authUser.scopeNames.where((s) => s == 'serverpod.admin' || s == 'admin').toSet();
 
     // Merge scopes from all sections, add base 'member' scope and preserved scopes
     final mergedScopes = <String>{'member', ...preservedScopes};
@@ -395,22 +341,14 @@ class MemberEndpoint extends Endpoint {
     final Set<Scope> authScopes = mergedScopes.map((s) => Scope(s)).toSet();
 
     // Update the AuthUser scopes
-    await AuthServices.instance.authUsers.update(
-      session,
-      authUserId: targetMember.userId,
-      scopes: authScopes,
-    );
+    await AuthServices.instance.authUsers.update(session, authUserId: targetMember.userId, scopes: authScopes);
 
     // Invalidate the cache for the updated member so their new scopes take effect immediately
     cache.invalidateUserCache(targetMember.userId);
   }
 
   /// Atomic registration: creates a Member profile and multiple Section memberships.
-  Future<Member> registerMember(
-    Session session,
-    Member member,
-    List<int> sectionIds,
-  ) async {
+  Future<Member> registerMember(Session session, Member member, List<int> sectionIds) async {
     final authInfo = session.authenticated;
     if (authInfo == null) throw Exception('Not authenticated');
 
@@ -430,11 +368,7 @@ class MemberEndpoint extends Endpoint {
           createdAt: DateTime.now(),
           updatedAt: DateTime.now(),
         );
-        createdMember = await Member.db.insertRow(
-          session,
-          memberToInsert,
-          transaction: transaction,
-        );
+        createdMember = await Member.db.insertRow(session, memberToInsert, transaction: transaction);
       } else {
         // Update existing member info if needed?
         // For now, if they already have a profile, we just use it.
@@ -445,9 +379,7 @@ class MemberEndpoint extends Endpoint {
       for (final sectionId in sectionIds) {
         final existingMembership = await SectionMembership.db.findFirstRow(
           session,
-          where: (t) =>
-              t.memberId.equals(createdMember.id!) &
-              t.sectionId.equals(sectionId),
+          where: (t) => t.memberId.equals(createdMember.id!) & t.sectionId.equals(sectionId),
           transaction: transaction,
         );
 

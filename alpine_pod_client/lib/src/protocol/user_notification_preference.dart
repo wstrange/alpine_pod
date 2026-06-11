@@ -20,25 +20,26 @@ abstract class UserNotificationPreference implements _i1.SerializableModel {
     this.id,
     required this.userId,
     this.user,
-    required this.notificationType,
     bool? allowInApp,
     bool? allowEmail,
     bool? allowPush,
     bool? allowSms,
+    bool? newEvents,
   }) : allowInApp = allowInApp ?? true,
        allowEmail = allowEmail ?? true,
        allowPush = allowPush ?? true,
-       allowSms = allowSms ?? true;
+       allowSms = allowSms ?? false,
+       newEvents = newEvents ?? true;
 
   factory UserNotificationPreference({
     int? id,
     required _i1.UuidValue userId,
     _i2.AuthUser? user,
-    required String notificationType,
     bool? allowInApp,
     bool? allowEmail,
     bool? allowPush,
     bool? allowSms,
+    bool? newEvents,
   }) = _UserNotificationPreferenceImpl;
 
   factory UserNotificationPreference.fromJson(
@@ -50,7 +51,6 @@ abstract class UserNotificationPreference implements _i1.SerializableModel {
       user: jsonSerialization['user'] == null
           ? null
           : _i3.Protocol().deserialize<_i2.AuthUser>(jsonSerialization['user']),
-      notificationType: jsonSerialization['notificationType'] as String,
       allowInApp: jsonSerialization['allowInApp'] == null
           ? null
           : _i1.BoolJsonExtension.fromJson(jsonSerialization['allowInApp']),
@@ -63,6 +63,9 @@ abstract class UserNotificationPreference implements _i1.SerializableModel {
       allowSms: jsonSerialization['allowSms'] == null
           ? null
           : _i1.BoolJsonExtension.fromJson(jsonSerialization['allowSms']),
+      newEvents: jsonSerialization['newEvents'] == null
+          ? null
+          : _i1.BoolJsonExtension.fromJson(jsonSerialization['newEvents']),
     );
   }
 
@@ -75,8 +78,6 @@ abstract class UserNotificationPreference implements _i1.SerializableModel {
 
   _i2.AuthUser? user;
 
-  String notificationType;
-
   bool allowInApp;
 
   bool allowEmail;
@@ -85,6 +86,8 @@ abstract class UserNotificationPreference implements _i1.SerializableModel {
 
   bool allowSms;
 
+  bool newEvents;
+
   /// Returns a shallow copy of this [UserNotificationPreference]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
@@ -92,11 +95,11 @@ abstract class UserNotificationPreference implements _i1.SerializableModel {
     int? id,
     _i1.UuidValue? userId,
     _i2.AuthUser? user,
-    String? notificationType,
     bool? allowInApp,
     bool? allowEmail,
     bool? allowPush,
     bool? allowSms,
+    bool? newEvents,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -105,11 +108,11 @@ abstract class UserNotificationPreference implements _i1.SerializableModel {
       if (id != null) 'id': id,
       'userId': userId.toJson(),
       if (user != null) 'user': user?.toJson(),
-      'notificationType': notificationType,
       'allowInApp': allowInApp,
       'allowEmail': allowEmail,
       'allowPush': allowPush,
       'allowSms': allowSms,
+      'newEvents': newEvents,
     };
   }
 
@@ -126,20 +129,20 @@ class _UserNotificationPreferenceImpl extends UserNotificationPreference {
     int? id,
     required _i1.UuidValue userId,
     _i2.AuthUser? user,
-    required String notificationType,
     bool? allowInApp,
     bool? allowEmail,
     bool? allowPush,
     bool? allowSms,
+    bool? newEvents,
   }) : super._(
          id: id,
          userId: userId,
          user: user,
-         notificationType: notificationType,
          allowInApp: allowInApp,
          allowEmail: allowEmail,
          allowPush: allowPush,
          allowSms: allowSms,
+         newEvents: newEvents,
        );
 
   /// Returns a shallow copy of this [UserNotificationPreference]
@@ -150,21 +153,21 @@ class _UserNotificationPreferenceImpl extends UserNotificationPreference {
     Object? id = _Undefined,
     _i1.UuidValue? userId,
     Object? user = _Undefined,
-    String? notificationType,
     bool? allowInApp,
     bool? allowEmail,
     bool? allowPush,
     bool? allowSms,
+    bool? newEvents,
   }) {
     return UserNotificationPreference(
       id: id is int? ? id : this.id,
       userId: userId ?? this.userId,
       user: user is _i2.AuthUser? ? user : this.user?.copyWith(),
-      notificationType: notificationType ?? this.notificationType,
       allowInApp: allowInApp ?? this.allowInApp,
       allowEmail: allowEmail ?? this.allowEmail,
       allowPush: allowPush ?? this.allowPush,
       allowSms: allowSms ?? this.allowSms,
+      newEvents: newEvents ?? this.newEvents,
     );
   }
 }
