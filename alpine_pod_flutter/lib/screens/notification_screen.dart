@@ -1,4 +1,3 @@
-import 'package:alpine_pod_client/alpine_pod_client.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
@@ -32,9 +31,9 @@ class NotificationScreen extends HookWidget {
                   icon: const Icon(Icons.done_all),
                   tooltip: 'Mark all as read',
                   onPressed: () async {
-                    final unread = notificationsState.value!.where((n) => !n.isRead).toList();
+                    final unread = notificationsState.value!.where((n) => !n.userNotification.isRead).toList();
                     for (var n in unread) {
-                      await client.notification.markAsRead(n.id!);
+                      await client.notification.markAsRead(n.userNotification.id!);
                     }
                     notificationsSignal.refresh();
                   },
@@ -63,18 +62,10 @@ class NotificationScreen extends HookWidget {
                   separatorBuilder: (context, index) => const Divider(height: 1),
                   itemBuilder: (context, index) {
                     final notification = notifications[index];
+                    final un = notification.userNotification;
 
-                    final url = notification.notification?.actionUrl;
+                    final url = un.notification?.actionUrl ?? '/notifications';
 
-                    final template =
-                        notification.notification?.template ??
-                        NotificationTemplate(
-                          name: 'fixme',
-                          titleTemplate: 'fixme',
-                          bodyTemplate: 'fixme',
-                          createdAt: DateTime.now(),
-                          updatedAt: DateTime.now(),
-                        );
                     return Dismissible(
                       key: Key('notif_${notification.id}'),
                       background: Container(
@@ -90,43 +81,46 @@ class NotificationScreen extends HookWidget {
                       },
                       child: ListTile(
                         leading: CircleAvatar(
-                          backgroundColor: notification.isRead ? Colors.grey[200] : Colors.blue[100],
+                          backgroundColor: un.isRead ? Colors.grey[200] : Colors.blue[100],
                           child: Icon(
-                            notification.isRead ? Icons.notifications_none : Icons.notifications_active,
-                            color: notification.isRead ? Colors.grey : Colors.blue,
+                            un.isRead ? Icons.notifications_none : Icons.notifications_active,
+                            color: un.isRead ? Colors.grey : Colors.blue,
                           ),
                         ),
                         title: Text(
-                          template.titleTemplate,
-                          style: TextStyle(fontWeight: notification.isRead ? FontWeight.normal : FontWeight.bold),
+                          notification.title,
+                          style: TextStyle(fontWeight: un.isRead ? FontWeight.normal : FontWeight.bold),
                         ),
                         subtitle: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(template.bodyTemplate),
+                            Text(notification.body),
                             const SizedBox(height: 4),
                             Text(
-                              notification.createdAt.toLocal().toString().split('.')[0],
+                              un.createdAt.toLocal().toString().split('.')[0],
                               style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                             ),
                           ],
                         ),
-                        trailing: !notification.isRead
+                        trailing: un.isRead
                             ? IconButton(
                                 icon: const Icon(Icons.mark_chat_read_outlined, size: 20),
                                 onPressed: () async {
-                                  await client.notification.markAsRead(notification.id!);
+                                  final id = un.id;
+                                  if (id != null) {
+                                    await client.notification.markAsRead(id);
+                                  }
                                   notificationsSignal.refresh();
                                 },
                               )
                             : null,
                         onTap: () async {
-                          if (!notification.isRead) {
-                            await client.notification.markAsRead(notification.id!);
+                          if (!un.isRead) {
+                            await client.notification.markAsRead(un.id!);
                             notificationsSignal.refresh();
                           }
 
-                          if (context.mounted && url != null) {
+                          if (context.mounted) {
                             context.go(url);
                           }
                         },

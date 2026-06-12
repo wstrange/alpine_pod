@@ -1,16 +1,17 @@
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_auth_idp_server/core.dart';
 import '../generated/protocol.dart';
+import '../services/notification_service.dart';
 
 class NotificationEndpoint extends Endpoint {
   @override
   bool get requireLogin => true;
 
-  Future<List<UserNotification>> getMyFeed(Session session, {int limit = 20, int offset = 0}) async {
+  Future<List<RenderedNotification>> getMyFeed(Session session, {int limit = 20, int offset = 0}) async {
     final authInfo = session.authenticated;
     final currentUserId = authInfo!.authUserId;
 
-    return await UserNotification.db.find(
+    final userNotifications = await UserNotification.db.find(
       session,
       where: (t) => t.userId.equals(currentUserId),
       orderBy: (t) => t.createdAt,
@@ -19,6 +20,8 @@ class NotificationEndpoint extends Endpoint {
       offset: offset,
       include: UserNotification.include(notification: Notification.include(template: NotificationTemplate.include())),
     );
+
+    return userNotifications.map((un) => renderedNotification(un)).toList();
   }
 
   Future<bool> markAsRead(Session session, int userNotificationId) async {

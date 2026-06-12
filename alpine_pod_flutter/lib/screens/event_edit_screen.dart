@@ -188,11 +188,12 @@ class EventEditScreen extends HookWidget {
         }
         currentEventsSignal.refresh();
         if (context.mounted) {
+          final msg = savedEvent.published ? "Published live to site" : "DRAFT: Not visible to other members.";
           await showDialog(
             context: context,
             builder: (context) => AlertDialog(
               title: const Text('Success'),
-              content: const Text('Event saved successfully'),
+              content: Text('Event saved successfully. Event Status: $msg'),
               actions: [TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('OK'))],
             ),
           );
@@ -249,256 +250,256 @@ class EventEditScreen extends HookWidget {
         child: Form(
           key: formKey,
           child: Column(
-          children: [
-            TextFormField(
-              controller: titleController,
-              decoration: const InputDecoration(labelText: 'Title'),
-              validator: (value) {
-                if (value == null || value.trim().isEmpty) {
-                  return 'Title is required';
-                }
-                return null;
-              },
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.only(left: 4.0),
-                  child: Text(
-                    'Description',
-                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white70),
+            children: [
+              TextFormField(
+                controller: titleController,
+                decoration: const InputDecoration(labelText: 'Title'),
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'Title is required';
+                  }
+                  return null;
+                },
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.only(left: 4.0),
+                    child: Text(
+                      'Description',
+                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white70),
+                    ),
                   ),
+                  TextButton.icon(
+                    onPressed: () async {
+                      final template = await showDialog<String>(
+                        context: context,
+                        builder: (context) => const TemplateBrowserDialog(),
+                      );
+                      if (template != null) {
+                        final currentText = descriptionController.text;
+                        final selection = descriptionController.selection;
+                        if (selection.baseOffset < 0) {
+                          descriptionController.text = currentText + (currentText.isEmpty ? '' : '\n\n') + template;
+                        } else {
+                          final newText = currentText.replaceRange(selection.start, selection.end, template);
+                          descriptionController.value = descriptionController.value.copyWith(
+                            text: newText,
+                            selection: TextSelection.collapsed(offset: selection.start + template.length),
+                          );
+                        }
+                      }
+                    },
+                    icon: const Icon(Icons.library_books),
+                    label: const Text('Insert Markdown template'),
+                  ),
+                ],
+              ),
+              TextFormField(
+                controller: descriptionController,
+                decoration: const InputDecoration(hintText: 'Enter event description (supports markdown)'),
+                maxLines: 30,
+                minLines: 5,
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'Description is required';
+                  }
+                  return null;
+                },
+              ),
+              TextFormField(
+                controller: locationController,
+                decoration: const InputDecoration(
+                  labelText: 'Event Location (supports markdown)',
+                  hintText: 'Address, place name, or Google Maps URL',
+                  prefixIcon: Icon(Icons.map_outlined),
                 ),
-                TextButton.icon(
-                  onPressed: () async {
-                    final template = await showDialog<String>(
+              ),
+              const SizedBox(height: 8),
+              const Divider(),
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 4),
+                  child: Text('Carpool', style: TextStyle(fontWeight: FontWeight.w600)),
+                ),
+              ),
+              TextFormField(
+                controller: carpoolLocationController,
+                decoration: const InputDecoration(
+                  labelText: 'Carpool Meet Location (supports markdown)',
+                  hintText: 'Address, place name, or Google Maps URL',
+                  prefixIcon: Icon(Icons.directions_car_outlined),
+                ),
+              ),
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: const Icon(Icons.access_time),
+                title: const Text('Carpool Meet Time'),
+                subtitle: Text(carpoolTime.value != null ? eventDateFormat(carpoolTime.value!) : 'Not set'),
+                trailing: carpoolTime.value != null
+                    ? IconButton(
+                        icon: const Icon(Icons.clear),
+                        tooltip: 'Clear',
+                        onPressed: () => carpoolTime.value = null,
+                      )
+                    : null,
+                onTap: () async {
+                  final date = await showDatePicker(
+                    context: context,
+                    initialDate: carpoolTime.value ?? startTime.value,
+                    firstDate: DateTime(2025),
+                    lastDate: DateTime(2100),
+                  );
+                  if (date != null && context.mounted) {
+                    final time = await showTimePicker(
                       context: context,
-                      builder: (context) => const TemplateBrowserDialog(),
+                      initialTime: TimeOfDay.fromDateTime(carpoolTime.value ?? startTime.value),
                     );
-                    if (template != null) {
-                      final currentText = descriptionController.text;
-                      final selection = descriptionController.selection;
-                      if (selection.baseOffset < 0) {
-                        descriptionController.text = currentText + (currentText.isEmpty ? '' : '\n\n') + template;
-                      } else {
-                        final newText = currentText.replaceRange(selection.start, selection.end, template);
-                        descriptionController.value = descriptionController.value.copyWith(
-                          text: newText,
-                          selection: TextSelection.collapsed(offset: selection.start + template.length),
-                        );
-                      }
+                    if (time != null) {
+                      carpoolTime.value = DateTime(date.year, date.month, date.day, time.hour, time.minute);
                     }
-                  },
-                  icon: const Icon(Icons.library_books),
-                  label: const Text('Insert Boilerplate'),
-                ),
-              ],
-            ),
-            TextFormField(
-              controller: descriptionController,
-              decoration: const InputDecoration(hintText: 'Enter event description (supports markdown)'),
-              maxLines: 30,
-              minLines: 5,
-              validator: (value) {
-                if (value == null || value.trim().isEmpty) {
-                  return 'Description is required';
-                }
-                return null;
-              },
-            ),
-            TextFormField(
-              controller: locationController,
-              decoration: const InputDecoration(
-                labelText: 'Event Location (supports markdown)',
-                hintText: 'Address, place name, or Google Maps URL',
-                prefixIcon: Icon(Icons.map_outlined),
-              ),
-            ),
-            const SizedBox(height: 8),
-            const Divider(),
-            const Align(
-              alignment: Alignment.centerLeft,
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 4),
-                child: Text('Carpool', style: TextStyle(fontWeight: FontWeight.w600)),
-              ),
-            ),
-            TextFormField(
-              controller: carpoolLocationController,
-              decoration: const InputDecoration(
-                labelText: 'Carpool Meet Location (supports markdown)',
-                hintText: 'Address, place name, or Google Maps URL',
-                prefixIcon: Icon(Icons.directions_car_outlined),
-              ),
-            ),
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: const Icon(Icons.access_time),
-              title: const Text('Carpool Meet Time'),
-              subtitle: Text(carpoolTime.value != null ? eventDateFormat(carpoolTime.value!) : 'Not set'),
-              trailing: carpoolTime.value != null
-                  ? IconButton(
-                      icon: const Icon(Icons.clear),
-                      tooltip: 'Clear',
-                      onPressed: () => carpoolTime.value = null,
-                    )
-                  : null,
-              onTap: () async {
-                final date = await showDatePicker(
-                  context: context,
-                  initialDate: carpoolTime.value ?? startTime.value,
-                  firstDate: DateTime(2025),
-                  lastDate: DateTime(2100),
-                );
-                if (date != null && context.mounted) {
-                  final time = await showTimePicker(
-                    context: context,
-                    initialTime: TimeOfDay.fromDateTime(carpoolTime.value ?? startTime.value),
-                  );
-                  if (time != null) {
-                    carpoolTime.value = DateTime(date.year, date.month, date.day, time.hour, time.minute);
                   }
-                }
-              },
-            ),
-            const Divider(),
-            DropdownButtonFormField<String>(
-              initialValue: selectedType.value,
-              decoration: const InputDecoration(labelText: 'Event Type'),
-              items: eventTypes.map((t) => DropdownMenuItem(value: t, child: Text(t))).toList(),
-              onChanged: (value) {
-                if (value != null) {
-                  selectedType.value = value;
-                }
-              },
-            ),
-            SwitchListTile(
-              contentPadding: EdgeInsets.zero,
-              secondary: const Icon(Icons.how_to_reg_outlined),
-              title: const Text('Requires Approval'),
-              subtitle: Text(
-                requiresApproval.value
-                    ? 'Registrations go to a waitlist and must be approved'
-                    : 'Members can register directly without approval',
+                },
               ),
-              value: requiresApproval.value,
-              onChanged: (val) => requiresApproval.value = val,
-            ),
-            SwitchListTile(
-              contentPadding: EdgeInsets.zero,
-              secondary: const Icon(Icons.publish_outlined),
-              title: const Text('Published'),
-              subtitle: Text(
-                published.value
-                    ? 'Event is published and visible to members'
-                    : 'Event is a draft and only visible to event managers',
+              const Divider(),
+              DropdownButtonFormField<String>(
+                initialValue: selectedType.value,
+                decoration: const InputDecoration(labelText: 'Event Type'),
+                items: eventTypes.map((t) => DropdownMenuItem(value: t, child: Text(t))).toList(),
+                onChanged: (value) {
+                  if (value != null) {
+                    selectedType.value = value;
+                  }
+                },
               ),
-              value: published.value,
-              onChanged: (val) => published.value = val,
-            ),
-            const Divider(),
-            Row(
-              children: [
-                Expanded(
-                  child: TextFormField(
-                    controller: minParticipantsController,
-                    decoration: const InputDecoration(
-                      labelText: 'Min Participants',
-                      prefixIcon: Icon(Icons.person_outline),
+              SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                secondary: const Icon(Icons.how_to_reg_outlined),
+                title: const Text('Requires Approval'),
+                subtitle: Text(
+                  requiresApproval.value
+                      ? 'Registrations go to a waitlist and must be approved'
+                      : 'Members can register directly without approval',
+                ),
+                value: requiresApproval.value,
+                onChanged: (val) => requiresApproval.value = val,
+              ),
+              SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                secondary: const Icon(Icons.publish_outlined),
+                title: const Text('Published'),
+                subtitle: Text(
+                  published.value
+                      ? 'Event is published and visible to members'
+                      : 'Event is a draft and only visible to event managers',
+                ),
+                value: published.value,
+                onChanged: (val) => published.value = val,
+              ),
+              const Divider(),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      controller: minParticipantsController,
+                      decoration: const InputDecoration(
+                        labelText: 'Min Participants',
+                        prefixIcon: Icon(Icons.person_outline),
+                      ),
+                      keyboardType: TextInputType.number,
+                      validator: (value) {
+                        final min = int.tryParse(value ?? '');
+                        if (min == null || min < 1) {
+                          return 'Must be at least 1';
+                        }
+                        final max = int.tryParse(maxParticipantsController.text);
+                        if (max != null && min > max) {
+                          return 'Must be ≤ max';
+                        }
+                        return null;
+                      },
                     ),
-                    keyboardType: TextInputType.number,
-                    validator: (value) {
-                      final min = int.tryParse(value ?? '');
-                      if (min == null || min < 1) {
-                        return 'Must be at least 1';
-                      }
-                      final max = int.tryParse(maxParticipantsController.text);
-                      if (max != null && min > max) {
-                        return 'Must be ≤ max';
-                      }
-                      return null;
-                    },
                   ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: TextFormField(
-                    controller: maxParticipantsController,
-                    decoration: const InputDecoration(
-                      labelText: 'Max Participants',
-                      prefixIcon: Icon(Icons.people_outline),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: TextFormField(
+                      controller: maxParticipantsController,
+                      decoration: const InputDecoration(
+                        labelText: 'Max Participants',
+                        prefixIcon: Icon(Icons.people_outline),
+                      ),
+                      keyboardType: TextInputType.number,
+                      validator: (value) {
+                        final max = int.tryParse(value ?? '');
+                        if (max == null || max < 1) {
+                          return 'Must be at least 1';
+                        }
+                        final min = int.tryParse(minParticipantsController.text);
+                        if (min != null && max < min) {
+                          return 'Must be ≥ min';
+                        }
+                        return null;
+                      },
                     ),
-                    keyboardType: TextInputType.number,
-                    validator: (value) {
-                      final max = int.tryParse(value ?? '');
-                      if (max == null || max < 1) {
-                        return 'Must be at least 1';
-                      }
-                      final min = int.tryParse(minParticipantsController.text);
-                      if (min != null && max < min) {
-                        return 'Must be ≥ min';
-                      }
-                      return null;
-                    },
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            ListTile(
-              title: const Text('Start Time'),
-              subtitle: Text(eventDateFormat(startTime.value)),
-              onTap: () async {
-                final date = await showDatePicker(
-                  context: context,
-                  initialDate: startTime.value,
-                  firstDate: DateTime(2025),
-                  lastDate: DateTime(2050),
-                );
-                if (date != null && context.mounted) {
-                  final time = await showTimePicker(
-                    context: context,
-                    initialTime: TimeOfDay.fromDateTime(startTime.value),
-                  );
-                  if (time != null) {
-                    startTime.value = DateTime(date.year, date.month, date.day, time.hour, time.minute);
-                    endTime.value = startTime.value.add(const Duration(hours: 8));
-                  }
-                }
-              },
-            ),
-            ListTile(
-              title: const Text('End Time'),
-              subtitle: Text(eventDateFormat(endTime.value)),
-              onTap: () async {
-                final date = await showDatePicker(
-                  context: context,
-                  initialDate: endTime.value,
-                  firstDate: startTime.value,
-                  lastDate: DateTime(2100),
-                );
-                if (date != null && context.mounted) {
-                  final time = await showTimePicker(
-                    context: context,
-                    initialTime: TimeOfDay.fromDateTime(endTime.value),
-                  );
-                  if (time != null) {
-                    endTime.value = DateTime(date.year, date.month, date.day, time.hour, time.minute);
-                  }
-                }
-              },
-            ),
-            const SizedBox(height: 16),
-            if (sid != null)
-              EventManagersManager(
-                eventId: activeEvent?.id,
-                sectionId: sid,
-                managers: managers.value,
-                onChanged: (newList) => managers.value = newList,
+                ],
               ),
-          ],
-        ),
+              const SizedBox(height: 16),
+              ListTile(
+                title: const Text('Start Time'),
+                subtitle: Text(eventDateFormat(startTime.value)),
+                onTap: () async {
+                  final date = await showDatePicker(
+                    context: context,
+                    initialDate: startTime.value,
+                    firstDate: DateTime(2025),
+                    lastDate: DateTime(2050),
+                  );
+                  if (date != null && context.mounted) {
+                    final time = await showTimePicker(
+                      context: context,
+                      initialTime: TimeOfDay.fromDateTime(startTime.value),
+                    );
+                    if (time != null) {
+                      startTime.value = DateTime(date.year, date.month, date.day, time.hour, time.minute);
+                      endTime.value = startTime.value.add(const Duration(hours: 8));
+                    }
+                  }
+                },
+              ),
+              ListTile(
+                title: const Text('End Time'),
+                subtitle: Text(eventDateFormat(endTime.value)),
+                onTap: () async {
+                  final date = await showDatePicker(
+                    context: context,
+                    initialDate: endTime.value,
+                    firstDate: startTime.value,
+                    lastDate: DateTime(2100),
+                  );
+                  if (date != null && context.mounted) {
+                    final time = await showTimePicker(
+                      context: context,
+                      initialTime: TimeOfDay.fromDateTime(endTime.value),
+                    );
+                    if (time != null) {
+                      endTime.value = DateTime(date.year, date.month, date.day, time.hour, time.minute);
+                    }
+                  }
+                },
+              ),
+              const SizedBox(height: 16),
+              if (sid != null)
+                EventManagersManager(
+                  eventId: activeEvent?.id,
+                  sectionId: sid,
+                  managers: managers.value,
+                  onChanged: (newList) => managers.value = newList,
+                ),
+            ],
+          ),
         ),
       ),
       persistentFooterButtons: [

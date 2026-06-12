@@ -106,25 +106,25 @@ final currentEventsSignal = futureSignal<List<Event>>(
   ),
 );
 
-final notificationsSignal = futureSignal<List<UserNotification>>(() async {
+final notificationsSignal = futureSignal<List<RenderedNotification>>(() async {
   final i = authUserSignal.value;
-  if (i == null) return <UserNotification>[];
+  if (i == null) return <RenderedNotification>[];
   return await client.notification.getMyFeed(limit: 10, offset: 0);
 }, options: AsyncSignalOptions(name: 'notificationsSignal'));
 
-final notificationStreamSignal = streamSignal<List<UserNotification>>(() async* {
+final notificationStreamSignal = streamSignal<List<RenderedNotification>>(() async* {
   while (true) {
-    if (!sessionManager.isAuthenticated) yield <UserNotification>[];
+    if (!sessionManager.isAuthenticated) yield <RenderedNotification>[];
     final n = await client.notification.getMyFeed(limit: 10, offset: 0);
     yield n;
     await Future.delayed(const Duration(seconds: 30));
   }
-});
+}, options: AsyncSignalOptions(name: 'notificationStreamSignal'));
 
 final unreadNotificationsCountSignal = computed(() {
   final state = notificationsSignal.value;
-  if (state is AsyncData<List<UserNotification>>) {
-    return state.value.where((n) => !n.isRead).length;
+  if (state is AsyncData<List<RenderedNotification>>) {
+    return state.value.where((n) => !n.userNotification.isRead).length;
   }
   return 0;
 });

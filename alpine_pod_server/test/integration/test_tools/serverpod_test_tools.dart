@@ -25,7 +25,8 @@ import 'package:alpine_pod_server/src/generated/event_manager.dart' as _i10;
 import 'package:alpine_pod_server/src/generated/event_template.dart' as _i11;
 import 'package:alpine_pod_server/src/generated/section_membership.dart'
     as _i12;
-import 'package:alpine_pod_server/src/generated/user_notification.dart' as _i13;
+import 'package:alpine_pod_server/src/generated/rendered_notification.dart'
+    as _i13;
 import 'package:alpine_pod_server/src/generated/user_notification_preference.dart'
     as _i14;
 import 'package:alpine_pod_server/src/generated/registration_status.dart'
@@ -2079,7 +2080,7 @@ class _NotificationEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i4.Future<List<_i13.UserNotification>> getMyFeed(
+  _i4.Future<List<_i13.RenderedNotification>> getMyFeed(
     _i1.TestSessionBuilder sessionBuilder, {
     required int limit,
     required int offset,
@@ -2106,7 +2107,7 @@ class _NotificationEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i4.Future<List<_i13.UserNotification>>);
+                as _i4.Future<List<_i13.RenderedNotification>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

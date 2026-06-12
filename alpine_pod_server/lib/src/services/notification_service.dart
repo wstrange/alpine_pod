@@ -287,3 +287,17 @@ class NotificationService {
     );
   }
 }
+
+// Expand the template and return a rendered notification
+RenderedNotification renderedNotification(UserNotification un) {
+  final data = un.notification?.data ?? {};
+  final notification = un.notification!;
+  final template = notification.template!;
+
+  return RenderedNotification(
+    title: Template(template.titleTemplate).renderString(data),
+    body: Template(template.bodyTemplate).renderString(data),
+    html: template.htmlTemplate != null ? Template(template.htmlTemplate!).renderString(data) : null,
+    userNotification: un,
+  );
+}

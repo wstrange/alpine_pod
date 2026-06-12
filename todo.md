@@ -46,4 +46,5 @@ Bugs:
 
 TODO:
 
-* should probably notify evetn creator of draft status
+Notifications - not refreshing when needed.   Add method to delete notifications???
+in app is always enabled. Remove it from the choice.

@@ -23,7 +23,8 @@ import 'package:alpine_pod_client/src/protocol/event_registration.dart' as _i8;
 import 'package:alpine_pod_client/src/protocol/event_manager.dart' as _i9;
 import 'package:alpine_pod_client/src/protocol/event_template.dart' as _i10;
 import 'package:alpine_pod_client/src/protocol/section_membership.dart' as _i11;
-import 'package:alpine_pod_client/src/protocol/user_notification.dart' as _i12;
+import 'package:alpine_pod_client/src/protocol/rendered_notification.dart'
+    as _i12;
 import 'package:alpine_pod_client/src/protocol/user_notification_preference.dart'
     as _i13;
 import 'package:alpine_pod_client/src/protocol/registration_status.dart'
@@ -736,10 +737,10 @@ class EndpointNotification extends _i2.EndpointRef {
   @override
   String get name => 'notification';
 
-  _i3.Future<List<_i12.UserNotification>> getMyFeed({
+  _i3.Future<List<_i12.RenderedNotification>> getMyFeed({
     required int limit,
     required int offset,
-  }) => caller.callServerEndpoint<List<_i12.UserNotification>>(
+  }) => caller.callServerEndpoint<List<_i12.RenderedNotification>>(
     'notification',
     'getMyFeed',
     {
