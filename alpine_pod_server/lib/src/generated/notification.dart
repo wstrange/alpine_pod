@@ -23,6 +23,9 @@ abstract class Notification
     this.template,
     required this.data,
     this.actionUrl,
+    required this.renderedTitle,
+    required this.renderedBody,
+    this.renderedHtml,
     required this.createdAt,
   });
 
@@ -32,6 +35,9 @@ abstract class Notification
     _i2.NotificationTemplate? template,
     required Map<String, String> data,
     String? actionUrl,
+    required String renderedTitle,
+    required String renderedBody,
+    String? renderedHtml,
     required DateTime createdAt,
   }) = _NotificationImpl;
 
@@ -48,6 +54,9 @@ abstract class Notification
         jsonSerialization['data'],
       ),
       actionUrl: jsonSerialization['actionUrl'] as String?,
+      renderedTitle: jsonSerialization['renderedTitle'] as String,
+      renderedBody: jsonSerialization['renderedBody'] as String,
+      renderedHtml: jsonSerialization['renderedHtml'] as String?,
       createdAt: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['createdAt'],
       ),
@@ -69,6 +78,12 @@ abstract class Notification
 
   String? actionUrl;
 
+  String renderedTitle;
+
+  String renderedBody;
+
+  String? renderedHtml;
+
   DateTime createdAt;
 
   @override
@@ -83,6 +98,9 @@ abstract class Notification
     _i2.NotificationTemplate? template,
     Map<String, String>? data,
     String? actionUrl,
+    String? renderedTitle,
+    String? renderedBody,
+    String? renderedHtml,
     DateTime? createdAt,
   });
   @override
@@ -94,6 +112,9 @@ abstract class Notification
       if (template != null) 'template': template?.toJson(),
       'data': data.toJson(),
       if (actionUrl != null) 'actionUrl': actionUrl,
+      'renderedTitle': renderedTitle,
+      'renderedBody': renderedBody,
+      if (renderedHtml != null) 'renderedHtml': renderedHtml,
       'createdAt': createdAt.toJson(),
     };
   }
@@ -107,6 +128,9 @@ abstract class Notification
       if (template != null) 'template': template?.toJsonForProtocol(),
       'data': data.toJson(),
       if (actionUrl != null) 'actionUrl': actionUrl,
+      'renderedTitle': renderedTitle,
+      'renderedBody': renderedBody,
+      if (renderedHtml != null) 'renderedHtml': renderedHtml,
       'createdAt': createdAt.toJson(),
     };
   }
@@ -154,6 +178,9 @@ class _NotificationImpl extends Notification {
     _i2.NotificationTemplate? template,
     required Map<String, String> data,
     String? actionUrl,
+    required String renderedTitle,
+    required String renderedBody,
+    String? renderedHtml,
     required DateTime createdAt,
   }) : super._(
          id: id,
@@ -161,6 +188,9 @@ class _NotificationImpl extends Notification {
          template: template,
          data: data,
          actionUrl: actionUrl,
+         renderedTitle: renderedTitle,
+         renderedBody: renderedBody,
+         renderedHtml: renderedHtml,
          createdAt: createdAt,
        );
 
@@ -174,6 +204,9 @@ class _NotificationImpl extends Notification {
     Object? template = _Undefined,
     Map<String, String>? data,
     Object? actionUrl = _Undefined,
+    String? renderedTitle,
+    String? renderedBody,
+    Object? renderedHtml = _Undefined,
     DateTime? createdAt,
   }) {
     return Notification(
@@ -194,6 +227,9 @@ class _NotificationImpl extends Notification {
             ),
           ),
       actionUrl: actionUrl is String? ? actionUrl : this.actionUrl,
+      renderedTitle: renderedTitle ?? this.renderedTitle,
+      renderedBody: renderedBody ?? this.renderedBody,
+      renderedHtml: renderedHtml is String? ? renderedHtml : this.renderedHtml,
       createdAt: createdAt ?? this.createdAt,
     );
   }
@@ -219,6 +255,23 @@ class NotificationUpdateTable extends _i1.UpdateTable<NotificationTable> {
     value,
   );
 
+  _i1.ColumnValue<String, String> renderedTitle(String value) =>
+      _i1.ColumnValue(
+        table.renderedTitle,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> renderedBody(String value) => _i1.ColumnValue(
+    table.renderedBody,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> renderedHtml(String? value) =>
+      _i1.ColumnValue(
+        table.renderedHtml,
+        value,
+      );
+
   _i1.ColumnValue<DateTime, DateTime> createdAt(DateTime value) =>
       _i1.ColumnValue(
         table.createdAt,
@@ -241,6 +294,18 @@ class NotificationTable extends _i1.Table<int?> {
       'actionUrl',
       this,
     );
+    renderedTitle = _i1.ColumnString(
+      'renderedTitle',
+      this,
+    );
+    renderedBody = _i1.ColumnString(
+      'renderedBody',
+      this,
+    );
+    renderedHtml = _i1.ColumnString(
+      'renderedHtml',
+      this,
+    );
     createdAt = _i1.ColumnDateTime(
       'createdAt',
       this,
@@ -256,6 +321,12 @@ class NotificationTable extends _i1.Table<int?> {
   late final _i1.ColumnSerializable<Map<String, String>> data;
 
   late final _i1.ColumnString actionUrl;
+
+  late final _i1.ColumnString renderedTitle;
+
+  late final _i1.ColumnString renderedBody;
+
+  late final _i1.ColumnString renderedHtml;
 
   late final _i1.ColumnDateTime createdAt;
 
@@ -278,6 +349,9 @@ class NotificationTable extends _i1.Table<int?> {
     templateId,
     data,
     actionUrl,
+    renderedTitle,
+    renderedBody,
+    renderedHtml,
     createdAt,
   ];
 

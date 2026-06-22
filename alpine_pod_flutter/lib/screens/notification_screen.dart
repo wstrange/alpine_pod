@@ -31,9 +31,9 @@ class NotificationScreen extends HookWidget {
                   icon: const Icon(Icons.done_all),
                   tooltip: 'Mark all as read',
                   onPressed: () async {
-                    final unread = notificationsState.value!.where((n) => !n.userNotification.isRead).toList();
+                    final unread = notificationsState.value!.where((n) => !n.isRead).toList();
                     for (var n in unread) {
-                      await client.notification.markAsRead(n.userNotification.id!);
+                      await client.notification.markAsRead(n.id!);
                     }
                     notificationsSignal.refresh();
                   },
@@ -61,13 +61,11 @@ class NotificationScreen extends HookWidget {
                   itemCount: notifications.length,
                   separatorBuilder: (context, index) => const Divider(height: 1),
                   itemBuilder: (context, index) {
-                    final notification = notifications[index];
-                    final un = notification.userNotification;
-
+                    final un = notifications[index];
                     final url = un.notification?.actionUrl ?? '/notifications';
 
                     return Dismissible(
-                      key: Key('notif_${notification.id}'),
+                      key: Key('notif_${un.id}'),
                       background: Container(
                         color: Colors.red,
                         alignment: Alignment.centerRight,
@@ -76,7 +74,7 @@ class NotificationScreen extends HookWidget {
                       ),
                       direction: DismissDirection.endToStart,
                       onDismissed: (direction) async {
-                        await client.notification.markAsRead(notification.id!);
+                        await client.notification.markAsRead(un.id!);
                         notificationsSignal.refresh();
                       },
                       child: ListTile(
@@ -88,13 +86,13 @@ class NotificationScreen extends HookWidget {
                           ),
                         ),
                         title: Text(
-                          notification.title,
+                          un.notification?.renderedTitle ?? 'No Title',
                           style: TextStyle(fontWeight: un.isRead ? FontWeight.normal : FontWeight.bold),
                         ),
                         subtitle: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(notification.body),
+                            Text(un.notification?.renderedBody ?? 'No Body'),
                             const SizedBox(height: 4),
                             Text(
                               un.createdAt.toLocal().toString().split('.')[0],

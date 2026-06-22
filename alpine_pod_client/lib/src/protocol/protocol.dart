@@ -20,26 +20,26 @@ import 'event_type_subscription.dart' as _i7;
 import 'fcm_token.dart' as _i8;
 import 'member.dart' as _i9;
 import 'notification.dart' as _i10;
-import 'notification_template.dart' as _i11;
-import 'registration_status.dart' as _i12;
-import 'rendered_notification.dart' as _i13;
-import 'section.dart' as _i14;
-import 'section_membership.dart' as _i15;
-import 'user_notification.dart' as _i16;
-import 'user_notification_preference.dart' as _i17;
-import 'package:alpine_pod_client/src/protocol/section.dart' as _i18;
-import 'package:alpine_pod_client/src/protocol/event.dart' as _i19;
-import 'package:alpine_pod_client/src/protocol/event_manager.dart' as _i20;
-import 'package:alpine_pod_client/src/protocol/event_template.dart' as _i21;
-import 'package:alpine_pod_client/src/protocol/section_membership.dart' as _i22;
-import 'package:alpine_pod_client/src/protocol/member.dart' as _i23;
-import 'package:alpine_pod_client/src/protocol/rendered_notification.dart'
-    as _i24;
-import 'package:alpine_pod_client/src/protocol/event_registration.dart' as _i25;
+import 'notification_channel.dart' as _i11;
+import 'notification_delivery.dart' as _i12;
+import 'notification_template.dart' as _i13;
+import 'registration_status.dart' as _i14;
+import 'section.dart' as _i15;
+import 'section_membership.dart' as _i16;
+import 'user_notification.dart' as _i17;
+import 'user_notification_preference.dart' as _i18;
+import 'package:alpine_pod_client/src/protocol/section.dart' as _i19;
+import 'package:alpine_pod_client/src/protocol/event.dart' as _i20;
+import 'package:alpine_pod_client/src/protocol/event_manager.dart' as _i21;
+import 'package:alpine_pod_client/src/protocol/event_template.dart' as _i22;
+import 'package:alpine_pod_client/src/protocol/section_membership.dart' as _i23;
+import 'package:alpine_pod_client/src/protocol/member.dart' as _i24;
+import 'package:alpine_pod_client/src/protocol/user_notification.dart' as _i25;
+import 'package:alpine_pod_client/src/protocol/event_registration.dart' as _i26;
 import 'package:serverpod_auth_idp_client/serverpod_auth_idp_client.dart'
-    as _i26;
-import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart'
     as _i27;
+import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart'
+    as _i28;
 export 'event.dart';
 export 'event_document.dart';
 export 'event_manager.dart';
@@ -49,9 +49,10 @@ export 'event_type_subscription.dart';
 export 'fcm_token.dart';
 export 'member.dart';
 export 'notification.dart';
+export 'notification_channel.dart';
+export 'notification_delivery.dart';
 export 'notification_template.dart';
 export 'registration_status.dart';
-export 'rendered_notification.dart';
 export 'section.dart';
 export 'section_membership.dart';
 export 'user_notification.dart';
@@ -119,26 +120,29 @@ class Protocol extends _i1.SerializationManager {
     if (t == _i10.Notification) {
       return _i10.Notification.fromJson(data) as T;
     }
-    if (t == _i11.NotificationTemplate) {
-      return _i11.NotificationTemplate.fromJson(data) as T;
+    if (t == _i11.NotificationChannel) {
+      return _i11.NotificationChannel.fromJson(data) as T;
     }
-    if (t == _i12.RegistrationStatus) {
-      return _i12.RegistrationStatus.fromJson(data) as T;
+    if (t == _i12.NotificationDelivery) {
+      return _i12.NotificationDelivery.fromJson(data) as T;
     }
-    if (t == _i13.RenderedNotification) {
-      return _i13.RenderedNotification.fromJson(data) as T;
+    if (t == _i13.NotificationTemplate) {
+      return _i13.NotificationTemplate.fromJson(data) as T;
     }
-    if (t == _i14.Section) {
-      return _i14.Section.fromJson(data) as T;
+    if (t == _i14.RegistrationStatus) {
+      return _i14.RegistrationStatus.fromJson(data) as T;
     }
-    if (t == _i15.SectionMembership) {
-      return _i15.SectionMembership.fromJson(data) as T;
+    if (t == _i15.Section) {
+      return _i15.Section.fromJson(data) as T;
     }
-    if (t == _i16.UserNotification) {
-      return _i16.UserNotification.fromJson(data) as T;
+    if (t == _i16.SectionMembership) {
+      return _i16.SectionMembership.fromJson(data) as T;
     }
-    if (t == _i17.UserNotificationPreference) {
-      return _i17.UserNotificationPreference.fromJson(data) as T;
+    if (t == _i17.UserNotification) {
+      return _i17.UserNotification.fromJson(data) as T;
+    }
+    if (t == _i18.UserNotificationPreference) {
+      return _i18.UserNotificationPreference.fromJson(data) as T;
     }
     if (t == _i1.getType<_i2.Event?>()) {
       return (data != null ? _i2.Event.fromJson(data) : null) as T;
@@ -168,30 +172,34 @@ class Protocol extends _i1.SerializationManager {
     if (t == _i1.getType<_i10.Notification?>()) {
       return (data != null ? _i10.Notification.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i11.NotificationTemplate?>()) {
-      return (data != null ? _i11.NotificationTemplate.fromJson(data) : null)
+    if (t == _i1.getType<_i11.NotificationChannel?>()) {
+      return (data != null ? _i11.NotificationChannel.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i12.RegistrationStatus?>()) {
-      return (data != null ? _i12.RegistrationStatus.fromJson(data) : null)
+    if (t == _i1.getType<_i12.NotificationDelivery?>()) {
+      return (data != null ? _i12.NotificationDelivery.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i13.RenderedNotification?>()) {
-      return (data != null ? _i13.RenderedNotification.fromJson(data) : null)
+    if (t == _i1.getType<_i13.NotificationTemplate?>()) {
+      return (data != null ? _i13.NotificationTemplate.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i14.Section?>()) {
-      return (data != null ? _i14.Section.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i14.RegistrationStatus?>()) {
+      return (data != null ? _i14.RegistrationStatus.fromJson(data) : null)
+          as T;
     }
-    if (t == _i1.getType<_i15.SectionMembership?>()) {
-      return (data != null ? _i15.SectionMembership.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i15.Section?>()) {
+      return (data != null ? _i15.Section.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i16.UserNotification?>()) {
-      return (data != null ? _i16.UserNotification.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i16.SectionMembership?>()) {
+      return (data != null ? _i16.SectionMembership.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i17.UserNotificationPreference?>()) {
+    if (t == _i1.getType<_i17.UserNotification?>()) {
+      return (data != null ? _i17.UserNotification.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i18.UserNotificationPreference?>()) {
       return (data != null
-              ? _i17.UserNotificationPreference.fromJson(data)
+              ? _i18.UserNotificationPreference.fromJson(data)
               : null)
           as T;
     }
@@ -232,8 +240,8 @@ class Protocol extends _i1.SerializationManager {
     if (t == Set<String>) {
       return (data as List).map((e) => deserialize<String>(e)).toSet() as T;
     }
-    if (t == List<_i18.Section>) {
-      return (data as List).map((e) => deserialize<_i18.Section>(e)).toList()
+    if (t == List<_i19.Section>) {
+      return (data as List).map((e) => deserialize<_i19.Section>(e)).toList()
           as T;
     }
     if (t == List<int>) {
@@ -245,52 +253,52 @@ class Protocol extends _i1.SerializationManager {
               : null)
           as T;
     }
-    if (t == List<_i19.Event>) {
-      return (data as List).map((e) => deserialize<_i19.Event>(e)).toList()
+    if (t == List<_i20.Event>) {
+      return (data as List).map((e) => deserialize<_i20.Event>(e)).toList()
           as T;
     }
-    if (t == List<_i20.EventManager>) {
+    if (t == List<_i21.EventManager>) {
       return (data as List)
-              .map((e) => deserialize<_i20.EventManager>(e))
+              .map((e) => deserialize<_i21.EventManager>(e))
               .toList()
           as T;
     }
-    if (t == List<_i21.EventTemplate>) {
+    if (t == List<_i22.EventTemplate>) {
       return (data as List)
-              .map((e) => deserialize<_i21.EventTemplate>(e))
+              .map((e) => deserialize<_i22.EventTemplate>(e))
               .toList()
           as T;
     }
-    if (t == List<_i22.SectionMembership>) {
+    if (t == List<_i23.SectionMembership>) {
       return (data as List)
-              .map((e) => deserialize<_i22.SectionMembership>(e))
+              .map((e) => deserialize<_i23.SectionMembership>(e))
               .toList()
           as T;
     }
-    if (t == List<_i23.Member>) {
-      return (data as List).map((e) => deserialize<_i23.Member>(e)).toList()
+    if (t == List<_i24.Member>) {
+      return (data as List).map((e) => deserialize<_i24.Member>(e)).toList()
           as T;
     }
     if (t == Set<String>) {
       return (data as List).map((e) => deserialize<String>(e)).toSet() as T;
     }
-    if (t == List<_i24.RenderedNotification>) {
+    if (t == List<_i25.UserNotification>) {
       return (data as List)
-              .map((e) => deserialize<_i24.RenderedNotification>(e))
+              .map((e) => deserialize<_i25.UserNotification>(e))
               .toList()
           as T;
     }
-    if (t == List<_i25.EventRegistration>) {
+    if (t == List<_i26.EventRegistration>) {
       return (data as List)
-              .map((e) => deserialize<_i25.EventRegistration>(e))
+              .map((e) => deserialize<_i26.EventRegistration>(e))
               .toList()
           as T;
     }
-    try {
-      return _i26.Protocol().deserialize<T>(data, t);
-    } on _i1.DeserializationTypeNotFoundException catch (_) {}
     try {
       return _i27.Protocol().deserialize<T>(data, t);
+    } on _i1.DeserializationTypeNotFoundException catch (_) {}
+    try {
+      return _i28.Protocol().deserialize<T>(data, t);
     } on _i1.DeserializationTypeNotFoundException catch (_) {}
     return super.deserialize<T>(data, t);
   }
@@ -306,13 +314,14 @@ class Protocol extends _i1.SerializationManager {
       _i8.FcmToken => 'FcmToken',
       _i9.Member => 'Member',
       _i10.Notification => 'Notification',
-      _i11.NotificationTemplate => 'NotificationTemplate',
-      _i12.RegistrationStatus => 'RegistrationStatus',
-      _i13.RenderedNotification => 'RenderedNotification',
-      _i14.Section => 'Section',
-      _i15.SectionMembership => 'SectionMembership',
-      _i16.UserNotification => 'UserNotification',
-      _i17.UserNotificationPreference => 'UserNotificationPreference',
+      _i11.NotificationChannel => 'NotificationChannel',
+      _i12.NotificationDelivery => 'NotificationDelivery',
+      _i13.NotificationTemplate => 'NotificationTemplate',
+      _i14.RegistrationStatus => 'RegistrationStatus',
+      _i15.Section => 'Section',
+      _i16.SectionMembership => 'SectionMembership',
+      _i17.UserNotification => 'UserNotification',
+      _i18.UserNotificationPreference => 'UserNotificationPreference',
       _ => null,
     };
   }
@@ -345,28 +354,30 @@ class Protocol extends _i1.SerializationManager {
         return 'Member';
       case _i10.Notification():
         return 'Notification';
-      case _i11.NotificationTemplate():
+      case _i11.NotificationChannel():
+        return 'NotificationChannel';
+      case _i12.NotificationDelivery():
+        return 'NotificationDelivery';
+      case _i13.NotificationTemplate():
         return 'NotificationTemplate';
-      case _i12.RegistrationStatus():
+      case _i14.RegistrationStatus():
         return 'RegistrationStatus';
-      case _i13.RenderedNotification():
-        return 'RenderedNotification';
-      case _i14.Section():
+      case _i15.Section():
         return 'Section';
-      case _i15.SectionMembership():
+      case _i16.SectionMembership():
         return 'SectionMembership';
-      case _i16.UserNotification():
+      case _i17.UserNotification():
         return 'UserNotification';
-      case _i17.UserNotificationPreference():
+      case _i18.UserNotificationPreference():
         return 'UserNotificationPreference';
     }
-    className = _i26.Protocol().getClassNameForObject(data);
+    className = _i27.Protocol().getClassNameForObject(data);
     if (className != null) {
       return className.contains('.')
           ? className
           : 'serverpod_auth_idp.$className';
     }
-    className = _i27.Protocol().getClassNameForObject(data);
+    className = _i28.Protocol().getClassNameForObject(data);
     if (className != null) {
       return className.contains('.')
           ? className
@@ -408,41 +419,44 @@ class Protocol extends _i1.SerializationManager {
     if (dataClassName == 'Notification') {
       return deserialize<_i10.Notification>(data['data']);
     }
+    if (dataClassName == 'NotificationChannel') {
+      return deserialize<_i11.NotificationChannel>(data['data']);
+    }
+    if (dataClassName == 'NotificationDelivery') {
+      return deserialize<_i12.NotificationDelivery>(data['data']);
+    }
     if (dataClassName == 'NotificationTemplate') {
-      return deserialize<_i11.NotificationTemplate>(data['data']);
+      return deserialize<_i13.NotificationTemplate>(data['data']);
     }
     if (dataClassName == 'RegistrationStatus') {
-      return deserialize<_i12.RegistrationStatus>(data['data']);
-    }
-    if (dataClassName == 'RenderedNotification') {
-      return deserialize<_i13.RenderedNotification>(data['data']);
+      return deserialize<_i14.RegistrationStatus>(data['data']);
     }
     if (dataClassName == 'Section') {
-      return deserialize<_i14.Section>(data['data']);
+      return deserialize<_i15.Section>(data['data']);
     }
     if (dataClassName == 'SectionMembership') {
-      return deserialize<_i15.SectionMembership>(data['data']);
+      return deserialize<_i16.SectionMembership>(data['data']);
     }
     if (dataClassName == 'UserNotification') {
-      return deserialize<_i16.UserNotification>(data['data']);
+      return deserialize<_i17.UserNotification>(data['data']);
     }
     if (dataClassName == 'UserNotificationPreference') {
-      return deserialize<_i17.UserNotificationPreference>(data['data']);
+      return deserialize<_i18.UserNotificationPreference>(data['data']);
     }
     if (dataClassName.startsWith('serverpod_auth_idp.')) {
       data['className'] = dataClassName.substring(19);
-      return _i26.Protocol().deserializeByClassName(data);
+      return _i27.Protocol().deserializeByClassName(data);
     }
     if (dataClassName.startsWith('serverpod_auth_core.')) {
       data['className'] = dataClassName.substring(20);
-      return _i27.Protocol().deserializeByClassName(data);
+      return _i28.Protocol().deserializeByClassName(data);
     }
     return super.deserializeByClassName(data);
   }
 
   void _registerHostProtocols() {
-    _i26.Protocol().registerHostProtocol('alpine_pod', this);
     _i27.Protocol().registerHostProtocol('alpine_pod', this);
+    _i28.Protocol().registerHostProtocol('alpine_pod', this);
   }
 
   @override
@@ -458,10 +472,10 @@ class Protocol extends _i1.SerializationManager {
       return null;
     }
     try {
-      return _i26.Protocol().mapRecordToJson(record);
+      return _i27.Protocol().mapRecordToJson(record);
     } catch (_) {}
     try {
-      return _i27.Protocol().mapRecordToJson(record);
+      return _i28.Protocol().mapRecordToJson(record);
     } catch (_) {}
     throw Exception('Unsupported record type ${record.runtimeType}');
   }

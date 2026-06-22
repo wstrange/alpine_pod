@@ -91,17 +91,18 @@ class NotificationPreferencesDialog extends HookWidget {
                         style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 8),
-                      _PreferenceSwitchTile(
-                        title: 'In-App Notifications',
-                        subtitle: 'Receive notifications directly in the application',
-                        icon: Icons.phonelink_ring_outlined,
-                        value: prefs.allowInApp,
-                        onChanged: (val) async {
-                          final updated = prefs.copyWith(allowInApp: val);
-                          prefsState.value = updated;
-                          await client.notification.savePreference(updated);
-                        },
-                      ),
+                      // Note: In app is always enabled.
+                      // _PreferenceSwitchTile(
+                      //   title: 'In-App Notifications',
+                      //   subtitle: 'Receive notifications directly in the application',
+                      //   icon: Icons.phonelink_ring_outlined,
+                      //   value: prefs.allowInApp,
+                      //   onChanged: (val) async {
+                      //     final updated = prefs.copyWith(allowInApp: val);
+                      //     prefsState.value = updated;
+                      //     await client.notification.savePreference(updated);
+                      //   },
+                      // ),
                       _PreferenceSwitchTile(
                         title: 'Email Notifications',
                         subtitle: 'Receive updates via email',

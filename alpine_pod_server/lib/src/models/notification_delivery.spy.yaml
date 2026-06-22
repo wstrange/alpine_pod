@@ -1,0 +1,19 @@
+class: NotificationDelivery
+table: notification_delivery
+fields:
+  notification: Notification?, relation
+  # null for bulk-section sends (expanded by scheduler)
+  recipientUser: module:serverpod_auth_core:AuthUser?, relation(onDelete=Cascade, optional)
+  channel: NotificationChannel
+  status: String, default="pending"
+  attempts: int, default=0
+  lastAttemptAt: DateTime?
+  errorMessage: String?
+  # For bulk-section sends: scheduler expands to per-user rows
+  sectionId: int?
+  createdAt: DateTime
+indexes:
+  pending_delivery_idx:
+    fields: status, createdAt
+  recipient_channel_idx:
+    fields: recipientUserId, channel

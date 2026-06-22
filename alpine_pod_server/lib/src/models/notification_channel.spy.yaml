@@ -1,0 +1,6 @@
+enum: NotificationChannel
+values:
+  - inApp
+  - email
+  - push
+  - sms

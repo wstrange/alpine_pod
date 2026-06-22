@@ -2,6 +2,7 @@ class: UserNotificationPreference
 table: user_notification_preference
 fields:
   user: module:serverpod_auth_core:AuthUser?, relation(onDelete=Cascade)
+  # InApp is always true
   allowInApp: bool, default=true
   allowEmail: bool, default=true
   allowPush: bool, default=true

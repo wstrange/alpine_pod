@@ -25,12 +25,12 @@ import 'package:alpine_pod_server/src/generated/event_manager.dart' as _i10;
 import 'package:alpine_pod_server/src/generated/event_template.dart' as _i11;
 import 'package:alpine_pod_server/src/generated/section_membership.dart'
     as _i12;
-import 'package:alpine_pod_server/src/generated/rendered_notification.dart'
-    as _i13;
+import 'package:alpine_pod_server/src/generated/user_notification.dart' as _i13;
 import 'package:alpine_pod_server/src/generated/user_notification_preference.dart'
     as _i14;
 import 'package:alpine_pod_server/src/generated/registration_status.dart'
     as _i15;
+import 'package:alpine_pod_server/src/generated/future_calls.dart' as _i16;
 import 'package:alpine_pod_server/src/generated/protocol.dart';
 import 'package:alpine_pod_server/src/generated/endpoints.dart';
 export 'package:serverpod_test/serverpod_test_public_exports.dart';
@@ -154,6 +154,8 @@ void withServerpod(
 }
 
 class TestEndpoints {
+  late final futureCalls = _FutureCalls();
+
   late final _EmailIdpEndpoint emailIdp;
 
   late final _RefreshJwtTokensEndpoint refreshJwtTokens;
@@ -235,6 +237,10 @@ class _InternalTestEndpoints extends TestEndpoints
       serializationManager,
     );
   }
+}
+
+class _FutureCalls {
+  late final notificationScheduler = _NotificationSchedulerFutureCall();
 }
 
 class _EmailIdpEndpoint {
@@ -2080,7 +2086,7 @@ class _NotificationEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i4.Future<List<_i13.RenderedNotification>> getMyFeed(
+  _i4.Future<List<_i13.UserNotification>> getMyFeed(
     _i1.TestSessionBuilder sessionBuilder, {
     required int limit,
     required int offset,
@@ -2107,7 +2113,7 @@ class _NotificationEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i4.Future<List<_i13.RenderedNotification>>);
+                as _i4.Future<List<_i13.UserNotification>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2485,5 +2491,20 @@ class _SectionEndpoint {
         await _localUniqueSession.close();
       }
     });
+  }
+}
+
+class _NotificationSchedulerFutureCall {
+  Future<void> handleCall(_i1.TestSessionBuilder sessionBuilder) async {
+    var _localUniqueSession = (sessionBuilder as _i1.InternalTestSessionBuilder)
+        .internalBuild();
+    try {
+      await _i16.NotificationSchedulerHandleCallFutureCall().invoke(
+        _localUniqueSession,
+        null,
+      );
+    } finally {
+      await _localUniqueSession.close();
+    }
   }
 }

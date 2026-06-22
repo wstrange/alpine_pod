@@ -46,5 +46,8 @@ Bugs:
 
 TODO:
 
-Notifications - not refreshing when needed.   Add method to delete notifications???
-in app is always enabled. Remove it from the choice.
+Notifications - not refreshing when needed.
+Add method to delete notifications???
+In app is always enabled. Remove it from the choice.
+Test email client
+Schedule sending email via serverpod

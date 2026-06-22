@@ -5,4 +5,8 @@ fields:
   # actorId: module:serverpod_auth_core:AuthUser?, relation(onDelete=Cascade)
   data: Map<String, String>
   actionUrl: String?
+  # Pre-rendered at insert time so scheduler doesn't need template engine
+  renderedTitle: String
+  renderedBody: String
+  renderedHtml: String?
   createdAt: DateTime

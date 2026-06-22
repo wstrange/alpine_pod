@@ -37,6 +37,8 @@ import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart'
     as _i20;
 import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
     as _i21;
+import 'package:alpine_pod_server/src/generated/future_calls.dart' as _i22;
+export 'future_calls.dart' show ServerpodFutureCallsGetter;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override
@@ -1506,5 +1508,10 @@ class Endpoints extends _i1.EndpointDispatch {
       ..initializeEndpoints(server);
     modules['serverpod_auth_core'] = _i21.Endpoints()
       ..initializeEndpoints(server);
+  }
+
+  @override
+  _i1.FutureCallDispatch? get futureCalls {
+    return _i22.FutureCalls();
   }
 }

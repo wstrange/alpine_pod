@@ -40,9 +40,7 @@ void run(List<String> args) async {
     // authenticationHandler: auth.authenticationHandler,
   );
 
-  final googleSecret = GoogleClientSecret.fromJsonFile(
-    File('config/google_client_secret.json'),
-  );
+  final googleSecret = GoogleClientSecret.fromJsonFile(File('config/google_client_secret.json'));
 
   pod.initializeAuthServices(
     identityProviderBuilders: [
@@ -54,10 +52,7 @@ void run(List<String> args) async {
         sendPasswordResetVerificationCode: _sendPasswordResetCode,
       ),
       GoogleIdpConfig(clientSecret: googleSecret),
-      FacebookIdpConfig(
-        appSecret: pod.getPassword('facebookAppSecret')!,
-        appId: pod.getPassword('facebookAppId')!,
-      ),
+      FacebookIdpConfig(appSecret: pod.getPassword('facebookAppSecret')!, appId: pod.getPassword('facebookAppId')!),
     ],
     tokenManagerBuilders: [
       JwtConfig(
@@ -72,15 +67,17 @@ void run(List<String> args) async {
     ],
   );
 
-  print(
-    'Google Client ID: ${googleSecret.clientId}. ${googleSecret.redirectUris}',
-  );
-
   // Setup a default page at the web root.
   pod.webServer.addRoute(HelloRoute(), '/hello');
 
   // Start the server.
   await pod.start();
+
+  await pod.futureCalls
+      .callRecurring(identifier: 'notifier')
+      .every(const Duration(minutes: 1))
+      .notificationScheduler
+      .handleCall();
 }
 
 void _sendRegistrationCode(
@@ -111,10 +108,7 @@ class HelloRoute extends Route {
   @override
   Future<Result> handleCall(Session session, Request request) async {
     return Response.ok(
-      body: Body.fromString(
-        jsonEncode({'message': 'Hello from Serverpod!'}),
-        mimeType: MimeType.json,
-      ),
+      body: Body.fromString(jsonEncode({'message': 'Hello from Serverpod!'}), mimeType: MimeType.json),
     );
   }
 }

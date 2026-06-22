@@ -35,12 +35,14 @@ serverpod create-migration
 # echo "--- Applying migrations to database ---"
 # dart run bin/main.dart --apply-migrations
 
+
+# Load data
+dart run bin/load_data.dart config/data.yaml
+
 # Run seeding test
 echo "--- Seeding database with sample data ---"
 dart test test/integration/seed_test.dart
 
 
-# Load data
-dart run bin/load_data.dart config/data.yaml
 
 echo "--- Reset complete ---"
