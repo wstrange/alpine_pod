@@ -78,6 +78,9 @@ void run(List<String> args) async {
       .every(const Duration(minutes: 1))
       .notificationScheduler
       .handleCall();
+
+  print(pod.config.database?.password);
+  print(pod.config.database?.port);
 }
 
 void _sendRegistrationCode(

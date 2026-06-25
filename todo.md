@@ -46,8 +46,9 @@ Bugs:
 
 TODO:
 
-Notifications - not refreshing when needed.
-Add method to delete notifications???
-In app is always enabled. Remove it from the choice.
-Test email client
-Schedule sending email via serverpod
+email gettting resent all the time. _markSent() is called. Why is running
+
+
+Maps:
+https://pub.dev/packages/goodmap
+

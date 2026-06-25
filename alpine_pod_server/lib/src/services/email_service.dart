@@ -1,9 +1,14 @@
 import 'package:serverpod/serverpod.dart';
+import 'package:mailer/mailer.dart' as m;
+import 'package:mailer/smtp_server.dart';
 
 class EmailService {
   // static final String _apiKey = Serverpod.instance.getPassword('resendApiKey') ?? '';
   // static const String _apiEndpoint = 'https://resend.com';
   // static const String _fromAddress = 'notifications@yourdomain.com';
+
+  // testing using mailpit
+  static final _smtpServer = SmtpServer('localhost', port: 1025, allowInsecure: true);
 
   static Future<void> sendHtmlEmail({
     required Session session,
@@ -11,41 +16,22 @@ class EmailService {
     required String subject,
     required String htmlBody,
   }) async {
-    // if (_apiKey.isEmpty) {
-    //   session.log('Email delivery skipped: "resendApiKey" is missing in passwords.yaml.', level: LogLevel.warning);
-    //   return;
-    // }
+    final message = m.Message()
+      ..from = m.Address('noreply@acc.ca', 'Alpine Club No Reply')
+      ..recipients.add(recipientEmail)
+      ..subject = subject
+      ..html = htmlBody;
 
-    session.log('Send email: $recipientEmail, subject: $subject, body: $htmlBody ');
-
-    // todo: fix
-
-    //   try {
-    //     final response = await session.serverpod.httpClient.post(
-    //       Uri.parse(_apiEndpoint),
-    //       headers: {'Authorization': 'Bearer $_apiKey', 'Content-Type': 'application/json'},
-    //       body: jsonEncode({
-    //         'from': _fromAddress,
-    //         'to': [recipientEmail],
-    //         'subject': subject,
-    //         'html': htmlBody,
-    //       }),
-    //     );
-
-    //     if (response.statusCode != 200 && response.statusCode != 201) {
-    //       session.log(
-    //         'Email delivery failed. Status: ${response.statusCode}, Body: ${response.body}',
-    //         level: LogLevel.error,
-    //       );
-    //     }
-    //   } catch (e, stackTrace) {
-    //     session.log(
-    //       'Failed to route email payload over HTTPS.',
-    //       level: LogLevel.error,
-    //       exception: e,
-    //       stackTrace: stackTrace,
-    //     );
-    //   }
-    // }
+    try {
+      final sendReport = await m.send(message, _smtpServer);
+      print('Message sent: $sendReport');
+    } on m.MailerException catch (e) {
+      session.log('Email Error: ${e.toString()}');
+      for (var p in e.problems) {
+        session.log('Email Problem: ${p.code}: ${p.msg}');
+      }
+    } catch (e) {
+      session.log('Email Error: ${e.toString()}');
+    }
   }
 }
