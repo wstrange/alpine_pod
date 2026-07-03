@@ -75,7 +75,7 @@ void run(List<String> args) async {
 
   await pod.futureCalls
       .callRecurring(identifier: 'notifier')
-      .every(const Duration(minutes: 1))
+      .every(const Duration(minutes: 10))
       .notificationScheduler
       .handleCall();
 

@@ -7,5 +7,5 @@ environment:
 resolution: workspace
 
 dependencies:
-  serverpod_client: 3.5.0-beta.10
-  serverpod_auth_idp_client: 3.5.0-beta.10
+  serverpod_client: 3.5.0-beta.12
+  serverpod_auth_idp_client: 3.5.0-beta.12

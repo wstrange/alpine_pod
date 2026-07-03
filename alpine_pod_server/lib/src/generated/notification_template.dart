@@ -438,16 +438,22 @@ class NotificationTemplateRepository {
   /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
   /// rows are silently skipped, and only the successfully inserted rows are
   /// returned.
+  ///
+  /// If [noReturn] is set to `true`, the inserted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<NotificationTemplate>> insert(
     _i1.DatabaseSession session,
     List<NotificationTemplate> rows, {
     _i1.Transaction? transaction,
     bool ignoreConflicts = false,
+    bool noReturn = false,
   }) async {
     return session.db.insert<NotificationTemplate>(
       rows,
       transaction: transaction,
       ignoreConflicts: ignoreConflicts,
+      noReturn: noReturn,
     );
   }
 
@@ -481,6 +487,10 @@ class NotificationTemplateRepository {
   ///
   /// This is an atomic operation, meaning that if one of the rows fails,
   /// none of the rows will be affected.
+  ///
+  /// If [noReturn] is set to `true`, the resulting rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<NotificationTemplate>> upsert(
     _i1.DatabaseSession session,
     List<NotificationTemplate> rows, {
@@ -488,6 +498,7 @@ class NotificationTemplateRepository {
     _i1.ColumnSelections<NotificationTemplateTable>? updateColumns,
     _i1.WhereExpressionBuilder<NotificationTemplateTable>? updateWhere,
     _i1.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.upsert<NotificationTemplate>(
       rows,
@@ -495,6 +506,7 @@ class NotificationTemplateRepository {
       updateColumns: updateColumns?.call(NotificationTemplate.t),
       updateWhere: updateWhere?.call(NotificationTemplate.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
@@ -533,16 +545,22 @@ class NotificationTemplateRepository {
   /// all columns.
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<NotificationTemplate>> update(
     _i1.DatabaseSession session,
     List<NotificationTemplate> rows, {
     _i1.ColumnSelections<NotificationTemplateTable>? columns,
     _i1.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.update<NotificationTemplate>(
       rows,
       columns: columns?.call(NotificationTemplate.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
@@ -580,6 +598,10 @@ class NotificationTemplateRepository {
 
   /// Updates all [NotificationTemplate]s matching the [where] expression with the specified [columnValues].
   /// Returns the list of updated rows.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<NotificationTemplate>> updateWhere(
     _i1.DatabaseSession session, {
     required _i1.ColumnValueListBuilder<NotificationTemplateUpdateTable>
@@ -592,6 +614,7 @@ class NotificationTemplateRepository {
     @Deprecated('Use desc() on the orderBy column instead.')
     bool orderDescending = false,
     _i1.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.updateWhere<NotificationTemplate>(
       columnValues: columnValues(NotificationTemplate.t.updateTable),
@@ -603,6 +626,7 @@ class NotificationTemplateRepository {
       orderDescending: // ignore: deprecated_member_use
           orderDescending,
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
@@ -613,6 +637,10 @@ class NotificationTemplateRepository {
   ///
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<NotificationTemplate>> delete(
     _i1.DatabaseSession session,
     List<NotificationTemplate> rows, {
@@ -621,6 +649,7 @@ class NotificationTemplateRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<NotificationTemplateTable>? orderByList,
     _i1.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.delete<NotificationTemplate>(
       rows,
@@ -629,6 +658,7 @@ class NotificationTemplateRepository {
       orderDescending: // ignore: deprecated_member_use
           orderDescending,
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
@@ -648,6 +678,10 @@ class NotificationTemplateRepository {
   ///
   /// To specify the order of the returned rows use [orderBy] or [orderByList]
   /// when sorting by multiple columns.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<NotificationTemplate>> deleteWhere(
     _i1.DatabaseSession session, {
     required _i1.WhereExpressionBuilder<NotificationTemplateTable> where,
@@ -656,6 +690,7 @@ class NotificationTemplateRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<NotificationTemplateTable>? orderByList,
     _i1.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.deleteWhere<NotificationTemplate>(
       where: where(NotificationTemplate.t),
@@ -664,6 +699,7 @@ class NotificationTemplateRepository {
       orderDescending: // ignore: deprecated_member_use
           orderDescending,
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 

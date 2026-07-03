@@ -36,23 +36,34 @@ final currentMemberSignal = signal<Member?>(null, options: SignalOptions(name: '
 //   return m;
 // }, options: AsyncSignalOptions(dependencies: [authUserSignal], name: 'currentMemberSignal', lazy: false));
 
-// List of all sections that the current user is a member of
-final allMySectionMembershipsSignal = futureSignal(() async {
-  return await client.member.getAllMySectionMemberships();
-}, options: AsyncSignalOptions(dependencies: [authUserSignal]));
+// List of All sections that the current user is a member of
+// rebuild based on the currentMemberSignal, which gets updated in the router AFTER the
+// authUser Signal is updated.  Avoids a race condition.
+final allMySectionMembershipsSignal = futureSignal<List<SectionMembership>>(
+  () async {
+    final member = currentMemberSignal.value;
+    if (member == null) {
+      print('allMySectionMembershipsSignal: member is null, returning empty list');
+      return <SectionMembership>[];
+    }
+    final x = await client.member.getAllMySectionMemberships();
+    return x;
+  },
+  options: AsyncSignalOptions(dependencies: [currentMemberSignal], name: 'allMySectionMembershipsSignal', lazy: false),
+);
 
 // The currently selected section when the user logged in.
 final sectionSignal = signal<Section?>(null);
 
+// Get the SectionMemberShip for the current Section
 final mySectionMembershipSignal = futureSignal(() async {
   final s = sectionSignal.value;
   if (s == null) return null;
   return await client.member.getMySectionMembership(s.id!);
-}, options: AsyncSignalOptions(dependencies: [sectionSignal, authUserSignal]));
+}, options: AsyncSignalOptions(dependencies: [sectionSignal], name: 'mySectionMembershipSignal'));
 
 final isGlobalAdminSignal = computed(() {
   final x = authUserSignal.value;
-  print('updated isGlobalAdminSignal');
   if (x == null) return false;
 
   final scopes = x.scopeNames;

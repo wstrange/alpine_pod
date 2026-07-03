@@ -505,16 +505,22 @@ class UserNotificationPreferenceRepository {
   /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
   /// rows are silently skipped, and only the successfully inserted rows are
   /// returned.
+  ///
+  /// If [noReturn] is set to `true`, the inserted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<UserNotificationPreference>> insert(
     _i1.DatabaseSession session,
     List<UserNotificationPreference> rows, {
     _i1.Transaction? transaction,
     bool ignoreConflicts = false,
+    bool noReturn = false,
   }) async {
     return session.db.insert<UserNotificationPreference>(
       rows,
       transaction: transaction,
       ignoreConflicts: ignoreConflicts,
+      noReturn: noReturn,
     );
   }
 
@@ -548,6 +554,10 @@ class UserNotificationPreferenceRepository {
   ///
   /// This is an atomic operation, meaning that if one of the rows fails,
   /// none of the rows will be affected.
+  ///
+  /// If [noReturn] is set to `true`, the resulting rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<UserNotificationPreference>> upsert(
     _i1.DatabaseSession session,
     List<UserNotificationPreference> rows, {
@@ -556,6 +566,7 @@ class UserNotificationPreferenceRepository {
     _i1.ColumnSelections<UserNotificationPreferenceTable>? updateColumns,
     _i1.WhereExpressionBuilder<UserNotificationPreferenceTable>? updateWhere,
     _i1.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.upsert<UserNotificationPreference>(
       rows,
@@ -563,6 +574,7 @@ class UserNotificationPreferenceRepository {
       updateColumns: updateColumns?.call(UserNotificationPreference.t),
       updateWhere: updateWhere?.call(UserNotificationPreference.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
@@ -602,16 +614,22 @@ class UserNotificationPreferenceRepository {
   /// all columns.
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<UserNotificationPreference>> update(
     _i1.DatabaseSession session,
     List<UserNotificationPreference> rows, {
     _i1.ColumnSelections<UserNotificationPreferenceTable>? columns,
     _i1.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.update<UserNotificationPreference>(
       rows,
       columns: columns?.call(UserNotificationPreference.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
@@ -649,6 +667,10 @@ class UserNotificationPreferenceRepository {
 
   /// Updates all [UserNotificationPreference]s matching the [where] expression with the specified [columnValues].
   /// Returns the list of updated rows.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<UserNotificationPreference>> updateWhere(
     _i1.DatabaseSession session, {
     required _i1.ColumnValueListBuilder<UserNotificationPreferenceUpdateTable>
@@ -661,6 +683,7 @@ class UserNotificationPreferenceRepository {
     @Deprecated('Use desc() on the orderBy column instead.')
     bool orderDescending = false,
     _i1.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.updateWhere<UserNotificationPreference>(
       columnValues: columnValues(UserNotificationPreference.t.updateTable),
@@ -672,6 +695,7 @@ class UserNotificationPreferenceRepository {
       orderDescending: // ignore: deprecated_member_use
           orderDescending,
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
@@ -682,6 +706,10 @@ class UserNotificationPreferenceRepository {
   ///
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<UserNotificationPreference>> delete(
     _i1.DatabaseSession session,
     List<UserNotificationPreference> rows, {
@@ -690,6 +718,7 @@ class UserNotificationPreferenceRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<UserNotificationPreferenceTable>? orderByList,
     _i1.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.delete<UserNotificationPreference>(
       rows,
@@ -698,6 +727,7 @@ class UserNotificationPreferenceRepository {
       orderDescending: // ignore: deprecated_member_use
           orderDescending,
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
@@ -717,6 +747,10 @@ class UserNotificationPreferenceRepository {
   ///
   /// To specify the order of the returned rows use [orderBy] or [orderByList]
   /// when sorting by multiple columns.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<UserNotificationPreference>> deleteWhere(
     _i1.DatabaseSession session, {
     required _i1.WhereExpressionBuilder<UserNotificationPreferenceTable> where,
@@ -725,6 +759,7 @@ class UserNotificationPreferenceRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<UserNotificationPreferenceTable>? orderByList,
     _i1.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.deleteWhere<UserNotificationPreference>(
       where: where(UserNotificationPreference.t),
@@ -733,6 +768,7 @@ class UserNotificationPreferenceRepository {
       orderDescending: // ignore: deprecated_member_use
           orderDescending,
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 

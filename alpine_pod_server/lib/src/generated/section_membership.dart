@@ -541,16 +541,22 @@ class SectionMembershipRepository {
   /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
   /// rows are silently skipped, and only the successfully inserted rows are
   /// returned.
+  ///
+  /// If [noReturn] is set to `true`, the inserted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SectionMembership>> insert(
     _i1.DatabaseSession session,
     List<SectionMembership> rows, {
     _i1.Transaction? transaction,
     bool ignoreConflicts = false,
+    bool noReturn = false,
   }) async {
     return session.db.insert<SectionMembership>(
       rows,
       transaction: transaction,
       ignoreConflicts: ignoreConflicts,
+      noReturn: noReturn,
     );
   }
 
@@ -584,6 +590,10 @@ class SectionMembershipRepository {
   ///
   /// This is an atomic operation, meaning that if one of the rows fails,
   /// none of the rows will be affected.
+  ///
+  /// If [noReturn] is set to `true`, the resulting rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SectionMembership>> upsert(
     _i1.DatabaseSession session,
     List<SectionMembership> rows, {
@@ -591,6 +601,7 @@ class SectionMembershipRepository {
     _i1.ColumnSelections<SectionMembershipTable>? updateColumns,
     _i1.WhereExpressionBuilder<SectionMembershipTable>? updateWhere,
     _i1.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.upsert<SectionMembership>(
       rows,
@@ -598,6 +609,7 @@ class SectionMembershipRepository {
       updateColumns: updateColumns?.call(SectionMembership.t),
       updateWhere: updateWhere?.call(SectionMembership.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
@@ -636,16 +648,22 @@ class SectionMembershipRepository {
   /// all columns.
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SectionMembership>> update(
     _i1.DatabaseSession session,
     List<SectionMembership> rows, {
     _i1.ColumnSelections<SectionMembershipTable>? columns,
     _i1.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.update<SectionMembership>(
       rows,
       columns: columns?.call(SectionMembership.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
@@ -683,6 +701,10 @@ class SectionMembershipRepository {
 
   /// Updates all [SectionMembership]s matching the [where] expression with the specified [columnValues].
   /// Returns the list of updated rows.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SectionMembership>> updateWhere(
     _i1.DatabaseSession session, {
     required _i1.ColumnValueListBuilder<SectionMembershipUpdateTable>
@@ -695,6 +717,7 @@ class SectionMembershipRepository {
     @Deprecated('Use desc() on the orderBy column instead.')
     bool orderDescending = false,
     _i1.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.updateWhere<SectionMembership>(
       columnValues: columnValues(SectionMembership.t.updateTable),
@@ -706,6 +729,7 @@ class SectionMembershipRepository {
       orderDescending: // ignore: deprecated_member_use
           orderDescending,
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
@@ -716,6 +740,10 @@ class SectionMembershipRepository {
   ///
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SectionMembership>> delete(
     _i1.DatabaseSession session,
     List<SectionMembership> rows, {
@@ -724,6 +752,7 @@ class SectionMembershipRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<SectionMembershipTable>? orderByList,
     _i1.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.delete<SectionMembership>(
       rows,
@@ -732,6 +761,7 @@ class SectionMembershipRepository {
       orderDescending: // ignore: deprecated_member_use
           orderDescending,
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
@@ -751,6 +781,10 @@ class SectionMembershipRepository {
   ///
   /// To specify the order of the returned rows use [orderBy] or [orderByList]
   /// when sorting by multiple columns.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SectionMembership>> deleteWhere(
     _i1.DatabaseSession session, {
     required _i1.WhereExpressionBuilder<SectionMembershipTable> where,
@@ -759,6 +793,7 @@ class SectionMembershipRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<SectionMembershipTable>? orderByList,
     _i1.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.deleteWhere<SectionMembership>(
       where: where(SectionMembership.t),
@@ -767,6 +802,7 @@ class SectionMembershipRepository {
       orderDescending: // ignore: deprecated_member_use
           orderDescending,
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 

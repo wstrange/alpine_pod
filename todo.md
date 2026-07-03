@@ -46,9 +46,13 @@ Bugs:
 
 TODO:
 
-email gettting resent all the time. _markSent() is called. Why is running
+Admin
+- Add a new user
+- Update user list after adding or deleting a new user.
+- Show sections in user list
 
 
-Maps:
-https://pub.dev/packages/goodmap
 
+Maps package: https://pub.dev/packages/goodmap
+
+Test on Android

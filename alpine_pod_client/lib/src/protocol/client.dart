@@ -616,6 +616,7 @@ class EndpointMember extends _i2.EndpointRef {
         {'id': id},
       );
 
+  /// Return a list of all sections the member belongs to.
   _i3.Future<List<_i11.SectionMembership>> getMemberSectionMemberships(
     int memberId,
   ) => caller.callServerEndpoint<List<_i11.SectionMembership>>(
@@ -663,6 +664,8 @@ class EndpointMember extends _i2.EndpointRef {
     },
   );
 
+  /// Return a list of section memberships for the given section id
+  ///
   /// Similar to getSectionMembers but returns the actual membership records,
   /// which include the user's scopes for the section.
   ///

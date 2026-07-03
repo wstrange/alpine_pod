@@ -548,16 +548,22 @@ class UserNotificationRepository {
   /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
   /// rows are silently skipped, and only the successfully inserted rows are
   /// returned.
+  ///
+  /// If [noReturn] is set to `true`, the inserted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<UserNotification>> insert(
     _i1.DatabaseSession session,
     List<UserNotification> rows, {
     _i1.Transaction? transaction,
     bool ignoreConflicts = false,
+    bool noReturn = false,
   }) async {
     return session.db.insert<UserNotification>(
       rows,
       transaction: transaction,
       ignoreConflicts: ignoreConflicts,
+      noReturn: noReturn,
     );
   }
 
@@ -591,6 +597,10 @@ class UserNotificationRepository {
   ///
   /// This is an atomic operation, meaning that if one of the rows fails,
   /// none of the rows will be affected.
+  ///
+  /// If [noReturn] is set to `true`, the resulting rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<UserNotification>> upsert(
     _i1.DatabaseSession session,
     List<UserNotification> rows, {
@@ -598,6 +608,7 @@ class UserNotificationRepository {
     _i1.ColumnSelections<UserNotificationTable>? updateColumns,
     _i1.WhereExpressionBuilder<UserNotificationTable>? updateWhere,
     _i1.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.upsert<UserNotification>(
       rows,
@@ -605,6 +616,7 @@ class UserNotificationRepository {
       updateColumns: updateColumns?.call(UserNotification.t),
       updateWhere: updateWhere?.call(UserNotification.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
@@ -643,16 +655,22 @@ class UserNotificationRepository {
   /// all columns.
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<UserNotification>> update(
     _i1.DatabaseSession session,
     List<UserNotification> rows, {
     _i1.ColumnSelections<UserNotificationTable>? columns,
     _i1.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.update<UserNotification>(
       rows,
       columns: columns?.call(UserNotification.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
@@ -690,6 +708,10 @@ class UserNotificationRepository {
 
   /// Updates all [UserNotification]s matching the [where] expression with the specified [columnValues].
   /// Returns the list of updated rows.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<UserNotification>> updateWhere(
     _i1.DatabaseSession session, {
     required _i1.ColumnValueListBuilder<UserNotificationUpdateTable>
@@ -702,6 +724,7 @@ class UserNotificationRepository {
     @Deprecated('Use desc() on the orderBy column instead.')
     bool orderDescending = false,
     _i1.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.updateWhere<UserNotification>(
       columnValues: columnValues(UserNotification.t.updateTable),
@@ -713,6 +736,7 @@ class UserNotificationRepository {
       orderDescending: // ignore: deprecated_member_use
           orderDescending,
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
@@ -723,6 +747,10 @@ class UserNotificationRepository {
   ///
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<UserNotification>> delete(
     _i1.DatabaseSession session,
     List<UserNotification> rows, {
@@ -731,6 +759,7 @@ class UserNotificationRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<UserNotificationTable>? orderByList,
     _i1.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.delete<UserNotification>(
       rows,
@@ -739,6 +768,7 @@ class UserNotificationRepository {
       orderDescending: // ignore: deprecated_member_use
           orderDescending,
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
@@ -758,6 +788,10 @@ class UserNotificationRepository {
   ///
   /// To specify the order of the returned rows use [orderBy] or [orderByList]
   /// when sorting by multiple columns.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<UserNotification>> deleteWhere(
     _i1.DatabaseSession session, {
     required _i1.WhereExpressionBuilder<UserNotificationTable> where,
@@ -766,6 +800,7 @@ class UserNotificationRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<UserNotificationTable>? orderByList,
     _i1.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.deleteWhere<UserNotification>(
       where: where(UserNotification.t),
@@ -774,6 +809,7 @@ class UserNotificationRepository {
       orderDescending: // ignore: deprecated_member_use
           orderDescending,
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 

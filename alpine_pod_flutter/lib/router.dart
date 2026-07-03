@@ -141,7 +141,10 @@ Future<String?> _performBootstrap() async {
   try {
     debugPrint('Router: Starting post-login bootstrap...');
     final member = await client.member.getCurrentMember();
-    final sections = await client.section.getSectionsForCurrentUser();
+    final sections = await client.member.getAllMySectionMemberships();
+
+    // todo: Can we deprecate this server method?
+    // final sections = await client.section.getSectionsForCurrentUser();
 
     currentMemberSignal.value = member;
 
@@ -164,7 +167,7 @@ Future<String?> _performBootstrap() async {
       return '/section-selection';
     } else {
       debugPrint('Router: Single section found. Assigning signal and routing to /');
-      sectionSignal.value = sections[0];
+      sectionSignal.value = sections[0].section;
       return '/';
     }
   } catch (e) {

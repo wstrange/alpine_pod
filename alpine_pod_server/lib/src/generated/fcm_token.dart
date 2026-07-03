@@ -436,16 +436,22 @@ class FcmTokenRepository {
   /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
   /// rows are silently skipped, and only the successfully inserted rows are
   /// returned.
+  ///
+  /// If [noReturn] is set to `true`, the inserted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<FcmToken>> insert(
     _i1.DatabaseSession session,
     List<FcmToken> rows, {
     _i1.Transaction? transaction,
     bool ignoreConflicts = false,
+    bool noReturn = false,
   }) async {
     return session.db.insert<FcmToken>(
       rows,
       transaction: transaction,
       ignoreConflicts: ignoreConflicts,
+      noReturn: noReturn,
     );
   }
 
@@ -479,6 +485,10 @@ class FcmTokenRepository {
   ///
   /// This is an atomic operation, meaning that if one of the rows fails,
   /// none of the rows will be affected.
+  ///
+  /// If [noReturn] is set to `true`, the resulting rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<FcmToken>> upsert(
     _i1.DatabaseSession session,
     List<FcmToken> rows, {
@@ -486,6 +496,7 @@ class FcmTokenRepository {
     _i1.ColumnSelections<FcmTokenTable>? updateColumns,
     _i1.WhereExpressionBuilder<FcmTokenTable>? updateWhere,
     _i1.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.upsert<FcmToken>(
       rows,
@@ -493,6 +504,7 @@ class FcmTokenRepository {
       updateColumns: updateColumns?.call(FcmToken.t),
       updateWhere: updateWhere?.call(FcmToken.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
@@ -531,16 +543,22 @@ class FcmTokenRepository {
   /// all columns.
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<FcmToken>> update(
     _i1.DatabaseSession session,
     List<FcmToken> rows, {
     _i1.ColumnSelections<FcmTokenTable>? columns,
     _i1.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.update<FcmToken>(
       rows,
       columns: columns?.call(FcmToken.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
@@ -577,6 +595,10 @@ class FcmTokenRepository {
 
   /// Updates all [FcmToken]s matching the [where] expression with the specified [columnValues].
   /// Returns the list of updated rows.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<FcmToken>> updateWhere(
     _i1.DatabaseSession session, {
     required _i1.ColumnValueListBuilder<FcmTokenUpdateTable> columnValues,
@@ -588,6 +610,7 @@ class FcmTokenRepository {
     @Deprecated('Use desc() on the orderBy column instead.')
     bool orderDescending = false,
     _i1.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.updateWhere<FcmToken>(
       columnValues: columnValues(FcmToken.t.updateTable),
@@ -599,6 +622,7 @@ class FcmTokenRepository {
       orderDescending: // ignore: deprecated_member_use
           orderDescending,
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
@@ -609,6 +633,10 @@ class FcmTokenRepository {
   ///
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<FcmToken>> delete(
     _i1.DatabaseSession session,
     List<FcmToken> rows, {
@@ -617,6 +645,7 @@ class FcmTokenRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<FcmTokenTable>? orderByList,
     _i1.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.delete<FcmToken>(
       rows,
@@ -625,6 +654,7 @@ class FcmTokenRepository {
       orderDescending: // ignore: deprecated_member_use
           orderDescending,
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
@@ -644,6 +674,10 @@ class FcmTokenRepository {
   ///
   /// To specify the order of the returned rows use [orderBy] or [orderByList]
   /// when sorting by multiple columns.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<FcmToken>> deleteWhere(
     _i1.DatabaseSession session, {
     required _i1.WhereExpressionBuilder<FcmTokenTable> where,
@@ -652,6 +686,7 @@ class FcmTokenRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<FcmTokenTable>? orderByList,
     _i1.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.deleteWhere<FcmToken>(
       where: where(FcmToken.t),
@@ -660,6 +695,7 @@ class FcmTokenRepository {
       orderDescending: // ignore: deprecated_member_use
           orderDescending,
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 

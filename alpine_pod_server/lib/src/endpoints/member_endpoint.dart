@@ -77,6 +77,7 @@ class MemberEndpoint extends Endpoint {
     return await Member.db.findById(session, id);
   }
 
+  /// Return a list of all sections the member belongs to.
   Future<List<SectionMembership>> getMemberSectionMemberships(Session session, int memberId) async {
     final callerInfo = await cache.getMemberInfo(session);
     if (callerInfo == null) throw Exception('Not authenticated');
@@ -225,6 +226,8 @@ class MemberEndpoint extends Endpoint {
     return result.sublist(offset, end);
   }
 
+  /// Return a list of section memberships for the given section id
+  ///
   /// Similar to getSectionMembers but returns the actual membership records,
   /// which include the user's scopes for the section.
   ///
@@ -271,12 +274,14 @@ class MemberEndpoint extends Endpoint {
   Future<List<SectionMembership>> getAllMySectionMemberships(Session session) async {
     final callerInfo = await cache.getMemberInfo(session);
     if (callerInfo == null) return [];
-
-    return await SectionMembership.db.find(
+    print('caller info $callerInfo');
+    final sm = await SectionMembership.db.find(
       session,
       where: (t) => t.memberId.equals(callerInfo.member.id),
       include: SectionMembership.include(section: Section.include()),
     );
+    print('Fetched section memberships $sm');
+    return sm;
   }
 
   /// Update a member's scopes for a specific section.
