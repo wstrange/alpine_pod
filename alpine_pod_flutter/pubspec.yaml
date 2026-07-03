@@ -74,6 +74,7 @@ flutter:
   assets:
     - assets/waiver.md
     - assets/templates/
+    - assets/images/logo.webp
 
   #   - images/a_dot_ham.jpeg
 
