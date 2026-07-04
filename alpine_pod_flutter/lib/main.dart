@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:alpine_pod_client/alpine_pod_client.dart';
 
 import 'package:flutter/material.dart';
@@ -26,9 +28,7 @@ void main() async {
   // enableFlutterDriverExtension();
 
   const serverUrlFromEnv = String.fromEnvironment('SERVER_URL');
-  final serverUrl = serverUrlFromEnv.isEmpty
-      ? 'http://$host:8080/'
-      : serverUrlFromEnv;
+  final serverUrl = serverUrlFromEnv.isEmpty ? 'http://$host:8080/' : serverUrlFromEnv;
 
   client = Client(serverUrl)
     ..connectivityMonitor = FlutterConnectivityMonitor()
@@ -39,13 +39,17 @@ void main() async {
 
   await sessionManager.initializeGoogleSignIn(
     // Acording to docs, this is not needed. web/index.html should be enough.
-    clientId:
-        '465372895035-35rlrpfdibu9r1435kg9vsoua640e50o.apps.googleusercontent.com',
+    clientId: '465372895035-35rlrpfdibu9r1435kg9vsoua640e50o.apps.googleusercontent.com',
     // serverClientId:
     //     '465372895035-35rlrpfdibu9r1435kg9vsoua640e50o.apps.googleusercontent.com',
   );
 
   await sessionManager.initializeFacebookSignIn(appId: '954559893876564');
+
+  // todo: add any things that need to be refreshed in the background
+  Timer.periodic(const Duration(seconds: 30), (timer) {
+    notificationsSignal.refresh(); // get updated notifications
+  });
 
   runApp(const MyApp());
 }

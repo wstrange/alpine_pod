@@ -308,11 +308,12 @@ class EventEndpoint extends Endpoint {
     if (created.registrationStatus == RegistrationStatus.waitlisted) {
       await notificationService.notifyRegistrationWaitlisted(session, created);
     } else {
+      // todo: Move to notification service?
       await notificationService.dispatchNotification(
         session: session,
         templateName: 'event-registered',
         recipientUserIds: [member.userId],
-        templateData: {'title': event.title, 'event_url': '/event-view/${event.id}'},
+        templateData: {'title': event.title, 'event_url': '/events/${event.id}'},
         actionUrl: '/event-view/${event.id}',
       );
     }

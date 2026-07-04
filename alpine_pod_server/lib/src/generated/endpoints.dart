@@ -1290,6 +1290,16 @@ class Endpoints extends _i1.EndpointDispatch {
                     offset: params['offset'],
                   ),
         ),
+        'deleteAll': _i1.MethodConnector(
+          name: 'deleteAll',
+          params: {},
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['notification'] as _i8.NotificationEndpoint)
+                  .deleteAll(session),
+        ),
         'markAsRead': _i1.MethodConnector(
           name: 'markAsRead',
           params: {

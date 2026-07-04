@@ -12,7 +12,8 @@ class NotificationScreen extends HookWidget {
   Widget build(BuildContext context) {
     return SignalBuilder(
       builder: (context) {
-        final notificationsState = notificationStreamSignal.value;
+        final notificationsState = notificationsSignal.value;
+        bool hasNotifications = notificationsState.value != null && notificationsState.value!.isNotEmpty;
 
         return Scaffold(
           appBar: AppBar(
@@ -26,7 +27,12 @@ class NotificationScreen extends HookWidget {
                   showDialog(context: context, builder: (context) => const NotificationPreferencesDialog());
                 },
               ),
-              if (notificationsState.value != null && notificationsState.value!.isNotEmpty)
+              IconButton(
+                icon: const Icon(Icons.refresh),
+                tooltip: 'Refresh',
+                onPressed: () => notificationsSignal.refresh(),
+              ),
+              if (hasNotifications)
                 IconButton(
                   icon: const Icon(Icons.done_all),
                   tooltip: 'Mark all as read',
@@ -36,6 +42,31 @@ class NotificationScreen extends HookWidget {
                       await client.notification.markAsRead(n.id!);
                     }
                     notificationsSignal.refresh();
+                  },
+                ),
+              if (hasNotifications)
+                IconButton(
+                  icon: const Icon(Icons.clear_all),
+                  tooltip: 'Delete all notifications',
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: const Text('Delete all notifications'),
+                        content: const Text('Are you sure you want to delete all notifications?'),
+                        actions: [
+                          TextButton(onPressed: () => context.pop(), child: const Text('Cancel')),
+                          TextButton(
+                            onPressed: () async {
+                              await client.notification.deleteAll();
+                              notificationsSignal.refresh();
+                              if (context.mounted) context.pop();
+                            },
+                            child: const Text('Delete'),
+                          ),
+                        ],
+                      ),
+                    );
                   },
                 ),
             ],
@@ -62,7 +93,7 @@ class NotificationScreen extends HookWidget {
                   separatorBuilder: (context, index) => const Divider(height: 1),
                   itemBuilder: (context, index) {
                     final un = notifications[index];
-                    final url = un.notification?.actionUrl ?? '/notifications';
+                    final url = un.notification?.actionUrl;
 
                     return Dismissible(
                       key: Key('notif_${un.id}'),
@@ -100,26 +131,21 @@ class NotificationScreen extends HookWidget {
                             ),
                           ],
                         ),
-                        trailing: un.isRead
+                        trailing: url != null
                             ? IconButton(
-                                icon: const Icon(Icons.mark_chat_read_outlined, size: 20),
+                                icon: const Icon(Icons.open_in_new, size: 20),
                                 onPressed: () async {
-                                  final id = un.id;
-                                  if (id != null) {
-                                    await client.notification.markAsRead(id);
+                                  final url = un.notification?.actionUrl;
+                                  if (url != null && context.mounted) {
+                                    context.go(url);
                                   }
-                                  notificationsSignal.refresh();
                                 },
                               )
-                            : null,
+                            : const SizedBox.shrink(),
                         onTap: () async {
                           if (!un.isRead) {
                             await client.notification.markAsRead(un.id!);
                             notificationsSignal.refresh();
-                          }
-
-                          if (context.mounted) {
-                            context.go(url);
                           }
                         },
                       ),

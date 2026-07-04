@@ -56,3 +56,5 @@ Admin
 Maps package: https://pub.dev/packages/goodmap
 
 Test on Android
+Look for redundant endppoint code
+RBAC testing

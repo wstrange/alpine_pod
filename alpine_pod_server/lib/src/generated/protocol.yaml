@@ -63,6 +63,7 @@ member:
   - registerMember:
 notification:
   - getMyFeed:
+  - deleteAll:
   - markAsRead:
   - getMyPreferences:
   - savePreference:

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:alpine_pod_client/alpine_pod_client.dart';
 import 'package:logging/logging.dart';
 import 'package:serverpod_auth_idp_flutter/serverpod_auth_idp_flutter.dart';
@@ -120,13 +122,16 @@ final currentEventsSignal = futureSignal<List<Event>>(
 final notificationsSignal = futureSignal<List<UserNotification>>(() async {
   final i = authUserSignal.value;
   if (i == null) return <UserNotification>[];
-  return await client.notification.getMyFeed(limit: 10, offset: 0);
-}, options: AsyncSignalOptions(name: 'notificationsSignal'));
+  return await client.notification.getMyFeed(limit: 30, offset: 0);
+}, options: AsyncSignalOptions(dependencies: [], name: 'notificationsSignal', lazy: false));
 
+// TODO: Do we need this stream? Is there a better way to do this?
 final notificationStreamSignal = streamSignal<List<UserNotification>>(() async* {
   while (true) {
     if (!sessionManager.isAuthenticated) yield <UserNotification>[];
-    final n = await client.notification.getMyFeed(limit: 10, offset: 0);
+    final n = await client.notification.getMyFeed(limit: 30, offset: 0);
+    // update notifications.
+    notificationsSignal.value = AsyncData(n);
     yield n;
     await Future.delayed(const Duration(seconds: 30));
   }

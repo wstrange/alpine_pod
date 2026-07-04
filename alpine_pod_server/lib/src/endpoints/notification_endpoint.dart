@@ -23,6 +23,17 @@ class NotificationEndpoint extends Endpoint {
     return userNotifications;
   }
 
+  /// Delete all the notifications for the current user
+  Future<void> deleteAll(Session session) async {
+    final authInfo = session.authenticated;
+    if (authInfo == null) {
+      throw Exception('Not authenticated');
+    }
+    final currentUserId = authInfo.authUserId;
+
+    await UserNotification.db.deleteWhere(session, where: (t) => t.userId.equals(currentUserId));
+  }
+
   Future<bool> markAsRead(Session session, int userNotificationId) async {
     final authInfo = session.authenticated;
     final currentUserId = authInfo!.authUserId;

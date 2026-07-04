@@ -751,6 +751,13 @@ class EndpointNotification extends _i2.EndpointRef {
     },
   );
 
+  /// Delete all the notifications for the current user
+  _i3.Future<void> deleteAll() => caller.callServerEndpoint<void>(
+    'notification',
+    'deleteAll',
+    {},
+  );
+
   _i3.Future<bool> markAsRead(int userNotificationId) =>
       caller.callServerEndpoint<bool>(
         'notification',
