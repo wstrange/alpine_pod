@@ -1005,6 +1005,12 @@ class Protocol extends _i1.DatabaseSerializationManager {
           dartType: 'String?',
         ),
         _i2.ColumnDefinition(
+          name: 'info',
+          columnType: _i2.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i2.ColumnDefinition(
           name: 'sectionId',
           columnType: _i2.ColumnType.bigint,
           isNullable: true,

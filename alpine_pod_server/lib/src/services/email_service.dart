@@ -22,16 +22,16 @@ class EmailService {
       ..subject = subject
       ..html = htmlBody;
 
+    session.log('Send email to $recipientEmail with subject $subject');
     try {
       final sendReport = await m.send(message, _smtpServer);
-      print('Message sent: $sendReport');
+      session.log('Message sent: $sendReport');
     } on m.MailerException catch (e) {
       session.log('Email Error: ${e.toString()}');
-      for (var p in e.problems) {
-        session.log('Email Problem: ${p.code}: ${p.msg}');
-      }
+      rethrow;
     } catch (e) {
       session.log('Email Error: ${e.toString()}');
+      rethrow;
     }
   }
 }

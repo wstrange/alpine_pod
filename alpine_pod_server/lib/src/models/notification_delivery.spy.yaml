@@ -9,6 +9,8 @@ fields:
   attempts: int, default=0
   lastAttemptAt: DateTime?
   errorMessage: String?
+  # User name and email address (for debugging email delivery)
+  info: String?
   # For bulk-section sends: scheduler expands to per-user rows
   sectionId: int?
   createdAt: DateTime

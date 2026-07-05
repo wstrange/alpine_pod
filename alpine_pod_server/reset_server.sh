@@ -1,48 +1,49 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# reset_server.sh — Full development reset: drop/recreate DB, apply migrations,
+#                   and optionally start the server.
+#
+# Usage:  ./reset_server.sh [--start]
+#
+# Flags:
+#   --start   Start the server after resetting (default: don't start).
 
-# Reset script for alpine_pod server environment
+set -euo pipefail
 
- # we now use embedded postgres
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-# Stop and remove containers and volumes
-# echo "--- Stopping and removing docker containers and volumes ---"
-# docker compose down -v
-
-
-pkill serverpod
-
-# Delete migrations
-echo "--- Deleting existing migrations ---"
-rm -rf migrations/*
-
-echo "--- Deleting existing database ---"
-rm -rf .serverpod/development/*
-
-# Start containers
-# echo "--- Starting docker containers ---"
-# # docker compose up -d
+# ---------------------------------------------------------------------------
+# 1. Reset the database
+# ---------------------------------------------------------------------------
+echo "========================================="
+echo " Resetting development database"
+echo "========================================="
+"$SCRIPT_DIR/reset_db.sh"
 
 
-# Generate code
-echo "--- Running serverpod generate ---"
 serverpod generate
-
-# Create fresh migration
-echo "--- Creating fresh migration ---"
 serverpod create-migration
 
-# Apply migrations
-# echo "--- Applying migrations to database ---"
-# dart run bin/main.dart --apply-migrations
+# ---------------------------------------------------------------------------
+# 2. Apply migrations
+# ---------------------------------------------------------------------------
+echo ""
+echo "========================================="
+echo " Applying migrations"
+echo "========================================="
+dart run bin/main.dart --apply-migrations
 
+echo "Seed data"
+"$SCRIPT_DIR/seed.sh"
 
 # Load data
-dart run bin/load_data.dart config/data.yaml
 
-# Run seeding test
-echo "--- Seeding database with sample data ---"
-dart test test/integration/seed_test.dart
-
-
-
-echo "--- Reset complete ---"
+# ---------------------------------------------------------------------------
+# 3. Optionally start the server
+# ---------------------------------------------------------------------------
+if [[ "${1:-}" == "--start" ]]; then
+  echo ""
+  echo "========================================="
+  echo " Starting server"
+  echo "========================================="
+  dart run bin/main.dart
+fi

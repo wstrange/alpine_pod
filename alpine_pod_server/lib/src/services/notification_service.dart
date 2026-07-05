@@ -59,7 +59,12 @@ class NotificationService {
       final allowEmail = isAlwaysNotify || (pref?.allowEmail ?? true);
       final allowPush = isAlwaysNotify || (pref?.allowPush ?? true);
       final allowSms = isAlwaysNotify || (pref?.allowSms ?? false);
-
+      // get the users email
+      final member = await Member.db.findFirstRow(session, where: (member) => member.userId.equals(userId));
+      // This is really for logging / debug purposes.
+      final info = '${member?.email} ${member?.firstName} ${member?.lastName}';
+      print('Info == $info');
+      //
       if (allowInApp) {
         deliveries.add(
           NotificationDelivery(
@@ -67,6 +72,7 @@ class NotificationService {
             recipientUserId: userId,
             channel: NotificationChannel.inApp,
             createdAt: now,
+            info: info,
           ),
         );
       }
@@ -77,6 +83,7 @@ class NotificationService {
             recipientUserId: userId,
             channel: NotificationChannel.email,
             createdAt: now,
+            info: info,
           ),
         );
       }
@@ -87,6 +94,7 @@ class NotificationService {
             recipientUserId: userId,
             channel: NotificationChannel.push,
             createdAt: now,
+            info: info,
           ),
         );
       }
@@ -97,6 +105,7 @@ class NotificationService {
             recipientUserId: userId,
             channel: NotificationChannel.sms,
             createdAt: now,
+            info: info,
           ),
         );
       }

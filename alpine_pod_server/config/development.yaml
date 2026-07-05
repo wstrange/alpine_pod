@@ -7,6 +7,19 @@
 # facing ports.
 
 # Configuration for the main API server.
+
+
+# This is the database setup for your server.
+database:
+  host: localhost
+  # port: 8090
+  # name: alpine_pod
+  # port: 9090
+  port: 5432
+  name: aclub
+  user: postgres
+
+
 apiServer:
   port: 8080
   publicHost: localhost
@@ -27,16 +40,10 @@ webServer:
   publicPort: 8082
   publicScheme: http
 
-# This is the database setup for your server.
-database:
-  host: localhost
-  # port: 8090
-  # name: alpine_pod
-  # port: 9090
-  port: 8090
-  name: alpine_pod_test
-  user: postgres
-  dataPath: .serverpod/development/pgdata
+
+
+  # Use this for embedded postgres.
+  # dataPath: .serverpod/development/pgdata
 
   #requireSsl: true # defaults to false
   #isUnixSocket: true # defaults to false

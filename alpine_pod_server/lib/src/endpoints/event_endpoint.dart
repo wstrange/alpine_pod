@@ -101,8 +101,6 @@ class EventEndpoint extends Endpoint {
         }
       }
 
-      await notificationService.notifyEventCreated(session, createdEvent);
-
       return createdEvent;
     });
 

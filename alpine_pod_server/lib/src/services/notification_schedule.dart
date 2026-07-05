@@ -104,12 +104,17 @@ class NotificationScheduler extends FutureCall {
         continue;
       }
 
+      // get debug info
+      final m = await Member.db.findFirstRow(session, where: (m) => m.userId.equals(userId));
+      final info = '${m?.email} ${m?.firstName} ${m?.lastName}';
+
       childDeliveries.add(
         NotificationDelivery(
           notificationId: bulkDelivery.notificationId,
           recipientUserId: userId,
           channel: channel,
           createdAt: now,
+          info: info,
         ),
       );
     }

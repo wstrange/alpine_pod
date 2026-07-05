@@ -14,17 +14,8 @@ Future<void> main(List<String> arguments) async {
       defaultsTo: 'development',
       help: 'Serverpod run mode to use for config and database settings.',
     )
-    ..addOption(
-      'server-id',
-      defaultsTo: 'default',
-      help: 'Serverpod server id.',
-    )
-    ..addFlag(
-      'help',
-      abbr: 'h',
-      negatable: false,
-      help: 'Print this usage information.',
-    );
+    ..addOption('server-id', defaultsTo: 'default', help: 'Serverpod server id.')
+    ..addFlag('help', abbr: 'h', negatable: false, help: 'Print this usage information.');
 
   late ArgResults results;
   try {
@@ -51,11 +42,7 @@ Future<void> main(List<String> arguments) async {
 
   final mode = results['mode'] as String;
   final serverId = results['server-id'] as String;
-  final pod = Serverpod(
-    ['--mode', mode, '--server-id', serverId],
-    Protocol(),
-    Endpoints(),
-  );
+  final pod = Serverpod(['--mode', mode, '--server-id', serverId, '--apply-migrations'], Protocol(), Endpoints());
 
   final session = await pod.createSession();
   try {
