@@ -74,4 +74,46 @@ class AdminEndpoint extends Endpoint {
       );
     });
   }
+
+  Future<List<NotificationDelivery>> getNotificationDeliveries(
+    Session session, {
+    int limit = 50,
+    int offset = 0,
+    String? statusFilter,
+  }) async {
+    Expression? where;
+    if (statusFilter != null && statusFilter.isNotEmpty) {
+      where = NotificationDelivery.t.status.equals(statusFilter);
+    }
+    return await NotificationDelivery.db.find(
+      session,
+      where: where != null ? (_) => where! : null,
+      orderBy: (t) => t.createdAt,
+      orderDescending: true,
+      limit: limit,
+      offset: offset,
+      include: NotificationDelivery.include(notification: Notification.include()),
+    );
+  }
+
+  Future<void> clearNotificationDeliveries(Session session) async {
+    await NotificationDelivery.db.deleteWhere(
+      session,
+      where: (t) => t.id.notEquals(-1),
+    );
+  }
+
+  Future<void> retryFailedNotifications(Session session) async {
+    final failed = await NotificationDelivery.db.find(
+      session,
+      where: (t) => t.status.equals('failed'),
+    );
+    for (var delivery in failed) {
+      delivery.status = 'pending';
+      delivery.attempts = 0;
+      delivery.errorMessage = null;
+      await NotificationDelivery.db.updateRow(session, delivery);
+    }
+  }
 }
+

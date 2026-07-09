@@ -24,6 +24,9 @@ admin:
   - listSections:
   - getMember:
   - deleteUser:
+  - getNotificationDeliveries:
+  - clearNotificationDeliveries:
+  - retryFailedNotifications:
 event:
   - createEvent:
   - getEvent:

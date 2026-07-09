@@ -18,18 +18,20 @@ import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart'
     as _i4;
 import 'package:alpine_pod_client/src/protocol/section.dart' as _i5;
 import 'package:alpine_pod_client/src/protocol/member.dart' as _i6;
-import 'package:alpine_pod_client/src/protocol/event.dart' as _i7;
-import 'package:alpine_pod_client/src/protocol/event_registration.dart' as _i8;
-import 'package:alpine_pod_client/src/protocol/event_manager.dart' as _i9;
-import 'package:alpine_pod_client/src/protocol/event_template.dart' as _i10;
-import 'package:alpine_pod_client/src/protocol/section_membership.dart' as _i11;
-import 'package:alpine_pod_client/src/protocol/user_notification.dart' as _i12;
+import 'package:alpine_pod_client/src/protocol/notification_delivery.dart'
+    as _i7;
+import 'package:alpine_pod_client/src/protocol/event.dart' as _i8;
+import 'package:alpine_pod_client/src/protocol/event_registration.dart' as _i9;
+import 'package:alpine_pod_client/src/protocol/event_manager.dart' as _i10;
+import 'package:alpine_pod_client/src/protocol/event_template.dart' as _i11;
+import 'package:alpine_pod_client/src/protocol/section_membership.dart' as _i12;
+import 'package:alpine_pod_client/src/protocol/user_notification.dart' as _i13;
 import 'package:alpine_pod_client/src/protocol/user_notification_preference.dart'
-    as _i13;
-import 'package:alpine_pod_client/src/protocol/registration_status.dart'
     as _i14;
-import 'package:http/http.dart' as _i15;
-import 'protocol.dart' as _i16;
+import 'package:alpine_pod_client/src/protocol/registration_status.dart'
+    as _i15;
+import 'package:http/http.dart' as _i16;
+import 'protocol.dart' as _i17;
 
 /// {@category Endpoint}
 class EndpointEmailIdp extends _i1.EndpointEmailIdpBase {
@@ -370,6 +372,34 @@ class EndpointAdmin extends _i2.EndpointRef {
     'deleteUser',
     {'memberId': memberId},
   );
+
+  _i3.Future<List<_i7.NotificationDelivery>> getNotificationDeliveries({
+    required int limit,
+    required int offset,
+    String? statusFilter,
+  }) => caller.callServerEndpoint<List<_i7.NotificationDelivery>>(
+    'admin',
+    'getNotificationDeliveries',
+    {
+      'limit': limit,
+      'offset': offset,
+      'statusFilter': statusFilter,
+    },
+  );
+
+  _i3.Future<void> clearNotificationDeliveries() =>
+      caller.callServerEndpoint<void>(
+        'admin',
+        'clearNotificationDeliveries',
+        {},
+      );
+
+  _i3.Future<void> retryFailedNotifications() =>
+      caller.callServerEndpoint<void>(
+        'admin',
+        'retryFailedNotifications',
+        {},
+      );
 }
 
 /// {@category Endpoint}
@@ -386,11 +416,11 @@ class EndpointEvent extends _i2.EndpointRef {
   /// [additionalManagerIds] - Optional list of additional member IDs to assign as managers.
   ///
   /// todo: Do we want to explicitly set the default manager?
-  _i3.Future<_i7.Event> createEvent(
-    _i7.Event event, {
+  _i3.Future<_i8.Event> createEvent(
+    _i8.Event event, {
     List<int>? additionalManagerIds,
     required bool notifyNewEvent,
-  }) => caller.callServerEndpoint<_i7.Event>(
+  }) => caller.callServerEndpoint<_i8.Event>(
     'event',
     'createEvent',
     {
@@ -400,15 +430,15 @@ class EndpointEvent extends _i2.EndpointRef {
     },
   );
 
-  _i3.Future<_i7.Event> getEvent(int id) =>
-      caller.callServerEndpoint<_i7.Event>(
+  _i3.Future<_i8.Event> getEvent(int id) =>
+      caller.callServerEndpoint<_i8.Event>(
         'event',
         'getEvent',
         {'id': id},
       );
 
-  _i3.Future<_i7.Event> updateEvent(_i7.Event event) =>
-      caller.callServerEndpoint<_i7.Event>(
+  _i3.Future<_i8.Event> updateEvent(_i8.Event event) =>
+      caller.callServerEndpoint<_i8.Event>(
         'event',
         'updateEvent',
         {'event': event},
@@ -420,12 +450,12 @@ class EndpointEvent extends _i2.EndpointRef {
     {'id': id},
   );
 
-  _i3.Future<List<_i7.Event>> listEvents(
+  _i3.Future<List<_i8.Event>> listEvents(
     int? sectionId,
     DateTime? startTime,
     DateTime? endTime,
     bool? onlyMyEvents,
-  ) => caller.callServerEndpoint<List<_i7.Event>>(
+  ) => caller.callServerEndpoint<List<_i8.Event>>(
     'event',
     'listEvents',
     {
@@ -436,8 +466,8 @@ class EndpointEvent extends _i2.EndpointRef {
     },
   );
 
-  _i3.Future<_i8.EventRegistration> registerForEvent(int eventId) =>
-      caller.callServerEndpoint<_i8.EventRegistration>(
+  _i3.Future<_i9.EventRegistration> registerForEvent(int eventId) =>
+      caller.callServerEndpoint<_i9.EventRegistration>(
         'event',
         'registerForEvent',
         {'eventId': eventId},
@@ -451,15 +481,15 @@ class EndpointEventManager extends _i2.EndpointRef {
   @override
   String get name => 'eventManager';
 
-  _i3.Future<_i9.EventManager> assignEventManager(
-    _i9.EventManager eventManager,
-  ) => caller.callServerEndpoint<_i9.EventManager>(
+  _i3.Future<_i10.EventManager> assignEventManager(
+    _i10.EventManager eventManager,
+  ) => caller.callServerEndpoint<_i10.EventManager>(
     'eventManager',
     'assignEventManager',
     {'eventManager': eventManager},
   );
 
-  _i3.Future<void> removeEventManager(_i9.EventManager eventManager) =>
+  _i3.Future<void> removeEventManager(_i10.EventManager eventManager) =>
       caller.callServerEndpoint<void>(
         'eventManager',
         'removeEventManager',
@@ -468,10 +498,10 @@ class EndpointEventManager extends _i2.EndpointRef {
 
   /// Add a member to an event on behalf of an event manager.
   /// The calling user must be an event manager for this event.
-  _i3.Future<_i8.EventRegistration> addMemberToEvent(
+  _i3.Future<_i9.EventRegistration> addMemberToEvent(
     int eventId,
     int memberId,
-  ) => caller.callServerEndpoint<_i8.EventRegistration>(
+  ) => caller.callServerEndpoint<_i9.EventRegistration>(
     'eventManager',
     'addMemberToEvent',
     {
@@ -489,31 +519,31 @@ class EndpointEventManager extends _i2.EndpointRef {
         {'registrationId': registrationId},
       );
 
-  _i3.Future<List<_i9.EventManager>> listEventManagers(int eventId) =>
-      caller.callServerEndpoint<List<_i9.EventManager>>(
+  _i3.Future<List<_i10.EventManager>> listEventManagers(int eventId) =>
+      caller.callServerEndpoint<List<_i10.EventManager>>(
         'eventManager',
         'listEventManagers',
         {'eventId': eventId},
       );
 
-  _i3.Future<List<_i7.Event>> listEventManagerEvents(int memberId) =>
-      caller.callServerEndpoint<List<_i7.Event>>(
+  _i3.Future<List<_i8.Event>> listEventManagerEvents(int memberId) =>
+      caller.callServerEndpoint<List<_i8.Event>>(
         'eventManager',
         'listEventManagerEvents',
         {'memberId': memberId},
       );
 
   /// List events in a section that have no event managers assigned
-  _i3.Future<List<_i7.Event>> listEventsWithoutEventManager(int sectionId) =>
-      caller.callServerEndpoint<List<_i7.Event>>(
+  _i3.Future<List<_i8.Event>> listEventsWithoutEventManager(int sectionId) =>
+      caller.callServerEndpoint<List<_i8.Event>>(
         'eventManager',
         'listEventsWithoutEventManager',
         {'sectionId': sectionId},
       );
 
   /// List all event managers for events in a section
-  _i3.Future<List<_i9.EventManager>> listSectionEventManagers(int sectionId) =>
-      caller.callServerEndpoint<List<_i9.EventManager>>(
+  _i3.Future<List<_i10.EventManager>> listSectionEventManagers(int sectionId) =>
+      caller.callServerEndpoint<List<_i10.EventManager>>(
         'eventManager',
         'listSectionEventManagers',
         {'sectionId': sectionId},
@@ -521,8 +551,8 @@ class EndpointEventManager extends _i2.EndpointRef {
 
   /// Approve a waitlisted registration, moving it to confirmed.
   /// The calling user must be an event manager for the event.
-  _i3.Future<_i8.EventRegistration> approveRegistration(int registrationId) =>
-      caller.callServerEndpoint<_i8.EventRegistration>(
+  _i3.Future<_i9.EventRegistration> approveRegistration(int registrationId) =>
+      caller.callServerEndpoint<_i9.EventRegistration>(
         'eventManager',
         'approveRegistration',
         {'registrationId': registrationId},
@@ -537,24 +567,24 @@ class EndpointEventTemplate extends _i2.EndpointRef {
   String get name => 'eventTemplate';
 
   /// Fetches all event templates from the database.
-  _i3.Future<List<_i10.EventTemplate>> listTemplates() =>
-      caller.callServerEndpoint<List<_i10.EventTemplate>>(
+  _i3.Future<List<_i11.EventTemplate>> listTemplates() =>
+      caller.callServerEndpoint<List<_i11.EventTemplate>>(
         'eventTemplate',
         'listTemplates',
         {},
       );
 
   /// Creates a new event template. Requires Admin scope.
-  _i3.Future<_i10.EventTemplate> createTemplate(_i10.EventTemplate template) =>
-      caller.callServerEndpoint<_i10.EventTemplate>(
+  _i3.Future<_i11.EventTemplate> createTemplate(_i11.EventTemplate template) =>
+      caller.callServerEndpoint<_i11.EventTemplate>(
         'eventTemplate',
         'createTemplate',
         {'template': template},
       );
 
   /// Updates an existing event template. Requires Admin scope.
-  _i3.Future<_i10.EventTemplate> updateTemplate(_i10.EventTemplate template) =>
-      caller.callServerEndpoint<_i10.EventTemplate>(
+  _i3.Future<_i11.EventTemplate> updateTemplate(_i11.EventTemplate template) =>
+      caller.callServerEndpoint<_i11.EventTemplate>(
         'eventTemplate',
         'updateTemplate',
         {'template': template},
@@ -594,15 +624,15 @@ class EndpointMember extends _i2.EndpointRef {
         {'member': member},
       );
 
-  _i3.Future<_i11.SectionMembership> addMemberToSection(
-    _i11.SectionMembership membership,
-  ) => caller.callServerEndpoint<_i11.SectionMembership>(
+  _i3.Future<_i12.SectionMembership> addMemberToSection(
+    _i12.SectionMembership membership,
+  ) => caller.callServerEndpoint<_i12.SectionMembership>(
     'member',
     'addMemberToSection',
     {'membership': membership},
   );
 
-  _i3.Future<void> removeMemberFromSection(_i11.SectionMembership membership) =>
+  _i3.Future<void> removeMemberFromSection(_i12.SectionMembership membership) =>
       caller.callServerEndpoint<void>(
         'member',
         'removeMemberFromSection',
@@ -617,9 +647,9 @@ class EndpointMember extends _i2.EndpointRef {
       );
 
   /// Return a list of all sections the member belongs to.
-  _i3.Future<List<_i11.SectionMembership>> getMemberSectionMemberships(
+  _i3.Future<List<_i12.SectionMembership>> getMemberSectionMemberships(
     int memberId,
-  ) => caller.callServerEndpoint<List<_i11.SectionMembership>>(
+  ) => caller.callServerEndpoint<List<_i12.SectionMembership>>(
     'member',
     'getMemberSectionMemberships',
     {'memberId': memberId},
@@ -670,12 +700,12 @@ class EndpointMember extends _i2.EndpointRef {
   /// which include the user's scopes for the section.
   ///
   /// Use [offset] for pagination — pass `offset: page * limit` to load successive pages.
-  _i3.Future<List<_i11.SectionMembership>> getSectionMemberships(
+  _i3.Future<List<_i12.SectionMembership>> getSectionMemberships(
     int sectionId, {
     String? filter,
     required int limit,
     required int offset,
-  }) => caller.callServerEndpoint<List<_i11.SectionMembership>>(
+  }) => caller.callServerEndpoint<List<_i12.SectionMembership>>(
     'member',
     'getSectionMemberships',
     {
@@ -687,16 +717,16 @@ class EndpointMember extends _i2.EndpointRef {
   );
 
   /// Get the active user's membership details (and scopes) for a specific section.
-  _i3.Future<_i11.SectionMembership?> getMySectionMembership(int sectionId) =>
-      caller.callServerEndpoint<_i11.SectionMembership?>(
+  _i3.Future<_i12.SectionMembership?> getMySectionMembership(int sectionId) =>
+      caller.callServerEndpoint<_i12.SectionMembership?>(
         'member',
         'getMySectionMembership',
         {'sectionId': sectionId},
       );
 
   /// Get all the active user's membership details across all sections.
-  _i3.Future<List<_i11.SectionMembership>> getAllMySectionMemberships() =>
-      caller.callServerEndpoint<List<_i11.SectionMembership>>(
+  _i3.Future<List<_i12.SectionMembership>> getAllMySectionMemberships() =>
+      caller.callServerEndpoint<List<_i12.SectionMembership>>(
         'member',
         'getAllMySectionMemberships',
         {},
@@ -704,11 +734,11 @@ class EndpointMember extends _i2.EndpointRef {
 
   /// Update a member's scopes for a specific section.
   /// Requires the caller to be a global admin or a section manager for the section.
-  _i3.Future<_i11.SectionMembership> updateMemberScopes(
+  _i3.Future<_i12.SectionMembership> updateMemberScopes(
     int memberId,
     int sectionId,
     Set<String> newScopes,
-  ) => caller.callServerEndpoint<_i11.SectionMembership>(
+  ) => caller.callServerEndpoint<_i12.SectionMembership>(
     'member',
     'updateMemberScopes',
     {
@@ -739,10 +769,10 @@ class EndpointNotification extends _i2.EndpointRef {
   @override
   String get name => 'notification';
 
-  _i3.Future<List<_i12.UserNotification>> getMyFeed({
+  _i3.Future<List<_i13.UserNotification>> getMyFeed({
     required int limit,
     required int offset,
-  }) => caller.callServerEndpoint<List<_i12.UserNotification>>(
+  }) => caller.callServerEndpoint<List<_i13.UserNotification>>(
     'notification',
     'getMyFeed',
     {
@@ -765,16 +795,16 @@ class EndpointNotification extends _i2.EndpointRef {
         {'userNotificationId': userNotificationId},
       );
 
-  _i3.Future<_i13.UserNotificationPreference> getMyPreferences() =>
-      caller.callServerEndpoint<_i13.UserNotificationPreference>(
+  _i3.Future<_i14.UserNotificationPreference> getMyPreferences() =>
+      caller.callServerEndpoint<_i14.UserNotificationPreference>(
         'notification',
         'getMyPreferences',
         {},
       );
 
-  _i3.Future<_i13.UserNotificationPreference> savePreference(
-    _i13.UserNotificationPreference preference,
-  ) => caller.callServerEndpoint<_i13.UserNotificationPreference>(
+  _i3.Future<_i14.UserNotificationPreference> savePreference(
+    _i14.UserNotificationPreference preference,
+  ) => caller.callServerEndpoint<_i14.UserNotificationPreference>(
     'notification',
     'savePreference',
     {'preference': preference},
@@ -801,11 +831,11 @@ class EndpointRegistration extends _i2.EndpointRef {
   String get name => 'registration';
 
   /// Approve or reject a registration
-  _i3.Future<_i8.EventRegistration> updateRegistrationStatus(
+  _i3.Future<_i9.EventRegistration> updateRegistrationStatus(
     int registrationId,
-    _i14.RegistrationStatus newStatus, {
+    _i15.RegistrationStatus newStatus, {
     String? notes,
-  }) => caller.callServerEndpoint<_i8.EventRegistration>(
+  }) => caller.callServerEndpoint<_i9.EventRegistration>(
     'registration',
     'updateRegistrationStatus',
     {
@@ -815,9 +845,9 @@ class EndpointRegistration extends _i2.EndpointRef {
     },
   );
 
-  _i3.Future<_i8.EventRegistration> registerForEvent(
-    _i8.EventRegistration registration,
-  ) => caller.callServerEndpoint<_i8.EventRegistration>(
+  _i3.Future<_i9.EventRegistration> registerForEvent(
+    _i9.EventRegistration registration,
+  ) => caller.callServerEndpoint<_i9.EventRegistration>(
     'registration',
     'registerForEvent',
     {'registration': registration},
@@ -830,9 +860,9 @@ class EndpointRegistration extends _i2.EndpointRef {
         {'registrationId': registrationId},
       );
 
-  _i3.Future<List<_i8.EventRegistration>> getRegistrationsForEvent(
+  _i3.Future<List<_i9.EventRegistration>> getRegistrationsForEvent(
     int eventId,
-  ) => caller.callServerEndpoint<List<_i8.EventRegistration>>(
+  ) => caller.callServerEndpoint<List<_i9.EventRegistration>>(
     'registration',
     'getRegistrationsForEvent',
     {'eventId': eventId},
@@ -897,10 +927,10 @@ class Client extends _i2.ServerpodClientShared {
     onFailedCall,
     Function(_i2.MethodCallContext)? onSucceededCall,
     bool? disconnectStreamsOnLostInternetConnection,
-    _i15.Client? httpClientOverride,
+    _i16.Client? httpClientOverride,
   }) : super(
          host,
-         _i16.Protocol(),
+         _i17.Protocol(),
          securityContext: securityContext,
          streamingConnectionTimeout: streamingConnectionTimeout,
          connectionTimeout: connectionTimeout,

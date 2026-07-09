@@ -34,15 +34,17 @@ import 'section_membership.dart' as _i19;
 import 'user_notification.dart' as _i20;
 import 'user_notification_preference.dart' as _i21;
 import 'package:alpine_pod_server/src/generated/section.dart' as _i22;
-import 'package:alpine_pod_server/src/generated/event.dart' as _i23;
-import 'package:alpine_pod_server/src/generated/event_manager.dart' as _i24;
-import 'package:alpine_pod_server/src/generated/event_template.dart' as _i25;
+import 'package:alpine_pod_server/src/generated/notification_delivery.dart'
+    as _i23;
+import 'package:alpine_pod_server/src/generated/event.dart' as _i24;
+import 'package:alpine_pod_server/src/generated/event_manager.dart' as _i25;
+import 'package:alpine_pod_server/src/generated/event_template.dart' as _i26;
 import 'package:alpine_pod_server/src/generated/section_membership.dart'
-    as _i26;
-import 'package:alpine_pod_server/src/generated/member.dart' as _i27;
-import 'package:alpine_pod_server/src/generated/user_notification.dart' as _i28;
+    as _i27;
+import 'package:alpine_pod_server/src/generated/member.dart' as _i28;
+import 'package:alpine_pod_server/src/generated/user_notification.dart' as _i29;
 import 'package:alpine_pod_server/src/generated/event_registration.dart'
-    as _i29;
+    as _i30;
 export 'event.dart';
 export 'event_document.dart';
 export 'event_manager.dart';
@@ -1667,6 +1669,12 @@ class Protocol extends _i1.DatabaseSerializationManager {
       return (data as List).map((e) => deserialize<_i22.Section>(e)).toList()
           as T;
     }
+    if (t == List<_i23.NotificationDelivery>) {
+      return (data as List)
+              .map((e) => deserialize<_i23.NotificationDelivery>(e))
+              .toList()
+          as T;
+    }
     if (t == List<int>) {
       return (data as List).map((e) => deserialize<int>(e)).toList() as T;
     }
@@ -1676,44 +1684,44 @@ class Protocol extends _i1.DatabaseSerializationManager {
               : null)
           as T;
     }
-    if (t == List<_i23.Event>) {
-      return (data as List).map((e) => deserialize<_i23.Event>(e)).toList()
+    if (t == List<_i24.Event>) {
+      return (data as List).map((e) => deserialize<_i24.Event>(e)).toList()
           as T;
     }
-    if (t == List<_i24.EventManager>) {
+    if (t == List<_i25.EventManager>) {
       return (data as List)
-              .map((e) => deserialize<_i24.EventManager>(e))
+              .map((e) => deserialize<_i25.EventManager>(e))
               .toList()
           as T;
     }
-    if (t == List<_i25.EventTemplate>) {
+    if (t == List<_i26.EventTemplate>) {
       return (data as List)
-              .map((e) => deserialize<_i25.EventTemplate>(e))
+              .map((e) => deserialize<_i26.EventTemplate>(e))
               .toList()
           as T;
     }
-    if (t == List<_i26.SectionMembership>) {
+    if (t == List<_i27.SectionMembership>) {
       return (data as List)
-              .map((e) => deserialize<_i26.SectionMembership>(e))
+              .map((e) => deserialize<_i27.SectionMembership>(e))
               .toList()
           as T;
     }
-    if (t == List<_i27.Member>) {
-      return (data as List).map((e) => deserialize<_i27.Member>(e)).toList()
+    if (t == List<_i28.Member>) {
+      return (data as List).map((e) => deserialize<_i28.Member>(e)).toList()
           as T;
     }
     if (t == Set<String>) {
       return (data as List).map((e) => deserialize<String>(e)).toSet() as T;
     }
-    if (t == List<_i28.UserNotification>) {
+    if (t == List<_i29.UserNotification>) {
       return (data as List)
-              .map((e) => deserialize<_i28.UserNotification>(e))
+              .map((e) => deserialize<_i29.UserNotification>(e))
               .toList()
           as T;
     }
-    if (t == List<_i29.EventRegistration>) {
+    if (t == List<_i30.EventRegistration>) {
       return (data as List)
-              .map((e) => deserialize<_i29.EventRegistration>(e))
+              .map((e) => deserialize<_i30.EventRegistration>(e))
               .toList()
           as T;
     }

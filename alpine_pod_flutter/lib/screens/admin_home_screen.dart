@@ -11,7 +11,7 @@ class AdminHomeScreen extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tabController = useTabController(initialLength: 3);
+    final tabController = useTabController(initialLength: 4);
 
     return Scaffold(
       backgroundColor: const Color(0xFF0F1117),
@@ -69,12 +69,18 @@ class AdminHomeScreen extends HookWidget {
             Tab(icon: Icon(Icons.terrain), text: 'Sections'),
             Tab(icon: Icon(Icons.people), text: 'Members'),
             Tab(icon: Icon(Icons.library_books), text: 'Templates'),
+            Tab(icon: Icon(Icons.notifications_active), text: 'Notifications'),
           ],
         ),
       ),
       body: TabBarView(
         controller: tabController,
-        children: const [_SectionsTab(), _MembersTab(), _TemplatesTab()],
+        children: const [
+          _SectionsTab(),
+          _MembersTab(),
+          _TemplatesTab(),
+          _NotificationsTab(),
+        ],
       ),
     );
   }
@@ -583,7 +589,10 @@ class _MembersTab extends HookWidget {
 
               return ListView.separated(
                 controller: scrollController,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
                 itemCount: list.length + (hasMore.value ? 1 : 0),
                 separatorBuilder: (_, _) => const SizedBox(height: 8),
                 itemBuilder: (_, i) {
@@ -682,8 +691,366 @@ class _MemberCard extends StatelessWidget {
 }
 
 // ---------------------------------------------------------------------------
+// Notifications Tab
+// ---------------------------------------------------------------------------
+
+class _NotificationsTab extends HookWidget {
+  const _NotificationsTab();
+
+  @override
+  Widget build(BuildContext context) {
+    final statusFilter = useSignal<String?>(null);
+    final reload = useSignal(0);
+
+    const pageSize = 100;
+    final deliveriesSignal = useFutureSignal(
+      () => client.admin.getNotificationDeliveries(
+        limit: pageSize,
+        offset: 0,
+        statusFilter: statusFilter.value,
+      ),
+      keys: [statusFilter.value, reload.value],
+    );
+
+    void refresh() => reload.value++;
+
+    Future<void> purgeDeliveries() async {
+      final confirmed = await _showConfirmDialog(
+        context,
+        title: 'Purge Deliveries',
+        message:
+            'Delete every notification delivery row? Notification history will remain, but delivery status records will be removed.',
+      );
+      if (!confirmed || !context.mounted) return;
+
+      final messenger = ScaffoldMessenger.of(context);
+      try {
+        await client.admin.clearNotificationDeliveries();
+        messenger.showSnackBar(
+          const SnackBar(
+            content: Text('Notification delivery table purged.'),
+            backgroundColor: Color(0xFF4ECDC4),
+          ),
+        );
+        refresh();
+      } catch (e) {
+        messenger.showSnackBar(
+          SnackBar(
+            content: Text('Purge failed: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+
+    Future<void> retryFailed() async {
+      final messenger = ScaffoldMessenger.of(context);
+      try {
+        await client.admin.retryFailedNotifications();
+        messenger.showSnackBar(
+          const SnackBar(
+            content: Text('Failed deliveries queued for retry.'),
+            backgroundColor: Color(0xFF4ECDC4),
+          ),
+        );
+        refresh();
+      } catch (e) {
+        messenger.showSnackBar(
+          SnackBar(
+            content: Text('Retry failed: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+
+    return Scaffold(
+      backgroundColor: const Color(0xFF0F1117),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+            child: Wrap(
+              spacing: 10,
+              runSpacing: 10,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                _StatusFilterChip(
+                  label: 'All',
+                  selected: statusFilter.value == null,
+                  onSelected: () => statusFilter.value = null,
+                ),
+                for (final status in ['pending', 'sent', 'failed'])
+                  _StatusFilterChip(
+                    label: status,
+                    selected: statusFilter.value == status,
+                    onSelected: () => statusFilter.value = status,
+                  ),
+                OutlinedButton.icon(
+                  onPressed: refresh,
+                  icon: const Icon(Icons.refresh),
+                  label: const Text('Refresh'),
+                ),
+                OutlinedButton.icon(
+                  onPressed: retryFailed,
+                  icon: const Icon(Icons.replay),
+                  label: const Text('Retry Failed'),
+                ),
+                FilledButton.icon(
+                  style: FilledButton.styleFrom(
+                    backgroundColor: Colors.red[700],
+                    foregroundColor: Colors.white,
+                  ),
+                  onPressed: purgeDeliveries,
+                  icon: const Icon(Icons.delete_sweep_outlined),
+                  label: const Text('Purge Deliveries'),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: SignalBuilder(
+              builder: (context) => deliveriesSignal.value.map(
+                data: (deliveries) {
+                  if (deliveries.isEmpty) {
+                    return const Center(
+                      child: Text(
+                        'No delivery records found.',
+                        style: TextStyle(color: Colors.white54),
+                      ),
+                    );
+                  }
+
+                  return ListView.separated(
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+                    itemCount: deliveries.length,
+                    separatorBuilder: (_, _) => const SizedBox(height: 8),
+                    itemBuilder: (_, i) =>
+                        _NotificationDeliveryCard(delivery: deliveries[i]),
+                  );
+                },
+                error: (e, _) => Center(
+                  child: Text(
+                    'Error: $e',
+                    style: const TextStyle(color: Colors.redAccent),
+                  ),
+                ),
+                loading: () => const Center(
+                  child: CircularProgressIndicator(color: Color(0xFF6C63FF)),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _StatusFilterChip extends StatelessWidget {
+  const _StatusFilterChip({
+    required this.label,
+    required this.selected,
+    required this.onSelected,
+  });
+
+  final String label;
+  final bool selected;
+  final VoidCallback onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    return FilterChip(
+      selected: selected,
+      label: Text(label),
+      onSelected: (_) => onSelected(),
+      backgroundColor: const Color(0xFF1A1D27),
+      selectedColor: const Color(0xFF6C63FF),
+      checkmarkColor: Colors.white,
+      labelStyle: TextStyle(color: selected ? Colors.white : Colors.white70),
+      side: BorderSide(color: Colors.white.withAlpha(24)),
+    );
+  }
+}
+
+class _NotificationDeliveryCard extends StatelessWidget {
+  const _NotificationDeliveryCard({required this.delivery});
+
+  final NotificationDelivery delivery;
+
+  @override
+  Widget build(BuildContext context) {
+    final notification = delivery.notification;
+    final title =
+        notification?.renderedTitle ??
+        'Notification ${delivery.notificationId}';
+    final body =
+        notification?.renderedBody ?? delivery.info ?? 'No delivery details';
+
+    return Container(
+      decoration: BoxDecoration(
+        color: const Color(0xFF1A1D27),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.white.withAlpha(15)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 15,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        body,
+                        style: const TextStyle(
+                          color: Colors.white60,
+                          fontSize: 12,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 12),
+                _DeliveryStatusBadge(status: delivery.status),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                _DeliveryMetaChip(
+                  icon: Icons.send_outlined,
+                  label: delivery.channel.name,
+                ),
+                _DeliveryMetaChip(
+                  icon: Icons.person_outline,
+                  label:
+                      delivery.info ??
+                      delivery.recipientUserId?.toString() ??
+                      'Bulk section ${delivery.sectionId ?? '-'}',
+                ),
+                _DeliveryMetaChip(
+                  icon: Icons.repeat,
+                  label: '${delivery.attempts} attempts',
+                ),
+                _DeliveryMetaChip(
+                  icon: Icons.schedule,
+                  label: _formatDateTime(delivery.createdAt),
+                ),
+                if (delivery.lastAttemptAt != null)
+                  _DeliveryMetaChip(
+                    icon: Icons.history,
+                    label: 'Last ${_formatDateTime(delivery.lastAttemptAt!)}',
+                  ),
+              ],
+            ),
+            if (delivery.errorMessage != null &&
+                delivery.errorMessage!.trim().isNotEmpty) ...[
+              const SizedBox(height: 10),
+              Text(
+                delivery.errorMessage!,
+                style: TextStyle(color: Colors.red[200], fontSize: 12),
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _DeliveryStatusBadge extends StatelessWidget {
+  const _DeliveryStatusBadge({required this.status});
+
+  final String status;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = switch (status) {
+      'sent' => const Color(0xFF4ECDC4),
+      'failed' => Colors.redAccent,
+      'pending' => Colors.amber,
+      _ => Colors.white54,
+    };
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(
+        color: color.withAlpha(32),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: color.withAlpha(150)),
+      ),
+      child: Text(
+        status,
+        style: TextStyle(
+          color: color,
+          fontSize: 11,
+          fontWeight: FontWeight.w800,
+        ),
+      ),
+    );
+  }
+}
+
+class _DeliveryMetaChip extends StatelessWidget {
+  const _DeliveryMetaChip({required this.icon, required this.label});
+
+  final IconData icon;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+      decoration: BoxDecoration(
+        color: const Color(0xFF0F1117),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.white.withAlpha(18)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 14, color: Colors.white54),
+          const SizedBox(width: 5),
+          Text(
+            label,
+            style: const TextStyle(color: Colors.white70, fontSize: 12),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
 // Shared utilities
 // ---------------------------------------------------------------------------
+
+String _formatDateTime(DateTime value) {
+  final local = value.toLocal();
+  String two(int n) => n.toString().padLeft(2, '0');
+  return '${local.year}-${two(local.month)}-${two(local.day)} '
+      '${two(local.hour)}:${two(local.minute)}';
+}
 
 Future<bool> _showConfirmDialog(
   BuildContext context, {
@@ -1006,7 +1373,12 @@ class _TemplateDialog extends HookWidget {
                       ],
                     ),
                     const SizedBox(height: 12),
-                    _field('Description', descCtrl, required: true, maxLines: 2),
+                    _field(
+                      'Description',
+                      descCtrl,
+                      required: true,
+                      maxLines: 2,
+                    ),
                     const SizedBox(height: 12),
                     _field(
                       'Markdown Content',

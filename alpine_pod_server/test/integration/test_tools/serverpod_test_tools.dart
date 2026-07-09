@@ -19,18 +19,21 @@ import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
     as _i5;
 import 'package:alpine_pod_server/src/generated/section.dart' as _i6;
 import 'package:alpine_pod_server/src/generated/member.dart' as _i7;
-import 'package:alpine_pod_server/src/generated/event.dart' as _i8;
-import 'package:alpine_pod_server/src/generated/event_registration.dart' as _i9;
-import 'package:alpine_pod_server/src/generated/event_manager.dart' as _i10;
-import 'package:alpine_pod_server/src/generated/event_template.dart' as _i11;
+import 'package:alpine_pod_server/src/generated/notification_delivery.dart'
+    as _i8;
+import 'package:alpine_pod_server/src/generated/event.dart' as _i9;
+import 'package:alpine_pod_server/src/generated/event_registration.dart'
+    as _i10;
+import 'package:alpine_pod_server/src/generated/event_manager.dart' as _i11;
+import 'package:alpine_pod_server/src/generated/event_template.dart' as _i12;
 import 'package:alpine_pod_server/src/generated/section_membership.dart'
-    as _i12;
-import 'package:alpine_pod_server/src/generated/user_notification.dart' as _i13;
+    as _i13;
+import 'package:alpine_pod_server/src/generated/user_notification.dart' as _i14;
 import 'package:alpine_pod_server/src/generated/user_notification_preference.dart'
-    as _i14;
-import 'package:alpine_pod_server/src/generated/registration_status.dart'
     as _i15;
-import 'package:alpine_pod_server/src/generated/future_calls.dart' as _i16;
+import 'package:alpine_pod_server/src/generated/registration_status.dart'
+    as _i16;
+import 'package:alpine_pod_server/src/generated/future_calls.dart' as _i17;
 import 'package:alpine_pod_server/src/generated/protocol.dart';
 import 'package:alpine_pod_server/src/generated/endpoints.dart';
 export 'package:serverpod_test/serverpod_test_public_exports.dart';
@@ -967,6 +970,103 @@ class _AdminEndpoint {
       }
     });
   }
+
+  _i4.Future<List<_i8.NotificationDelivery>> getNotificationDeliveries(
+    _i1.TestSessionBuilder sessionBuilder, {
+    required int limit,
+    required int offset,
+    String? statusFilter,
+  }) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'admin',
+            method: 'getNotificationDeliveries',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'admin',
+          methodName: 'getNotificationDeliveries',
+          parameters: _i1.testObjectToJson({
+            'limit': limit,
+            'offset': offset,
+            'statusFilter': statusFilter,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i4.Future<List<_i8.NotificationDelivery>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i4.Future<void> clearNotificationDeliveries(
+    _i1.TestSessionBuilder sessionBuilder,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'admin',
+            method: 'clearNotificationDeliveries',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'admin',
+          methodName: 'clearNotificationDeliveries',
+          parameters: _i1.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i4.Future<void>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i4.Future<void> retryFailedNotifications(
+    _i1.TestSessionBuilder sessionBuilder,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'admin',
+            method: 'retryFailedNotifications',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'admin',
+          methodName: 'retryFailedNotifications',
+          parameters: _i1.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i4.Future<void>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
 }
 
 class _EventEndpoint {
@@ -979,9 +1079,9 @@ class _EventEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i4.Future<_i8.Event> createEvent(
+  _i4.Future<_i9.Event> createEvent(
     _i1.TestSessionBuilder sessionBuilder,
-    _i8.Event event, {
+    _i9.Event event, {
     List<int>? additionalManagerIds,
     required bool notifyNewEvent,
   }) async {
@@ -1008,7 +1108,7 @@ class _EventEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i4.Future<_i8.Event>);
+                as _i4.Future<_i9.Event>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1016,7 +1116,7 @@ class _EventEndpoint {
     });
   }
 
-  _i4.Future<_i8.Event> getEvent(
+  _i4.Future<_i9.Event> getEvent(
     _i1.TestSessionBuilder sessionBuilder,
     int id,
   ) async {
@@ -1039,7 +1139,7 @@ class _EventEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i4.Future<_i8.Event>);
+                as _i4.Future<_i9.Event>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1047,9 +1147,9 @@ class _EventEndpoint {
     });
   }
 
-  _i4.Future<_i8.Event> updateEvent(
+  _i4.Future<_i9.Event> updateEvent(
     _i1.TestSessionBuilder sessionBuilder,
-    _i8.Event event,
+    _i9.Event event,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -1070,7 +1170,7 @@ class _EventEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i4.Future<_i8.Event>);
+                as _i4.Future<_i9.Event>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1109,7 +1209,7 @@ class _EventEndpoint {
     });
   }
 
-  _i4.Future<List<_i8.Event>> listEvents(
+  _i4.Future<List<_i9.Event>> listEvents(
     _i1.TestSessionBuilder sessionBuilder,
     int? sectionId,
     DateTime? startTime,
@@ -1140,7 +1240,7 @@ class _EventEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i4.Future<List<_i8.Event>>);
+                as _i4.Future<List<_i9.Event>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1148,7 +1248,7 @@ class _EventEndpoint {
     });
   }
 
-  _i4.Future<_i9.EventRegistration> registerForEvent(
+  _i4.Future<_i10.EventRegistration> registerForEvent(
     _i1.TestSessionBuilder sessionBuilder,
     int eventId,
   ) async {
@@ -1171,7 +1271,7 @@ class _EventEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i4.Future<_i9.EventRegistration>);
+                as _i4.Future<_i10.EventRegistration>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1190,9 +1290,9 @@ class _EventManagerEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i4.Future<_i10.EventManager> assignEventManager(
+  _i4.Future<_i11.EventManager> assignEventManager(
     _i1.TestSessionBuilder sessionBuilder,
-    _i10.EventManager eventManager,
+    _i11.EventManager eventManager,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -1213,7 +1313,7 @@ class _EventManagerEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i4.Future<_i10.EventManager>);
+                as _i4.Future<_i11.EventManager>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1223,7 +1323,7 @@ class _EventManagerEndpoint {
 
   _i4.Future<void> removeEventManager(
     _i1.TestSessionBuilder sessionBuilder,
-    _i10.EventManager eventManager,
+    _i11.EventManager eventManager,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -1252,7 +1352,7 @@ class _EventManagerEndpoint {
     });
   }
 
-  _i4.Future<_i9.EventRegistration> addMemberToEvent(
+  _i4.Future<_i10.EventRegistration> addMemberToEvent(
     _i1.TestSessionBuilder sessionBuilder,
     int eventId,
     int memberId,
@@ -1279,7 +1379,7 @@ class _EventManagerEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i4.Future<_i9.EventRegistration>);
+                as _i4.Future<_i10.EventRegistration>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1318,7 +1418,7 @@ class _EventManagerEndpoint {
     });
   }
 
-  _i4.Future<List<_i10.EventManager>> listEventManagers(
+  _i4.Future<List<_i11.EventManager>> listEventManagers(
     _i1.TestSessionBuilder sessionBuilder,
     int eventId,
   ) async {
@@ -1341,7 +1441,7 @@ class _EventManagerEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i4.Future<List<_i10.EventManager>>);
+                as _i4.Future<List<_i11.EventManager>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1349,7 +1449,7 @@ class _EventManagerEndpoint {
     });
   }
 
-  _i4.Future<List<_i8.Event>> listEventManagerEvents(
+  _i4.Future<List<_i9.Event>> listEventManagerEvents(
     _i1.TestSessionBuilder sessionBuilder,
     int memberId,
   ) async {
@@ -1372,7 +1472,7 @@ class _EventManagerEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i4.Future<List<_i8.Event>>);
+                as _i4.Future<List<_i9.Event>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1380,7 +1480,7 @@ class _EventManagerEndpoint {
     });
   }
 
-  _i4.Future<List<_i8.Event>> listEventsWithoutEventManager(
+  _i4.Future<List<_i9.Event>> listEventsWithoutEventManager(
     _i1.TestSessionBuilder sessionBuilder,
     int sectionId,
   ) async {
@@ -1403,7 +1503,7 @@ class _EventManagerEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i4.Future<List<_i8.Event>>);
+                as _i4.Future<List<_i9.Event>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1411,7 +1511,7 @@ class _EventManagerEndpoint {
     });
   }
 
-  _i4.Future<List<_i10.EventManager>> listSectionEventManagers(
+  _i4.Future<List<_i11.EventManager>> listSectionEventManagers(
     _i1.TestSessionBuilder sessionBuilder,
     int sectionId,
   ) async {
@@ -1434,7 +1534,7 @@ class _EventManagerEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i4.Future<List<_i10.EventManager>>);
+                as _i4.Future<List<_i11.EventManager>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1442,7 +1542,7 @@ class _EventManagerEndpoint {
     });
   }
 
-  _i4.Future<_i9.EventRegistration> approveRegistration(
+  _i4.Future<_i10.EventRegistration> approveRegistration(
     _i1.TestSessionBuilder sessionBuilder,
     int registrationId,
   ) async {
@@ -1465,7 +1565,7 @@ class _EventManagerEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i4.Future<_i9.EventRegistration>);
+                as _i4.Future<_i10.EventRegistration>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1484,7 +1584,7 @@ class _EventTemplateEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i4.Future<List<_i11.EventTemplate>> listTemplates(
+  _i4.Future<List<_i12.EventTemplate>> listTemplates(
     _i1.TestSessionBuilder sessionBuilder,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
@@ -1506,7 +1606,7 @@ class _EventTemplateEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i4.Future<List<_i11.EventTemplate>>);
+                as _i4.Future<List<_i12.EventTemplate>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1514,9 +1614,9 @@ class _EventTemplateEndpoint {
     });
   }
 
-  _i4.Future<_i11.EventTemplate> createTemplate(
+  _i4.Future<_i12.EventTemplate> createTemplate(
     _i1.TestSessionBuilder sessionBuilder,
-    _i11.EventTemplate template,
+    _i12.EventTemplate template,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -1537,7 +1637,7 @@ class _EventTemplateEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i4.Future<_i11.EventTemplate>);
+                as _i4.Future<_i12.EventTemplate>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1545,9 +1645,9 @@ class _EventTemplateEndpoint {
     });
   }
 
-  _i4.Future<_i11.EventTemplate> updateTemplate(
+  _i4.Future<_i12.EventTemplate> updateTemplate(
     _i1.TestSessionBuilder sessionBuilder,
-    _i11.EventTemplate template,
+    _i12.EventTemplate template,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -1568,7 +1668,7 @@ class _EventTemplateEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i4.Future<_i11.EventTemplate>);
+                as _i4.Future<_i12.EventTemplate>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1679,9 +1779,9 @@ class _MemberEndpoint {
     });
   }
 
-  _i4.Future<_i12.SectionMembership> addMemberToSection(
+  _i4.Future<_i13.SectionMembership> addMemberToSection(
     _i1.TestSessionBuilder sessionBuilder,
-    _i12.SectionMembership membership,
+    _i13.SectionMembership membership,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -1702,7 +1802,7 @@ class _MemberEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i4.Future<_i12.SectionMembership>);
+                as _i4.Future<_i13.SectionMembership>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1712,7 +1812,7 @@ class _MemberEndpoint {
 
   _i4.Future<void> removeMemberFromSection(
     _i1.TestSessionBuilder sessionBuilder,
-    _i12.SectionMembership membership,
+    _i13.SectionMembership membership,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -1772,7 +1872,7 @@ class _MemberEndpoint {
     });
   }
 
-  _i4.Future<List<_i12.SectionMembership>> getMemberSectionMemberships(
+  _i4.Future<List<_i13.SectionMembership>> getMemberSectionMemberships(
     _i1.TestSessionBuilder sessionBuilder,
     int memberId,
   ) async {
@@ -1795,7 +1895,7 @@ class _MemberEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i4.Future<List<_i12.SectionMembership>>);
+                as _i4.Future<List<_i13.SectionMembership>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1903,7 +2003,7 @@ class _MemberEndpoint {
     });
   }
 
-  _i4.Future<List<_i12.SectionMembership>> getSectionMemberships(
+  _i4.Future<List<_i13.SectionMembership>> getSectionMemberships(
     _i1.TestSessionBuilder sessionBuilder,
     int sectionId, {
     String? filter,
@@ -1934,7 +2034,7 @@ class _MemberEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i4.Future<List<_i12.SectionMembership>>);
+                as _i4.Future<List<_i13.SectionMembership>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1942,7 +2042,7 @@ class _MemberEndpoint {
     });
   }
 
-  _i4.Future<_i12.SectionMembership?> getMySectionMembership(
+  _i4.Future<_i13.SectionMembership?> getMySectionMembership(
     _i1.TestSessionBuilder sessionBuilder,
     int sectionId,
   ) async {
@@ -1965,7 +2065,7 @@ class _MemberEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i4.Future<_i12.SectionMembership?>);
+                as _i4.Future<_i13.SectionMembership?>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1973,7 +2073,7 @@ class _MemberEndpoint {
     });
   }
 
-  _i4.Future<List<_i12.SectionMembership>> getAllMySectionMemberships(
+  _i4.Future<List<_i13.SectionMembership>> getAllMySectionMemberships(
     _i1.TestSessionBuilder sessionBuilder,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
@@ -1995,7 +2095,7 @@ class _MemberEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i4.Future<List<_i12.SectionMembership>>);
+                as _i4.Future<List<_i13.SectionMembership>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2003,7 +2103,7 @@ class _MemberEndpoint {
     });
   }
 
-  _i4.Future<_i12.SectionMembership> updateMemberScopes(
+  _i4.Future<_i13.SectionMembership> updateMemberScopes(
     _i1.TestSessionBuilder sessionBuilder,
     int memberId,
     int sectionId,
@@ -2032,7 +2132,7 @@ class _MemberEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i4.Future<_i12.SectionMembership>);
+                as _i4.Future<_i13.SectionMembership>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2086,7 +2186,7 @@ class _NotificationEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i4.Future<List<_i13.UserNotification>> getMyFeed(
+  _i4.Future<List<_i14.UserNotification>> getMyFeed(
     _i1.TestSessionBuilder sessionBuilder, {
     required int limit,
     required int offset,
@@ -2113,7 +2213,7 @@ class _NotificationEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i4.Future<List<_i13.UserNotification>>);
+                as _i4.Future<List<_i14.UserNotification>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2182,7 +2282,7 @@ class _NotificationEndpoint {
     });
   }
 
-  _i4.Future<_i14.UserNotificationPreference> getMyPreferences(
+  _i4.Future<_i15.UserNotificationPreference> getMyPreferences(
     _i1.TestSessionBuilder sessionBuilder,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
@@ -2204,7 +2304,7 @@ class _NotificationEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i4.Future<_i14.UserNotificationPreference>);
+                as _i4.Future<_i15.UserNotificationPreference>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2212,9 +2312,9 @@ class _NotificationEndpoint {
     });
   }
 
-  _i4.Future<_i14.UserNotificationPreference> savePreference(
+  _i4.Future<_i15.UserNotificationPreference> savePreference(
     _i1.TestSessionBuilder sessionBuilder,
-    _i14.UserNotificationPreference preference,
+    _i15.UserNotificationPreference preference,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -2235,7 +2335,7 @@ class _NotificationEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i4.Future<_i14.UserNotificationPreference>);
+                as _i4.Future<_i15.UserNotificationPreference>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2289,10 +2389,10 @@ class _RegistrationEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i4.Future<_i9.EventRegistration> updateRegistrationStatus(
+  _i4.Future<_i10.EventRegistration> updateRegistrationStatus(
     _i1.TestSessionBuilder sessionBuilder,
     int registrationId,
-    _i15.RegistrationStatus newStatus, {
+    _i16.RegistrationStatus newStatus, {
     String? notes,
   }) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
@@ -2318,7 +2418,7 @@ class _RegistrationEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i4.Future<_i9.EventRegistration>);
+                as _i4.Future<_i10.EventRegistration>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2326,9 +2426,9 @@ class _RegistrationEndpoint {
     });
   }
 
-  _i4.Future<_i9.EventRegistration> registerForEvent(
+  _i4.Future<_i10.EventRegistration> registerForEvent(
     _i1.TestSessionBuilder sessionBuilder,
-    _i9.EventRegistration registration,
+    _i10.EventRegistration registration,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -2349,7 +2449,7 @@ class _RegistrationEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i4.Future<_i9.EventRegistration>);
+                as _i4.Future<_i10.EventRegistration>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2388,7 +2488,7 @@ class _RegistrationEndpoint {
     });
   }
 
-  _i4.Future<List<_i9.EventRegistration>> getRegistrationsForEvent(
+  _i4.Future<List<_i10.EventRegistration>> getRegistrationsForEvent(
     _i1.TestSessionBuilder sessionBuilder,
     int eventId,
   ) async {
@@ -2411,7 +2511,7 @@ class _RegistrationEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i4.Future<List<_i9.EventRegistration>>);
+                as _i4.Future<List<_i10.EventRegistration>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2527,7 +2627,7 @@ class _NotificationSchedulerFutureCall {
     var _localUniqueSession = (sessionBuilder as _i1.InternalTestSessionBuilder)
         .internalBuild();
     try {
-      await _i16.NotificationSchedulerHandleCallFutureCall().invoke(
+      await _i17.NotificationSchedulerHandleCallFutureCall().invoke(
         _localUniqueSession,
         null,
       );
