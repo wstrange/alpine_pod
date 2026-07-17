@@ -62,9 +62,12 @@ sessionLogs:
   persistentEnabled: true
   consoleEnabled: true
   consoleLogFormat: text # Defaults to "json", options are "text" or "json"
+  cleanupInterval: 6h       # Run cleanup every 6 hours
+  retentionPeriod: 1d      # Keep entries for 30 days
+  retentionCount: 1000      # Keep at most 5,000 entries
 
 # futureCallExecutionEnabled: true # Defaults to true
 
-#futureCall:
+futureCall:
 #  concurrencyLimit: 1 # Defaults to 1, a negative or null value removes the limit
-#  scanInterval: 5000 # Unit in milliseconds, defaults to 5000
+ scanInterval: 20000 # Unit in milliseconds, defaults to 5000

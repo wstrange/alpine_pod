@@ -274,7 +274,9 @@ class NotificationService {
       templateData: {
         'title': createdEvent.title,
         'body': 'A new event titled "${createdEvent.title}" has been created.',
+        'event_id': createdEvent.id.toString(),
       },
+      actionUrl: '/event-view/${createdEvent.id}',
     );
   }
 

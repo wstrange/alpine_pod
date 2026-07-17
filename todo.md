@@ -58,6 +58,5 @@ Maps package: https://pub.dev/packages/goodmap
 Test on Android
 Look for redundant endppoint code
 RBAC testing
-Give admin ability to view notification delivery, clear table. etc.
-Add email to notificaiton table for ease of debugging
 Flutter client should show error if the server is not available
+Add image for profile.
