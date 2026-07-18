@@ -2,6 +2,7 @@ import 'package:alpine_pod_client/alpine_pod_client.dart';
 import 'package:flutter/material.dart';
 import 'package:signals_flutter/signals_flutter.dart';
 import '../signals.dart';
+import 'member_avatar.dart';
 import 'member_details_dialog.dart';
 
 class MemberDirectoryListWidget extends StatelessWidget {
@@ -37,47 +38,38 @@ class MemberDirectoryListWidget extends StatelessWidget {
         }
 
         return ListView.separated(
-      controller: scrollController,
-      shrinkWrap: shrinkWrap,
-      physics: physics,
-      itemCount: memberships.length + (hasMore ? 1 : 0),
-      separatorBuilder: (context, index) => const Divider(),
-      itemBuilder: (context, index) {
-        if (index == memberships.length) {
-          return const Padding(
-            padding: EdgeInsets.symmetric(vertical: 24),
-            child: Center(
-              child: CircularProgressIndicator(strokeWidth: 2),
-            ),
-          );
-        }
+          controller: scrollController,
+          shrinkWrap: shrinkWrap,
+          physics: physics,
+          itemCount: memberships.length + (hasMore ? 1 : 0),
+          separatorBuilder: (context, index) => const Divider(),
+          itemBuilder: (context, index) {
+            if (index == memberships.length) {
+              return const Padding(
+                padding: EdgeInsets.symmetric(vertical: 24),
+                child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+              );
+            }
 
-        final membership = memberships[index];
-        final member = membership.member;
-        if (member == null) return const SizedBox();
+            final membership = memberships[index];
+            final member = membership.member;
+            if (member == null) return const SizedBox();
 
-        final name =
-            member.displayName ?? '${member.firstName} ${member.lastName}';
+            final name =
+                member.displayName ?? '${member.firstName} ${member.lastName}';
 
-        // Prettify scopes for subtitle
-        final scopeStr = membership.scopes.join(', ');
+            // Prettify scopes for subtitle
+            final scopeStr = membership.scopes.join(', ');
 
-        return ListTile(
-          leading: CircleAvatar(
-            backgroundImage: member.profilePictureUrl != null
-                ? NetworkImage(member.profilePictureUrl!)
-                : null,
-            child: member.profilePictureUrl == null
-                ? Text(name.isNotEmpty ? name[0].toUpperCase() : '?')
-                : null,
-          ),
-          title: Text(name),
-          subtitle: Text('${member.email}\nRoles: $scopeStr'),
-          isThreeLine: true,
-          onTap: () => _showMemberDetails(context, membership),
+            return ListTile(
+              leading: MemberAvatar(member: member),
+              title: Text(name),
+              subtitle: Text('${member.email}\nRoles: $scopeStr'),
+              isThreeLine: true,
+              onTap: () => _showMemberDetails(context, membership),
+            );
+          },
         );
-      },
-    );
       },
     );
   }
@@ -107,7 +99,9 @@ class MemberDirectoryListWidget extends StatelessWidget {
   }
 
   void _showEditScopesDialog(
-      BuildContext context, SectionMembership membership) {
+    BuildContext context,
+    SectionMembership membership,
+  ) {
     final member = membership.member;
     if (member == null) return;
 

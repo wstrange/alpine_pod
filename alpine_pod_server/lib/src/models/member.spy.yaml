@@ -9,7 +9,6 @@ fields:
   email: String
   phoneNumber: String
   membershipStatus: String, default="active"
-  profilePictureUrl: String?
   emergencyContactName: String
   emergencyContactPhone: String
   medicalConditions: String?

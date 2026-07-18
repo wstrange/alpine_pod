@@ -1,10 +1,14 @@
 import 'package:alpine_pod_client/alpine_pod_client.dart';
 import 'package:flutter/material.dart';
+import 'member_avatar.dart';
 
 /// Shows a dialog with the member's details.
 /// [extraActions] can be used to add buttons like "Edit Roles".
-void showMemberDetailsDialog(BuildContext context, Member member,
-    {List<Widget>? extraActions}) {
+void showMemberDetailsDialog(
+  BuildContext context,
+  Member member, {
+  List<Widget>? extraActions,
+}) {
   final name = member.displayName ?? '${member.firstName} ${member.lastName}';
 
   showDialog(
@@ -17,28 +21,32 @@ void showMemberDetailsDialog(BuildContext context, Member member,
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              if (member.profilePictureUrl != null)
-                Center(
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 16.0),
-                    child: CircleAvatar(
-                      radius: 40,
-                      backgroundImage: NetworkImage(member.profilePictureUrl!),
-                    ),
-                  ),
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 16.0),
+                  child: MemberAvatar(member: member, radius: 40),
                 ),
+              ),
               _buildDetailRow(Icons.email, 'Email', member.email),
               _buildDetailRow(Icons.phone, 'Phone', member.phoneNumber),
               if (member.bio != null && member.bio!.isNotEmpty)
                 _buildDetailRow(Icons.info, 'Bio', member.bio!),
               const Divider(),
-              const Text('Emergency Contact',
-                  style: TextStyle(fontWeight: FontWeight.bold)),
+              const Text(
+                'Emergency Contact',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
               const SizedBox(height: 8),
               _buildDetailRow(
-                  Icons.person, 'Name', member.emergencyContactName),
+                Icons.person,
+                'Name',
+                member.emergencyContactName,
+              ),
               _buildDetailRow(
-                  Icons.phone, 'Phone', member.emergencyContactPhone),
+                Icons.phone,
+                'Phone',
+                member.emergencyContactPhone,
+              ),
             ],
           ),
         ),
@@ -68,15 +76,9 @@ Widget _buildDetailRow(IconData icon, String label, String value) {
             children: [
               Text(
                 label,
-                style: const TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey,
-                ),
+                style: const TextStyle(fontSize: 12, color: Colors.grey),
               ),
-              Text(
-                value,
-                style: const TextStyle(fontSize: 14),
-              ),
+              Text(value, style: const TextStyle(fontSize: 14)),
             ],
           ),
         ),

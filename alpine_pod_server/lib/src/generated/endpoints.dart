@@ -1111,6 +1111,25 @@ class Endpoints extends _i1.EndpointDispatch {
                 params['id'],
               ),
         ),
+        'getMemberProfileImageUrl': _i1.MethodConnector(
+          name: 'getMemberProfileImageUrl',
+          params: {
+            'memberId': _i1.ParameterDescription(
+              name: 'memberId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['member'] as _i7.MemberEndpoint)
+                  .getMemberProfileImageUrl(
+                    session,
+                    params['memberId'],
+                  ),
+        ),
         'getMemberSectionMemberships': _i1.MethodConnector(
           name: 'getMemberSectionMemberships',
           params: {

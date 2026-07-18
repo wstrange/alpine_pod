@@ -647,6 +647,13 @@ class EndpointMember extends _i2.EndpointRef {
         {'id': id},
       );
 
+  _i3.Future<String?> getMemberProfileImageUrl(int memberId) =>
+      caller.callServerEndpoint<String?>(
+        'member',
+        'getMemberProfileImageUrl',
+        {'memberId': memberId},
+      );
+
   /// Return a list of all sections the member belongs to.
   _i3.Future<List<_i12.SectionMembership>> getMemberSectionMemberships(
     int memberId,

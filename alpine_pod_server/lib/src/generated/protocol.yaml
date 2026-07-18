@@ -55,6 +55,7 @@ member:
   - addMemberToSection:
   - removeMemberFromSection:
   - getMember:
+  - getMemberProfileImageUrl:
   - getMemberSectionMemberships:
   - updateMember:
   - acceptWaiver:

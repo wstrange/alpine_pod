@@ -29,7 +29,6 @@ abstract class Member implements _i1.SerializableModel {
     required this.email,
     required this.phoneNumber,
     String? membershipStatus,
-    this.profilePictureUrl,
     required this.emergencyContactName,
     required this.emergencyContactPhone,
     this.medicalConditions,
@@ -56,7 +55,6 @@ abstract class Member implements _i1.SerializableModel {
     required String email,
     required String phoneNumber,
     String? membershipStatus,
-    String? profilePictureUrl,
     required String emergencyContactName,
     required String emergencyContactPhone,
     String? medicalConditions,
@@ -82,7 +80,6 @@ abstract class Member implements _i1.SerializableModel {
       email: jsonSerialization['email'] as String,
       phoneNumber: jsonSerialization['phoneNumber'] as String,
       membershipStatus: jsonSerialization['membershipStatus'] as String?,
-      profilePictureUrl: jsonSerialization['profilePictureUrl'] as String?,
       emergencyContactName: jsonSerialization['emergencyContactName'] as String,
       emergencyContactPhone:
           jsonSerialization['emergencyContactPhone'] as String,
@@ -135,8 +132,6 @@ abstract class Member implements _i1.SerializableModel {
 
   String membershipStatus;
 
-  String? profilePictureUrl;
-
   String emergencyContactName;
 
   String emergencyContactPhone;
@@ -169,7 +164,6 @@ abstract class Member implements _i1.SerializableModel {
     String? email,
     String? phoneNumber,
     String? membershipStatus,
-    String? profilePictureUrl,
     String? emergencyContactName,
     String? emergencyContactPhone,
     String? medicalConditions,
@@ -194,7 +188,6 @@ abstract class Member implements _i1.SerializableModel {
       'email': email,
       'phoneNumber': phoneNumber,
       'membershipStatus': membershipStatus,
-      if (profilePictureUrl != null) 'profilePictureUrl': profilePictureUrl,
       'emergencyContactName': emergencyContactName,
       'emergencyContactPhone': emergencyContactPhone,
       if (medicalConditions != null) 'medicalConditions': medicalConditions,
@@ -229,7 +222,6 @@ class _MemberImpl extends Member {
     required String email,
     required String phoneNumber,
     String? membershipStatus,
-    String? profilePictureUrl,
     required String emergencyContactName,
     required String emergencyContactPhone,
     String? medicalConditions,
@@ -250,7 +242,6 @@ class _MemberImpl extends Member {
          email: email,
          phoneNumber: phoneNumber,
          membershipStatus: membershipStatus,
-         profilePictureUrl: profilePictureUrl,
          emergencyContactName: emergencyContactName,
          emergencyContactPhone: emergencyContactPhone,
          medicalConditions: medicalConditions,
@@ -277,7 +268,6 @@ class _MemberImpl extends Member {
     String? email,
     String? phoneNumber,
     String? membershipStatus,
-    Object? profilePictureUrl = _Undefined,
     String? emergencyContactName,
     String? emergencyContactPhone,
     Object? medicalConditions = _Undefined,
@@ -299,9 +289,6 @@ class _MemberImpl extends Member {
       email: email ?? this.email,
       phoneNumber: phoneNumber ?? this.phoneNumber,
       membershipStatus: membershipStatus ?? this.membershipStatus,
-      profilePictureUrl: profilePictureUrl is String?
-          ? profilePictureUrl
-          : this.profilePictureUrl,
       emergencyContactName: emergencyContactName ?? this.emergencyContactName,
       emergencyContactPhone:
           emergencyContactPhone ?? this.emergencyContactPhone,

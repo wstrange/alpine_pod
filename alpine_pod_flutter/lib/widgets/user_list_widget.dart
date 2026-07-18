@@ -1,5 +1,6 @@
 import 'package:alpine_pod_client/alpine_pod_client.dart';
 import 'package:flutter/material.dart';
+import 'member_avatar.dart';
 import 'member_details_dialog.dart';
 
 class UserListWidget extends StatelessWidget {
@@ -31,14 +32,7 @@ class UserListWidget extends StatelessWidget {
             member.displayName ?? '${member.firstName} ${member.lastName}';
 
         return ListTile(
-          leading: CircleAvatar(
-            backgroundImage: member.profilePictureUrl != null
-                ? NetworkImage(member.profilePictureUrl!)
-                : null,
-            child: member.profilePictureUrl == null
-                ? Text(name.isNotEmpty ? name[0].toUpperCase() : '?')
-                : null,
-          ),
+          leading: MemberAvatar(member: member),
           title: Text(name),
           subtitle: Text(member.email),
           onTap: () => showMemberDetailsDialog(context, member),

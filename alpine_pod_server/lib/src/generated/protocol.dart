@@ -785,12 +785,6 @@ class Protocol extends _i1.DatabaseSerializationManager {
           columnDefault: '\'active\'',
         ),
         _i2.ColumnDefinition(
-          name: 'profilePictureUrl',
-          columnType: _i2.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
-        _i2.ColumnDefinition(
           name: 'emergencyContactName',
           columnType: _i2.ColumnType.text,
           isNullable: false,

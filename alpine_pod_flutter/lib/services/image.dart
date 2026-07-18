@@ -47,14 +47,25 @@ Future<Uint8List?> compressImageCrossPlatform(XFile pickedFile) async {
     // Web Strategy: Read bytes from the browser's blob reference directly
     final Uint8List webBytes = await pickedFile.readAsBytes();
 
-    return await FlutterImageCompress.compressWithList(webBytes, quality: 70, format: CompressFormat.jpeg);
+    return await FlutterImageCompress.compressWithList(
+      webBytes,
+      quality: 70,
+      format: CompressFormat.jpeg,
+    );
   } else {
     // Mobile/Desktop Strategy: Compress directly using file path strings
-    return await FlutterImageCompress.compressWithFile(pickedFile.path, quality: 70, format: CompressFormat.jpeg);
+    return await FlutterImageCompress.compressWithFile(
+      pickedFile.path,
+      quality: 70,
+      format: CompressFormat.jpeg,
+    );
   }
 }
 
-Future<void> uploadBytesToServerpod(Client client, Uint8List compressedBytes) async {
+Future<dynamic> uploadBytesToServerpod(
+  Client client,
+  Uint8List compressedBytes,
+) async {
   ByteData byteData = compressedBytes.buffer.asByteData();
-  await client.userProfile.setUserImage(byteData);
+  return await client.userProfile.setUserImage(byteData);
 }
