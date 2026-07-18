@@ -18,7 +18,7 @@ final userProfileInfoSignal = futureSignal(() async {
   return await client.modules.serverpod_auth_core.userProfileInfo.get();
 }, options: AsyncSignalOptions(dependencies: [authInfoStreamSignal], name: 'userProfileInfoSignal'));
 
-final authUserSignal = computed(() {
+final authUserSignal = computed<AuthSuccess?> (() {
   final authInfo = authInfoStreamSignal.value;
   if (authInfo == null) return null;
   return client.auth.authInfo;

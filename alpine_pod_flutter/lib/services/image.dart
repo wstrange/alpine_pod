@@ -1,71 +1,61 @@
-import 'package:alpine_pod_client/alpine_pod_client.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
 
-final ImagePicker _picker = ImagePicker();
+import '../signals.dart';
 
-Future<XFile?> pickImage() async {
-  final XFile? image = await _picker.pickImage(
-    source: ImageSource.gallery, // or ImageSource.camera
-    imageQuality: 85, // Compresses file size upfront
-  );
-  return image;
-}
+/// Picks an image from the gallery, crops it to a square, compresses it,
+/// and uploads it as the user's profile image.
+///
+/// Returns `true` if the image was successfully uploaded, `false` if the
+/// user cancelled at any step (pick or crop).
+/// Throws on compression or upload failure.
+Future<bool> pickCropAndCompressImage(BuildContext context) async {
+  // Capture UI settings before any async gap to avoid using BuildContext after await.
+  final uiSettings = <PlatformUiSettings>[
+    AndroidUiSettings(
+      toolbarTitle: 'Crop Photo',
+      toolbarColor: Colors.deepPurple,
+      toolbarWidgetColor: Colors.white,
+      initAspectRatio: CropAspectRatioPreset.square,
+      lockAspectRatio: true,
+    ),
+    IOSUiSettings(title: 'Crop Photo', aspectRatioLockEnabled: true),
+    WebUiSettings(context: context),
+  ];
 
-Future<CroppedFile?> cropImage(String imagePath) async {
-  return await ImageCropper().cropImage(
-    sourcePath: imagePath,
+  // 1. Pick the image
+  final ImagePicker picker = ImagePicker();
+  final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+
+  if (image == null) return false; // User canceled picking
+
+  // 2. Crop the image
+  final croppedFile = await ImageCropper().cropImage(
+    sourcePath: image.path,
     aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
-    uiSettings: [
-      AndroidUiSettings(
-        toolbarTitle: 'Crop Profile Picture',
-        toolbarColor: Colors.deepPurple,
-        toolbarWidgetColor: Colors.white,
-        initAspectRatio: CropAspectRatioPreset.square,
-        lockAspectRatio: true,
-      ),
-      IOSUiSettings(title: 'Crop Profile Picture'),
-    ],
+    uiSettings: uiSettings,
   );
-}
 
-// Future<File?> compressImage(String filePath, String targetPath) async {
-//   var result = await FlutterImageCompress.compressAndGetFile(
-//     filePath,
-//     targetPath,
-//     quality: 70,
-//     format: CompressFormat.jpeg,
-//   );
-//   return result != null ? File(result.path) : null;
-// }
+  if (croppedFile == null) return false; // User canceled cropping
 
-Future<Uint8List?> compressImageCrossPlatform(XFile pickedFile) async {
+  // 3. Compress the image safely across platforms
+  Uint8List? compressedBytes;
+
   if (kIsWeb) {
-    // Web Strategy: Read bytes from the browser's blob reference directly
-    final Uint8List webBytes = await pickedFile.readAsBytes();
-
-    return await FlutterImageCompress.compressWithList(
-      webBytes,
-      quality: 70,
-      format: CompressFormat.jpeg,
-    );
+    compressedBytes = await FlutterImageCompress.compressWithList(await croppedFile.readAsBytes(), quality: 85);
   } else {
-    // Mobile/Desktop Strategy: Compress directly using file path strings
-    return await FlutterImageCompress.compressWithFile(
-      pickedFile.path,
-      quality: 70,
-      format: CompressFormat.jpeg,
-    );
+    compressedBytes = await FlutterImageCompress.compressWithFile(croppedFile.path, quality: 85);
   }
-}
 
-Future<dynamic> uploadBytesToServerpod(
-  Client client,
-  Uint8List compressedBytes,
-) async {
-  ByteData byteData = compressedBytes.buffer.asByteData();
-  return await client.userProfile.setUserImage(byteData);
+  if (compressedBytes == null) {
+    throw Exception('Could not compress selected image');
+  }
+
+  // 4. Upload to Serverpod
+  final byteData = compressedBytes.buffer.asByteData();
+  await client.userProfile.setUserImage(byteData);
+  return true;
 }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:go_router/go_router.dart';
 import 'package:signals_hooks/signals_hooks.dart';
 import 'package:alpine_pod_client/alpine_pod_client.dart';
@@ -16,10 +15,7 @@ class MemberEditScreen extends HookWidget {
   @override
   Widget build(BuildContext context) {
     // Always call hooks unconditionally to maintain consistent hook order.
-    final targetMemberSignal = useFutureSignal<Member?>(
-      () => client.member.getMember(memberId),
-      keys: [memberId],
-    );
+    final targetMemberSignal = useFutureSignal<Member?>(() => client.member.getMember(memberId), keys: [memberId]);
 
     return Scaffold(
       appBar: AppBar(
@@ -39,10 +35,7 @@ class MemberEditScreen extends HookWidget {
       body: targetMemberSignal.value.map(
         data: (Member? member) => member == null
             ? const Center(child: Text('Member not found'))
-            : _MemberEditForm(
-                member: member,
-                onProfileImageChanged: targetMemberSignal.refresh,
-              ),
+            : _MemberEditForm(member: member, onProfileImageChanged: targetMemberSignal.refresh),
         error: (e, _) => Center(child: Text('Error: $e')),
         loading: () => const Center(child: CircularProgressIndicator()),
       ),
@@ -53,38 +46,21 @@ class MemberEditScreen extends HookWidget {
 class _MemberEditForm extends HookWidget {
   final Member member;
   final VoidCallback onProfileImageChanged;
-  const _MemberEditForm({
-    required this.member,
-    required this.onProfileImageChanged,
-  });
+  const _MemberEditForm({required this.member, required this.onProfileImageChanged});
 
   @override
   Widget build(BuildContext context) {
     final memberId = member.id!;
-    final firstNameController = useTextEditingController(
-      text: member.firstName,
-    );
+    final firstNameController = useTextEditingController(text: member.firstName);
     final lastNameController = useTextEditingController(text: member.lastName);
-    final displayNameController = useTextEditingController(
-      text: member.displayName,
-    );
+    final displayNameController = useTextEditingController(text: member.displayName);
     final bioController = useTextEditingController(text: member.bio);
     final emailController = useTextEditingController(text: member.email);
-    final phoneNumberController = useTextEditingController(
-      text: member.phoneNumber,
-    );
-    final emergencyContactNameController = useTextEditingController(
-      text: member.emergencyContactName,
-    );
-    final emergencyContactPhoneController = useTextEditingController(
-      text: member.emergencyContactPhone,
-    );
-    final medicalConditionsController = useTextEditingController(
-      text: member.medicalConditions,
-    );
-    final certificationsController = useTextEditingController(
-      text: member.certifications,
-    );
+    final phoneNumberController = useTextEditingController(text: member.phoneNumber);
+    final emergencyContactNameController = useTextEditingController(text: member.emergencyContactName);
+    final emergencyContactPhoneController = useTextEditingController(text: member.emergencyContactPhone);
+    final medicalConditionsController = useTextEditingController(text: member.medicalConditions);
+    final certificationsController = useTextEditingController(text: member.certifications);
 
     // Re-initialize controllers if the member changes (e.g. after a refresh or navigation)
     useValueChanged<Member, void>(member, (_, _) {
@@ -123,9 +99,7 @@ class _MemberEditForm extends HookWidget {
         await client.member.updateMember(updatedMember);
 
         if (context.mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(const SnackBar(content: Text('Profile saved')));
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Profile saved')));
           final router = GoRouter.of(context);
           if (router.canPop()) {
             router.pop();
@@ -135,9 +109,7 @@ class _MemberEditForm extends HookWidget {
         }
       } catch (e) {
         if (context.mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text('Failed to save profile: $e')));
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to save profile: $e')));
         }
       }
     }
@@ -161,8 +133,7 @@ class _MemberEditForm extends HookWidget {
 
         final allSectionsValue = allSectionsSignal.value;
         final isGlobalAdmin = isGlobalAdminSignal.value;
-        final canEditProfileImage =
-            authUserSignal.value?.id?.toString() == member.userId.toString();
+        final canEditProfileImage = authUserSignal.value?.authUserId == member.userId;
 
         return Column(
           children: [
@@ -180,9 +151,7 @@ class _MemberEditForm extends HookWidget {
                     const SizedBox(height: 24),
                     TextFormField(
                       controller: firstNameController,
-                      decoration: const InputDecoration(
-                        labelText: 'First Name',
-                      ),
+                      decoration: const InputDecoration(labelText: 'First Name'),
                     ),
                     TextFormField(
                       controller: lastNameController,
@@ -190,9 +159,7 @@ class _MemberEditForm extends HookWidget {
                     ),
                     TextFormField(
                       controller: displayNameController,
-                      decoration: const InputDecoration(
-                        labelText: 'Display Name',
-                      ),
+                      decoration: const InputDecoration(labelText: 'Display Name'),
                     ),
                     TextFormField(
                       controller: bioController,
@@ -204,53 +171,34 @@ class _MemberEditForm extends HookWidget {
                     ),
                     TextFormField(
                       controller: phoneNumberController,
-                      decoration: const InputDecoration(
-                        labelText: 'Phone Number',
-                      ),
+                      decoration: const InputDecoration(labelText: 'Phone Number'),
                     ),
                     TextFormField(
                       controller: emergencyContactNameController,
-                      decoration: const InputDecoration(
-                        labelText: 'Emergency Contact Name',
-                      ),
+                      decoration: const InputDecoration(labelText: 'Emergency Contact Name'),
                     ),
                     TextFormField(
                       controller: emergencyContactPhoneController,
-                      decoration: const InputDecoration(
-                        labelText: 'Emergency Contact Phone',
-                      ),
+                      decoration: const InputDecoration(labelText: 'Emergency Contact Phone'),
                     ),
                     TextFormField(
                       controller: medicalConditionsController,
-                      decoration: const InputDecoration(
-                        labelText: 'Medical Conditions',
-                      ),
+                      decoration: const InputDecoration(labelText: 'Medical Conditions'),
                     ),
                     TextFormField(
                       controller: certificationsController,
-                      decoration: const InputDecoration(
-                        labelText: 'Certifications',
-                      ),
+                      decoration: const InputDecoration(labelText: 'Certifications'),
                     ),
                     const SizedBox(height: 24),
-                    const Text(
-                      'Sections and Roles',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    const Text('Sections and Roles', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                     const SizedBox(height: 8),
                     switch (membershipsValue) {
-                      AsyncError(error: final e) => Text(
-                        'Error loading roles: $e',
-                      ),
+                      AsyncError(error: final e) => Text('Error loading roles: $e'),
                       AsyncLoading() => const CircularProgressIndicator(),
                       AsyncData(value: final memberships) => Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          if (memberships.isEmpty)
-                            const Text('No section memberships found.'),
+                          if (memberships.isEmpty) const Text('No section memberships found.'),
                           ...memberships.map(
                             (m) => UserRoleEditor(
                               memberId: m.memberId,
@@ -262,13 +210,9 @@ class _MemberEditForm extends HookWidget {
                             const SizedBox(height: 16),
                             switch (allSectionsValue) {
                               AsyncData(value: final allSections) => () {
-                                final currentSectionIds = memberships
-                                    .map((m) => m.sectionId)
-                                    .toSet();
+                                final currentSectionIds = memberships.map((m) => m.sectionId).toSet();
                                 final availableSections = allSections
-                                    .where(
-                                      (s) => !currentSectionIds.contains(s.id),
-                                    )
+                                    .where((s) => !currentSectionIds.contains(s.id))
                                     .toList();
 
                                 if (availableSections.isEmpty) {
@@ -277,35 +221,28 @@ class _MemberEditForm extends HookWidget {
 
                                 return ElevatedButton.icon(
                                   onPressed: () async {
-                                    final selectedSection =
-                                        await showDialog<Section>(
-                                          context: context,
-                                          builder: (context) => AlertDialog(
-                                            title: const Text('Add to Section'),
-                                            content: SizedBox(
-                                              width: double.maxFinite,
-                                              child: ListView.builder(
-                                                shrinkWrap: true,
-                                                itemCount:
-                                                    availableSections.length,
-                                                itemBuilder: (context, index) {
-                                                  final s =
-                                                      availableSections[index];
-                                                  return ListTile(
-                                                    title: Text(s.name),
-                                                    onTap: () => Navigator.pop(
-                                                      context,
-                                                      s,
-                                                    ),
-                                                  );
-                                                },
-                                              ),
-                                            ),
+                                    final selectedSection = await showDialog<Section>(
+                                      context: context,
+                                      builder: (context) => AlertDialog(
+                                        title: const Text('Add to Section'),
+                                        content: SizedBox(
+                                          width: double.maxFinite,
+                                          child: ListView.builder(
+                                            shrinkWrap: true,
+                                            itemCount: availableSections.length,
+                                            itemBuilder: (context, index) {
+                                              final s = availableSections[index];
+                                              return ListTile(
+                                                title: Text(s.name),
+                                                onTap: () => Navigator.pop(context, s),
+                                              );
+                                            },
                                           ),
-                                        );
+                                        ),
+                                      ),
+                                    );
 
-                                    if (selectedSection != null &&
-                                        context.mounted) {
+                                    if (selectedSection != null && context.mounted) {
                                       try {
                                         await client.member.addMemberToSection(
                                           SectionMembership(
@@ -319,13 +256,7 @@ class _MemberEditForm extends HookWidget {
                                         if (context.mounted) {
                                           ScaffoldMessenger.of(
                                             context,
-                                          ).showSnackBar(
-                                            SnackBar(
-                                              content: Text(
-                                                'Failed to add to section: $e',
-                                              ),
-                                            ),
-                                          );
+                                          ).showSnackBar(SnackBar(content: Text('Failed to add to section: $e')));
                                         }
                                       }
                                     }
@@ -361,16 +292,8 @@ class _MemberEditForm extends HookWidget {
                     icon: const Icon(Icons.close),
                     label: const Text('Cancel'),
                   ),
-                  ElevatedButton.icon(
-                    onPressed: reset,
-                    icon: const Icon(Icons.refresh),
-                    label: const Text('Reset'),
-                  ),
-                  ElevatedButton.icon(
-                    onPressed: save,
-                    icon: const Icon(Icons.save),
-                    label: const Text('Save'),
-                  ),
+                  ElevatedButton.icon(onPressed: reset, icon: const Icon(Icons.refresh), label: const Text('Reset')),
+                  ElevatedButton.icon(onPressed: save, icon: const Icon(Icons.save), label: const Text('Save')),
                 ],
               ),
             ),
@@ -386,11 +309,7 @@ class _ProfileImageEditor extends StatelessWidget {
   final bool canEdit;
   final VoidCallback onImageChanged;
 
-  const _ProfileImageEditor({
-    required this.member,
-    required this.canEdit,
-    required this.onImageChanged,
-  });
+  const _ProfileImageEditor({required this.member, required this.canEdit, required this.onImageChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -423,10 +342,7 @@ class _ProfileImageEditor extends StatelessWidget {
                   label: const Text('Change Photo'),
                 )
               else
-                Text(
-                  'Only the account owner can change this photo.',
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
+                Text('Only the account owner can change this photo.', style: Theme.of(context).textTheme.bodySmall),
             ],
           ),
         ),
@@ -455,40 +371,11 @@ class _ProfileImageDialogState extends State<_ProfileImageDialog> {
     });
 
     try {
-      final pickedImage = await image_service.pickImage();
-      if (pickedImage == null) {
-        if (mounted) {
-          setState(() {
-            _isUploading = false;
-          });
-        }
-        return;
-      }
-
-      final croppedImage = await image_service.cropImage(pickedImage.path);
-      if (croppedImage == null) {
-        if (mounted) {
-          setState(() {
-            _isUploading = false;
-          });
-        }
-        return;
-      }
-
-      final compressedBytes = await image_service.compressImageCrossPlatform(
-        XFile(croppedImage.path),
-      );
-      if (compressedBytes == null) {
-        throw Exception('Could not compress selected image');
-      }
-
-      await image_service.uploadBytesToServerpod(client, compressedBytes);
+      await image_service.pickCropAndCompressImage(context);
 
       if (mounted) {
         Navigator.of(context).pop(true);
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('Profile photo updated')));
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Profile photo updated')));
       }
     } catch (e) {
       if (mounted) {
@@ -508,27 +395,17 @@ class _ProfileImageDialogState extends State<_ProfileImageDialog> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Choose a photo, crop it square, and upload it to your profile.',
-          ),
+          const Text('Choose a photo, crop it square, and upload it to your profile.'),
           if (_errorMessage != null) ...[
             const SizedBox(height: 12),
-            Text(
-              _errorMessage!,
-              style: TextStyle(color: Theme.of(context).colorScheme.error),
-            ),
+            Text(_errorMessage!, style: TextStyle(color: Theme.of(context).colorScheme.error)),
           ],
-          if (_isUploading) ...[
-            const SizedBox(height: 16),
-            const LinearProgressIndicator(),
-          ],
+          if (_isUploading) ...[const SizedBox(height: 16), const LinearProgressIndicator()],
         ],
       ),
       actions: [
         TextButton(
-          onPressed: _isUploading
-              ? null
-              : () => Navigator.of(context).pop(false),
+          onPressed: _isUploading ? null : () => Navigator.of(context).pop(false),
           child: const Text('Cancel'),
         ),
         FilledButton.icon(
