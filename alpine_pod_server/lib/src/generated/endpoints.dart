@@ -20,24 +20,26 @@ import '../endpoints/member_endpoint.dart' as _i7;
 import '../endpoints/notification_endpoint.dart' as _i8;
 import '../endpoints/registration_endpoint.dart' as _i9;
 import '../endpoints/section_endpoint.dart' as _i10;
-import 'package:alpine_pod_server/src/generated/section.dart' as _i11;
-import 'package:alpine_pod_server/src/generated/event.dart' as _i12;
-import 'package:alpine_pod_server/src/generated/event_manager.dart' as _i13;
-import 'package:alpine_pod_server/src/generated/event_template.dart' as _i14;
-import 'package:alpine_pod_server/src/generated/member.dart' as _i15;
+import '../endpoints/user_profile_endpoint.dart' as _i11;
+import 'package:alpine_pod_server/src/generated/section.dart' as _i12;
+import 'package:alpine_pod_server/src/generated/event.dart' as _i13;
+import 'package:alpine_pod_server/src/generated/event_manager.dart' as _i14;
+import 'package:alpine_pod_server/src/generated/event_template.dart' as _i15;
+import 'package:alpine_pod_server/src/generated/member.dart' as _i16;
 import 'package:alpine_pod_server/src/generated/section_membership.dart'
-    as _i16;
-import 'package:alpine_pod_server/src/generated/user_notification_preference.dart'
     as _i17;
-import 'package:alpine_pod_server/src/generated/registration_status.dart'
+import 'package:alpine_pod_server/src/generated/user_notification_preference.dart'
     as _i18;
-import 'package:alpine_pod_server/src/generated/event_registration.dart'
+import 'package:alpine_pod_server/src/generated/registration_status.dart'
     as _i19;
-import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart'
+import 'package:alpine_pod_server/src/generated/event_registration.dart'
     as _i20;
+import 'dart:typed_data' as _i21;
+import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart'
+    as _i22;
 import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
-    as _i21;
-import 'package:alpine_pod_server/src/generated/future_calls.dart' as _i22;
+    as _i23;
+import 'package:alpine_pod_server/src/generated/future_calls.dart' as _i24;
 export 'future_calls.dart' show ServerpodFutureCallsGetter;
 
 class Endpoints extends _i1.EndpointDispatch {
@@ -114,6 +116,12 @@ class Endpoints extends _i1.EndpointDispatch {
         ..initialize(
           server,
           'section',
+          null,
+        ),
+      'userProfile': _i11.UserProfileEndpoint()
+        ..initialize(
+          server,
+          'userProfile',
           null,
         ),
     };
@@ -439,7 +447,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'section': _i1.ParameterDescription(
               name: 'section',
-              type: _i1.getType<_i11.Section>(),
+              type: _i1.getType<_i12.Section>(),
               nullable: false,
             ),
           },
@@ -476,7 +484,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'section': _i1.ParameterDescription(
               name: 'section',
-              type: _i1.getType<_i11.Section>(),
+              type: _i1.getType<_i12.Section>(),
               nullable: false,
             ),
           },
@@ -618,7 +626,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'event': _i1.ParameterDescription(
               name: 'event',
-              type: _i1.getType<_i12.Event>(),
+              type: _i1.getType<_i13.Event>(),
               nullable: false,
             ),
             'additionalManagerIds': _i1.ParameterDescription(
@@ -666,7 +674,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'event': _i1.ParameterDescription(
               name: 'event',
-              type: _i1.getType<_i12.Event>(),
+              type: _i1.getType<_i13.Event>(),
               nullable: false,
             ),
           },
@@ -763,7 +771,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'eventManager': _i1.ParameterDescription(
               name: 'eventManager',
-              type: _i1.getType<_i13.EventManager>(),
+              type: _i1.getType<_i14.EventManager>(),
               nullable: false,
             ),
           },
@@ -782,7 +790,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'eventManager': _i1.ParameterDescription(
               name: 'eventManager',
-              type: _i1.getType<_i13.EventManager>(),
+              type: _i1.getType<_i14.EventManager>(),
               nullable: false,
             ),
           },
@@ -957,7 +965,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'template': _i1.ParameterDescription(
               name: 'template',
-              type: _i1.getType<_i14.EventTemplate>(),
+              type: _i1.getType<_i15.EventTemplate>(),
               nullable: false,
             ),
           },
@@ -977,7 +985,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'template': _i1.ParameterDescription(
               name: 'template',
-              type: _i1.getType<_i14.EventTemplate>(),
+              type: _i1.getType<_i15.EventTemplate>(),
               nullable: false,
             ),
           },
@@ -1033,7 +1041,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'member': _i1.ParameterDescription(
               name: 'member',
-              type: _i1.getType<_i15.Member>(),
+              type: _i1.getType<_i16.Member>(),
               nullable: false,
             ),
           },
@@ -1052,7 +1060,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'membership': _i1.ParameterDescription(
               name: 'membership',
-              type: _i1.getType<_i16.SectionMembership>(),
+              type: _i1.getType<_i17.SectionMembership>(),
               nullable: false,
             ),
           },
@@ -1071,7 +1079,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'membership': _i1.ParameterDescription(
               name: 'membership',
-              type: _i1.getType<_i16.SectionMembership>(),
+              type: _i1.getType<_i17.SectionMembership>(),
               nullable: false,
             ),
           },
@@ -1127,7 +1135,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'member': _i1.ParameterDescription(
               name: 'member',
-              type: _i1.getType<_i15.Member>(),
+              type: _i1.getType<_i16.Member>(),
               nullable: false,
             ),
           },
@@ -1290,7 +1298,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'member': _i1.ParameterDescription(
               name: 'member',
-              type: _i1.getType<_i15.Member>(),
+              type: _i1.getType<_i16.Member>(),
               nullable: false,
             ),
             'sectionIds': _i1.ParameterDescription(
@@ -1385,7 +1393,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'preference': _i1.ParameterDescription(
               name: 'preference',
-              type: _i1.getType<_i17.UserNotificationPreference>(),
+              type: _i1.getType<_i18.UserNotificationPreference>(),
               nullable: false,
             ),
           },
@@ -1440,7 +1448,7 @@ class Endpoints extends _i1.EndpointDispatch {
             ),
             'newStatus': _i1.ParameterDescription(
               name: 'newStatus',
-              type: _i1.getType<_i18.RegistrationStatus>(),
+              type: _i1.getType<_i19.RegistrationStatus>(),
               nullable: false,
             ),
             'notes': _i1.ParameterDescription(
@@ -1466,7 +1474,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'registration': _i1.ParameterDescription(
               name: 'registration',
-              type: _i1.getType<_i19.EventRegistration>(),
+              type: _i1.getType<_i20.EventRegistration>(),
               nullable: false,
             ),
           },
@@ -1565,14 +1573,97 @@ class Endpoints extends _i1.EndpointDispatch {
         ),
       },
     );
-    modules['serverpod_auth_idp'] = _i20.Endpoints()
+    connectors['userProfile'] = _i1.EndpointConnector(
+      name: 'userProfile',
+      endpoint: endpoints['userProfile']!,
+      methodConnectors: {
+        'removeUserImage': _i1.MethodConnector(
+          name: 'removeUserImage',
+          params: {},
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['userProfile'] as _i11.UserProfileEndpoint)
+                  .removeUserImage(session),
+        ),
+        'setUserImage': _i1.MethodConnector(
+          name: 'setUserImage',
+          params: {
+            'image': _i1.ParameterDescription(
+              name: 'image',
+              type: _i1.getType<_i21.ByteData>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['userProfile'] as _i11.UserProfileEndpoint)
+                  .setUserImage(
+                    session,
+                    params['image'],
+                  ),
+        ),
+        'changeUserName': _i1.MethodConnector(
+          name: 'changeUserName',
+          params: {
+            'userName': _i1.ParameterDescription(
+              name: 'userName',
+              type: _i1.getType<String?>(),
+              nullable: true,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['userProfile'] as _i11.UserProfileEndpoint)
+                  .changeUserName(
+                    session,
+                    params['userName'],
+                  ),
+        ),
+        'changeFullName': _i1.MethodConnector(
+          name: 'changeFullName',
+          params: {
+            'fullName': _i1.ParameterDescription(
+              name: 'fullName',
+              type: _i1.getType<String?>(),
+              nullable: true,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['userProfile'] as _i11.UserProfileEndpoint)
+                  .changeFullName(
+                    session,
+                    params['fullName'],
+                  ),
+        ),
+        'get': _i1.MethodConnector(
+          name: 'get',
+          params: {},
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['userProfile'] as _i11.UserProfileEndpoint)
+                  .get(session),
+        ),
+      },
+    );
+    modules['serverpod_auth_idp'] = _i22.Endpoints()
       ..initializeEndpoints(server);
-    modules['serverpod_auth_core'] = _i21.Endpoints()
+    modules['serverpod_auth_core'] = _i23.Endpoints()
       ..initializeEndpoints(server);
   }
 
   @override
   _i1.FutureCallDispatch? get futureCalls {
-    return _i22.FutureCalls();
+    return _i24.FutureCalls();
   }
 }

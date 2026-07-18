@@ -30,8 +30,9 @@ import 'package:alpine_pod_client/src/protocol/user_notification_preference.dart
     as _i14;
 import 'package:alpine_pod_client/src/protocol/registration_status.dart'
     as _i15;
-import 'package:http/http.dart' as _i16;
-import 'protocol.dart' as _i17;
+import 'dart:typed_data' as _i16;
+import 'package:http/http.dart' as _i17;
+import 'protocol.dart' as _i18;
 
 /// {@category Endpoint}
 class EndpointEmailIdp extends _i1.EndpointEmailIdpBase {
@@ -898,6 +899,62 @@ class EndpointSection extends _i2.EndpointRef {
       );
 }
 
+/// Endpoint to view and edit the signed-in user's profile.
+/// {@category Endpoint}
+class EndpointUserProfile extends _i4.EndpointUserProfileEditBase {
+  EndpointUserProfile(_i2.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'userProfile';
+
+  /// Removes the user's uploaded image, setting it to null.
+  ///
+  /// The client should handle displaying a placeholder for users without images.
+  @override
+  _i3.Future<_i4.UserProfileModel> removeUserImage() =>
+      caller.callServerEndpoint<_i4.UserProfileModel>(
+        'userProfile',
+        'removeUserImage',
+        {},
+      );
+
+  /// Sets a new user image for the signed in user.
+  @override
+  _i3.Future<_i4.UserProfileModel> setUserImage(_i16.ByteData image) =>
+      caller.callServerEndpoint<_i4.UserProfileModel>(
+        'userProfile',
+        'setUserImage',
+        {'image': image},
+      );
+
+  /// Changes the name of a user.
+  @override
+  _i3.Future<_i4.UserProfileModel> changeUserName(String? userName) =>
+      caller.callServerEndpoint<_i4.UserProfileModel>(
+        'userProfile',
+        'changeUserName',
+        {'userName': userName},
+      );
+
+  /// Changes the full name of a user.
+  @override
+  _i3.Future<_i4.UserProfileModel> changeFullName(String? fullName) =>
+      caller.callServerEndpoint<_i4.UserProfileModel>(
+        'userProfile',
+        'changeFullName',
+        {'fullName': fullName},
+      );
+
+  /// Returns the user profile of the current user.
+  @override
+  _i3.Future<_i4.UserProfileModel> get() =>
+      caller.callServerEndpoint<_i4.UserProfileModel>(
+        'userProfile',
+        'get',
+        {},
+      );
+}
+
 class Modules {
   Modules(Client client) {
     serverpod_auth_idp = _i1.Caller(client);
@@ -927,10 +984,10 @@ class Client extends _i2.ServerpodClientShared {
     onFailedCall,
     Function(_i2.MethodCallContext)? onSucceededCall,
     bool? disconnectStreamsOnLostInternetConnection,
-    _i16.Client? httpClientOverride,
+    _i17.Client? httpClientOverride,
   }) : super(
          host,
-         _i17.Protocol(),
+         _i18.Protocol(),
          securityContext: securityContext,
          streamingConnectionTimeout: streamingConnectionTimeout,
          connectionTimeout: connectionTimeout,
@@ -952,6 +1009,7 @@ class Client extends _i2.ServerpodClientShared {
     notification = EndpointNotification(this);
     registration = EndpointRegistration(this);
     section = EndpointSection(this);
+    userProfile = EndpointUserProfile(this);
     modules = Modules(this);
   }
 
@@ -979,6 +1037,8 @@ class Client extends _i2.ServerpodClientShared {
 
   late final EndpointSection section;
 
+  late final EndpointUserProfile userProfile;
+
   late final Modules modules;
 
   @override
@@ -995,6 +1055,7 @@ class Client extends _i2.ServerpodClientShared {
     'notification': notification,
     'registration': registration,
     'section': section,
+    'userProfile': userProfile,
   };
 
   @override

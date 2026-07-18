@@ -60,3 +60,8 @@ Look for redundant endppoint code
 RBAC testing
 Flutter client should show error if the server is not available
 Add image for profile.
+
+
+Sync notes:
+19000 members. Say 1K per member of profile data to sync. Approx 20 MB.
+Events - probably want to be selective on which events to cache.

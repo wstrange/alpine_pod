@@ -408,4 +408,40 @@ class MemberEndpoint extends Endpoint {
       return createdMember;
     });
   }
+
+  // // Step A: Generate a secure destination URL for the client
+  // Future<String?> getProfileUploadUrl(Session session, String filename) async {
+  //   // Verifies the user is logged in
+
+  //   var userId = session.authenticated?.authUserId;
+  //   if (userId == null) return null;
+
+  //   // "public" is the default public storage pool configured in Serverpod
+  //   var uploadDescription = await session.storage.createDirectUploadDescription(
+  //     storageId: 'public',
+  //     path: 'profiles/$userId/$filename',
+  //   );
+
+  //   return uploadDescription?.url;
+  // }
+
+  // // Step B: Verify the upload completed and attach the public URL to the user database
+  // Future<bool> verifyAndSetProfilePicture(Session session, String filename) async {
+  //   var userId = await session.auth.authenticatedUserId;
+  //   if (userId == null) return false;
+
+  //   var path = 'profiles/$userId/$filename';
+  //   var fileExists = await session.storage.fileExists(storageId: 'public', path: path);
+
+  //   if (fileExists) {
+  //     // Get the absolute public URL of the file
+  //     var publicUrl = await session.storage.getPublicUrl(storageId: 'public', path: path);
+
+  //     // TODO: Update your User record in the database with the publicUrl
+  //     // await User.db.updateRow(session, user..profilePic = publicUrl);
+
+  //     return true;
+  //   }
+  //   return false;
+  // }
 }

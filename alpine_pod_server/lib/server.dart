@@ -65,6 +65,19 @@ void run(List<String> args) async {
         ),
       ),
     ],
+    userProfileConfig: UserProfileConfig(
+      userImageSize: 512,
+      userImageFormat: UserProfileImageType.png,
+      userImageQuality: 85,
+      userImageGenerator: defaultUserImageGenerator,
+      onAfterUserProfileCreated: (session, profile, {required transaction}) async {
+        await AuthServices.instance.userProfiles.setDefaultUserImage(
+          session,
+          profile.authUserId,
+          transaction: transaction,
+        );
+      },
+    ),
   );
 
   // Setup a default page at the web root.
@@ -79,8 +92,8 @@ void run(List<String> args) async {
       .notificationScheduler
       .handleCall();
 
-  print(pod.config.database?.password);
-  print(pod.config.database?.port);
+  // print(pod.config.database?.password);
+  // print(pod.config.database?.port);
 }
 
 void _sendRegistrationCode(

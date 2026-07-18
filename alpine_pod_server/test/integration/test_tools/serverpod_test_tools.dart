@@ -33,7 +33,8 @@ import 'package:alpine_pod_server/src/generated/user_notification_preference.dar
     as _i15;
 import 'package:alpine_pod_server/src/generated/registration_status.dart'
     as _i16;
-import 'package:alpine_pod_server/src/generated/future_calls.dart' as _i17;
+import 'dart:typed_data' as _i17;
+import 'package:alpine_pod_server/src/generated/future_calls.dart' as _i18;
 import 'package:alpine_pod_server/src/generated/protocol.dart';
 import 'package:alpine_pod_server/src/generated/endpoints.dart';
 export 'package:serverpod_test/serverpod_test_public_exports.dart';
@@ -182,6 +183,8 @@ class TestEndpoints {
   late final _RegistrationEndpoint registration;
 
   late final _SectionEndpoint section;
+
+  late final _UserProfileEndpoint userProfile;
 }
 
 class _InternalTestEndpoints extends TestEndpoints
@@ -236,6 +239,10 @@ class _InternalTestEndpoints extends TestEndpoints
       serializationManager,
     );
     section = _SectionEndpoint(
+      endpoints,
+      serializationManager,
+    );
+    userProfile = _UserProfileEndpoint(
       endpoints,
       serializationManager,
     );
@@ -2622,12 +2629,176 @@ class _SectionEndpoint {
   }
 }
 
+class _UserProfileEndpoint {
+  _UserProfileEndpoint(
+    this._endpointDispatch,
+    this._serializationManager,
+  );
+
+  final _i2.EndpointDispatch _endpointDispatch;
+
+  final _i2.SerializationManager _serializationManager;
+
+  _i4.Future<_i5.UserProfileModel> removeUserImage(
+    _i1.TestSessionBuilder sessionBuilder,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'userProfile',
+            method: 'removeUserImage',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'userProfile',
+          methodName: 'removeUserImage',
+          parameters: _i1.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i4.Future<_i5.UserProfileModel>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i4.Future<_i5.UserProfileModel> setUserImage(
+    _i1.TestSessionBuilder sessionBuilder,
+    _i17.ByteData image,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'userProfile',
+            method: 'setUserImage',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'userProfile',
+          methodName: 'setUserImage',
+          parameters: _i1.testObjectToJson({'image': image}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i4.Future<_i5.UserProfileModel>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i4.Future<_i5.UserProfileModel> changeUserName(
+    _i1.TestSessionBuilder sessionBuilder,
+    String? userName,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'userProfile',
+            method: 'changeUserName',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'userProfile',
+          methodName: 'changeUserName',
+          parameters: _i1.testObjectToJson({'userName': userName}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i4.Future<_i5.UserProfileModel>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i4.Future<_i5.UserProfileModel> changeFullName(
+    _i1.TestSessionBuilder sessionBuilder,
+    String? fullName,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'userProfile',
+            method: 'changeFullName',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'userProfile',
+          methodName: 'changeFullName',
+          parameters: _i1.testObjectToJson({'fullName': fullName}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i4.Future<_i5.UserProfileModel>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i4.Future<_i5.UserProfileModel> get(
+    _i1.TestSessionBuilder sessionBuilder,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'userProfile',
+            method: 'get',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'userProfile',
+          methodName: 'get',
+          parameters: _i1.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i4.Future<_i5.UserProfileModel>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+}
+
 class _NotificationSchedulerFutureCall {
   Future<void> handleCall(_i1.TestSessionBuilder sessionBuilder) async {
     var _localUniqueSession = (sessionBuilder as _i1.InternalTestSessionBuilder)
         .internalBuild();
     try {
-      await _i17.NotificationSchedulerHandleCallFutureCall().invoke(
+      await _i18.NotificationSchedulerHandleCallFutureCall().invoke(
         _localUniqueSession,
         null,
       );
