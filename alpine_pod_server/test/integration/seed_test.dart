@@ -38,6 +38,19 @@ void main() {
             algorithm: JwtAlgorithm.hmacSha512(SecretKey(Serverpod.instance.getPassword('jwtHmacSha512PrivateKey')!)),
           ),
         ],
+        userProfileConfig: UserProfileConfig(
+          userImageSize: 512,
+          userImageFormat: UserProfileImageType.png,
+          userImageQuality: 85,
+          userImageGenerator: defaultUserImageGenerator,
+          onAfterUserProfileCreated: (session, profile, {required transaction}) async {
+            await AuthServices.instance.userProfiles.setDefaultUserImage(
+              session,
+              profile.authUserId,
+              transaction: transaction,
+            );
+          },
+        ),
       );
 
       final emailIdp = AuthServices.instance.emailIdp;
