@@ -137,7 +137,9 @@ class NotificationScreen extends HookWidget {
                                 onPressed: () async {
                                   final url = un.notification?.actionUrl;
                                   if (url != null && context.mounted) {
-                                    context.go(url);
+                                    // If we use push here the navigation back
+                                    // will return to this notification screen
+                                    context.push(url);
                                   }
                                 },
                               )

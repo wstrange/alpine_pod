@@ -32,7 +32,13 @@ Future<bool> pickCropAndCompressImage(BuildContext context) async {
       // zoomable: true,
       viewwMode: WebViewMode.mode_1,
       customDialogBuilder: (cropper, initCropper, crop, rotate, scale) {
-        return WebCropperDialog(cropper: cropper, initCropper: initCropper, crop: crop, rotate: rotate, scale: scale);
+        return WebCropperDialog(
+          cropper: cropper,
+          initCropper: initCropper,
+          crop: crop,
+          rotate: rotate,
+          scale: scale,
+        );
       },
 
       // customDialogBuilder:
@@ -59,9 +65,15 @@ Future<bool> pickCropAndCompressImage(BuildContext context) async {
   Uint8List? compressedBytes;
 
   if (kIsWeb) {
-    compressedBytes = await FlutterImageCompress.compressWithList(await croppedFile.readAsBytes(), quality: 85);
+    compressedBytes = await FlutterImageCompress.compressWithList(
+      await croppedFile.readAsBytes(),
+      quality: 85,
+    );
   } else {
-    compressedBytes = await FlutterImageCompress.compressWithFile(croppedFile.path, quality: 85);
+    compressedBytes = await FlutterImageCompress.compressWithFile(
+      croppedFile.path,
+      quality: 85,
+    );
   }
 
   if (compressedBytes == null) {
@@ -114,19 +126,28 @@ class _WebCropperDialogState extends State<WebCropperDialog> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            const Text("Adjust Crop Area", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const Text(
+              "Adjust Crop Area",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 12),
 
             // Contains the raw HTML Cropper layer safely wrapped inside Flutter
             Expanded(
-              child: ClipRRect(borderRadius: BorderRadius.circular(8), child: widget.cropper),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: widget.cropper,
+              ),
             ),
 
             const SizedBox(height: 12),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text("Cancel")),
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text("Cancel"),
+                ),
                 const SizedBox(width: 8),
                 ElevatedButton(
                   onPressed: () async {

@@ -69,12 +69,36 @@ final router = GoRouter(
         return const EventEditScreen();
       },
     ),
-    GoRoute(path: '/', name: 'home', builder: (context, state) => const HomeScreen()),
-    GoRoute(path: '/admin', name: 'admin', builder: (context, state) => const AdminHomeScreen()),
-    GoRoute(path: '/directory', name: 'directory', builder: (context, state) => const MemberDirectoryScreen()),
-    GoRoute(path: '/registration', name: 'registration', builder: (context, state) => const RegistrationScreen()),
-    GoRoute(path: '/notifications', name: 'notifications', builder: (context, state) => const NotificationScreen()),
-    GoRoute(path: '/waiver', name: 'waiver', builder: (context, state) => const WaiverScreen()),
+    GoRoute(
+      path: '/',
+      name: 'home',
+      builder: (context, state) => const HomeScreen(),
+    ),
+    GoRoute(
+      path: '/admin',
+      name: 'admin',
+      builder: (context, state) => const AdminHomeScreen(),
+    ),
+    GoRoute(
+      path: '/directory',
+      name: 'directory',
+      builder: (context, state) => const MemberDirectoryScreen(),
+    ),
+    GoRoute(
+      path: '/registration',
+      name: 'registration',
+      builder: (context, state) => const RegistrationScreen(),
+    ),
+    GoRoute(
+      path: '/notifications',
+      name: 'notifications',
+      builder: (context, state) => const NotificationScreen(),
+    ),
+    GoRoute(
+      path: '/waiver',
+      name: 'waiver',
+      builder: (context, state) => const WaiverScreen(),
+    ),
     GoRoute(
       path: '/member-edit/:id',
       name: 'member-edit',
@@ -107,7 +131,8 @@ final router = GoRouter(
     // isGlobalAdminSignal because the signal chain may not have propagated
     // by the time this redirect fires (both listen to the same listenable).
     final scopes = sessionManager.authInfo?.scopeNames ?? {};
-    final isAdmin = scopes.contains('serverpod.admin') || scopes.contains('admin');
+    final isAdmin =
+        scopes.contains('serverpod.admin') || scopes.contains('admin');
 
     if (isAdmin) {
       resetRouterBootstrap(); // Admins don't need the member bootstrap path
@@ -118,7 +143,11 @@ final router = GoRouter(
     // Routes that are intermediate bootstrap destinations.
     // If the user is already on one of these, let them stay — don't
     // re-run bootstrap which would return the same (now stale) result.
-    const bootstrapDestinations = {'/waiver', '/registration', '/section-selection'};
+    const bootstrapDestinations = {
+      '/waiver',
+      '/registration',
+      '/section-selection',
+    };
     if (bootstrapDestinations.contains(currentLocation)) {
       return null;
     }
@@ -149,7 +178,9 @@ Future<String?> _performBootstrap() async {
     currentMemberSignal.value = member;
 
     if (member == null || sections.isEmpty) {
-      debugPrint('Router: Profile missing or no sections. Routing to registration.');
+      debugPrint(
+        'Router: Profile missing or no sections. Routing to registration.',
+      );
       return '/registration';
     }
 
@@ -166,7 +197,9 @@ Future<String?> _performBootstrap() async {
       debugPrint('Router: Multiple sections found. Routing to selection.');
       return '/section-selection';
     } else {
-      debugPrint('Router: Single section found. Assigning signal and routing to /');
+      debugPrint(
+        'Router: Single section found. Assigning signal and routing to /',
+      );
       sectionSignal.value = sections[0].section;
       return '/';
     }

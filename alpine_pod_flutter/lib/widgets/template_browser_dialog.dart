@@ -9,7 +9,9 @@ class TemplateBrowserDialog extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final templatesFuture = useMemoized(() => client.eventTemplate.listTemplates());
+    final templatesFuture = useMemoized(
+      () => client.eventTemplate.listTemplates(),
+    );
     final templatesSnapshot = useFuture(templatesFuture);
     final selectedTemplate = useState<EventTemplate?>(null);
 
@@ -18,13 +20,122 @@ class TemplateBrowserDialog extends HookWidget {
         ?.where((t) => t.language.toLowerCase() == localeLanguage.toLowerCase())
         .toList();
 
+    final size = MediaQuery.of(context).size;
+    final isNarrow = size.width < 600;
+    final double dialogWidth = isNarrow ? size.width * 0.95 : 800;
+    final double dialogHeight = isNarrow ? size.height * 0.85 : 600;
+
+    Widget buildTemplateList(
+      List<EventTemplate>? templates,
+      ValueNotifier<EventTemplate?> selectedTemplateNotifier,
+    ) {
+      return ListView.separated(
+        itemCount: templates?.length ?? 0,
+        separatorBuilder: (context, index) =>
+            Divider(color: Colors.white.withAlpha(10), height: 1),
+        itemBuilder: (context, index) {
+          final template = templates![index];
+          final isSelected = selectedTemplateNotifier.value?.id == template.id;
+
+          return ListTile(
+            title: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    template.name,
+                    style: TextStyle(
+                      color: isSelected ? Colors.white : Colors.white70,
+                      fontWeight: isSelected
+                          ? FontWeight.bold
+                          : FontWeight.normal,
+                    ),
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 6,
+                    vertical: 2,
+                  ),
+                  decoration: BoxDecoration(
+                    color: isSelected
+                        ? Colors.white.withAlpha(40)
+                        : Colors.white.withAlpha(20),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    template.language.toUpperCase(),
+                    style: const TextStyle(
+                      color: Colors.white70,
+                      fontSize: 9,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            subtitle: Text(
+              template.description,
+              style: TextStyle(
+                color: isSelected ? Colors.white54 : Colors.white38,
+                fontSize: 12,
+              ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+            tileColor: isSelected
+                ? const Color(0xFF6C63FF).withAlpha(30)
+                : null,
+            selectedTileColor: const Color(0xFF6C63FF).withAlpha(50),
+            selected: isSelected,
+            onTap: () {
+              selectedTemplateNotifier.value = template;
+            },
+          );
+        },
+      );
+    }
+
+    Widget buildPreview(EventTemplate template) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            'Preview: ${template.name}',
+            style: const TextStyle(
+              color: Colors.white54,
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Expanded(
+            child: SingleChildScrollView(
+              child: MarkdownBody(
+                data: template.content,
+                styleSheet: MarkdownStyleSheet(
+                  p: const TextStyle(color: Colors.white70),
+                  h1: const TextStyle(color: Colors.white),
+                  h2: const TextStyle(color: Colors.white),
+                  h3: const TextStyle(color: Colors.white),
+                  listBullet: const TextStyle(color: Colors.white70),
+                  blockSpacing:
+                      4.0, // Reduces space between list items and paragraphs
+                ),
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+
     return Dialog(
       backgroundColor: const Color(0xFF1A1D27),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Container(
-        width: 800,
-        height: 600,
-        padding: const EdgeInsets.all(24),
+        width: dialogWidth,
+        height: dialogHeight,
+        padding: EdgeInsets.all(isNarrow ? 16 : 24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -34,7 +145,11 @@ class TemplateBrowserDialog extends HookWidget {
               children: [
                 const Text(
                   'Markdown Templates',
-                  style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 IconButton(
                   icon: const Icon(Icons.close, color: Colors.white54),
@@ -42,15 +157,60 @@ class TemplateBrowserDialog extends HookWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 24),
+            SizedBox(height: isNarrow ? 12 : 24),
 
             // Body
             Expanded(
-              child: templatesSnapshot.connectionState == ConnectionState.waiting
+              child:
+                  templatesSnapshot.connectionState == ConnectionState.waiting
                   ? const Center(child: CircularProgressIndicator())
                   : templatesSnapshot.hasError
                   ? Center(
-                      child: Text('Error loading templates', style: TextStyle(color: Colors.red[300])),
+                      child: Text(
+                        'Error loading templates',
+                        style: TextStyle(color: Colors.red[300]),
+                      ),
+                    )
+                  : isNarrow
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        // Top side: List of templates
+                        Expanded(
+                          flex: selectedTemplate.value == null ? 2 : 1,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF0F1117),
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: Colors.white.withAlpha(20),
+                              ),
+                            ),
+                            child: buildTemplateList(
+                              filteredTemplates,
+                              selectedTemplate,
+                            ),
+                          ),
+                        ),
+                        if (selectedTemplate.value != null) ...[
+                          const SizedBox(height: 12),
+                          // Bottom side: Preview
+                          Expanded(
+                            flex: 1,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF0F1117),
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: Colors.white.withAlpha(20),
+                                ),
+                              ),
+                              padding: const EdgeInsets.all(12),
+                              child: buildPreview(selectedTemplate.value!),
+                            ),
+                          ),
+                        ],
+                      ],
                     )
                   : Row(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -62,59 +222,13 @@ class TemplateBrowserDialog extends HookWidget {
                             decoration: BoxDecoration(
                               color: const Color(0xFF0F1117),
                               borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: Colors.white.withAlpha(20)),
+                              border: Border.all(
+                                color: Colors.white.withAlpha(20),
+                              ),
                             ),
-                            child: ListView.separated(
-                              itemCount: filteredTemplates?.length ?? 0,
-                              separatorBuilder: (context, index) =>
-                                  Divider(color: Colors.white.withAlpha(10), height: 1),
-                              itemBuilder: (context, index) {
-                                final template = filteredTemplates![index];
-                                final isSelected = selectedTemplate.value?.id == template.id;
-
-                                return ListTile(
-                                  title: Row(
-                                    children: [
-                                      Expanded(
-                                        child: Text(
-                                          template.name,
-                                          style: TextStyle(
-                                            color: isSelected ? Colors.white : Colors.white70,
-                                            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                                          ),
-                                        ),
-                                      ),
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                        decoration: BoxDecoration(
-                                          color: isSelected ? Colors.white.withAlpha(40) : Colors.white.withAlpha(20),
-                                          borderRadius: BorderRadius.circular(8),
-                                        ),
-                                        child: Text(
-                                          template.language.toUpperCase(),
-                                          style: const TextStyle(
-                                            color: Colors.white70,
-                                            fontSize: 9,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  subtitle: Text(
-                                    template.description,
-                                    style: TextStyle(color: isSelected ? Colors.white54 : Colors.white38, fontSize: 12),
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  tileColor: isSelected ? const Color(0xFF6C63FF).withAlpha(30) : null,
-                                  selectedTileColor: const Color(0xFF6C63FF).withAlpha(50),
-                                  selected: isSelected,
-                                  onTap: () {
-                                    selectedTemplate.value = template;
-                                  },
-                                );
-                              },
+                            child: buildTemplateList(
+                              filteredTemplates,
+                              selectedTemplate,
                             ),
                           ),
                         ),
@@ -126,7 +240,9 @@ class TemplateBrowserDialog extends HookWidget {
                             decoration: BoxDecoration(
                               color: const Color(0xFF0F1117),
                               borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: Colors.white.withAlpha(20)),
+                              border: Border.all(
+                                color: Colors.white.withAlpha(20),
+                              ),
                             ),
                             padding: const EdgeInsets.all(16),
                             child: selectedTemplate.value == null
@@ -136,36 +252,7 @@ class TemplateBrowserDialog extends HookWidget {
                                       style: TextStyle(color: Colors.white38),
                                     ),
                                   )
-                                : Column(
-                                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                                    children: [
-                                      Text(
-                                        'Preview: ${selectedTemplate.value!.name}',
-                                        style: const TextStyle(
-                                          color: Colors.white54,
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.bold,
-                                          letterSpacing: 1,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 12),
-                                      Expanded(
-                                        child: SingleChildScrollView(
-                                          child: MarkdownBody(
-                                            data: selectedTemplate.value!.content,
-                                            styleSheet: MarkdownStyleSheet(
-                                              p: const TextStyle(color: Colors.white70),
-                                              h1: const TextStyle(color: Colors.white),
-                                              h2: const TextStyle(color: Colors.white),
-                                              h3: const TextStyle(color: Colors.white),
-                                              listBullet: const TextStyle(color: Colors.white70),
-                                              blockSpacing: 4.0, // Reduces space between list items and paragraphs
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                : buildPreview(selectedTemplate.value!),
                           ),
                         ),
                       ],
@@ -173,25 +260,32 @@ class TemplateBrowserDialog extends HookWidget {
             ),
 
             // Footer
-            const SizedBox(height: 24),
+            SizedBox(height: isNarrow ? 12 : 24),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  child: const Text('Cancel', style: TextStyle(color: Colors.white54)),
+                  child: const Text(
+                    'Cancel',
+                    style: TextStyle(color: Colors.white54),
+                  ),
                 ),
                 const SizedBox(width: 12),
                 FilledButton.icon(
                   style: FilledButton.styleFrom(
                     backgroundColor: const Color(0xFF6C63FF),
-                    disabledBackgroundColor: const Color(0xFF6C63FF).withAlpha(100),
+                    disabledBackgroundColor: const Color(
+                      0xFF6C63FF,
+                    ).withAlpha(100),
                   ),
                   onPressed: selectedTemplate.value == null
                       ? null
                       : () {
                           // Return the selected template content to the caller
-                          Navigator.of(context).pop(selectedTemplate.value!.content);
+                          Navigator.of(
+                            context,
+                          ).pop(selectedTemplate.value!.content);
                         },
                   icon: const Icon(Icons.add_box),
                   label: const Text('Insert Template'),

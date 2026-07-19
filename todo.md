@@ -65,3 +65,11 @@ Add image for profile.
 Sync notes:
 19000 members. Say 1K per member of profile data to sync. Approx 20 MB.
 Events - probably want to be selective on which events to cache.
+
+
+getMemberProfileImageUrl is expensive. Should we return it as part of the member profile? Make it a non DB field, but get it from the user object.  Could also cache it on the client.  Maybe the client should have a member cache.
+
+Events and user profiles. Cache??
+
+Bug:  back gesture on android on event view exits the app. Probably because the navigation stack. Event view needs to be pushed, not go to
+

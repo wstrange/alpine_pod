@@ -14,11 +14,17 @@ final log = Logger('signals');
 final userSignal = signal<AuthUser?>(null);
 final authInfoStreamSignal = client.auth.authInfoListenable.toSignal();
 
-final userProfileInfoSignal = futureSignal(() async {
-  return await client.modules.serverpod_auth_core.userProfileInfo.get();
-}, options: AsyncSignalOptions(dependencies: [authInfoStreamSignal], name: 'userProfileInfoSignal'));
+final userProfileInfoSignal = futureSignal(
+  () async {
+    return await client.modules.serverpod_auth_core.userProfileInfo.get();
+  },
+  options: AsyncSignalOptions(
+    dependencies: [authInfoStreamSignal],
+    name: 'userProfileInfoSignal',
+  ),
+);
 
-final authUserSignal = computed<AuthSuccess?> (() {
+final authUserSignal = computed<AuthSuccess?>(() {
   final authInfo = authInfoStreamSignal.value;
   if (authInfo == null) return null;
   return client.auth.authInfo;
@@ -29,7 +35,10 @@ final allSectionsSignal = futureSignal(() async {
   return await client.section.listSections();
 });
 
-final currentMemberSignal = signal<Member?>(null, options: SignalOptions(name: 'currentMemberSignal'));
+final currentMemberSignal = signal<Member?>(
+  null,
+  options: SignalOptions(name: 'currentMemberSignal'),
+);
 
 // Get the member record for the current user
 // final currentMemberAsyncSignal = futureSignal<Member?>(() async {
@@ -45,24 +54,36 @@ final allMySectionMembershipsSignal = futureSignal<List<SectionMembership>>(
   () async {
     final member = currentMemberSignal.value;
     if (member == null) {
-      print('allMySectionMembershipsSignal: member is null, returning empty list');
+      print(
+        'allMySectionMembershipsSignal: member is null, returning empty list',
+      );
       return <SectionMembership>[];
     }
     final x = await client.member.getAllMySectionMemberships();
     return x;
   },
-  options: AsyncSignalOptions(dependencies: [currentMemberSignal], name: 'allMySectionMembershipsSignal', lazy: false),
+  options: AsyncSignalOptions(
+    dependencies: [currentMemberSignal],
+    name: 'allMySectionMembershipsSignal',
+    lazy: false,
+  ),
 );
 
 // The currently selected section when the user logged in.
 final sectionSignal = signal<Section?>(null);
 
 // Get the SectionMemberShip for the current Section
-final mySectionMembershipSignal = futureSignal(() async {
-  final s = sectionSignal.value;
-  if (s == null) return null;
-  return await client.member.getMySectionMembership(s.id!);
-}, options: AsyncSignalOptions(dependencies: [sectionSignal], name: 'mySectionMembershipSignal'));
+final mySectionMembershipSignal = futureSignal(
+  () async {
+    final s = sectionSignal.value;
+    if (s == null) return null;
+    return await client.member.getMySectionMembership(s.id!);
+  },
+  options: AsyncSignalOptions(
+    dependencies: [sectionSignal],
+    name: 'mySectionMembershipSignal',
+  ),
+);
 
 final isGlobalAdminSignal = computed(() {
   final x = authUserSignal.value;
@@ -80,14 +101,21 @@ final isSectionManagerSignal = computed(() {
 final canCreateEventsSignal = computed(() {
   if (isGlobalAdminSignal.value) return true;
   final membership = mySectionMembershipSignal.value.value;
-  return membership?.scopes.contains('sectionManager') == true || membership?.scopes.contains('eventManager') == true;
+  return membership?.scopes.contains('sectionManager') == true ||
+      membership?.scopes.contains('eventManager') == true;
 });
 
 /// selected date in the calendar view
 // todo: Should the signals below be moved into the calendar view widget?
 
 final selectedDateSignal = signal<DateTime>(
-  DateTime.now().copyWith(hour: 0, minute: 0, second: 0, millisecond: 0, microsecond: 0),
+  DateTime.now().copyWith(
+    hour: 0,
+    minute: 0,
+    second: 0,
+    millisecond: 0,
+    microsecond: 0,
+  ),
 );
 
 final showMyEventsOnlySignal = signal<bool>(false);
@@ -110,7 +138,12 @@ final currentEventsSignal = futureSignal<List<Event>>(
     final nextMonthYear = date.month == 12 ? date.year + 1 : date.year;
     final end = DateTime(nextMonthYear, nextMonth, 1);
 
-    final events = await client.event.listEvents(s?.id, start, end, onlyMyEvents);
+    final events = await client.event.listEvents(
+      s?.id,
+      start,
+      end,
+      onlyMyEvents,
+    );
     return events;
   },
   options: AsyncSignalOptions(
@@ -119,23 +152,33 @@ final currentEventsSignal = futureSignal<List<Event>>(
   ),
 );
 
-final notificationsSignal = futureSignal<List<UserNotification>>(() async {
-  final i = authUserSignal.value;
-  if (i == null) return <UserNotification>[];
-  return await client.notification.getMyFeed(limit: 30, offset: 0);
-}, options: AsyncSignalOptions(dependencies: [], name: 'notificationsSignal', lazy: false));
+final notificationsSignal = futureSignal<List<UserNotification>>(
+  () async {
+    final i = authUserSignal.value;
+    if (i == null) return <UserNotification>[];
+    return await client.notification.getMyFeed(limit: 30, offset: 0);
+  },
+  options: AsyncSignalOptions(
+    dependencies: [],
+    name: 'notificationsSignal',
+    lazy: false,
+  ),
+);
 
 // TODO: Do we need this stream? Is there a better way to do this?
-final notificationStreamSignal = streamSignal<List<UserNotification>>(() async* {
-  while (true) {
-    if (!sessionManager.isAuthenticated) yield <UserNotification>[];
-    final n = await client.notification.getMyFeed(limit: 30, offset: 0);
-    // update notifications.
-    notificationsSignal.value = AsyncData(n);
-    yield n;
-    await Future.delayed(const Duration(seconds: 30));
-  }
-}, options: AsyncSignalOptions(name: 'notificationStreamSignal'));
+final notificationStreamSignal = streamSignal<List<UserNotification>>(
+  () async* {
+    while (true) {
+      if (!sessionManager.isAuthenticated) yield <UserNotification>[];
+      final n = await client.notification.getMyFeed(limit: 30, offset: 0);
+      // update notifications.
+      notificationsSignal.value = AsyncData(n);
+      yield n;
+      await Future.delayed(const Duration(seconds: 30));
+    }
+  },
+  options: AsyncSignalOptions(name: 'notificationStreamSignal'),
+);
 
 final unreadNotificationsCountSignal = computed(() {
   final state = notificationsSignal.value;
@@ -145,6 +188,9 @@ final unreadNotificationsCountSignal = computed(() {
   return 0;
 });
 
-final notificationPreferencesSignal = futureSignal<UserNotificationPreference>(() async {
-  return await client.notification.getMyPreferences();
-}, options: AsyncSignalOptions(name: 'notificationPreferencesSignal'));
+final notificationPreferencesSignal = futureSignal<UserNotificationPreference>(
+  () async {
+    return await client.notification.getMyPreferences();
+  },
+  options: AsyncSignalOptions(name: 'notificationPreferencesSignal'),
+);

@@ -7,6 +7,7 @@ import 'package:signals_flutter/signals_flutter.dart';
 import '../signals.dart';
 import 'event_card.dart';
 
+// todo: Why is this a hookwidget?
 class CalendarView extends HookWidget {
   const CalendarView({super.key});
 
@@ -47,8 +48,9 @@ class CalendarView extends HookWidget {
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.grey[50],
-                  borderRadius:
-                      const BorderRadius.vertical(top: Radius.circular(32)),
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(32),
+                  ),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withValues(alpha: 0.05),
@@ -76,14 +78,20 @@ class CalendarView extends HookWidget {
                       child: eventsValue.map(
                         data: (value) =>
                             _buildEventList(value, startOfMonth, endOfMonth),
-                        error: (error, _) => Center(child: Text('Error: $error')),
+                        error: (error, _) =>
+                            Center(child: Text('Error: $error')),
                         loading: () {
                           final staleValue = currentEventsSignal.peek();
                           if (staleValue is AsyncData<List<Event>>) {
                             return _buildEventList(
-                                staleValue.value, startOfMonth, endOfMonth);
+                              staleValue.value,
+                              startOfMonth,
+                              endOfMonth,
+                            );
                           }
-                          return const Center(child: CircularProgressIndicator());
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
                         },
                       ),
                     ),
@@ -104,7 +112,12 @@ class CalendarView extends HookWidget {
   }) {
     return Container(
       padding: const EdgeInsets.fromLTRB(8, 8, 12, 4),
-      child: Row(
+      width: double.infinity,
+      child: Wrap(
+        spacing: 8,
+        runSpacing: 8,
+        alignment: WrapAlignment.spaceBetween,
+        crossAxisAlignment: WrapCrossAlignment.center,
         children: [
           Row(
             mainAxisSize: MainAxisSize.min,
@@ -119,9 +132,10 @@ class CalendarView extends HookWidget {
               Text(
                 DateFormat('MMM yyyy').format(selectedDate),
                 style: const TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.blueGrey),
+                  fontSize: 15,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.blueGrey,
+                ),
               ),
               IconButton(
                 visualDensity: VisualDensity.compact,
@@ -139,41 +153,45 @@ class CalendarView extends HookWidget {
               ),
             ],
           ),
-          const Spacer(),
-          SignalBuilder(builder: (context) {
-            final onlyMyEvents = showMyEventsOnlySignal.value;
-            return SegmentedButton<bool>(
-              segments: const [
-                ButtonSegment(
-                  value: false,
-                  label: Text('All'),
-                  icon: Icon(Icons.event, size: 16),
+          SignalBuilder(
+            builder: (context) {
+              final onlyMyEvents = showMyEventsOnlySignal.value;
+              return SegmentedButton<bool>(
+                segments: const [
+                  ButtonSegment(
+                    value: false,
+                    label: Text('All'),
+                    icon: Icon(Icons.event, size: 16),
+                  ),
+                  ButtonSegment(
+                    value: true,
+                    label: Text('My Events'),
+                    icon: Icon(Icons.person, size: 16),
+                  ),
+                ],
+                selected: {onlyMyEvents},
+                onSelectionChanged: (newSelection) {
+                  showMyEventsOnlySignal.value = newSelection.first;
+                },
+                showSelectedIcon: false,
+                style: SegmentedButton.styleFrom(
+                  visualDensity: VisualDensity.compact,
+                  textStyle: const TextStyle(fontSize: 11),
+                  padding: const EdgeInsets.symmetric(horizontal: 4),
                 ),
-                ButtonSegment(
-                  value: true,
-                  label: Text('My Events'),
-                  icon: Icon(Icons.person, size: 16),
-                ),
-              ],
-              selected: {onlyMyEvents},
-              onSelectionChanged: (newSelection) {
-                showMyEventsOnlySignal.value = newSelection.first;
-              },
-              showSelectedIcon: false,
-              style: SegmentedButton.styleFrom(
-                visualDensity: VisualDensity.compact,
-                textStyle: const TextStyle(fontSize: 11),
-                padding: const EdgeInsets.symmetric(horizontal: 4),
-              ),
-            );
-          }),
+              );
+            },
+          ),
         ],
       ),
     );
   }
 
   Widget _buildEventList(
-      List<Event> events, DateTime startOfMonth, DateTime endOfMonth) {
+    List<Event> events,
+    DateTime startOfMonth,
+    DateTime endOfMonth,
+  ) {
     if (events.isEmpty) {
       return const Center(
         child: Opacity(
@@ -183,8 +201,10 @@ class CalendarView extends HookWidget {
             children: [
               Icon(Icons.event_available, size: 56),
               SizedBox(height: 12),
-              Text('No upcoming events scheduled',
-                  style: TextStyle(fontWeight: FontWeight.w600)),
+              Text(
+                'No upcoming events scheduled',
+                style: TextStyle(fontWeight: FontWeight.w600),
+              ),
             ],
           ),
         ),
@@ -219,9 +239,10 @@ class CalendarView extends HookWidget {
               child: Text(
                 DateFormat('EEEE, MMMM d').format(day),
                 style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blueGrey),
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blueGrey,
+                ),
               ),
             ),
             ...dayEvents.map((event) => EventCard(event: event)),

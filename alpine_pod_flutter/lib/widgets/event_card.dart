@@ -36,7 +36,11 @@ class EventCard extends StatelessWidget {
                     CircleAvatar(
                       radius: 20,
                       backgroundColor: primaryColor.withValues(alpha: 0.1),
-                      child: Icon(Icons.campaign, color: primaryColor, size: 20),
+                      child: Icon(
+                        Icons.campaign,
+                        color: primaryColor,
+                        size: 20,
+                      ),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
@@ -46,22 +50,30 @@ class EventCard extends StatelessWidget {
                           Text(
                             event.title,
                             style: const TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold),
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                           const SizedBox(height: 2),
                           Row(
                             children: [
                               Text(
-                                formatEventRange(event.startTime, event.endTime),
+                                formatEventRange(
+                                  event.startTime,
+                                  event.endTime,
+                                ),
                                 style: TextStyle(
-                                    fontSize: 12,
-                                    color: primaryColor,
-                                    fontWeight: FontWeight.bold),
+                                  fontSize: 12,
+                                  color: primaryColor,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                               const SizedBox(width: 8),
                               Container(
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 8, vertical: 2),
+                                  horizontal: 8,
+                                  vertical: 2,
+                                ),
                                 decoration: BoxDecoration(
                                   color: Colors.blueGrey.withValues(alpha: 0.1),
                                   borderRadius: BorderRadius.circular(12),
@@ -79,7 +91,9 @@ class EventCard extends StatelessWidget {
                                 const SizedBox(width: 8),
                                 Container(
                                   padding: const EdgeInsets.symmetric(
-                                      horizontal: 6, vertical: 2),
+                                    horizontal: 6,
+                                    vertical: 2,
+                                  ),
                                   decoration: BoxDecoration(
                                     color: Colors.grey.withValues(alpha: 0.2),
                                     borderRadius: BorderRadius.circular(8),
@@ -98,7 +112,9 @@ class EventCard extends StatelessWidget {
                                 const SizedBox(width: 8),
                                 Container(
                                   padding: const EdgeInsets.symmetric(
-                                      horizontal: 6, vertical: 2),
+                                    horizontal: 6,
+                                    vertical: 2,
+                                  ),
                                   decoration: BoxDecoration(
                                     color: Colors.orange.withValues(alpha: 0.2),
                                     borderRadius: BorderRadius.circular(8),
@@ -130,7 +146,9 @@ class EventCard extends StatelessWidget {
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                      fontSize: 13, color: Colors.black.withValues(alpha: 0.6)),
+                    fontSize: 13,
+                    color: Colors.black.withValues(alpha: 0.6),
+                  ),
                 ),
                 const SizedBox(height: 10),
                 _ParticipantSummary(event: event, isPast: isPast),
@@ -159,16 +177,16 @@ class _ParticipantSummary extends StatelessWidget {
     final color = isPast
         ? Colors.grey
         : isFull
-            ? Colors.red
-            : isNearlyFull
-                ? Colors.amber[700]!
-                : Colors.blue;
+        ? Colors.red
+        : isNearlyFull
+        ? Colors.amber[700]!
+        : Colors.blue;
 
     final spotsLabel = max <= 0
         ? '$registered registered'
         : isFull
-            ? 'Full • $registered/$max'
-            : '$registered/$max spots filled';
+        ? 'Full • $registered/$max'
+        : '$registered/$max spots filled';
 
     return Row(
       children: [

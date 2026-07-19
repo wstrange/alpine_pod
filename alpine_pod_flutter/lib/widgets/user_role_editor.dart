@@ -35,10 +35,10 @@ class UserRoleEditor extends HookWidget {
       builder: (context) {
         // Check permissions
         final isAdmin = isGlobalAdminSignal.value;
-        final myMemberships =
-            allMySectionMembershipsSignal.value.value ?? [];
+        final myMemberships = allMySectionMembershipsSignal.value.value ?? [];
         final isManagerOfThisSection = myMemberships.any(
-          (m) => m.sectionId == sectionId && m.scopes.contains('sectionManager'),
+          (m) =>
+              m.sectionId == sectionId && m.scopes.contains('sectionManager'),
         );
 
         final canEdit = isAdmin || isManagerOfThisSection;
@@ -46,60 +46,62 @@ class UserRoleEditor extends HookWidget {
 
         return Card(
           margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 0),
-      child: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (sectionName != null)
-              Text(
-                sectionName!,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            const SizedBox(height: 8),
-            switch (membershipValue) {
-              AsyncError(error: final e) => Text('Error: $e'),
-              AsyncLoading() => const Center(
-                child: Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: CircularProgressIndicator(),
-                ),
-              ),
-              AsyncData(value: final membership) => _RoleSelector(
-                membership: membership,
-                canEdit: canEdit,
-                isGlobalAdmin: isAdmin,
-                onChanged: (newScopes) async {
-                  try {
-                    await client.member.updateMemberScopes(
-                      memberId,
-                      sectionId,
-                      newScopes,
-                    );
-                    // Invalidate the signal to trigger a refresh
-                    membershipSignal.refresh();
-                    if (context.mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Roles updated')),
-                      );
-                    }
-                  } catch (e) {
-                    if (context.mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Failed to update roles: $e')),
-                      );
-                    }
-                  }
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (sectionName != null)
+                  Text(
+                    sectionName!,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                const SizedBox(height: 8),
+                switch (membershipValue) {
+                  AsyncError(error: final e) => Text('Error: $e'),
+                  AsyncLoading() => const Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: CircularProgressIndicator(),
+                    ),
+                  ),
+                  AsyncData(value: final membership) => _RoleSelector(
+                    membership: membership,
+                    canEdit: canEdit,
+                    isGlobalAdmin: isAdmin,
+                    onChanged: (newScopes) async {
+                      try {
+                        await client.member.updateMemberScopes(
+                          memberId,
+                          sectionId,
+                          newScopes,
+                        );
+                        // Invalidate the signal to trigger a refresh
+                        membershipSignal.refresh();
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Roles updated')),
+                          );
+                        }
+                      } catch (e) {
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Failed to update roles: $e'),
+                            ),
+                          );
+                        }
+                      }
+                    },
+                  ),
                 },
-              ),
-            },
-          ],
-        ),
-      ),
-    );
+              ],
+            ),
+          ),
+        );
       },
     );
   }

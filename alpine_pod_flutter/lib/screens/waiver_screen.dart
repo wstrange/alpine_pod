@@ -35,7 +35,8 @@ class _WaiverScreenState extends State<WaiverScreen> {
     } catch (e) {
       if (mounted) {
         setState(() {
-          _waiverText = 'Error loading waiver document. Please contact support.';
+          _waiverText =
+              'Error loading waiver document. Please contact support.';
           _isLoading = false;
         });
       }
@@ -61,9 +62,9 @@ class _WaiverScreenState extends State<WaiverScreen> {
     } catch (e) {
       log.severe('Failed to accept waiver', e);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to save waiver: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Failed to save waiver: $e')));
         setState(() {
           _isSubmitting = false;
         });
@@ -90,11 +91,7 @@ class _WaiverScreenState extends State<WaiverScreen> {
             ? const Center(child: CircularProgressIndicator())
             : Column(
                 children: [
-                  Expanded(
-                    child: Markdown(
-                      data: _waiverText,
-                    ),
-                  ),
+                  Expanded(child: Markdown(data: _waiverText)),
                   const Divider(height: 1),
                   Padding(
                     padding: const EdgeInsets.all(16.0),

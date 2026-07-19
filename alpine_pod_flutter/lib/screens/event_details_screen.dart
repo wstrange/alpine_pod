@@ -16,7 +16,10 @@ class EventDetailsScreen extends HookWidget {
   @override
   Widget build(BuildContext context) {
     // We create a memoized future signal for this specific event ID.
-    final eventSignal = useMemoized(() => futureSignal(() => client.event.getEvent(eventId)), [eventId]);
+    final eventSignal = useMemoized(
+      () => futureSignal(() => client.event.getEvent(eventId)),
+      [eventId],
+    );
 
     return Scaffold(
       appBar: AppBar(
@@ -38,17 +41,24 @@ class EventDetailsScreen extends HookWidget {
                 children: [
                   ...eventValue.map(
                     data: (event) {
-                      final isPast = DateTime.now().isAfter(event.endTime.toLocal());
+                      final isPast = DateTime.now().isAfter(
+                        event.endTime.toLocal(),
+                      );
                       final currentMember = currentMemberSignal.value;
 
                       final isEventManager =
                           currentMember != null &&
-                          event.eventManagers?.any((m) => m.memberId == currentMember.id) == true;
+                          event.eventManagers?.any(
+                                (m) => m.memberId == currentMember.id,
+                              ) ==
+                              true;
 
                       final isSectionManager = isSectionManagerSignal.value;
                       final isGlobalAdmin = isGlobalAdminSignal.value;
 
-                      final canEdit = !isPast && (isEventManager || isSectionManager || isGlobalAdmin);
+                      final canEdit =
+                          !isPast &&
+                          (isEventManager || isSectionManager || isGlobalAdmin);
 
                       return [
                         if (canCreate)
@@ -61,7 +71,9 @@ class EventDetailsScreen extends HookWidget {
                                 title: 'Copy of ${event.title}',
                                 published: false,
                               );
-                              GoRouter.of(context).push('/create-event', extra: clonedEvent);
+                              GoRouter.of(
+                                context,
+                              ).push('/create-event', extra: clonedEvent);
                             },
                           ),
                         if (canEdit)
@@ -69,7 +81,9 @@ class EventDetailsScreen extends HookWidget {
                             icon: const Icon(Icons.edit),
                             tooltip: 'Edit Event',
                             onPressed: () {
-                              GoRouter.of(context).push('/event-edit/${event.id}');
+                              GoRouter.of(
+                                context,
+                              ).push('/event-edit/${event.id}');
                             },
                           ),
                       ];

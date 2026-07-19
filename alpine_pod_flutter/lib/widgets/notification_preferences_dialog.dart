@@ -8,7 +8,9 @@ class NotificationPreferencesDialog extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final snapshot = useFuture(useMemoized(() => client.notification.getMyPreferences()));
+    final snapshot = useFuture(
+      useMemoized(() => client.notification.getMyPreferences()),
+    );
     final prefsState = useState<UserNotificationPreference?>(null);
 
     useEffect(() {
@@ -55,19 +57,34 @@ class NotificationPreferencesDialog extends HookWidget {
               children: [
                 CircleAvatar(
                   backgroundColor: Colors.blue.shade50,
-                  child: Icon(Icons.settings_suggest, color: Colors.blue.shade700),
+                  child: Icon(
+                    Icons.settings_suggest,
+                    color: Colors.blue.shade700,
+                  ),
                 ),
                 const SizedBox(width: 16),
                 const Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Notification Preferences', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                      Text('Choose how you want to be notified', style: TextStyle(fontSize: 13, color: Colors.grey)),
+                      Text(
+                        'Notification Preferences',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        'Choose how you want to be notified',
+                        style: TextStyle(fontSize: 13, color: Colors.grey),
+                      ),
                     ],
                   ),
                 ),
-                IconButton(onPressed: () => Navigator.of(context).pop(), icon: const Icon(Icons.close)),
+                IconButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  icon: const Icon(Icons.close),
+                ),
               ],
             ),
             const SizedBox(height: 16),
@@ -88,7 +105,10 @@ class NotificationPreferencesDialog extends HookWidget {
                     children: [
                       const Text(
                         'Notification Channels',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       const SizedBox(height: 8),
                       // Note: In app is always enabled.
@@ -141,12 +161,16 @@ class NotificationPreferencesDialog extends HookWidget {
                       const SizedBox(height: 16),
                       const Text(
                         'Subscriptions',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       const SizedBox(height: 8),
                       _PreferenceSwitchTile(
                         title: 'New Events',
-                        subtitle: 'Get notified when new events are posted in your sections',
+                        subtitle:
+                            'Get notified when new events are posted in your sections',
                         icon: Icons.event,
                         value: prefs.newEvents,
                         onChanged: (val) async {
@@ -186,8 +210,14 @@ class _PreferenceSwitchTile extends StatelessWidget {
     return SwitchListTile(
       contentPadding: EdgeInsets.zero,
       secondary: Icon(icon, color: Theme.of(context).colorScheme.primary),
-      title: Text(title, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
-      subtitle: Text(subtitle, style: const TextStyle(fontSize: 12, color: Colors.grey)),
+      title: Text(
+        title,
+        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+      ),
+      subtitle: Text(
+        subtitle,
+        style: const TextStyle(fontSize: 12, color: Colors.grey),
+      ),
       value: value,
       onChanged: onChanged,
     );

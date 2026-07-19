@@ -8,7 +8,8 @@ class EmailService {
   // static const String _fromAddress = 'notifications@yourdomain.com';
 
   // testing using mailpit
-  static final _smtpServer = SmtpServer('localhost', port: 1025, allowInsecure: true);
+  // todo: Use environment variable to configure or get from serverpod config
+  static final _smtpServer = SmtpServer('warren.home', port: 1025, allowInsecure: true);
 
   static Future<void> sendHtmlEmail({
     required Session session,

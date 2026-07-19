@@ -9,9 +9,7 @@ class SectionSelectionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Select a Section'),
-      ),
+      appBar: AppBar(title: const Text('Select a Section')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SignalBuilder(
@@ -20,23 +18,23 @@ class SectionSelectionScreen extends StatelessWidget {
             return switch (membershipsValue) {
               AsyncError(:final error) => Center(child: Text('Error $error')),
               AsyncLoading() => const Center(
-                  child: CircularProgressIndicator(),
-                ),
+                child: CircularProgressIndicator(),
+              ),
               AsyncData(value: final memberships) => ListView.builder(
-                  itemCount: memberships.length,
-                  itemBuilder: (context, index) {
-                    final section = memberships[index].section!;
-                    return ListTile(
-                      title: Text(section.name),
-                      trailing: const Icon(Icons.chevron_right),
-                      onTap: () {
-                        // Navigate to the home screen for the selected section
-                        sectionSignal.value = section;
-                        context.go('/');
-                      },
-                    );
-                  },
-                ),
+                itemCount: memberships.length,
+                itemBuilder: (context, index) {
+                  final section = memberships[index].section!;
+                  return ListTile(
+                    title: Text(section.name),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () {
+                      // Navigate to the home screen for the selected section
+                      sectionSignal.value = section;
+                      context.go('/');
+                    },
+                  );
+                },
+              ),
             };
           },
         ),

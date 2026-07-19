@@ -287,86 +287,88 @@ class _AddParticipantDialog extends HookWidget {
       contentPadding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
       content: SizedBox(
         width: 360,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: searchController,
-              autofocus: true,
-              decoration: const InputDecoration(
-                hintText: 'Search members…',
-                prefixIcon: Icon(Icons.search),
-                border: OutlineInputBorder(),
-                isDense: true,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: searchController,
+                autofocus: true,
+                decoration: const InputDecoration(
+                  hintText: 'Search members…',
+                  prefixIcon: Icon(Icons.search),
+                  border: OutlineInputBorder(),
+                  isDense: true,
+                ),
               ),
-            ),
-            const SizedBox(height: 8),
-            if (membersSnapshot.connectionState == ConnectionState.waiting)
-              const Padding(
-                padding: EdgeInsets.all(16),
-                child: CircularProgressIndicator(),
-              )
-            else if (membersSnapshot.hasError)
-              Text('Error loading members: ${membersSnapshot.error}')
-            else
-              ConstrainedBox(
-                constraints: const BoxConstraints(maxHeight: 300),
-                child: filtered.isEmpty
-                    ? const Padding(
-                        padding: EdgeInsets.all(16),
-                        child: Text('No members found.'),
-                      )
-                    : ListView.separated(
-                        shrinkWrap: true,
-                        itemCount: filtered.length,
-                        separatorBuilder: (_, _) => const Divider(height: 1),
-                        itemBuilder: (ctx, i) {
-                          final member = filtered[i];
-                          final alreadyIn = alreadyRegisteredIds.contains(
-                            member.id,
-                          );
-                          final name =
-                              member.displayName ??
-                              '${member.firstName} ${member.lastName}';
-                          return ListTile(
-                            dense: true,
-                            leading: MemberAvatar(
-                              member: member,
-                              radius: 18,
-                              initialsStyle: const TextStyle(fontSize: 14),
-                            ),
-                            title: Text(name),
-                            subtitle: Text(member.email),
-                            trailing: alreadyIn
-                                ? Chip(
-                                    label: const Text('Registered'),
-                                    labelStyle: const TextStyle(fontSize: 11),
-                                    padding: EdgeInsets.zero,
-                                  )
-                                : isLoading.value
-                                ? const SizedBox(
-                                    width: 20,
-                                    height: 20,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
+              const SizedBox(height: 8),
+              if (membersSnapshot.connectionState == ConnectionState.waiting)
+                const Padding(
+                  padding: EdgeInsets.all(16),
+                  child: CircularProgressIndicator(),
+                )
+              else if (membersSnapshot.hasError)
+                Text('Error loading members: ${membersSnapshot.error}')
+              else
+                ConstrainedBox(
+                  constraints: const BoxConstraints(maxHeight: 300),
+                  child: filtered.isEmpty
+                      ? const Padding(
+                          padding: EdgeInsets.all(16),
+                          child: Text('No members found.'),
+                        )
+                      : ListView.separated(
+                          shrinkWrap: true,
+                          itemCount: filtered.length,
+                          separatorBuilder: (_, _) => const Divider(height: 1),
+                          itemBuilder: (ctx, i) {
+                            final member = filtered[i];
+                            final alreadyIn = alreadyRegisteredIds.contains(
+                              member.id,
+                            );
+                            final name =
+                                member.displayName ??
+                                '${member.firstName} ${member.lastName}';
+                            return ListTile(
+                              dense: true,
+                              leading: MemberAvatar(
+                                member: member,
+                                radius: 18,
+                                initialsStyle: const TextStyle(fontSize: 14),
+                              ),
+                              title: Text(name),
+                              subtitle: Text(member.email),
+                              trailing: alreadyIn
+                                  ? Chip(
+                                      label: const Text('Registered'),
+                                      labelStyle: const TextStyle(fontSize: 11),
+                                      padding: EdgeInsets.zero,
+                                    )
+                                  : isLoading.value
+                                  ? const SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                      ),
+                                    )
+                                  : null,
+                              enabled: !alreadyIn && !isLoading.value,
+                              onTap: alreadyIn || isLoading.value
+                                  ? null
+                                  : () => _addMember(
+                                      ctx,
+                                      context,
+                                      member,
+                                      name,
+                                      isLoading,
                                     ),
-                                  )
-                                : null,
-                            enabled: !alreadyIn && !isLoading.value,
-                            onTap: alreadyIn || isLoading.value
-                                ? null
-                                : () => _addMember(
-                                    ctx,
-                                    context,
-                                    member,
-                                    name,
-                                    isLoading,
-                                  ),
-                          );
-                        },
-                      ),
-              ),
-          ],
+                            );
+                          },
+                        ),
+                ),
+            ],
+          ),
         ),
       ),
       actions: [

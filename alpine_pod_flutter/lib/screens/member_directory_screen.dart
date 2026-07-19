@@ -123,9 +123,7 @@ class MemberDirectoryScreen extends HookWidget {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Member Directory'),
-      ),
+      appBar: AppBar(title: const Text('Member Directory')),
       body: Column(
         children: [
           Padding(

@@ -13,7 +13,9 @@ import 'signals.dart';
 import 'router.dart';
 
 // final host = 'Warrens-MacBook-Air.local';
-final host = 'localhost';
+// final host = 'localhost';
+final host = 'warren.home';
+
 void main() async {
   Logger.root.level = Level.ALL;
   Logger.root.onRecord.listen((record) {
@@ -47,7 +49,7 @@ void main() async {
   await sessionManager.initializeFacebookSignIn(appId: '954559893876564');
 
   // todo: add any things that need to be refreshed in the background
-  Timer.periodic(const Duration(seconds: 30), (timer) {
+  Timer.periodic(const Duration(seconds: 120), (timer) {
     notificationsSignal.refresh(); // get updated notifications
   });
 

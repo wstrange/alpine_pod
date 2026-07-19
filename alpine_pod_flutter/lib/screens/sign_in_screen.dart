@@ -23,7 +23,8 @@ class SignInScreen extends StatelessWidget {
                     'assets/images/logo.webp', // The identical path declared in pubspec.yaml
                     width: 300, // Optional layout constraint
                     height: 150, // Optional layout constraint
-                    fit: BoxFit.contain, // Optional: How the image fits the space
+                    fit: BoxFit
+                        .contain, // Optional: How the image fits the space
                   ),
                 ),
                 const SizedBox(height: 40),
@@ -39,9 +40,14 @@ class SignInScreen extends StatelessWidget {
                   onError: (error) {
                     // Handle errors
                     print('Auth Error:   $error');
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $error')));
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(SnackBar(content: Text('Error: $error')));
                   },
-                  emailSignInWidget: EmailSignInWidget(client: client, startScreen: EmailFlowScreen.login),
+                  emailSignInWidget: EmailSignInWidget(
+                    client: client,
+                    startScreen: EmailFlowScreen.login,
+                  ),
                   // googleSignInWidget: GoogleSignInWidget(
                   //   client: client,
                   // ),
