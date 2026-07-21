@@ -2670,36 +2670,6 @@ class _UserProfileEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i4.Future<_i5.UserProfileModel> removeUserImage(
-    _i1.TestSessionBuilder sessionBuilder,
-  ) async {
-    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
-      var _localUniqueSession =
-          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
-            endpoint: 'userProfile',
-            method: 'removeUserImage',
-          );
-      try {
-        var _localCallContext = await _endpointDispatch.getMethodCallContext(
-          createSessionCallback: (_) => _localUniqueSession,
-          endpointPath: 'userProfile',
-          methodName: 'removeUserImage',
-          parameters: _i1.testObjectToJson({}),
-          serializationManager: _serializationManager,
-        );
-        var _localReturnValue =
-            await (_localCallContext.method.call(
-                  _localUniqueSession,
-                  _localCallContext.arguments,
-                )
-                as _i4.Future<_i5.UserProfileModel>);
-        return _localReturnValue;
-      } finally {
-        await _localUniqueSession.close();
-      }
-    });
-  }
-
   _i4.Future<_i5.UserProfileModel> setUserImage(
     _i1.TestSessionBuilder sessionBuilder,
     _i17.ByteData image,
@@ -2716,6 +2686,36 @@ class _UserProfileEndpoint {
           endpointPath: 'userProfile',
           methodName: 'setUserImage',
           parameters: _i1.testObjectToJson({'image': image}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i4.Future<_i5.UserProfileModel>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i4.Future<_i5.UserProfileModel> removeUserImage(
+    _i1.TestSessionBuilder sessionBuilder,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'userProfile',
+            method: 'removeUserImage',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'userProfile',
+          methodName: 'removeUserImage',
+          parameters: _i1.testObjectToJson({}),
           serializationManager: _serializationManager,
         );
         var _localReturnValue =

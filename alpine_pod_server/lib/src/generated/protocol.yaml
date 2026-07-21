@@ -82,8 +82,8 @@ section:
   - listSections:
   - getSectionsForCurrentUser:
 userProfile:
-  - removeUserImage:
   - setUserImage:
+  - removeUserImage:
   - changeUserName:
   - changeFullName:
   - get:

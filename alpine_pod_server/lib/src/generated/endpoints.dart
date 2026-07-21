@@ -1596,16 +1596,6 @@ class Endpoints extends _i1.EndpointDispatch {
       name: 'userProfile',
       endpoint: endpoints['userProfile']!,
       methodConnectors: {
-        'removeUserImage': _i1.MethodConnector(
-          name: 'removeUserImage',
-          params: {},
-          call:
-              (
-                _i1.Session session,
-                Map<String, dynamic> params,
-              ) async => (endpoints['userProfile'] as _i11.UserProfileEndpoint)
-                  .removeUserImage(session),
-        ),
         'setUserImage': _i1.MethodConnector(
           name: 'setUserImage',
           params: {
@@ -1624,6 +1614,16 @@ class Endpoints extends _i1.EndpointDispatch {
                     session,
                     params['image'],
                   ),
+        ),
+        'removeUserImage': _i1.MethodConnector(
+          name: 'removeUserImage',
+          params: {},
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['userProfile'] as _i11.UserProfileEndpoint)
+                  .removeUserImage(session),
         ),
         'changeUserName': _i1.MethodConnector(
           name: 'changeUserName',

@@ -914,6 +914,14 @@ class EndpointUserProfile extends _i4.EndpointUserProfileEditBase {
   @override
   String get name => 'userProfile';
 
+  @override
+  _i3.Future<_i4.UserProfileModel> setUserImage(_i16.ByteData image) =>
+      caller.callServerEndpoint<_i4.UserProfileModel>(
+        'userProfile',
+        'setUserImage',
+        {'image': image},
+      );
+
   /// Removes the user's uploaded image, setting it to null.
   ///
   /// The client should handle displaying a placeholder for users without images.
@@ -923,15 +931,6 @@ class EndpointUserProfile extends _i4.EndpointUserProfileEditBase {
         'userProfile',
         'removeUserImage',
         {},
-      );
-
-  /// Sets a new user image for the signed in user.
-  @override
-  _i3.Future<_i4.UserProfileModel> setUserImage(_i16.ByteData image) =>
-      caller.callServerEndpoint<_i4.UserProfileModel>(
-        'userProfile',
-        'setUserImage',
-        {'image': image},
       );
 
   /// Changes the name of a user.

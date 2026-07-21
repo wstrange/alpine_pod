@@ -71,5 +71,4 @@ getMemberProfileImageUrl is expensive. Should we return it as part of the member
 
 Events and user profiles. Cache??
 
-Bug:  back gesture on android on event view exits the app. Probably because the navigation stack. Event view needs to be pushed, not go to
 
