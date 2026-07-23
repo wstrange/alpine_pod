@@ -72,3 +72,10 @@ getMemberProfileImageUrl is expensive. Should we return it as part of the member
 Events and user profiles. Cache??
 
 
+Need a strategy for offline first in Flutter using serverpod_offline_sync.
+Concerned about explosion of data with scope sharing mechanism.
+What about a Hybrid approach?  Use serverpod_offline_sync for read only data, and
+use the server API for any updates or writes.
+
+
+

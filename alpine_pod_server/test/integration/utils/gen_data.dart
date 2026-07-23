@@ -61,7 +61,7 @@ class GenData {
   // NOTE: Update the named parameters / field names if your generated Section
   // class uses different fields.
   Section section({
-    int? id,
+    UuidValue? id,
     String? title,
     String? description,
     String? slug,

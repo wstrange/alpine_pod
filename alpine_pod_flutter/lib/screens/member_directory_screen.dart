@@ -94,8 +94,7 @@ class MemberDirectoryScreen extends HookWidget {
     final scrollController = useScrollController();
     useEffect(() {
       void onScroll() {
-        if (scrollController.position.pixels >=
-            scrollController.position.maxScrollExtent - 200) {
+        if (scrollController.position.pixels >= scrollController.position.maxScrollExtent - 200) {
           fetchPage();
         }
       }
@@ -104,21 +103,17 @@ class MemberDirectoryScreen extends HookWidget {
       return () => scrollController.removeListener(onScroll);
     }, [scrollController]);
 
-    Future<void> updateScopes(int memberId, Set<String> newScopes) async {
+    Future<void> updateScopes(UuidValue memberId, Set<String> newScopes) async {
       final sectionId = section?.id;
       if (sectionId == null) return;
 
       final messenger = ScaffoldMessenger.of(context);
       try {
         await client.member.updateMemberScopes(memberId, sectionId, newScopes);
-        messenger.showSnackBar(
-          const SnackBar(content: Text('Roles updated successfully')),
-        );
+        messenger.showSnackBar(const SnackBar(content: Text('Roles updated successfully')));
         reload.value++; // Reload to show changes
       } catch (e) {
-        messenger.showSnackBar(
-          SnackBar(content: Text('Failed to update roles: $e')),
-        );
+        messenger.showSnackBar(SnackBar(content: Text('Failed to update roles: $e')));
       }
     }
 

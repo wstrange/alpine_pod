@@ -17,7 +17,7 @@ import 'section.dart' as _i3;
 import 'package:alpine_pod_server/src/generated/protocol.dart' as _i4;
 
 abstract class SectionMembership
-    implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
+    implements _i1.TableRow<_i1.UuidValue?>, _i1.ProtocolSerialization {
   SectionMembership._({
     this.id,
     required this.memberId,
@@ -31,10 +31,10 @@ abstract class SectionMembership
   }) : syncedAt = syncedAt ?? DateTime.now();
 
   factory SectionMembership({
-    int? id,
-    required int memberId,
+    _i1.UuidValue? id,
+    required _i1.UuidValue memberId,
     _i2.Member? member,
-    required int sectionId,
+    required _i1.UuidValue sectionId,
     _i3.Section? section,
     String? externalUserId,
     DateTime? syncedAt,
@@ -44,12 +44,18 @@ abstract class SectionMembership
 
   factory SectionMembership.fromJson(Map<String, dynamic> jsonSerialization) {
     return SectionMembership(
-      id: jsonSerialization['id'] as int?,
-      memberId: jsonSerialization['memberId'] as int,
+      id: jsonSerialization['id'] == null
+          ? null
+          : _i1.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
+      memberId: _i1.UuidValueJsonExtension.fromJson(
+        jsonSerialization['memberId'],
+      ),
       member: jsonSerialization['member'] == null
           ? null
           : _i4.Protocol().deserialize<_i2.Member>(jsonSerialization['member']),
-      sectionId: jsonSerialization['sectionId'] as int,
+      sectionId: _i1.UuidValueJsonExtension.fromJson(
+        jsonSerialization['sectionId'],
+      ),
       section: jsonSerialization['section'] == null
           ? null
           : _i4.Protocol().deserialize<_i3.Section>(
@@ -71,13 +77,13 @@ abstract class SectionMembership
   static const db = SectionMembershipRepository._();
 
   @override
-  int? id;
+  _i1.UuidValue? id;
 
-  int memberId;
+  _i1.UuidValue memberId;
 
   _i2.Member? member;
 
-  int sectionId;
+  _i1.UuidValue sectionId;
 
   _i3.Section? section;
 
@@ -90,16 +96,16 @@ abstract class SectionMembership
   Set<String> scopes;
 
   @override
-  _i1.Table<int?> get table => t;
+  _i1.Table<_i1.UuidValue?> get table => t;
 
   /// Returns a shallow copy of this [SectionMembership]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
   SectionMembership copyWith({
-    int? id,
-    int? memberId,
+    _i1.UuidValue? id,
+    _i1.UuidValue? memberId,
     _i2.Member? member,
-    int? sectionId,
+    _i1.UuidValue? sectionId,
     _i3.Section? section,
     String? externalUserId,
     DateTime? syncedAt,
@@ -110,10 +116,10 @@ abstract class SectionMembership
   Map<String, dynamic> toJson() {
     return {
       '__className__': 'SectionMembership',
-      if (id != null) 'id': id,
-      'memberId': memberId,
+      if (id != null) 'id': id?.toJson(),
+      'memberId': memberId.toJson(),
       if (member != null) 'member': member?.toJson(),
-      'sectionId': sectionId,
+      'sectionId': sectionId.toJson(),
       if (section != null) 'section': section?.toJson(),
       if (externalUserId != null) 'externalUserId': externalUserId,
       'syncedAt': syncedAt.toJson(),
@@ -126,10 +132,10 @@ abstract class SectionMembership
   Map<String, dynamic> toJsonForProtocol() {
     return {
       '__className__': 'SectionMembership',
-      if (id != null) 'id': id,
-      'memberId': memberId,
+      if (id != null) 'id': id?.toJson(),
+      'memberId': memberId.toJson(),
       if (member != null) 'member': member?.toJsonForProtocol(),
-      'sectionId': sectionId,
+      'sectionId': sectionId.toJson(),
       if (section != null) 'section': section?.toJsonForProtocol(),
       if (externalUserId != null) 'externalUserId': externalUserId,
       'syncedAt': syncedAt.toJson(),
@@ -180,10 +186,10 @@ class _Undefined {}
 
 class _SectionMembershipImpl extends SectionMembership {
   _SectionMembershipImpl({
-    int? id,
-    required int memberId,
+    _i1.UuidValue? id,
+    required _i1.UuidValue memberId,
     _i2.Member? member,
-    required int sectionId,
+    required _i1.UuidValue sectionId,
     _i3.Section? section,
     String? externalUserId,
     DateTime? syncedAt,
@@ -207,9 +213,9 @@ class _SectionMembershipImpl extends SectionMembership {
   @override
   SectionMembership copyWith({
     Object? id = _Undefined,
-    int? memberId,
+    _i1.UuidValue? memberId,
     Object? member = _Undefined,
-    int? sectionId,
+    _i1.UuidValue? sectionId,
     Object? section = _Undefined,
     Object? externalUserId = _Undefined,
     DateTime? syncedAt,
@@ -217,7 +223,7 @@ class _SectionMembershipImpl extends SectionMembership {
     Set<String>? scopes,
   }) {
     return SectionMembership(
-      id: id is int? ? id : this.id,
+      id: id is _i1.UuidValue? ? id : this.id,
       memberId: memberId ?? this.memberId,
       member: member is _i2.Member? ? member : this.member?.copyWith(),
       sectionId: sectionId ?? this.sectionId,
@@ -236,12 +242,15 @@ class SectionMembershipUpdateTable
     extends _i1.UpdateTable<SectionMembershipTable> {
   SectionMembershipUpdateTable(super.table);
 
-  _i1.ColumnValue<int, int> memberId(int value) => _i1.ColumnValue(
-    table.memberId,
-    value,
-  );
+  _i1.ColumnValue<_i1.UuidValue, _i1.UuidValue> memberId(_i1.UuidValue value) =>
+      _i1.ColumnValue(
+        table.memberId,
+        value,
+      );
 
-  _i1.ColumnValue<int, int> sectionId(int value) => _i1.ColumnValue(
+  _i1.ColumnValue<_i1.UuidValue, _i1.UuidValue> sectionId(
+    _i1.UuidValue value,
+  ) => _i1.ColumnValue(
     table.sectionId,
     value,
   );
@@ -271,15 +280,15 @@ class SectionMembershipUpdateTable
       );
 }
 
-class SectionMembershipTable extends _i1.Table<int?> {
+class SectionMembershipTable extends _i1.Table<_i1.UuidValue?> {
   SectionMembershipTable({super.tableRelation})
     : super(tableName: 'section_memberships') {
     updateTable = SectionMembershipUpdateTable(this);
-    memberId = _i1.ColumnInt(
+    memberId = _i1.ColumnUuid(
       'memberId',
       this,
     );
-    sectionId = _i1.ColumnInt(
+    sectionId = _i1.ColumnUuid(
       'sectionId',
       this,
     );
@@ -304,11 +313,11 @@ class SectionMembershipTable extends _i1.Table<int?> {
 
   late final SectionMembershipUpdateTable updateTable;
 
-  late final _i1.ColumnInt memberId;
+  late final _i1.ColumnUuid memberId;
 
   _i2.MemberTable? _member;
 
-  late final _i1.ColumnInt sectionId;
+  late final _i1.ColumnUuid sectionId;
 
   _i3.SectionTable? _section;
 
@@ -389,7 +398,7 @@ class SectionMembershipInclude extends _i1.IncludeObject {
   };
 
   @override
-  _i1.Table<int?> get table => SectionMembership.t;
+  _i1.Table<_i1.UuidValue?> get table => SectionMembership.t;
 }
 
 class SectionMembershipIncludeList extends _i1.IncludeList {
@@ -410,7 +419,7 @@ class SectionMembershipIncludeList extends _i1.IncludeList {
   Map<String, _i1.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<int?> get table => SectionMembership.t;
+  _i1.Table<_i1.UuidValue?> get table => SectionMembership.t;
 }
 
 class SectionMembershipRepository {
@@ -516,7 +525,7 @@ class SectionMembershipRepository {
   /// Finds a single [SectionMembership] by its [id] or null if no such row exists.
   Future<SectionMembership?> findById(
     _i1.DatabaseSession session,
-    int id, {
+    _i1.UuidValue id, {
     _i1.Transaction? transaction,
     SectionMembershipInclude? include,
     _i1.LockMode? lockMode,
@@ -687,7 +696,7 @@ class SectionMembershipRepository {
   /// Returns the updated row or null if no row with the given id exists.
   Future<SectionMembership?> updateById(
     _i1.DatabaseSession session,
-    int id, {
+    _i1.UuidValue id, {
     required _i1.ColumnValueListBuilder<SectionMembershipUpdateTable>
     columnValues,
     _i1.Transaction? transaction,

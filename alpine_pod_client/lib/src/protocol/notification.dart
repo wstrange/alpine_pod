@@ -28,8 +28,8 @@ abstract class Notification implements _i1.SerializableModel {
   });
 
   factory Notification({
-    int? id,
-    required int templateId,
+    _i1.UuidValue? id,
+    required _i1.UuidValue templateId,
     _i2.NotificationTemplate? template,
     required Map<String, String> data,
     String? actionUrl,
@@ -41,8 +41,12 @@ abstract class Notification implements _i1.SerializableModel {
 
   factory Notification.fromJson(Map<String, dynamic> jsonSerialization) {
     return Notification(
-      id: jsonSerialization['id'] as int?,
-      templateId: jsonSerialization['templateId'] as int,
+      id: jsonSerialization['id'] == null
+          ? null
+          : _i1.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
+      templateId: _i1.UuidValueJsonExtension.fromJson(
+        jsonSerialization['templateId'],
+      ),
       template: jsonSerialization['template'] == null
           ? null
           : _i3.Protocol().deserialize<_i2.NotificationTemplate>(
@@ -64,9 +68,9 @@ abstract class Notification implements _i1.SerializableModel {
   /// The database id, set if the object has been inserted into the
   /// database or if it has been fetched from the database. Otherwise,
   /// the id will be null.
-  int? id;
+  _i1.UuidValue? id;
 
-  int templateId;
+  _i1.UuidValue templateId;
 
   _i2.NotificationTemplate? template;
 
@@ -86,8 +90,8 @@ abstract class Notification implements _i1.SerializableModel {
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
   Notification copyWith({
-    int? id,
-    int? templateId,
+    _i1.UuidValue? id,
+    _i1.UuidValue? templateId,
     _i2.NotificationTemplate? template,
     Map<String, String>? data,
     String? actionUrl,
@@ -100,8 +104,8 @@ abstract class Notification implements _i1.SerializableModel {
   Map<String, dynamic> toJson() {
     return {
       '__className__': 'Notification',
-      if (id != null) 'id': id,
-      'templateId': templateId,
+      if (id != null) 'id': id?.toJson(),
+      'templateId': templateId.toJson(),
       if (template != null) 'template': template?.toJson(),
       'data': data.toJson(),
       if (actionUrl != null) 'actionUrl': actionUrl,
@@ -122,8 +126,8 @@ class _Undefined {}
 
 class _NotificationImpl extends Notification {
   _NotificationImpl({
-    int? id,
-    required int templateId,
+    _i1.UuidValue? id,
+    required _i1.UuidValue templateId,
     _i2.NotificationTemplate? template,
     required Map<String, String> data,
     String? actionUrl,
@@ -149,7 +153,7 @@ class _NotificationImpl extends Notification {
   @override
   Notification copyWith({
     Object? id = _Undefined,
-    int? templateId,
+    _i1.UuidValue? templateId,
     Object? template = _Undefined,
     Map<String, String>? data,
     Object? actionUrl = _Undefined,
@@ -159,7 +163,7 @@ class _NotificationImpl extends Notification {
     DateTime? createdAt,
   }) {
     return Notification(
-      id: id is int? ? id : this.id,
+      id: id is _i1.UuidValue? ? id : this.id,
       templateId: templateId ?? this.templateId,
       template: template is _i2.NotificationTemplate?
           ? template

@@ -17,7 +17,7 @@ import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
 import 'package:alpine_pod_server/src/generated/protocol.dart' as _i3;
 
 abstract class FcmToken
-    implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
+    implements _i1.TableRow<_i1.UuidValue?>, _i1.ProtocolSerialization {
   FcmToken._({
     this.id,
     required this.userId,
@@ -28,7 +28,7 @@ abstract class FcmToken
   }) : updatedAt = updatedAt ?? DateTime.now();
 
   factory FcmToken({
-    int? id,
+    _i1.UuidValue? id,
     required _i1.UuidValue userId,
     _i2.AuthUser? user,
     required String token,
@@ -38,7 +38,9 @@ abstract class FcmToken
 
   factory FcmToken.fromJson(Map<String, dynamic> jsonSerialization) {
     return FcmToken(
-      id: jsonSerialization['id'] as int?,
+      id: jsonSerialization['id'] == null
+          ? null
+          : _i1.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
       userId: _i1.UuidValueJsonExtension.fromJson(jsonSerialization['userId']),
       user: jsonSerialization['user'] == null
           ? null
@@ -56,7 +58,7 @@ abstract class FcmToken
   static const db = FcmTokenRepository._();
 
   @override
-  int? id;
+  _i1.UuidValue? id;
 
   _i1.UuidValue userId;
 
@@ -69,13 +71,13 @@ abstract class FcmToken
   DateTime updatedAt;
 
   @override
-  _i1.Table<int?> get table => t;
+  _i1.Table<_i1.UuidValue?> get table => t;
 
   /// Returns a shallow copy of this [FcmToken]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
   FcmToken copyWith({
-    int? id,
+    _i1.UuidValue? id,
     _i1.UuidValue? userId,
     _i2.AuthUser? user,
     String? token,
@@ -86,7 +88,7 @@ abstract class FcmToken
   Map<String, dynamic> toJson() {
     return {
       '__className__': 'FcmToken',
-      if (id != null) 'id': id,
+      if (id != null) 'id': id?.toJson(),
       'userId': userId.toJson(),
       if (user != null) 'user': user?.toJson(),
       'token': token,
@@ -99,7 +101,7 @@ abstract class FcmToken
   Map<String, dynamic> toJsonForProtocol() {
     return {
       '__className__': 'FcmToken',
-      if (id != null) 'id': id,
+      if (id != null) 'id': id?.toJson(),
       'userId': userId.toJson(),
       if (user != null) 'user': user?.toJsonForProtocol(),
       'token': token,
@@ -144,7 +146,7 @@ class _Undefined {}
 
 class _FcmTokenImpl extends FcmToken {
   _FcmTokenImpl({
-    int? id,
+    _i1.UuidValue? id,
     required _i1.UuidValue userId,
     _i2.AuthUser? user,
     required String token,
@@ -172,7 +174,7 @@ class _FcmTokenImpl extends FcmToken {
     DateTime? updatedAt,
   }) {
     return FcmToken(
-      id: id is int? ? id : this.id,
+      id: id is _i1.UuidValue? ? id : this.id,
       userId: userId ?? this.userId,
       user: user is _i2.AuthUser? ? user : this.user?.copyWith(),
       token: token ?? this.token,
@@ -208,7 +210,7 @@ class FcmTokenUpdateTable extends _i1.UpdateTable<FcmTokenTable> {
       );
 }
 
-class FcmTokenTable extends _i1.Table<int?> {
+class FcmTokenTable extends _i1.Table<_i1.UuidValue?> {
   FcmTokenTable({super.tableRelation}) : super(tableName: 'fcm_tokens') {
     updateTable = FcmTokenUpdateTable(this);
     userId = _i1.ColumnUuid(
@@ -284,7 +286,7 @@ class FcmTokenInclude extends _i1.IncludeObject {
   Map<String, _i1.Include?> get includes => {'user': _user};
 
   @override
-  _i1.Table<int?> get table => FcmToken.t;
+  _i1.Table<_i1.UuidValue?> get table => FcmToken.t;
 }
 
 class FcmTokenIncludeList extends _i1.IncludeList {
@@ -305,7 +307,7 @@ class FcmTokenIncludeList extends _i1.IncludeList {
   Map<String, _i1.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<int?> get table => FcmToken.t;
+  _i1.Table<_i1.UuidValue?> get table => FcmToken.t;
 }
 
 class FcmTokenRepository {
@@ -411,7 +413,7 @@ class FcmTokenRepository {
   /// Finds a single [FcmToken] by its [id] or null if no such row exists.
   Future<FcmToken?> findById(
     _i1.DatabaseSession session,
-    int id, {
+    _i1.UuidValue id, {
     _i1.Transaction? transaction,
     FcmTokenInclude? include,
     _i1.LockMode? lockMode,
@@ -582,7 +584,7 @@ class FcmTokenRepository {
   /// Returns the updated row or null if no row with the given id exists.
   Future<FcmToken?> updateById(
     _i1.DatabaseSession session,
-    int id, {
+    _i1.UuidValue id, {
     required _i1.ColumnValueListBuilder<FcmTokenUpdateTable> columnValues,
     _i1.Transaction? transaction,
   }) async {

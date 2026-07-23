@@ -1,6 +1,7 @@
 class: Section
 table: sections
 fields:
+  id: UuidValue?, defaultPersist=random_v7
   name: String
   description: String
   location: String?

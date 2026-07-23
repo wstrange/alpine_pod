@@ -1,6 +1,7 @@
 class: NotificationTemplate
 table: notification_template
 fields:
+  id: UuidValue?, defaultPersist=random_v7
   name: String
   titleTemplate: String
   bodyTemplate: String

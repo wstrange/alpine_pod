@@ -17,8 +17,8 @@ class EventManagersManager extends HookWidget {
     required this.onChanged,
   });
 
-  final int? eventId;
-  final int sectionId;
+  final UuidValue? eventId;
+  final UuidValue sectionId;
   final List<Member> managers;
   final Function(List<Member>) onChanged;
 
@@ -47,17 +47,9 @@ class EventManagersManager extends HookWidget {
         ),
         const SizedBox(height: 8),
         if (managers.isNotEmpty)
-          ...managers.map(
-            (member) => _ManagerTile(
-              member: member,
-              onRemove: () => _removeManager(context, member),
-            ),
-          )
+          ...managers.map((member) => _ManagerTile(member: member, onRemove: () => _removeManager(context, member)))
         else
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 8),
-            child: Text('No managers assigned.'),
-          ),
+          const Padding(padding: EdgeInsets.symmetric(vertical: 8), child: Text('No managers assigned.')),
       ],
     );
   }
@@ -67,9 +59,7 @@ class EventManagersManager extends HookWidget {
 
     // Don't allow removing if it's the only manager and we are editing
     if (managers.length <= 1 && eventId != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('At least one manager is required.')),
-      );
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('At least one manager is required.')));
       return;
     }
 
@@ -79,10 +69,7 @@ class EventManagersManager extends HookWidget {
         title: const Text('Remove Manager'),
         content: Text('Remove $name as an event manager?'),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Cancel'),
-          ),
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
           FilledButton(
             onPressed: () => Navigator.pop(ctx, true),
             style: FilledButton.styleFrom(backgroundColor: Colors.red.shade600),
@@ -97,15 +84,11 @@ class EventManagersManager extends HookWidget {
     if (eventId != null) {
       // Immediate server action
       try {
-        await client.eventManager.removeEventManager(
-          EventManager(eventId: eventId!, memberId: member.id!),
-        );
+        await client.eventManager.removeEventManager(EventManager(eventId: eventId!, memberId: member.id!));
         onChanged(managers.where((m) => m.id != member.id).toList());
       } catch (e) {
         if (context.mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text('Error removing manager: $e')));
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error removing manager: $e')));
         }
       }
     } else {
@@ -124,15 +107,11 @@ class EventManagersManager extends HookWidget {
           if (eventId != null) {
             // Immediate server action
             try {
-              await client.eventManager.assignEventManager(
-                EventManager(eventId: eventId!, memberId: member.id!),
-              );
+              await client.eventManager.assignEventManager(EventManager(eventId: eventId!, memberId: member.id!));
               onChanged([...managers, member]);
             } catch (e) {
               if (context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Error adding manager: $e')),
-                );
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error adding manager: $e')));
               }
             }
           } else {
@@ -158,11 +137,7 @@ class _ManagerTile extends StatelessWidget {
     return ListTile(
       dense: true,
       contentPadding: const EdgeInsets.symmetric(horizontal: 4),
-      leading: MemberAvatar(
-        member: member,
-        radius: 18,
-        initialsStyle: const TextStyle(fontSize: 14),
-      ),
+      leading: MemberAvatar(member: member, radius: 18, initialsStyle: const TextStyle(fontSize: 14)),
       title: Text(name, style: const TextStyle(fontSize: 14)),
       subtitle: Text(member.email, style: const TextStyle(fontSize: 12)),
       onTap: () => showMemberDetailsDialog(context, member),
@@ -176,14 +151,10 @@ class _ManagerTile extends StatelessWidget {
 }
 
 class _AddManagerDialog extends HookWidget {
-  const _AddManagerDialog({
-    required this.sectionId,
-    required this.alreadyManagerIds,
-    required this.onAdded,
-  });
+  const _AddManagerDialog({required this.sectionId, required this.alreadyManagerIds, required this.onAdded});
 
-  final int sectionId;
-  final Set<int> alreadyManagerIds;
+  final UuidValue sectionId;
+  final Set<UuidValue> alreadyManagerIds;
   final Function(Member) onAdded;
 
   @override
@@ -241,32 +212,22 @@ class _AddManagerDialog extends HookWidget {
             ),
             const SizedBox(height: 8),
             if (membersSnapshot.connectionState == ConnectionState.waiting)
-              const Padding(
-                padding: EdgeInsets.all(16),
-                child: CircularProgressIndicator(),
-              )
+              const Padding(padding: EdgeInsets.all(16), child: CircularProgressIndicator())
             else if (membersSnapshot.hasError)
               Text('Error loading members: ${membersSnapshot.error}')
             else
               ConstrainedBox(
                 constraints: const BoxConstraints(maxHeight: 300),
                 child: filtered.isEmpty
-                    ? const Padding(
-                        padding: EdgeInsets.all(16),
-                        child: Text('No members found.'),
-                      )
+                    ? const Padding(padding: EdgeInsets.all(16), child: Text('No members found.'))
                     : ListView.separated(
                         shrinkWrap: true,
                         itemCount: filtered.length,
                         separatorBuilder: (_, _) => const Divider(height: 1),
                         itemBuilder: (ctx, i) {
                           final member = filtered[i];
-                          final alreadyIn = alreadyManagerIds.contains(
-                            member.id,
-                          );
-                          final name =
-                              member.displayName ??
-                              '${member.firstName} ${member.lastName}';
+                          final alreadyIn = alreadyManagerIds.contains(member.id);
+                          final name = member.displayName ?? '${member.firstName} ${member.lastName}';
                           return ListTile(
                             dense: true,
                             leading: MemberAvatar(
@@ -276,9 +237,7 @@ class _AddManagerDialog extends HookWidget {
                             ),
                             title: Text(name),
                             subtitle: Text(member.email),
-                            trailing: alreadyIn
-                                ? const Icon(Icons.check, color: Colors.green)
-                                : null,
+                            trailing: alreadyIn ? const Icon(Icons.check, color: Colors.green) : null,
                             enabled: !alreadyIn && !isLoading.value,
                             onTap: alreadyIn || isLoading.value
                                 ? null
@@ -293,12 +252,7 @@ class _AddManagerDialog extends HookWidget {
           ],
         ),
       ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Close'),
-        ),
-      ],
+      actions: [TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Close'))],
     );
   }
 }

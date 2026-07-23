@@ -1,0 +1,7 @@
+class: MemberInfo
+table: member_info
+database: client
+fields:
+  id: UuidValue?, defaultPersist=random_v7
+  firstName: String
+  lastName: String

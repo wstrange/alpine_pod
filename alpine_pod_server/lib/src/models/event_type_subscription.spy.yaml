@@ -1,9 +1,0 @@
-class: EventTypeSubscription
-table: event_type_subscriptions
-fields:
-  user: module:serverpod_auth_core:AuthUser?, relation(onDelete=Cascade)
-  eventType: String
-indexes:
-  user_event_type_idx:
-    fields: userId, eventType
-    unique: true

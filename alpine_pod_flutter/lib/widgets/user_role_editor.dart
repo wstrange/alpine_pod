@@ -5,16 +5,11 @@ import 'package:alpine_pod_client/alpine_pod_client.dart';
 import '../signals.dart';
 
 class UserRoleEditor extends HookWidget {
-  final int memberId;
-  final int sectionId;
+  final UuidValue memberId;
+  final UuidValue sectionId;
   final String? sectionName;
 
-  const UserRoleEditor({
-    super.key,
-    required this.memberId,
-    required this.sectionId,
-    this.sectionName,
-  });
+  const UserRoleEditor({super.key, required this.memberId, required this.sectionId, this.sectionName});
 
   @override
   Widget build(BuildContext context) {
@@ -37,8 +32,7 @@ class UserRoleEditor extends HookWidget {
         final isAdmin = isGlobalAdminSignal.value;
         final myMemberships = allMySectionMembershipsSignal.value.value ?? [];
         final isManagerOfThisSection = myMemberships.any(
-          (m) =>
-              m.sectionId == sectionId && m.scopes.contains('sectionManager'),
+          (m) => m.sectionId == sectionId && m.scopes.contains('sectionManager'),
         );
 
         final canEdit = isAdmin || isManagerOfThisSection;
@@ -52,21 +46,12 @@ class UserRoleEditor extends HookWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (sectionName != null)
-                  Text(
-                    sectionName!,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  Text(sectionName!, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 8),
                 switch (membershipValue) {
                   AsyncError(error: final e) => Text('Error: $e'),
                   AsyncLoading() => const Center(
-                    child: Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: CircularProgressIndicator(),
-                    ),
+                    child: Padding(padding: EdgeInsets.all(8.0), child: CircularProgressIndicator()),
                   ),
                   AsyncData(value: final membership) => _RoleSelector(
                     membership: membership,
@@ -74,25 +59,17 @@ class UserRoleEditor extends HookWidget {
                     isGlobalAdmin: isAdmin,
                     onChanged: (newScopes) async {
                       try {
-                        await client.member.updateMemberScopes(
-                          memberId,
-                          sectionId,
-                          newScopes,
-                        );
+                        await client.member.updateMemberScopes(memberId, sectionId, newScopes);
                         // Invalidate the signal to trigger a refresh
                         membershipSignal.refresh();
                         if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Roles updated')),
-                          );
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Roles updated')));
                         }
                       } catch (e) {
                         if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('Failed to update roles: $e'),
-                            ),
-                          );
+                          ScaffoldMessenger.of(
+                            context,
+                          ).showSnackBar(SnackBar(content: Text('Failed to update roles: $e')));
                         }
                       }
                     },
@@ -132,11 +109,7 @@ class _RoleSelector extends HookWidget {
     final roles = [
       ('member', 'Member', 'Basic access to the section.'),
       ('eventManager', 'Trip Leader', 'Can manage events they lead.'),
-      (
-        'sectionManager',
-        'Section Manager',
-        'Can manage section users and events.',
-      ),
+      ('sectionManager', 'Section Manager', 'Can manage section users and events.'),
       ('admin', 'Admin', 'Full global administrative access.'),
     ];
 

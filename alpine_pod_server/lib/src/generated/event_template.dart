@@ -13,7 +13,7 @@
 import 'package:serverpod/serverpod.dart' as _i1;
 
 abstract class EventTemplate
-    implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
+    implements _i1.TableRow<_i1.UuidValue?>, _i1.ProtocolSerialization {
   EventTemplate._({
     this.id,
     required this.name,
@@ -23,7 +23,7 @@ abstract class EventTemplate
   }) : language = language ?? 'en';
 
   factory EventTemplate({
-    int? id,
+    _i1.UuidValue? id,
     required String name,
     required String description,
     required String content,
@@ -32,7 +32,9 @@ abstract class EventTemplate
 
   factory EventTemplate.fromJson(Map<String, dynamic> jsonSerialization) {
     return EventTemplate(
-      id: jsonSerialization['id'] as int?,
+      id: jsonSerialization['id'] == null
+          ? null
+          : _i1.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
       name: jsonSerialization['name'] as String,
       description: jsonSerialization['description'] as String,
       content: jsonSerialization['content'] as String,
@@ -45,7 +47,7 @@ abstract class EventTemplate
   static const db = EventTemplateRepository._();
 
   @override
-  int? id;
+  _i1.UuidValue? id;
 
   String name;
 
@@ -56,13 +58,13 @@ abstract class EventTemplate
   String language;
 
   @override
-  _i1.Table<int?> get table => t;
+  _i1.Table<_i1.UuidValue?> get table => t;
 
   /// Returns a shallow copy of this [EventTemplate]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
   EventTemplate copyWith({
-    int? id,
+    _i1.UuidValue? id,
     String? name,
     String? description,
     String? content,
@@ -72,7 +74,7 @@ abstract class EventTemplate
   Map<String, dynamic> toJson() {
     return {
       '__className__': 'EventTemplate',
-      if (id != null) 'id': id,
+      if (id != null) 'id': id?.toJson(),
       'name': name,
       'description': description,
       'content': content,
@@ -84,7 +86,7 @@ abstract class EventTemplate
   Map<String, dynamic> toJsonForProtocol() {
     return {
       '__className__': 'EventTemplate',
-      if (id != null) 'id': id,
+      if (id != null) 'id': id?.toJson(),
       'name': name,
       'description': description,
       'content': content,
@@ -128,7 +130,7 @@ class _Undefined {}
 
 class _EventTemplateImpl extends EventTemplate {
   _EventTemplateImpl({
-    int? id,
+    _i1.UuidValue? id,
     required String name,
     required String description,
     required String content,
@@ -153,7 +155,7 @@ class _EventTemplateImpl extends EventTemplate {
     String? language,
   }) {
     return EventTemplate(
-      id: id is int? ? id : this.id,
+      id: id is _i1.UuidValue? ? id : this.id,
       name: name ?? this.name,
       description: description ?? this.description,
       content: content ?? this.content,
@@ -186,7 +188,7 @@ class EventTemplateUpdateTable extends _i1.UpdateTable<EventTemplateTable> {
   );
 }
 
-class EventTemplateTable extends _i1.Table<int?> {
+class EventTemplateTable extends _i1.Table<_i1.UuidValue?> {
   EventTemplateTable({super.tableRelation})
     : super(tableName: 'event_templates') {
     updateTable = EventTemplateUpdateTable(this);
@@ -236,7 +238,7 @@ class EventTemplateInclude extends _i1.IncludeObject {
   Map<String, _i1.Include?> get includes => {};
 
   @override
-  _i1.Table<int?> get table => EventTemplate.t;
+  _i1.Table<_i1.UuidValue?> get table => EventTemplate.t;
 }
 
 class EventTemplateIncludeList extends _i1.IncludeList {
@@ -257,7 +259,7 @@ class EventTemplateIncludeList extends _i1.IncludeList {
   Map<String, _i1.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<int?> get table => EventTemplate.t;
+  _i1.Table<_i1.UuidValue?> get table => EventTemplate.t;
 }
 
 class EventTemplateRepository {
@@ -357,7 +359,7 @@ class EventTemplateRepository {
   /// Finds a single [EventTemplate] by its [id] or null if no such row exists.
   Future<EventTemplate?> findById(
     _i1.DatabaseSession session,
-    int id, {
+    _i1.UuidValue id, {
     _i1.Transaction? transaction,
     _i1.LockMode? lockMode,
     _i1.LockBehavior? lockBehavior,
@@ -526,7 +528,7 @@ class EventTemplateRepository {
   /// Returns the updated row or null if no row with the given id exists.
   Future<EventTemplate?> updateById(
     _i1.DatabaseSession session,
-    int id, {
+    _i1.UuidValue id, {
     required _i1.ColumnValueListBuilder<EventTemplateUpdateTable> columnValues,
     _i1.Transaction? transaction,
   }) async {

@@ -13,7 +13,7 @@
 import 'package:serverpod/serverpod.dart' as _i1;
 
 abstract class Section
-    implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
+    implements _i1.TableRow<_i1.UuidValue?>, _i1.ProtocolSerialization {
   Section._({
     this.id,
     required this.name,
@@ -23,7 +23,7 @@ abstract class Section
   });
 
   factory Section({
-    int? id,
+    _i1.UuidValue? id,
     required String name,
     required String description,
     String? location,
@@ -32,7 +32,9 @@ abstract class Section
 
   factory Section.fromJson(Map<String, dynamic> jsonSerialization) {
     return Section(
-      id: jsonSerialization['id'] as int?,
+      id: jsonSerialization['id'] == null
+          ? null
+          : _i1.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
       name: jsonSerialization['name'] as String,
       description: jsonSerialization['description'] as String,
       location: jsonSerialization['location'] as String?,
@@ -45,7 +47,7 @@ abstract class Section
   static const db = SectionRepository._();
 
   @override
-  int? id;
+  _i1.UuidValue? id;
 
   String name;
 
@@ -56,13 +58,13 @@ abstract class Section
   String? contactInfo;
 
   @override
-  _i1.Table<int?> get table => t;
+  _i1.Table<_i1.UuidValue?> get table => t;
 
   /// Returns a shallow copy of this [Section]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
   Section copyWith({
-    int? id,
+    _i1.UuidValue? id,
     String? name,
     String? description,
     String? location,
@@ -72,7 +74,7 @@ abstract class Section
   Map<String, dynamic> toJson() {
     return {
       '__className__': 'Section',
-      if (id != null) 'id': id,
+      if (id != null) 'id': id?.toJson(),
       'name': name,
       'description': description,
       if (location != null) 'location': location,
@@ -84,7 +86,7 @@ abstract class Section
   Map<String, dynamic> toJsonForProtocol() {
     return {
       '__className__': 'Section',
-      if (id != null) 'id': id,
+      if (id != null) 'id': id?.toJson(),
       'name': name,
       'description': description,
       if (location != null) 'location': location,
@@ -128,7 +130,7 @@ class _Undefined {}
 
 class _SectionImpl extends Section {
   _SectionImpl({
-    int? id,
+    _i1.UuidValue? id,
     required String name,
     required String description,
     String? location,
@@ -153,7 +155,7 @@ class _SectionImpl extends Section {
     Object? contactInfo = _Undefined,
   }) {
     return Section(
-      id: id is int? ? id : this.id,
+      id: id is _i1.UuidValue? ? id : this.id,
       name: name ?? this.name,
       description: description ?? this.description,
       location: location is String? ? location : this.location,
@@ -186,7 +188,7 @@ class SectionUpdateTable extends _i1.UpdateTable<SectionTable> {
   );
 }
 
-class SectionTable extends _i1.Table<int?> {
+class SectionTable extends _i1.Table<_i1.UuidValue?> {
   SectionTable({super.tableRelation}) : super(tableName: 'sections') {
     updateTable = SectionUpdateTable(this);
     name = _i1.ColumnString(
@@ -234,7 +236,7 @@ class SectionInclude extends _i1.IncludeObject {
   Map<String, _i1.Include?> get includes => {};
 
   @override
-  _i1.Table<int?> get table => Section.t;
+  _i1.Table<_i1.UuidValue?> get table => Section.t;
 }
 
 class SectionIncludeList extends _i1.IncludeList {
@@ -255,7 +257,7 @@ class SectionIncludeList extends _i1.IncludeList {
   Map<String, _i1.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<int?> get table => Section.t;
+  _i1.Table<_i1.UuidValue?> get table => Section.t;
 }
 
 class SectionRepository {
@@ -355,7 +357,7 @@ class SectionRepository {
   /// Finds a single [Section] by its [id] or null if no such row exists.
   Future<Section?> findById(
     _i1.DatabaseSession session,
-    int id, {
+    _i1.UuidValue id, {
     _i1.Transaction? transaction,
     _i1.LockMode? lockMode,
     _i1.LockBehavior? lockBehavior,
@@ -524,7 +526,7 @@ class SectionRepository {
   /// Returns the updated row or null if no row with the given id exists.
   Future<Section?> updateById(
     _i1.DatabaseSession session,
-    int id, {
+    _i1.UuidValue id, {
     required _i1.ColumnValueListBuilder<SectionUpdateTable> columnValues,
     _i1.Transaction? transaction,
   }) async {

@@ -24,7 +24,7 @@ abstract class NotificationTemplate implements _i1.SerializableModel {
   });
 
   factory NotificationTemplate({
-    int? id,
+    _i1.UuidValue? id,
     required String name,
     required String titleTemplate,
     required String bodyTemplate,
@@ -37,7 +37,9 @@ abstract class NotificationTemplate implements _i1.SerializableModel {
     Map<String, dynamic> jsonSerialization,
   ) {
     return NotificationTemplate(
-      id: jsonSerialization['id'] as int?,
+      id: jsonSerialization['id'] == null
+          ? null
+          : _i1.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
       name: jsonSerialization['name'] as String,
       titleTemplate: jsonSerialization['titleTemplate'] as String,
       bodyTemplate: jsonSerialization['bodyTemplate'] as String,
@@ -54,7 +56,7 @@ abstract class NotificationTemplate implements _i1.SerializableModel {
   /// The database id, set if the object has been inserted into the
   /// database or if it has been fetched from the database. Otherwise,
   /// the id will be null.
-  int? id;
+  _i1.UuidValue? id;
 
   String name;
 
@@ -72,7 +74,7 @@ abstract class NotificationTemplate implements _i1.SerializableModel {
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
   NotificationTemplate copyWith({
-    int? id,
+    _i1.UuidValue? id,
     String? name,
     String? titleTemplate,
     String? bodyTemplate,
@@ -84,7 +86,7 @@ abstract class NotificationTemplate implements _i1.SerializableModel {
   Map<String, dynamic> toJson() {
     return {
       '__className__': 'NotificationTemplate',
-      if (id != null) 'id': id,
+      if (id != null) 'id': id?.toJson(),
       'name': name,
       'titleTemplate': titleTemplate,
       'bodyTemplate': bodyTemplate,
@@ -104,7 +106,7 @@ class _Undefined {}
 
 class _NotificationTemplateImpl extends NotificationTemplate {
   _NotificationTemplateImpl({
-    int? id,
+    _i1.UuidValue? id,
     required String name,
     required String titleTemplate,
     required String bodyTemplate,
@@ -135,7 +137,7 @@ class _NotificationTemplateImpl extends NotificationTemplate {
     DateTime? updatedAt,
   }) {
     return NotificationTemplate(
-      id: id is int? ? id : this.id,
+      id: id is _i1.UuidValue? ? id : this.id,
       name: name ?? this.name,
       titleTemplate: titleTemplate ?? this.titleTemplate,
       bodyTemplate: bodyTemplate ?? this.bodyTemplate,

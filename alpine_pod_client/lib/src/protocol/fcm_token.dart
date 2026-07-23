@@ -26,7 +26,7 @@ abstract class FcmToken implements _i1.SerializableModel {
   }) : updatedAt = updatedAt ?? DateTime.now();
 
   factory FcmToken({
-    int? id,
+    _i1.UuidValue? id,
     required _i1.UuidValue userId,
     _i2.AuthUser? user,
     required String token,
@@ -36,7 +36,9 @@ abstract class FcmToken implements _i1.SerializableModel {
 
   factory FcmToken.fromJson(Map<String, dynamic> jsonSerialization) {
     return FcmToken(
-      id: jsonSerialization['id'] as int?,
+      id: jsonSerialization['id'] == null
+          ? null
+          : _i1.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
       userId: _i1.UuidValueJsonExtension.fromJson(jsonSerialization['userId']),
       user: jsonSerialization['user'] == null
           ? null
@@ -52,7 +54,7 @@ abstract class FcmToken implements _i1.SerializableModel {
   /// The database id, set if the object has been inserted into the
   /// database or if it has been fetched from the database. Otherwise,
   /// the id will be null.
-  int? id;
+  _i1.UuidValue? id;
 
   _i1.UuidValue userId;
 
@@ -68,7 +70,7 @@ abstract class FcmToken implements _i1.SerializableModel {
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
   FcmToken copyWith({
-    int? id,
+    _i1.UuidValue? id,
     _i1.UuidValue? userId,
     _i2.AuthUser? user,
     String? token,
@@ -79,7 +81,7 @@ abstract class FcmToken implements _i1.SerializableModel {
   Map<String, dynamic> toJson() {
     return {
       '__className__': 'FcmToken',
-      if (id != null) 'id': id,
+      if (id != null) 'id': id?.toJson(),
       'userId': userId.toJson(),
       if (user != null) 'user': user?.toJson(),
       'token': token,
@@ -98,7 +100,7 @@ class _Undefined {}
 
 class _FcmTokenImpl extends FcmToken {
   _FcmTokenImpl({
-    int? id,
+    _i1.UuidValue? id,
     required _i1.UuidValue userId,
     _i2.AuthUser? user,
     required String token,
@@ -126,7 +128,7 @@ class _FcmTokenImpl extends FcmToken {
     DateTime? updatedAt,
   }) {
     return FcmToken(
-      id: id is int? ? id : this.id,
+      id: id is _i1.UuidValue? ? id : this.id,
       userId: userId ?? this.userId,
       user: user is _i2.AuthUser? ? user : this.user?.copyWith(),
       token: token ?? this.token,

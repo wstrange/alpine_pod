@@ -18,7 +18,7 @@ import 'registration_status.dart' as _i4;
 import 'package:alpine_pod_server/src/generated/protocol.dart' as _i5;
 
 abstract class EventRegistration
-    implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
+    implements _i1.TableRow<_i1.UuidValue?>, _i1.ProtocolSerialization {
   EventRegistration._({
     this.id,
     required this.memberId,
@@ -43,10 +43,10 @@ abstract class EventRegistration
        noShow = noShow ?? false;
 
   factory EventRegistration({
-    int? id,
-    required int memberId,
+    _i1.UuidValue? id,
+    required _i1.UuidValue memberId,
     _i2.Member? member,
-    required int eventId,
+    required _i1.UuidValue eventId,
     _i3.Event? event,
     required _i4.RegistrationStatus registrationStatus,
     required DateTime registrationDate,
@@ -64,12 +64,18 @@ abstract class EventRegistration
 
   factory EventRegistration.fromJson(Map<String, dynamic> jsonSerialization) {
     return EventRegistration(
-      id: jsonSerialization['id'] as int?,
-      memberId: jsonSerialization['memberId'] as int,
+      id: jsonSerialization['id'] == null
+          ? null
+          : _i1.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
+      memberId: _i1.UuidValueJsonExtension.fromJson(
+        jsonSerialization['memberId'],
+      ),
       member: jsonSerialization['member'] == null
           ? null
           : _i5.Protocol().deserialize<_i2.Member>(jsonSerialization['member']),
-      eventId: jsonSerialization['eventId'] as int,
+      eventId: _i1.UuidValueJsonExtension.fromJson(
+        jsonSerialization['eventId'],
+      ),
       event: jsonSerialization['event'] == null
           ? null
           : _i5.Protocol().deserialize<_i3.Event>(jsonSerialization['event']),
@@ -107,13 +113,13 @@ abstract class EventRegistration
   static const db = EventRegistrationRepository._();
 
   @override
-  int? id;
+  _i1.UuidValue? id;
 
-  int memberId;
+  _i1.UuidValue memberId;
 
   _i2.Member? member;
 
-  int eventId;
+  _i1.UuidValue eventId;
 
   _i3.Event? event;
 
@@ -142,16 +148,16 @@ abstract class EventRegistration
   bool noShow;
 
   @override
-  _i1.Table<int?> get table => t;
+  _i1.Table<_i1.UuidValue?> get table => t;
 
   /// Returns a shallow copy of this [EventRegistration]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
   EventRegistration copyWith({
-    int? id,
-    int? memberId,
+    _i1.UuidValue? id,
+    _i1.UuidValue? memberId,
     _i2.Member? member,
-    int? eventId,
+    _i1.UuidValue? eventId,
     _i3.Event? event,
     _i4.RegistrationStatus? registrationStatus,
     DateTime? registrationDate,
@@ -170,10 +176,10 @@ abstract class EventRegistration
   Map<String, dynamic> toJson() {
     return {
       '__className__': 'EventRegistration',
-      if (id != null) 'id': id,
-      'memberId': memberId,
+      if (id != null) 'id': id?.toJson(),
+      'memberId': memberId.toJson(),
       if (member != null) 'member': member?.toJson(),
-      'eventId': eventId,
+      'eventId': eventId.toJson(),
       if (event != null) 'event': event?.toJson(),
       'registrationStatus': registrationStatus.toJson(),
       'registrationDate': registrationDate.toJson(),
@@ -194,10 +200,10 @@ abstract class EventRegistration
   Map<String, dynamic> toJsonForProtocol() {
     return {
       '__className__': 'EventRegistration',
-      if (id != null) 'id': id,
-      'memberId': memberId,
+      if (id != null) 'id': id?.toJson(),
+      'memberId': memberId.toJson(),
       if (member != null) 'member': member?.toJsonForProtocol(),
-      'eventId': eventId,
+      'eventId': eventId.toJson(),
       if (event != null) 'event': event?.toJsonForProtocol(),
       'registrationStatus': registrationStatus.toJson(),
       'registrationDate': registrationDate.toJson(),
@@ -256,10 +262,10 @@ class _Undefined {}
 
 class _EventRegistrationImpl extends EventRegistration {
   _EventRegistrationImpl({
-    int? id,
-    required int memberId,
+    _i1.UuidValue? id,
+    required _i1.UuidValue memberId,
     _i2.Member? member,
-    required int eventId,
+    required _i1.UuidValue eventId,
     _i3.Event? event,
     required _i4.RegistrationStatus registrationStatus,
     required DateTime registrationDate,
@@ -299,9 +305,9 @@ class _EventRegistrationImpl extends EventRegistration {
   @override
   EventRegistration copyWith({
     Object? id = _Undefined,
-    int? memberId,
+    _i1.UuidValue? memberId,
     Object? member = _Undefined,
-    int? eventId,
+    _i1.UuidValue? eventId,
     Object? event = _Undefined,
     _i4.RegistrationStatus? registrationStatus,
     DateTime? registrationDate,
@@ -317,7 +323,7 @@ class _EventRegistrationImpl extends EventRegistration {
     bool? noShow,
   }) {
     return EventRegistration(
-      id: id is int? ? id : this.id,
+      id: id is _i1.UuidValue? ? id : this.id,
       memberId: memberId ?? this.memberId,
       member: member is _i2.Member? ? member : this.member?.copyWith(),
       eventId: eventId ?? this.eventId,
@@ -350,15 +356,17 @@ class EventRegistrationUpdateTable
     extends _i1.UpdateTable<EventRegistrationTable> {
   EventRegistrationUpdateTable(super.table);
 
-  _i1.ColumnValue<int, int> memberId(int value) => _i1.ColumnValue(
-    table.memberId,
-    value,
-  );
+  _i1.ColumnValue<_i1.UuidValue, _i1.UuidValue> memberId(_i1.UuidValue value) =>
+      _i1.ColumnValue(
+        table.memberId,
+        value,
+      );
 
-  _i1.ColumnValue<int, int> eventId(int value) => _i1.ColumnValue(
-    table.eventId,
-    value,
-  );
+  _i1.ColumnValue<_i1.UuidValue, _i1.UuidValue> eventId(_i1.UuidValue value) =>
+      _i1.ColumnValue(
+        table.eventId,
+        value,
+      );
 
   _i1.ColumnValue<_i4.RegistrationStatus, _i4.RegistrationStatus>
   registrationStatus(_i4.RegistrationStatus value) => _i1.ColumnValue(
@@ -429,15 +437,15 @@ class EventRegistrationUpdateTable
   );
 }
 
-class EventRegistrationTable extends _i1.Table<int?> {
+class EventRegistrationTable extends _i1.Table<_i1.UuidValue?> {
   EventRegistrationTable({super.tableRelation})
     : super(tableName: 'event_registrations') {
     updateTable = EventRegistrationUpdateTable(this);
-    memberId = _i1.ColumnInt(
+    memberId = _i1.ColumnUuid(
       'memberId',
       this,
     );
-    eventId = _i1.ColumnInt(
+    eventId = _i1.ColumnUuid(
       'eventId',
       this,
     );
@@ -498,11 +506,11 @@ class EventRegistrationTable extends _i1.Table<int?> {
 
   late final EventRegistrationUpdateTable updateTable;
 
-  late final _i1.ColumnInt memberId;
+  late final _i1.ColumnUuid memberId;
 
   _i2.MemberTable? _member;
 
-  late final _i1.ColumnInt eventId;
+  late final _i1.ColumnUuid eventId;
 
   _i3.EventTable? _event;
 
@@ -607,7 +615,7 @@ class EventRegistrationInclude extends _i1.IncludeObject {
   };
 
   @override
-  _i1.Table<int?> get table => EventRegistration.t;
+  _i1.Table<_i1.UuidValue?> get table => EventRegistration.t;
 }
 
 class EventRegistrationIncludeList extends _i1.IncludeList {
@@ -628,7 +636,7 @@ class EventRegistrationIncludeList extends _i1.IncludeList {
   Map<String, _i1.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<int?> get table => EventRegistration.t;
+  _i1.Table<_i1.UuidValue?> get table => EventRegistration.t;
 }
 
 class EventRegistrationRepository {
@@ -734,7 +742,7 @@ class EventRegistrationRepository {
   /// Finds a single [EventRegistration] by its [id] or null if no such row exists.
   Future<EventRegistration?> findById(
     _i1.DatabaseSession session,
-    int id, {
+    _i1.UuidValue id, {
     _i1.Transaction? transaction,
     EventRegistrationInclude? include,
     _i1.LockMode? lockMode,
@@ -905,7 +913,7 @@ class EventRegistrationRepository {
   /// Returns the updated row or null if no row with the given id exists.
   Future<EventRegistration?> updateById(
     _i1.DatabaseSession session,
-    int id, {
+    _i1.UuidValue id, {
     required _i1.ColumnValueListBuilder<EventRegistrationUpdateTable>
     columnValues,
     _i1.Transaction? transaction,

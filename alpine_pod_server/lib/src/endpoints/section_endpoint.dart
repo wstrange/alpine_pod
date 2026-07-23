@@ -9,7 +9,7 @@ class SectionEndpoint extends Endpoint {
   // @override
   // Set<Scope> get requiredScopes => {Scope.admin};
 
-  Future<Section?> getSection(Session session, int id) async {
+  Future<Section?> getSection(Session session, UuidValue id) async {
     return await Section.db.findById(session, id);
   }
 

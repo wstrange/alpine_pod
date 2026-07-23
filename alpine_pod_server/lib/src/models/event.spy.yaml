@@ -1,6 +1,7 @@
 class: Event
 table: events
 fields:
+  id: UuidValue?, defaultPersist=random_v7
   title: String
   description: String
   type: String
@@ -8,6 +9,7 @@ fields:
   endTime: DateTime
   eventLocation: String?
   carpoolLocation: String?
+
   carpoolTime: DateTime?
   # Registration management
   registrationDeadline: DateTime?

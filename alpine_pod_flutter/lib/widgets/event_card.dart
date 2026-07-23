@@ -55,7 +55,10 @@ class EventCard extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(height: 2),
-                          Row(
+                          Wrap(
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            spacing: 8,
+                            runSpacing: 4,
                             children: [
                               Text(
                                 formatEventRange(
@@ -68,7 +71,6 @@ class EventCard extends StatelessWidget {
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              const SizedBox(width: 8),
                               Container(
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 8,
@@ -87,8 +89,7 @@ class EventCard extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              if (isPast) ...[
-                                const SizedBox(width: 8),
+                              if (isPast)
                                 Container(
                                   padding: const EdgeInsets.symmetric(
                                     horizontal: 6,
@@ -107,9 +108,7 @@ class EventCard extends StatelessWidget {
                                     ),
                                   ),
                                 ),
-                              ],
-                              if (!event.published) ...[
-                                const SizedBox(width: 8),
+                              if (!event.published)
                                 Container(
                                   padding: const EdgeInsets.symmetric(
                                     horizontal: 6,
@@ -128,7 +127,6 @@ class EventCard extends StatelessWidget {
                                     ),
                                   ),
                                 ),
-                              ],
                             ],
                           ),
                         ],

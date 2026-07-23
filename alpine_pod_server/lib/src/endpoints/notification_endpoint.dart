@@ -34,7 +34,7 @@ class NotificationEndpoint extends Endpoint {
     await UserNotification.db.deleteWhere(session, where: (t) => t.userId.equals(currentUserId));
   }
 
-  Future<bool> markAsRead(Session session, int userNotificationId) async {
+  Future<bool> markAsRead(Session session, UuidValue userNotificationId) async {
     final authInfo = session.authenticated;
     final currentUserId = authInfo!.authUserId;
 

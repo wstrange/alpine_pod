@@ -18,7 +18,7 @@ import 'notification.dart' as _i3;
 import 'package:alpine_pod_server/src/generated/protocol.dart' as _i4;
 
 abstract class UserNotification
-    implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
+    implements _i1.TableRow<_i1.UuidValue?>, _i1.ProtocolSerialization {
   UserNotification._({
     this.id,
     required this.userId,
@@ -33,10 +33,10 @@ abstract class UserNotification
        isSeen = isSeen ?? false;
 
   factory UserNotification({
-    int? id,
+    _i1.UuidValue? id,
     required _i1.UuidValue userId,
     _i2.AuthUser? user,
-    required int notificationId,
+    required _i1.UuidValue notificationId,
     _i3.Notification? notification,
     bool? isRead,
     bool? isSeen,
@@ -46,12 +46,16 @@ abstract class UserNotification
 
   factory UserNotification.fromJson(Map<String, dynamic> jsonSerialization) {
     return UserNotification(
-      id: jsonSerialization['id'] as int?,
+      id: jsonSerialization['id'] == null
+          ? null
+          : _i1.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
       userId: _i1.UuidValueJsonExtension.fromJson(jsonSerialization['userId']),
       user: jsonSerialization['user'] == null
           ? null
           : _i4.Protocol().deserialize<_i2.AuthUser>(jsonSerialization['user']),
-      notificationId: jsonSerialization['notificationId'] as int,
+      notificationId: _i1.UuidValueJsonExtension.fromJson(
+        jsonSerialization['notificationId'],
+      ),
       notification: jsonSerialization['notification'] == null
           ? null
           : _i4.Protocol().deserialize<_i3.Notification>(
@@ -77,13 +81,13 @@ abstract class UserNotification
   static const db = UserNotificationRepository._();
 
   @override
-  int? id;
+  _i1.UuidValue? id;
 
   _i1.UuidValue userId;
 
   _i2.AuthUser? user;
 
-  int notificationId;
+  _i1.UuidValue notificationId;
 
   _i3.Notification? notification;
 
@@ -96,16 +100,16 @@ abstract class UserNotification
   DateTime createdAt;
 
   @override
-  _i1.Table<int?> get table => t;
+  _i1.Table<_i1.UuidValue?> get table => t;
 
   /// Returns a shallow copy of this [UserNotification]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
   UserNotification copyWith({
-    int? id,
+    _i1.UuidValue? id,
     _i1.UuidValue? userId,
     _i2.AuthUser? user,
-    int? notificationId,
+    _i1.UuidValue? notificationId,
     _i3.Notification? notification,
     bool? isRead,
     bool? isSeen,
@@ -116,10 +120,10 @@ abstract class UserNotification
   Map<String, dynamic> toJson() {
     return {
       '__className__': 'UserNotification',
-      if (id != null) 'id': id,
+      if (id != null) 'id': id?.toJson(),
       'userId': userId.toJson(),
       if (user != null) 'user': user?.toJson(),
-      'notificationId': notificationId,
+      'notificationId': notificationId.toJson(),
       if (notification != null) 'notification': notification?.toJson(),
       'isRead': isRead,
       'isSeen': isSeen,
@@ -132,10 +136,10 @@ abstract class UserNotification
   Map<String, dynamic> toJsonForProtocol() {
     return {
       '__className__': 'UserNotification',
-      if (id != null) 'id': id,
+      if (id != null) 'id': id?.toJson(),
       'userId': userId.toJson(),
       if (user != null) 'user': user?.toJsonForProtocol(),
-      'notificationId': notificationId,
+      'notificationId': notificationId.toJson(),
       if (notification != null)
         'notification': notification?.toJsonForProtocol(),
       'isRead': isRead,
@@ -187,10 +191,10 @@ class _Undefined {}
 
 class _UserNotificationImpl extends UserNotification {
   _UserNotificationImpl({
-    int? id,
+    _i1.UuidValue? id,
     required _i1.UuidValue userId,
     _i2.AuthUser? user,
-    required int notificationId,
+    required _i1.UuidValue notificationId,
     _i3.Notification? notification,
     bool? isRead,
     bool? isSeen,
@@ -216,7 +220,7 @@ class _UserNotificationImpl extends UserNotification {
     Object? id = _Undefined,
     _i1.UuidValue? userId,
     Object? user = _Undefined,
-    int? notificationId,
+    _i1.UuidValue? notificationId,
     Object? notification = _Undefined,
     bool? isRead,
     bool? isSeen,
@@ -224,7 +228,7 @@ class _UserNotificationImpl extends UserNotification {
     DateTime? createdAt,
   }) {
     return UserNotification(
-      id: id is int? ? id : this.id,
+      id: id is _i1.UuidValue? ? id : this.id,
       userId: userId ?? this.userId,
       user: user is _i2.AuthUser? ? user : this.user?.copyWith(),
       notificationId: notificationId ?? this.notificationId,
@@ -249,7 +253,9 @@ class UserNotificationUpdateTable
         value,
       );
 
-  _i1.ColumnValue<int, int> notificationId(int value) => _i1.ColumnValue(
+  _i1.ColumnValue<_i1.UuidValue, _i1.UuidValue> notificationId(
+    _i1.UuidValue value,
+  ) => _i1.ColumnValue(
     table.notificationId,
     value,
   );
@@ -277,7 +283,7 @@ class UserNotificationUpdateTable
       );
 }
 
-class UserNotificationTable extends _i1.Table<int?> {
+class UserNotificationTable extends _i1.Table<_i1.UuidValue?> {
   UserNotificationTable({super.tableRelation})
     : super(tableName: 'user_notification') {
     updateTable = UserNotificationUpdateTable(this);
@@ -285,7 +291,7 @@ class UserNotificationTable extends _i1.Table<int?> {
       'userId',
       this,
     );
-    notificationId = _i1.ColumnInt(
+    notificationId = _i1.ColumnUuid(
       'notificationId',
       this,
     );
@@ -315,7 +321,7 @@ class UserNotificationTable extends _i1.Table<int?> {
 
   _i2.AuthUserTable? _user;
 
-  late final _i1.ColumnInt notificationId;
+  late final _i1.ColumnUuid notificationId;
 
   _i3.NotificationTable? _notification;
 
@@ -396,7 +402,7 @@ class UserNotificationInclude extends _i1.IncludeObject {
   };
 
   @override
-  _i1.Table<int?> get table => UserNotification.t;
+  _i1.Table<_i1.UuidValue?> get table => UserNotification.t;
 }
 
 class UserNotificationIncludeList extends _i1.IncludeList {
@@ -417,7 +423,7 @@ class UserNotificationIncludeList extends _i1.IncludeList {
   Map<String, _i1.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<int?> get table => UserNotification.t;
+  _i1.Table<_i1.UuidValue?> get table => UserNotification.t;
 }
 
 class UserNotificationRepository {
@@ -523,7 +529,7 @@ class UserNotificationRepository {
   /// Finds a single [UserNotification] by its [id] or null if no such row exists.
   Future<UserNotification?> findById(
     _i1.DatabaseSession session,
-    int id, {
+    _i1.UuidValue id, {
     _i1.Transaction? transaction,
     UserNotificationInclude? include,
     _i1.LockMode? lockMode,
@@ -694,7 +700,7 @@ class UserNotificationRepository {
   /// Returns the updated row or null if no row with the given id exists.
   Future<UserNotification?> updateById(
     _i1.DatabaseSession session,
-    int id, {
+    _i1.UuidValue id, {
     required _i1.ColumnValueListBuilder<UserNotificationUpdateTable>
     columnValues,
     _i1.Transaction? transaction,

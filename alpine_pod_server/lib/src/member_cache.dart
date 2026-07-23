@@ -92,7 +92,7 @@ class MemberCache {
     _cache.clear();
   }
 
-  Future<bool> isSectionMember(Session session, int sectionId) async {
+  Future<bool> isSectionMember(Session session, UuidValue sectionId) async {
     final info = await getMemberInfo(session);
     if (info == null) return false;
     return info.sectionIds.contains(sectionId);
@@ -101,7 +101,7 @@ class MemberCache {
   /// Checks if the current user has permission to manage a specific event.
   /// This includes global admins, section managers of the event's section,
   /// and assigned event managers.
-  Future<bool> canManageEvent(Session session, int eventId) async {
+  Future<bool> canManageEvent(Session session, UuidValue eventId) async {
     final info = await getMemberInfo(session);
     if (info == null) return false;
 
@@ -125,7 +125,7 @@ class MemberCache {
 
   /// Checks if the current user has permission to create an event in the given section.
   /// Only global admins, section managers, and section-level event managers can create events.
-  Future<bool> canCreateEvent(Session session, int sectionId) async {
+  Future<bool> canCreateEvent(Session session, UuidValue sectionId) async {
     final info = await getMemberInfo(session);
     if (info == null) return false;
 
@@ -140,8 +140,8 @@ class MemberCache {
 /// Internal class to store cached member data with timestamp
 class MemberInfo {
   final Member member;
-  final Set<int> sectionIds;
-  final Map<int, Set<String>> sectionScopes;
+  final Set<UuidValue> sectionIds;
+  final Map<UuidValue, Set<String>> sectionScopes;
   final DateTime timestamp;
 
   const MemberInfo({
@@ -156,17 +156,17 @@ class MemberInfo {
       MemberCache._maxAgeMinutes;
 
   /// Returns the scopes for a specific section, or an empty set if not a member.
-  Set<String> scopesFor(int? sectionId) =>
+  Set<String> scopesFor(UuidValue? sectionId) =>
       sectionId == null ? {} : sectionScopes[sectionId] ?? {};
 
 
 
   /// Check if the user is a section manager for the given section
-  bool isSectionManager(int? sectionId) =>
+  bool isSectionManager(UuidValue? sectionId) =>
       scopesFor(sectionId).contains('sectionManager');
 
   /// Check if the user is an event manager for the given section
-  bool isEventManagerForSection(int? sectionId) =>
+  bool isEventManagerForSection(UuidValue? sectionId) =>
       scopesFor(sectionId).contains('eventManager');
 }
 

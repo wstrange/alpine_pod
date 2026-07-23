@@ -41,10 +41,10 @@ abstract class EventRegistration implements _i1.SerializableModel {
        noShow = noShow ?? false;
 
   factory EventRegistration({
-    int? id,
-    required int memberId,
+    _i1.UuidValue? id,
+    required _i1.UuidValue memberId,
     _i2.Member? member,
-    required int eventId,
+    required _i1.UuidValue eventId,
     _i3.Event? event,
     required _i4.RegistrationStatus registrationStatus,
     required DateTime registrationDate,
@@ -62,12 +62,18 @@ abstract class EventRegistration implements _i1.SerializableModel {
 
   factory EventRegistration.fromJson(Map<String, dynamic> jsonSerialization) {
     return EventRegistration(
-      id: jsonSerialization['id'] as int?,
-      memberId: jsonSerialization['memberId'] as int,
+      id: jsonSerialization['id'] == null
+          ? null
+          : _i1.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
+      memberId: _i1.UuidValueJsonExtension.fromJson(
+        jsonSerialization['memberId'],
+      ),
       member: jsonSerialization['member'] == null
           ? null
           : _i5.Protocol().deserialize<_i2.Member>(jsonSerialization['member']),
-      eventId: jsonSerialization['eventId'] as int,
+      eventId: _i1.UuidValueJsonExtension.fromJson(
+        jsonSerialization['eventId'],
+      ),
       event: jsonSerialization['event'] == null
           ? null
           : _i5.Protocol().deserialize<_i3.Event>(jsonSerialization['event']),
@@ -103,13 +109,13 @@ abstract class EventRegistration implements _i1.SerializableModel {
   /// The database id, set if the object has been inserted into the
   /// database or if it has been fetched from the database. Otherwise,
   /// the id will be null.
-  int? id;
+  _i1.UuidValue? id;
 
-  int memberId;
+  _i1.UuidValue memberId;
 
   _i2.Member? member;
 
-  int eventId;
+  _i1.UuidValue eventId;
 
   _i3.Event? event;
 
@@ -141,10 +147,10 @@ abstract class EventRegistration implements _i1.SerializableModel {
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
   EventRegistration copyWith({
-    int? id,
-    int? memberId,
+    _i1.UuidValue? id,
+    _i1.UuidValue? memberId,
     _i2.Member? member,
-    int? eventId,
+    _i1.UuidValue? eventId,
     _i3.Event? event,
     _i4.RegistrationStatus? registrationStatus,
     DateTime? registrationDate,
@@ -163,10 +169,10 @@ abstract class EventRegistration implements _i1.SerializableModel {
   Map<String, dynamic> toJson() {
     return {
       '__className__': 'EventRegistration',
-      if (id != null) 'id': id,
-      'memberId': memberId,
+      if (id != null) 'id': id?.toJson(),
+      'memberId': memberId.toJson(),
       if (member != null) 'member': member?.toJson(),
-      'eventId': eventId,
+      'eventId': eventId.toJson(),
       if (event != null) 'event': event?.toJson(),
       'registrationStatus': registrationStatus.toJson(),
       'registrationDate': registrationDate.toJson(),
@@ -193,10 +199,10 @@ class _Undefined {}
 
 class _EventRegistrationImpl extends EventRegistration {
   _EventRegistrationImpl({
-    int? id,
-    required int memberId,
+    _i1.UuidValue? id,
+    required _i1.UuidValue memberId,
     _i2.Member? member,
-    required int eventId,
+    required _i1.UuidValue eventId,
     _i3.Event? event,
     required _i4.RegistrationStatus registrationStatus,
     required DateTime registrationDate,
@@ -236,9 +242,9 @@ class _EventRegistrationImpl extends EventRegistration {
   @override
   EventRegistration copyWith({
     Object? id = _Undefined,
-    int? memberId,
+    _i1.UuidValue? memberId,
     Object? member = _Undefined,
-    int? eventId,
+    _i1.UuidValue? eventId,
     Object? event = _Undefined,
     _i4.RegistrationStatus? registrationStatus,
     DateTime? registrationDate,
@@ -254,7 +260,7 @@ class _EventRegistrationImpl extends EventRegistration {
     bool? noShow,
   }) {
     return EventRegistration(
-      id: id is int? ? id : this.id,
+      id: id is _i1.UuidValue? ? id : this.id,
       memberId: memberId ?? this.memberId,
       member: member is _i2.Member? ? member : this.member?.copyWith(),
       eventId: eventId ?? this.eventId,

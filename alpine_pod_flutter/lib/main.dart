@@ -1,14 +1,17 @@
 import 'dart:async';
 
 import 'package:alpine_pod_client/alpine_pod_client.dart';
-
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
+// import 'package:flutter/rendering.dart';
 import 'package:logging/logging.dart';
 import 'package:serverpod_auth_idp_flutter/serverpod_auth_idp_flutter.dart';
 import 'package:serverpod_auth_idp_flutter_facebook/serverpod_auth_idp_flutter_facebook.dart';
 // import 'package:serverpod_auth_idp_flutter_facebook/serverpod_auth_idp_flutter_facebook.dart';
 import 'package:serverpod_flutter/serverpod_flutter.dart';
+import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
+
 import 'signals.dart';
 import 'router.dart';
 
@@ -26,7 +29,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // For AG.
-  SemanticsBinding.instance.ensureSemantics();
+  // SemanticsBinding.instance.ensureSemantics();
   // enableFlutterDriverExtension();
 
   const serverUrlFromEnv = String.fromEnvironment('SERVER_URL');
@@ -53,6 +56,21 @@ void main() async {
     notificationsSignal.refresh(); // get updated notifications
   });
 
+  // try client side db
+  // does not currently work in Flutter Web
+  // Resolve the database path.
+  final path = await resolveDatabasePath('app.db');
+  final session = await client.createSession(path, isDebugMode: true);
+
+  print(session);
+
+  var r = await MemberInfo.db.insert(session, [MemberInfo(firstName: 'test', lastName: 'test')]);
+  print('1. db r = $r');
+  r = await MemberInfo.db.find(session);
+  print('2. db r = $r');
+  r = await MemberInfo.db.find(session, where: (t) => t.firstName.equals('test'));
+  print('3. db r = $r');
+
   runApp(const MyApp());
 }
 
@@ -67,4 +85,10 @@ class MyApp extends StatelessWidget {
       routerConfig: router,
     );
   }
+}
+
+Future<String> resolveDatabasePath(String fileName) async {
+  if (kIsWeb) return fileName;
+  final dir = await getApplicationSupportDirectory();
+  return p.join(dir.path, fileName);
 }

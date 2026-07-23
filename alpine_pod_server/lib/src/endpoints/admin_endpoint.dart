@@ -17,7 +17,7 @@ class AdminEndpoint extends Endpoint {
     return s;
   }
 
-  Future<Section?> getSection(Session session, int id) async {
+  Future<Section?> getSection(Session session, UuidValue id) async {
     return await Section.db.findById(session, id);
   }
 
@@ -26,7 +26,7 @@ class AdminEndpoint extends Endpoint {
     return section;
   }
 
-  Future<void> deleteSection(Session session, int id) async {
+  Future<void> deleteSection(Session session, UuidValue id) async {
     await Section.db.deleteWhere(session, where: (t) => t.id.equals(id));
   }
 
@@ -38,11 +38,11 @@ class AdminEndpoint extends Endpoint {
   //   return await Member.db.find(session);
   // }
 
-  Future<Member?> getMember(Session session, int id) async {
+  Future<Member?> getMember(Session session, UuidValue id) async {
     return await Member.db.findById(session, id);
   }
 
-  Future<void> deleteUser(Session session, int memberId) async {
+  Future<void> deleteUser(Session session, UuidValue memberId) async {
     session.log('Deleting user with memberId: $memberId', level: LogLevel.info);
 
     final member = await Member.db.findById(session, memberId);
@@ -99,7 +99,7 @@ class AdminEndpoint extends Endpoint {
   Future<void> clearNotificationDeliveries(Session session) async {
     await NotificationDelivery.db.deleteWhere(
       session,
-      where: (t) => t.id.notEquals(-1),
+      where: (t) => Constant.bool(true),
     );
   }
 

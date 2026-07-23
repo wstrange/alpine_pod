@@ -31,10 +31,10 @@ abstract class UserNotification implements _i1.SerializableModel {
        isSeen = isSeen ?? false;
 
   factory UserNotification({
-    int? id,
+    _i1.UuidValue? id,
     required _i1.UuidValue userId,
     _i2.AuthUser? user,
-    required int notificationId,
+    required _i1.UuidValue notificationId,
     _i3.Notification? notification,
     bool? isRead,
     bool? isSeen,
@@ -44,12 +44,16 @@ abstract class UserNotification implements _i1.SerializableModel {
 
   factory UserNotification.fromJson(Map<String, dynamic> jsonSerialization) {
     return UserNotification(
-      id: jsonSerialization['id'] as int?,
+      id: jsonSerialization['id'] == null
+          ? null
+          : _i1.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
       userId: _i1.UuidValueJsonExtension.fromJson(jsonSerialization['userId']),
       user: jsonSerialization['user'] == null
           ? null
           : _i4.Protocol().deserialize<_i2.AuthUser>(jsonSerialization['user']),
-      notificationId: jsonSerialization['notificationId'] as int,
+      notificationId: _i1.UuidValueJsonExtension.fromJson(
+        jsonSerialization['notificationId'],
+      ),
       notification: jsonSerialization['notification'] == null
           ? null
           : _i4.Protocol().deserialize<_i3.Notification>(
@@ -73,13 +77,13 @@ abstract class UserNotification implements _i1.SerializableModel {
   /// The database id, set if the object has been inserted into the
   /// database or if it has been fetched from the database. Otherwise,
   /// the id will be null.
-  int? id;
+  _i1.UuidValue? id;
 
   _i1.UuidValue userId;
 
   _i2.AuthUser? user;
 
-  int notificationId;
+  _i1.UuidValue notificationId;
 
   _i3.Notification? notification;
 
@@ -95,10 +99,10 @@ abstract class UserNotification implements _i1.SerializableModel {
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
   UserNotification copyWith({
-    int? id,
+    _i1.UuidValue? id,
     _i1.UuidValue? userId,
     _i2.AuthUser? user,
-    int? notificationId,
+    _i1.UuidValue? notificationId,
     _i3.Notification? notification,
     bool? isRead,
     bool? isSeen,
@@ -109,10 +113,10 @@ abstract class UserNotification implements _i1.SerializableModel {
   Map<String, dynamic> toJson() {
     return {
       '__className__': 'UserNotification',
-      if (id != null) 'id': id,
+      if (id != null) 'id': id?.toJson(),
       'userId': userId.toJson(),
       if (user != null) 'user': user?.toJson(),
-      'notificationId': notificationId,
+      'notificationId': notificationId.toJson(),
       if (notification != null) 'notification': notification?.toJson(),
       'isRead': isRead,
       'isSeen': isSeen,
@@ -131,10 +135,10 @@ class _Undefined {}
 
 class _UserNotificationImpl extends UserNotification {
   _UserNotificationImpl({
-    int? id,
+    _i1.UuidValue? id,
     required _i1.UuidValue userId,
     _i2.AuthUser? user,
-    required int notificationId,
+    required _i1.UuidValue notificationId,
     _i3.Notification? notification,
     bool? isRead,
     bool? isSeen,
@@ -160,7 +164,7 @@ class _UserNotificationImpl extends UserNotification {
     Object? id = _Undefined,
     _i1.UuidValue? userId,
     Object? user = _Undefined,
-    int? notificationId,
+    _i1.UuidValue? notificationId,
     Object? notification = _Undefined,
     bool? isRead,
     bool? isSeen,
@@ -168,7 +172,7 @@ class _UserNotificationImpl extends UserNotification {
     DateTime? createdAt,
   }) {
     return UserNotification(
-      id: id is int? ? id : this.id,
+      id: id is _i1.UuidValue? ? id : this.id,
       userId: userId ?? this.userId,
       user: user is _i2.AuthUser? ? user : this.user?.copyWith(),
       notificationId: notificationId ?? this.notificationId,

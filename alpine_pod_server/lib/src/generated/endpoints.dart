@@ -466,7 +466,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'id': _i1.ParameterDescription(
               name: 'id',
-              type: _i1.getType<int>(),
+              type: _i1.getType<_i1.UuidValue>(),
               nullable: false,
             ),
           },
@@ -503,7 +503,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'id': _i1.ParameterDescription(
               name: 'id',
-              type: _i1.getType<int>(),
+              type: _i1.getType<_i1.UuidValue>(),
               nullable: false,
             ),
           },
@@ -533,7 +533,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'id': _i1.ParameterDescription(
               name: 'id',
-              type: _i1.getType<int>(),
+              type: _i1.getType<_i1.UuidValue>(),
               nullable: false,
             ),
           },
@@ -551,7 +551,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'memberId': _i1.ParameterDescription(
               name: 'memberId',
-              type: _i1.getType<int>(),
+              type: _i1.getType<_i1.UuidValue>(),
               nullable: false,
             ),
           },
@@ -631,7 +631,7 @@ class Endpoints extends _i1.EndpointDispatch {
             ),
             'additionalManagerIds': _i1.ParameterDescription(
               name: 'additionalManagerIds',
-              type: _i1.getType<List<int>?>(),
+              type: _i1.getType<List<_i1.UuidValue>?>(),
               nullable: true,
             ),
             'notifyNewEvent': _i1.ParameterDescription(
@@ -656,7 +656,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'id': _i1.ParameterDescription(
               name: 'id',
-              type: _i1.getType<int>(),
+              type: _i1.getType<_i1.UuidValue>(),
               nullable: false,
             ),
           },
@@ -692,7 +692,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'id': _i1.ParameterDescription(
               name: 'id',
-              type: _i1.getType<int>(),
+              type: _i1.getType<_i1.UuidValue>(),
               nullable: false,
             ),
           },
@@ -710,7 +710,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'sectionId': _i1.ParameterDescription(
               name: 'sectionId',
-              type: _i1.getType<int?>(),
+              type: _i1.getType<_i1.UuidValue?>(),
               nullable: true,
             ),
             'startTime': _i1.ParameterDescription(
@@ -746,7 +746,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'eventId': _i1.ParameterDescription(
               name: 'eventId',
-              type: _i1.getType<int>(),
+              type: _i1.getType<_i1.UuidValue>(),
               nullable: false,
             ),
           },
@@ -809,12 +809,12 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'eventId': _i1.ParameterDescription(
               name: 'eventId',
-              type: _i1.getType<int>(),
+              type: _i1.getType<_i1.UuidValue>(),
               nullable: false,
             ),
             'memberId': _i1.ParameterDescription(
               name: 'memberId',
-              type: _i1.getType<int>(),
+              type: _i1.getType<_i1.UuidValue>(),
               nullable: false,
             ),
           },
@@ -834,7 +834,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'registrationId': _i1.ParameterDescription(
               name: 'registrationId',
-              type: _i1.getType<int>(),
+              type: _i1.getType<_i1.UuidValue>(),
               nullable: false,
             ),
           },
@@ -853,7 +853,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'eventId': _i1.ParameterDescription(
               name: 'eventId',
-              type: _i1.getType<int>(),
+              type: _i1.getType<_i1.UuidValue>(),
               nullable: false,
             ),
           },
@@ -872,7 +872,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'memberId': _i1.ParameterDescription(
               name: 'memberId',
-              type: _i1.getType<int>(),
+              type: _i1.getType<_i1.UuidValue>(),
               nullable: false,
             ),
           },
@@ -891,7 +891,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'sectionId': _i1.ParameterDescription(
               name: 'sectionId',
-              type: _i1.getType<int>(),
+              type: _i1.getType<_i1.UuidValue>(),
               nullable: false,
             ),
           },
@@ -910,7 +910,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'sectionId': _i1.ParameterDescription(
               name: 'sectionId',
-              type: _i1.getType<int>(),
+              type: _i1.getType<_i1.UuidValue>(),
               nullable: false,
             ),
           },
@@ -929,7 +929,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'registrationId': _i1.ParameterDescription(
               name: 'registrationId',
-              type: _i1.getType<int>(),
+              type: _i1.getType<_i1.UuidValue>(),
               nullable: false,
             ),
           },
@@ -1005,7 +1005,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'id': _i1.ParameterDescription(
               name: 'id',
-              type: _i1.getType<int>(),
+              type: _i1.getType<_i1.UuidValue>(),
               nullable: false,
             ),
           },
@@ -1098,7 +1098,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'id': _i1.ParameterDescription(
               name: 'id',
-              type: _i1.getType<int>(),
+              type: _i1.getType<_i1.UuidValue>(),
               nullable: false,
             ),
           },
@@ -1116,7 +1116,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'memberId': _i1.ParameterDescription(
               name: 'memberId',
-              type: _i1.getType<int>(),
+              type: _i1.getType<_i1.UuidValue>(),
               nullable: false,
             ),
           },
@@ -1135,7 +1135,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'memberId': _i1.ParameterDescription(
               name: 'memberId',
-              type: _i1.getType<int>(),
+              type: _i1.getType<_i1.UuidValue>(),
               nullable: false,
             ),
           },
@@ -1183,7 +1183,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'sectionId': _i1.ParameterDescription(
               name: 'sectionId',
-              type: _i1.getType<int?>(),
+              type: _i1.getType<_i1.UuidValue?>(),
               nullable: true,
             ),
             'filter': _i1.ParameterDescription(
@@ -1220,7 +1220,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'sectionId': _i1.ParameterDescription(
               name: 'sectionId',
-              type: _i1.getType<int>(),
+              type: _i1.getType<_i1.UuidValue>(),
               nullable: false,
             ),
             'filter': _i1.ParameterDescription(
@@ -1257,7 +1257,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'sectionId': _i1.ParameterDescription(
               name: 'sectionId',
-              type: _i1.getType<int>(),
+              type: _i1.getType<_i1.UuidValue>(),
               nullable: false,
             ),
           },
@@ -1286,12 +1286,12 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'memberId': _i1.ParameterDescription(
               name: 'memberId',
-              type: _i1.getType<int>(),
+              type: _i1.getType<_i1.UuidValue>(),
               nullable: false,
             ),
             'sectionId': _i1.ParameterDescription(
               name: 'sectionId',
-              type: _i1.getType<int>(),
+              type: _i1.getType<_i1.UuidValue>(),
               nullable: false,
             ),
             'newScopes': _i1.ParameterDescription(
@@ -1322,7 +1322,7 @@ class Endpoints extends _i1.EndpointDispatch {
             ),
             'sectionIds': _i1.ParameterDescription(
               name: 'sectionIds',
-              type: _i1.getType<List<int>>(),
+              type: _i1.getType<List<_i1.UuidValue>>(),
               nullable: false,
             ),
           },
@@ -1383,7 +1383,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'userNotificationId': _i1.ParameterDescription(
               name: 'userNotificationId',
-              type: _i1.getType<int>(),
+              type: _i1.getType<_i1.UuidValue>(),
               nullable: false,
             ),
           },
@@ -1462,7 +1462,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'registrationId': _i1.ParameterDescription(
               name: 'registrationId',
-              type: _i1.getType<int>(),
+              type: _i1.getType<_i1.UuidValue>(),
               nullable: false,
             ),
             'newStatus': _i1.ParameterDescription(
@@ -1512,7 +1512,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'registrationId': _i1.ParameterDescription(
               name: 'registrationId',
-              type: _i1.getType<int>(),
+              type: _i1.getType<_i1.UuidValue>(),
               nullable: false,
             ),
           },
@@ -1531,7 +1531,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'eventId': _i1.ParameterDescription(
               name: 'eventId',
-              type: _i1.getType<int>(),
+              type: _i1.getType<_i1.UuidValue>(),
               nullable: false,
             ),
           },
@@ -1556,7 +1556,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'id': _i1.ParameterDescription(
               name: 'id',
-              type: _i1.getType<int>(),
+              type: _i1.getType<_i1.UuidValue>(),
               nullable: false,
             ),
           },

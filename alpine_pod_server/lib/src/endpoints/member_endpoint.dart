@@ -66,7 +66,7 @@ class MemberEndpoint extends Endpoint {
     await _syncUserScopes(session, membership.memberId);
   }
 
-  Future<Member?> getMember(Session session, int id) async {
+  Future<Member?> getMember(Session session, UuidValue id) async {
     final callerInfo = await cache.getMemberInfo(session);
     if (callerInfo == null) throw Exception('Not authenticated');
 
@@ -77,7 +77,7 @@ class MemberEndpoint extends Endpoint {
     return await Member.db.findById(session, id);
   }
 
-  Future<String?> getMemberProfileImageUrl(Session session, int memberId) async {
+  Future<String?> getMemberProfileImageUrl(Session session, UuidValue memberId) async {
     final callerInfo = await cache.getMemberInfo(session);
     if (callerInfo == null) throw Exception('Not authenticated');
 
@@ -109,7 +109,7 @@ class MemberEndpoint extends Endpoint {
   }
 
   /// Return a list of all sections the member belongs to.
-  Future<List<SectionMembership>> getMemberSectionMemberships(Session session, int memberId) async {
+  Future<List<SectionMembership>> getMemberSectionMemberships(Session session, UuidValue memberId) async {
     final callerInfo = await cache.getMemberInfo(session);
     if (callerInfo == null) throw Exception('Not authenticated');
 
@@ -174,7 +174,7 @@ class MemberEndpoint extends Endpoint {
   /// Use [offset] for pagination — pass `offset: page * limit` to load successive pages.
   Future<List<Member>> getSectionMembers(
     Session session, {
-    int? sectionId,
+    UuidValue? sectionId,
     String? filter,
     int limit = 50,
     int offset = 0,
@@ -202,7 +202,7 @@ class MemberEndpoint extends Endpoint {
     if (callerInfo == null) throw Exception('Member profile not found');
 
     // Determine which section IDs to query
-    Set<int> targetSectionIds;
+    Set<UuidValue> targetSectionIds;
     if (sectionId != null) {
       if (!callerInfo.sectionIds.contains(sectionId)) {
         throw Exception('You do not have access to this section');
@@ -243,7 +243,7 @@ class MemberEndpoint extends Endpoint {
     }
 
     // Multi-section: deduplicate, sort, then apply offset + limit in Dart.
-    final memberMap = <int, Member>{};
+    final memberMap = <UuidValue, Member>{};
     for (var m in memberships) {
       if (m.member != null) {
         memberMap[m.member!.id!] = m.member!;
@@ -265,7 +265,7 @@ class MemberEndpoint extends Endpoint {
   /// Use [offset] for pagination — pass `offset: page * limit` to load successive pages.
   Future<List<SectionMembership>> getSectionMemberships(
     Session session,
-    int sectionId, {
+    UuidValue sectionId, {
     String? filter,
     int limit = 50,
     int offset = 0,
@@ -291,7 +291,7 @@ class MemberEndpoint extends Endpoint {
   }
 
   /// Get the active user's membership details (and scopes) for a specific section.
-  Future<SectionMembership?> getMySectionMembership(Session session, int sectionId) async {
+  Future<SectionMembership?> getMySectionMembership(Session session, UuidValue sectionId) async {
     final callerInfo = await cache.getMemberInfo(session);
     if (callerInfo == null) return null;
 
@@ -319,8 +319,8 @@ class MemberEndpoint extends Endpoint {
   /// Requires the caller to be a global admin or a section manager for the section.
   Future<SectionMembership> updateMemberScopes(
     Session session,
-    int memberId,
-    int sectionId,
+    UuidValue memberId,
+    UuidValue sectionId,
     Set<String> newScopes,
   ) async {
     final callerInfo = await cache.getMemberInfo(session);
@@ -355,7 +355,7 @@ class MemberEndpoint extends Endpoint {
   }
 
   /// Helper to synchronize the global AuthUser scopes with the aggregate of all section memberships.
-  Future<void> _syncUserScopes(Session session, int memberId) async {
+  Future<void> _syncUserScopes(Session session, UuidValue memberId) async {
     final targetMember = await Member.db.findById(session, memberId);
     if (targetMember == null) return;
 
@@ -384,7 +384,7 @@ class MemberEndpoint extends Endpoint {
   }
 
   /// Atomic registration: creates a Member profile and multiple Section memberships.
-  Future<Member> registerMember(Session session, Member member, List<int> sectionIds) async {
+  Future<Member> registerMember(Session session, Member member, List<UuidValue> sectionIds) async {
     final authInfo = session.authenticated;
     if (authInfo == null) throw Exception('Not authenticated');
 

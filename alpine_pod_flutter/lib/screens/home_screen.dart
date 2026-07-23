@@ -25,7 +25,7 @@ class HomeScreen extends SignalWidget {
               isLabelVisible: unreadCount > 0,
               child: const Icon(Icons.notifications),
             ),
-            onPressed: () => context.goNamed('notifications'),
+            onPressed: () => context.pushNamed('notifications'),
           ),
         ],
       ),

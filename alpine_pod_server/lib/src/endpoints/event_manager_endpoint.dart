@@ -72,8 +72,8 @@ class EventManagerEndpoint extends Endpoint {
   /// Check if an event has any event managers assigned
   Future<bool> _hasOtherEventManagers(
     Session session,
-    int eventId,
-    int excludeMemberId,
+    UuidValue eventId,
+    UuidValue excludeMemberId,
   ) async {
     final otherLeader = await EventManager.db.findFirstRow(
       session,
@@ -84,7 +84,7 @@ class EventManagerEndpoint extends Endpoint {
   }
 
   /// Check if an event has any active registrations
-  Future<bool> _hasActiveRegistrations(Session session, int eventId) async {
+  Future<bool> _hasActiveRegistrations(Session session, UuidValue eventId) async {
     final registrationCount = await EventRegistration.db.count(
       session,
       where: (t) =>
@@ -156,8 +156,8 @@ class EventManagerEndpoint extends Endpoint {
   /// The calling user must be an event manager for this event.
   Future<EventRegistration> addMemberToEvent(
     Session session,
-    int eventId,
-    int memberId,
+    UuidValue eventId,
+    UuidValue memberId,
   ) async {
     if (!await cache.canManageEvent(session, eventId)) {
       throw Exception(
@@ -205,7 +205,7 @@ class EventManagerEndpoint extends Endpoint {
   /// The calling user must be an event manager for the related event.
   Future<void> removeMemberFromEvent(
     Session session,
-    int registrationId,
+    UuidValue registrationId,
   ) async {
     final callerInfo = await cache.getMemberInfo(session);
     if (callerInfo == null) throw Exception('Not authenticated');
@@ -231,7 +231,7 @@ class EventManagerEndpoint extends Endpoint {
 
   Future<List<EventManager>> listEventManagers(
     Session session,
-    int eventId,
+    UuidValue eventId,
   ) async {
     return await EventManager.db.find(
       session,
@@ -241,7 +241,7 @@ class EventManagerEndpoint extends Endpoint {
 
   Future<List<Event>> listEventManagerEvents(
     Session session,
-    int memberId,
+    UuidValue memberId,
   ) async {
     // Get all events where this member is an event manager
     final eventManagerAssignments = await EventManager.db.find(
@@ -263,7 +263,7 @@ class EventManagerEndpoint extends Endpoint {
   /// List events in a section that have no event managers assigned
   Future<List<Event>> listEventsWithoutEventManager(
     Session session,
-    int sectionId,
+    UuidValue sectionId,
   ) async {
     // Check if member has permission to view section events
 
@@ -291,7 +291,7 @@ class EventManagerEndpoint extends Endpoint {
   /// List all event managers for events in a section
   Future<List<EventManager>> listSectionEventManagers(
     Session session,
-    int sectionId,
+    UuidValue sectionId,
   ) async {
     // Check if member can view section details
 
@@ -319,7 +319,7 @@ class EventManagerEndpoint extends Endpoint {
   /// The calling user must be an event manager for the event.
   Future<EventRegistration> approveRegistration(
     Session session,
-    int registrationId,
+    UuidValue registrationId,
   ) async {
     final callerInfo = await cache.getMemberInfo(session);
     if (callerInfo == null) throw Exception('Not authenticated');

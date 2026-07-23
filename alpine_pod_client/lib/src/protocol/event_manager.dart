@@ -26,22 +26,28 @@ abstract class EventManager implements _i1.SerializableModel {
   });
 
   factory EventManager({
-    int? id,
-    required int eventId,
+    _i1.UuidValue? id,
+    required _i1.UuidValue eventId,
     _i2.Event? event,
-    required int memberId,
+    required _i1.UuidValue memberId,
     _i3.Member? member,
     DateTime? assignedAt,
   }) = _EventManagerImpl;
 
   factory EventManager.fromJson(Map<String, dynamic> jsonSerialization) {
     return EventManager(
-      id: jsonSerialization['id'] as int?,
-      eventId: jsonSerialization['eventId'] as int,
+      id: jsonSerialization['id'] == null
+          ? null
+          : _i1.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
+      eventId: _i1.UuidValueJsonExtension.fromJson(
+        jsonSerialization['eventId'],
+      ),
       event: jsonSerialization['event'] == null
           ? null
           : _i4.Protocol().deserialize<_i2.Event>(jsonSerialization['event']),
-      memberId: jsonSerialization['memberId'] as int,
+      memberId: _i1.UuidValueJsonExtension.fromJson(
+        jsonSerialization['memberId'],
+      ),
       member: jsonSerialization['member'] == null
           ? null
           : _i4.Protocol().deserialize<_i3.Member>(jsonSerialization['member']),
@@ -54,13 +60,13 @@ abstract class EventManager implements _i1.SerializableModel {
   /// The database id, set if the object has been inserted into the
   /// database or if it has been fetched from the database. Otherwise,
   /// the id will be null.
-  int? id;
+  _i1.UuidValue? id;
 
-  int eventId;
+  _i1.UuidValue eventId;
 
   _i2.Event? event;
 
-  int memberId;
+  _i1.UuidValue memberId;
 
   _i3.Member? member;
 
@@ -70,10 +76,10 @@ abstract class EventManager implements _i1.SerializableModel {
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
   EventManager copyWith({
-    int? id,
-    int? eventId,
+    _i1.UuidValue? id,
+    _i1.UuidValue? eventId,
     _i2.Event? event,
-    int? memberId,
+    _i1.UuidValue? memberId,
     _i3.Member? member,
     DateTime? assignedAt,
   });
@@ -81,10 +87,10 @@ abstract class EventManager implements _i1.SerializableModel {
   Map<String, dynamic> toJson() {
     return {
       '__className__': 'EventManager',
-      if (id != null) 'id': id,
-      'eventId': eventId,
+      if (id != null) 'id': id?.toJson(),
+      'eventId': eventId.toJson(),
       if (event != null) 'event': event?.toJson(),
-      'memberId': memberId,
+      'memberId': memberId.toJson(),
       if (member != null) 'member': member?.toJson(),
       if (assignedAt != null) 'assignedAt': assignedAt?.toJson(),
     };
@@ -100,10 +106,10 @@ class _Undefined {}
 
 class _EventManagerImpl extends EventManager {
   _EventManagerImpl({
-    int? id,
-    required int eventId,
+    _i1.UuidValue? id,
+    required _i1.UuidValue eventId,
     _i2.Event? event,
-    required int memberId,
+    required _i1.UuidValue memberId,
     _i3.Member? member,
     DateTime? assignedAt,
   }) : super._(
@@ -121,14 +127,14 @@ class _EventManagerImpl extends EventManager {
   @override
   EventManager copyWith({
     Object? id = _Undefined,
-    int? eventId,
+    _i1.UuidValue? eventId,
     Object? event = _Undefined,
-    int? memberId,
+    _i1.UuidValue? memberId,
     Object? member = _Undefined,
     Object? assignedAt = _Undefined,
   }) {
     return EventManager(
-      id: id is int? ? id : this.id,
+      id: id is _i1.UuidValue? ? id : this.id,
       eventId: eventId ?? this.eventId,
       event: event is _i2.Event? ? event : this.event?.copyWith(),
       memberId: memberId ?? this.memberId,

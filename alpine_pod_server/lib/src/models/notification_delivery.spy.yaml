@@ -1,6 +1,7 @@
 class: NotificationDelivery
 table: notification_delivery
 fields:
+  id: UuidValue?, defaultPersist=random_v7
   notification: Notification?, relation
   # null for bulk-section sends (expanded by scheduler)
   recipientUser: module:serverpod_auth_core:AuthUser?, relation(onDelete=Cascade, optional)
@@ -12,7 +13,7 @@ fields:
   # User name and email address (for debugging email delivery)
   info: String?
   # For bulk-section sends: scheduler expands to per-user rows
-  sectionId: int?
+  sectionId: UuidValue?
   createdAt: DateTime
 indexes:
   pending_delivery_idx:

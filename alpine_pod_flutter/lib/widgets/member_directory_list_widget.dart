@@ -12,7 +12,7 @@ class MemberDirectoryListWidget extends StatelessWidget {
   final ScrollController? scrollController;
   final bool hasMore;
   final bool isLoadingMore;
-  final Function(int memberId, Set<String> newScopes)? onScopesUpdated;
+  final Function(UuidValue memberId, Set<String> newScopes)? onScopesUpdated;
 
   const MemberDirectoryListWidget({
     super.key,
@@ -55,8 +55,7 @@ class MemberDirectoryListWidget extends StatelessWidget {
             final member = membership.member;
             if (member == null) return const SizedBox();
 
-            final name =
-                member.displayName ?? '${member.firstName} ${member.lastName}';
+            final name = member.displayName ?? '${member.firstName} ${member.lastName}';
 
             // Prettify scopes for subtitle
             final scopeStr = membership.scopes.join(', ');
@@ -98,10 +97,7 @@ class MemberDirectoryListWidget extends StatelessWidget {
     return isGlobalAdminSignal.value || isSectionManagerSignal.value;
   }
 
-  void _showEditScopesDialog(
-    BuildContext context,
-    SectionMembership membership,
-  ) {
+  void _showEditScopesDialog(BuildContext context, SectionMembership membership) {
     final member = membership.member;
     if (member == null) return;
 
@@ -161,10 +157,7 @@ class MemberDirectoryListWidget extends StatelessWidget {
                 ],
               ),
               actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: const Text('Cancel'),
-                ),
+                TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Cancel')),
                 TextButton(
                   onPressed: () {
                     Navigator.of(context).pop();

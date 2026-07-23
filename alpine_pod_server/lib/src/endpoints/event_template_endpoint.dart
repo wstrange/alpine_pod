@@ -28,7 +28,7 @@ class EventTemplateEndpoint extends Endpoint {
   }
 
   /// Deletes an event template. Requires Admin scope.
-  Future<void> deleteTemplate(Session session, int id) async {
+  Future<void> deleteTemplate(Session session, UuidValue id) async {
     if (!session.isGlobalAdmin()) {
       throw Exception('Only admins can delete templates');
     }

@@ -16,7 +16,7 @@ import 'notification_template.dart' as _i2;
 import 'package:alpine_pod_server/src/generated/protocol.dart' as _i3;
 
 abstract class Notification
-    implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
+    implements _i1.TableRow<_i1.UuidValue?>, _i1.ProtocolSerialization {
   Notification._({
     this.id,
     required this.templateId,
@@ -30,8 +30,8 @@ abstract class Notification
   });
 
   factory Notification({
-    int? id,
-    required int templateId,
+    _i1.UuidValue? id,
+    required _i1.UuidValue templateId,
     _i2.NotificationTemplate? template,
     required Map<String, String> data,
     String? actionUrl,
@@ -43,8 +43,12 @@ abstract class Notification
 
   factory Notification.fromJson(Map<String, dynamic> jsonSerialization) {
     return Notification(
-      id: jsonSerialization['id'] as int?,
-      templateId: jsonSerialization['templateId'] as int,
+      id: jsonSerialization['id'] == null
+          ? null
+          : _i1.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
+      templateId: _i1.UuidValueJsonExtension.fromJson(
+        jsonSerialization['templateId'],
+      ),
       template: jsonSerialization['template'] == null
           ? null
           : _i3.Protocol().deserialize<_i2.NotificationTemplate>(
@@ -68,9 +72,9 @@ abstract class Notification
   static const db = NotificationRepository._();
 
   @override
-  int? id;
+  _i1.UuidValue? id;
 
-  int templateId;
+  _i1.UuidValue templateId;
 
   _i2.NotificationTemplate? template;
 
@@ -87,14 +91,14 @@ abstract class Notification
   DateTime createdAt;
 
   @override
-  _i1.Table<int?> get table => t;
+  _i1.Table<_i1.UuidValue?> get table => t;
 
   /// Returns a shallow copy of this [Notification]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
   Notification copyWith({
-    int? id,
-    int? templateId,
+    _i1.UuidValue? id,
+    _i1.UuidValue? templateId,
     _i2.NotificationTemplate? template,
     Map<String, String>? data,
     String? actionUrl,
@@ -107,8 +111,8 @@ abstract class Notification
   Map<String, dynamic> toJson() {
     return {
       '__className__': 'Notification',
-      if (id != null) 'id': id,
-      'templateId': templateId,
+      if (id != null) 'id': id?.toJson(),
+      'templateId': templateId.toJson(),
       if (template != null) 'template': template?.toJson(),
       'data': data.toJson(),
       if (actionUrl != null) 'actionUrl': actionUrl,
@@ -123,8 +127,8 @@ abstract class Notification
   Map<String, dynamic> toJsonForProtocol() {
     return {
       '__className__': 'Notification',
-      if (id != null) 'id': id,
-      'templateId': templateId,
+      if (id != null) 'id': id?.toJson(),
+      'templateId': templateId.toJson(),
       if (template != null) 'template': template?.toJsonForProtocol(),
       'data': data.toJson(),
       if (actionUrl != null) 'actionUrl': actionUrl,
@@ -173,8 +177,8 @@ class _Undefined {}
 
 class _NotificationImpl extends Notification {
   _NotificationImpl({
-    int? id,
-    required int templateId,
+    _i1.UuidValue? id,
+    required _i1.UuidValue templateId,
     _i2.NotificationTemplate? template,
     required Map<String, String> data,
     String? actionUrl,
@@ -200,7 +204,7 @@ class _NotificationImpl extends Notification {
   @override
   Notification copyWith({
     Object? id = _Undefined,
-    int? templateId,
+    _i1.UuidValue? templateId,
     Object? template = _Undefined,
     Map<String, String>? data,
     Object? actionUrl = _Undefined,
@@ -210,7 +214,7 @@ class _NotificationImpl extends Notification {
     DateTime? createdAt,
   }) {
     return Notification(
-      id: id is int? ? id : this.id,
+      id: id is _i1.UuidValue? ? id : this.id,
       templateId: templateId ?? this.templateId,
       template: template is _i2.NotificationTemplate?
           ? template
@@ -238,7 +242,9 @@ class _NotificationImpl extends Notification {
 class NotificationUpdateTable extends _i1.UpdateTable<NotificationTable> {
   NotificationUpdateTable(super.table);
 
-  _i1.ColumnValue<int, int> templateId(int value) => _i1.ColumnValue(
+  _i1.ColumnValue<_i1.UuidValue, _i1.UuidValue> templateId(
+    _i1.UuidValue value,
+  ) => _i1.ColumnValue(
     table.templateId,
     value,
   );
@@ -279,10 +285,10 @@ class NotificationUpdateTable extends _i1.UpdateTable<NotificationTable> {
       );
 }
 
-class NotificationTable extends _i1.Table<int?> {
+class NotificationTable extends _i1.Table<_i1.UuidValue?> {
   NotificationTable({super.tableRelation}) : super(tableName: 'notification') {
     updateTable = NotificationUpdateTable(this);
-    templateId = _i1.ColumnInt(
+    templateId = _i1.ColumnUuid(
       'templateId',
       this,
     );
@@ -314,7 +320,7 @@ class NotificationTable extends _i1.Table<int?> {
 
   late final NotificationUpdateTable updateTable;
 
-  late final _i1.ColumnInt templateId;
+  late final _i1.ColumnUuid templateId;
 
   _i2.NotificationTemplateTable? _template;
 
@@ -375,7 +381,7 @@ class NotificationInclude extends _i1.IncludeObject {
   Map<String, _i1.Include?> get includes => {'template': _template};
 
   @override
-  _i1.Table<int?> get table => Notification.t;
+  _i1.Table<_i1.UuidValue?> get table => Notification.t;
 }
 
 class NotificationIncludeList extends _i1.IncludeList {
@@ -396,7 +402,7 @@ class NotificationIncludeList extends _i1.IncludeList {
   Map<String, _i1.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<int?> get table => Notification.t;
+  _i1.Table<_i1.UuidValue?> get table => Notification.t;
 }
 
 class NotificationRepository {
@@ -502,7 +508,7 @@ class NotificationRepository {
   /// Finds a single [Notification] by its [id] or null if no such row exists.
   Future<Notification?> findById(
     _i1.DatabaseSession session,
-    int id, {
+    _i1.UuidValue id, {
     _i1.Transaction? transaction,
     NotificationInclude? include,
     _i1.LockMode? lockMode,
@@ -673,7 +679,7 @@ class NotificationRepository {
   /// Returns the updated row or null if no row with the given id exists.
   Future<Notification?> updateById(
     _i1.DatabaseSession session,
-    int id, {
+    _i1.UuidValue id, {
     required _i1.ColumnValueListBuilder<NotificationUpdateTable> columnValues,
     _i1.Transaction? transaction,
   }) async {

@@ -20,9 +20,9 @@ import 'event.dart' as _i5;
 import 'event_manager.dart' as _i6;
 import 'event_registration.dart' as _i7;
 import 'event_template.dart' as _i8;
-import 'event_type_subscription.dart' as _i9;
-import 'fcm_token.dart' as _i10;
-import 'member.dart' as _i11;
+import 'fcm_token.dart' as _i9;
+import 'member.dart' as _i10;
+import 'member_info.dart' as _i11;
 import 'notification.dart' as _i12;
 import 'notification_channel.dart' as _i13;
 import 'notification_delivery.dart' as _i14;
@@ -48,9 +48,9 @@ export 'event.dart';
 export 'event_manager.dart';
 export 'event_registration.dart';
 export 'event_template.dart';
-export 'event_type_subscription.dart';
 export 'fcm_token.dart';
 export 'member.dart';
+export 'member_info.dart';
 export 'notification.dart';
 export 'notification_channel.dart';
 export 'notification_delivery.dart';
@@ -77,22 +77,22 @@ class Protocol extends _i1.DatabaseSerializationManager {
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _i2.ColumnType.uuid,
           isNullable: false,
-          dartType: 'int?',
-          columnDefault: 'serial',
+          dartType: 'UuidValue?',
+          columnDefault: 'random_v7',
         ),
         _i2.ColumnDefinition(
           name: 'eventId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _i2.ColumnType.uuid,
           isNullable: false,
-          dartType: 'int',
+          dartType: 'UuidValue',
         ),
         _i2.ColumnDefinition(
           name: 'memberId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _i2.ColumnType.uuid,
           isNullable: false,
-          dartType: 'int',
+          dartType: 'UuidValue',
         ),
         _i2.ColumnDefinition(
           name: 'assignedAt',
@@ -152,22 +152,22 @@ class Protocol extends _i1.DatabaseSerializationManager {
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _i2.ColumnType.uuid,
           isNullable: false,
-          dartType: 'int?',
-          columnDefault: 'serial',
+          dartType: 'UuidValue?',
+          columnDefault: 'random_v7',
         ),
         _i2.ColumnDefinition(
           name: 'memberId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _i2.ColumnType.uuid,
           isNullable: false,
-          dartType: 'int',
+          dartType: 'UuidValue',
         ),
         _i2.ColumnDefinition(
           name: 'eventId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _i2.ColumnType.uuid,
           isNullable: false,
-          dartType: 'int',
+          dartType: 'UuidValue',
         ),
         _i2.ColumnDefinition(
           name: 'registrationStatus',
@@ -314,10 +314,10 @@ class Protocol extends _i1.DatabaseSerializationManager {
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _i2.ColumnType.uuid,
           isNullable: false,
-          dartType: 'int?',
-          columnDefault: 'serial',
+          dartType: 'UuidValue?',
+          columnDefault: 'random_v7',
         ),
         _i2.ColumnDefinition(
           name: 'name',
@@ -350,65 +350,6 @@ class Protocol extends _i1.DatabaseSerializationManager {
       managed: true,
     ),
     _i2.TableDefinition(
-      name: 'event_type_subscriptions',
-      dartName: 'EventTypeSubscription',
-      schema: 'public',
-      module: 'alpine_pod',
-      columns: [
-        _i2.ColumnDefinition(
-          name: 'id',
-          columnType: _i2.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int?',
-          columnDefault: 'serial',
-        ),
-        _i2.ColumnDefinition(
-          name: 'userId',
-          columnType: _i2.ColumnType.uuid,
-          isNullable: false,
-          dartType: 'UuidValue',
-        ),
-        _i2.ColumnDefinition(
-          name: 'eventType',
-          columnType: _i2.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-      ],
-      foreignKeys: [
-        _i2.ForeignKeyDefinition(
-          constraintName: 'event_type_subscriptions_fk_0',
-          columns: ['userId'],
-          referenceTable: 'serverpod_auth_core_user',
-          referenceTableSchema: 'public',
-          referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.cascade,
-          matchType: null,
-        ),
-      ],
-      indexes: [
-        _i2.IndexDefinition(
-          indexName: 'user_event_type_idx',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'userId',
-            ),
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'eventType',
-            ),
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: false,
-        ),
-      ],
-      managed: true,
-    ),
-    _i2.TableDefinition(
       name: 'events',
       dartName: 'Event',
       schema: 'public',
@@ -416,10 +357,10 @@ class Protocol extends _i1.DatabaseSerializationManager {
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _i2.ColumnType.uuid,
           isNullable: false,
-          dartType: 'int?',
-          columnDefault: 'serial',
+          dartType: 'UuidValue?',
+          columnDefault: 'random_v7',
         ),
         _i2.ColumnDefinition(
           name: 'title',
@@ -523,9 +464,9 @@ class Protocol extends _i1.DatabaseSerializationManager {
         ),
         _i2.ColumnDefinition(
           name: 'sectionId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _i2.ColumnType.uuid,
           isNullable: false,
-          dartType: 'int',
+          dartType: 'UuidValue',
         ),
         _i2.ColumnDefinition(
           name: 'published',
@@ -585,10 +526,10 @@ class Protocol extends _i1.DatabaseSerializationManager {
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _i2.ColumnType.uuid,
           isNullable: false,
-          dartType: 'int?',
-          columnDefault: 'serial',
+          dartType: 'UuidValue?',
+          columnDefault: 'random_v7',
         ),
         _i2.ColumnDefinition(
           name: 'userId',
@@ -666,10 +607,10 @@ class Protocol extends _i1.DatabaseSerializationManager {
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _i2.ColumnType.uuid,
           isNullable: false,
-          dartType: 'int?',
-          columnDefault: 'serial',
+          dartType: 'UuidValue?',
+          columnDefault: 'random_v7',
         ),
         _i2.ColumnDefinition(
           name: 'userId',
@@ -816,16 +757,16 @@ class Protocol extends _i1.DatabaseSerializationManager {
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _i2.ColumnType.uuid,
           isNullable: false,
-          dartType: 'int?',
-          columnDefault: 'serial',
+          dartType: 'UuidValue?',
+          columnDefault: 'random_v7',
         ),
         _i2.ColumnDefinition(
           name: 'templateId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _i2.ColumnType.uuid,
           isNullable: false,
-          dartType: 'int',
+          dartType: 'UuidValue',
         ),
         _i2.ColumnDefinition(
           name: 'data',
@@ -887,16 +828,16 @@ class Protocol extends _i1.DatabaseSerializationManager {
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _i2.ColumnType.uuid,
           isNullable: false,
-          dartType: 'int?',
-          columnDefault: 'serial',
+          dartType: 'UuidValue?',
+          columnDefault: 'random_v7',
         ),
         _i2.ColumnDefinition(
           name: 'notificationId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _i2.ColumnType.uuid,
           isNullable: false,
-          dartType: 'int',
+          dartType: 'UuidValue',
         ),
         _i2.ColumnDefinition(
           name: 'recipientUserId',
@@ -944,9 +885,9 @@ class Protocol extends _i1.DatabaseSerializationManager {
         ),
         _i2.ColumnDefinition(
           name: 'sectionId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _i2.ColumnType.uuid,
           isNullable: true,
-          dartType: 'int?',
+          dartType: 'UuidValue?',
         ),
         _i2.ColumnDefinition(
           name: 'createdAt',
@@ -1023,10 +964,10 @@ class Protocol extends _i1.DatabaseSerializationManager {
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _i2.ColumnType.uuid,
           isNullable: false,
-          dartType: 'int?',
-          columnDefault: 'serial',
+          dartType: 'UuidValue?',
+          columnDefault: 'random_v7',
         ),
         _i2.ColumnDefinition(
           name: 'name',
@@ -1091,22 +1032,22 @@ class Protocol extends _i1.DatabaseSerializationManager {
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _i2.ColumnType.uuid,
           isNullable: false,
-          dartType: 'int?',
-          columnDefault: 'serial',
+          dartType: 'UuidValue?',
+          columnDefault: 'random_v7',
         ),
         _i2.ColumnDefinition(
           name: 'memberId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _i2.ColumnType.uuid,
           isNullable: false,
-          dartType: 'int',
+          dartType: 'UuidValue',
         ),
         _i2.ColumnDefinition(
           name: 'sectionId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _i2.ColumnType.uuid,
           isNullable: false,
-          dartType: 'int',
+          dartType: 'UuidValue',
         ),
         _i2.ColumnDefinition(
           name: 'externalUserId',
@@ -1185,10 +1126,10 @@ class Protocol extends _i1.DatabaseSerializationManager {
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _i2.ColumnType.uuid,
           isNullable: false,
-          dartType: 'int?',
-          columnDefault: 'serial',
+          dartType: 'UuidValue?',
+          columnDefault: 'random_v7',
         ),
         _i2.ColumnDefinition(
           name: 'name',
@@ -1241,10 +1182,10 @@ class Protocol extends _i1.DatabaseSerializationManager {
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _i2.ColumnType.uuid,
           isNullable: false,
-          dartType: 'int?',
-          columnDefault: 'serial',
+          dartType: 'UuidValue?',
+          columnDefault: 'random_v7',
         ),
         _i2.ColumnDefinition(
           name: 'userId',
@@ -1254,9 +1195,9 @@ class Protocol extends _i1.DatabaseSerializationManager {
         ),
         _i2.ColumnDefinition(
           name: 'notificationId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _i2.ColumnType.uuid,
           isNullable: false,
-          dartType: 'int',
+          dartType: 'UuidValue',
         ),
         _i2.ColumnDefinition(
           name: 'isRead',
@@ -1336,10 +1277,10 @@ class Protocol extends _i1.DatabaseSerializationManager {
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _i2.ColumnType.uuid,
           isNullable: false,
-          dartType: 'int?',
-          columnDefault: 'serial',
+          dartType: 'UuidValue?',
+          columnDefault: 'random_v7',
         ),
         _i2.ColumnDefinition(
           name: 'userId',
@@ -1460,14 +1401,14 @@ class Protocol extends _i1.DatabaseSerializationManager {
     if (t == _i8.EventTemplate) {
       return _i8.EventTemplate.fromJson(data) as T;
     }
-    if (t == _i9.EventTypeSubscription) {
-      return _i9.EventTypeSubscription.fromJson(data) as T;
+    if (t == _i9.FcmToken) {
+      return _i9.FcmToken.fromJson(data) as T;
     }
-    if (t == _i10.FcmToken) {
-      return _i10.FcmToken.fromJson(data) as T;
+    if (t == _i10.Member) {
+      return _i10.Member.fromJson(data) as T;
     }
-    if (t == _i11.Member) {
-      return _i11.Member.fromJson(data) as T;
+    if (t == _i11.MemberInfo) {
+      return _i11.MemberInfo.fromJson(data) as T;
     }
     if (t == _i12.Notification) {
       return _i12.Notification.fromJson(data) as T;
@@ -1508,15 +1449,14 @@ class Protocol extends _i1.DatabaseSerializationManager {
     if (t == _i1.getType<_i8.EventTemplate?>()) {
       return (data != null ? _i8.EventTemplate.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i9.EventTypeSubscription?>()) {
-      return (data != null ? _i9.EventTypeSubscription.fromJson(data) : null)
-          as T;
+    if (t == _i1.getType<_i9.FcmToken?>()) {
+      return (data != null ? _i9.FcmToken.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i10.FcmToken?>()) {
-      return (data != null ? _i10.FcmToken.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i10.Member?>()) {
+      return (data != null ? _i10.Member.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i11.Member?>()) {
-      return (data != null ? _i11.Member.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i11.MemberInfo?>()) {
+      return (data != null ? _i11.MemberInfo.fromJson(data) : null) as T;
     }
     if (t == _i1.getType<_i12.Notification?>()) {
       return (data != null ? _i12.Notification.fromJson(data) : null) as T;
@@ -1599,12 +1539,15 @@ class Protocol extends _i1.DatabaseSerializationManager {
               .toList()
           as T;
     }
-    if (t == List<int>) {
-      return (data as List).map((e) => deserialize<int>(e)).toList() as T;
+    if (t == List<_i1.UuidValue>) {
+      return (data as List).map((e) => deserialize<_i1.UuidValue>(e)).toList()
+          as T;
     }
-    if (t == _i1.getType<List<int>?>()) {
+    if (t == _i1.getType<List<_i1.UuidValue>?>()) {
       return (data != null
-              ? (data as List).map((e) => deserialize<int>(e)).toList()
+              ? (data as List)
+                    .map((e) => deserialize<_i1.UuidValue>(e))
+                    .toList()
               : null)
           as T;
     }
@@ -1667,9 +1610,9 @@ class Protocol extends _i1.DatabaseSerializationManager {
       _i6.EventManager => 'EventManager',
       _i7.EventRegistration => 'EventRegistration',
       _i8.EventTemplate => 'EventTemplate',
-      _i9.EventTypeSubscription => 'EventTypeSubscription',
-      _i10.FcmToken => 'FcmToken',
-      _i11.Member => 'Member',
+      _i9.FcmToken => 'FcmToken',
+      _i10.Member => 'Member',
+      _i11.MemberInfo => 'MemberInfo',
       _i12.Notification => 'Notification',
       _i13.NotificationChannel => 'NotificationChannel',
       _i14.NotificationDelivery => 'NotificationDelivery',
@@ -1701,12 +1644,12 @@ class Protocol extends _i1.DatabaseSerializationManager {
         return 'EventRegistration';
       case _i8.EventTemplate():
         return 'EventTemplate';
-      case _i9.EventTypeSubscription():
-        return 'EventTypeSubscription';
-      case _i10.FcmToken():
+      case _i9.FcmToken():
         return 'FcmToken';
-      case _i11.Member():
+      case _i10.Member():
         return 'Member';
+      case _i11.MemberInfo():
+        return 'MemberInfo';
       case _i12.Notification():
         return 'Notification';
       case _i13.NotificationChannel():
@@ -1763,14 +1706,14 @@ class Protocol extends _i1.DatabaseSerializationManager {
     if (dataClassName == 'EventTemplate') {
       return deserialize<_i8.EventTemplate>(data['data']);
     }
-    if (dataClassName == 'EventTypeSubscription') {
-      return deserialize<_i9.EventTypeSubscription>(data['data']);
-    }
     if (dataClassName == 'FcmToken') {
-      return deserialize<_i10.FcmToken>(data['data']);
+      return deserialize<_i9.FcmToken>(data['data']);
     }
     if (dataClassName == 'Member') {
-      return deserialize<_i11.Member>(data['data']);
+      return deserialize<_i10.Member>(data['data']);
+    }
+    if (dataClassName == 'MemberInfo') {
+      return deserialize<_i11.MemberInfo>(data['data']);
     }
     if (dataClassName == 'Notification') {
       return deserialize<_i12.Notification>(data['data']);
@@ -1848,12 +1791,10 @@ class Protocol extends _i1.DatabaseSerializationManager {
         return _i7.EventRegistration.t;
       case _i8.EventTemplate:
         return _i8.EventTemplate.t;
-      case _i9.EventTypeSubscription:
-        return _i9.EventTypeSubscription.t;
-      case _i10.FcmToken:
-        return _i10.FcmToken.t;
-      case _i11.Member:
-        return _i11.Member.t;
+      case _i9.FcmToken:
+        return _i9.FcmToken.t;
+      case _i10.Member:
+        return _i10.Member.t;
       case _i12.Notification:
         return _i12.Notification.t;
       case _i14.NotificationDelivery:

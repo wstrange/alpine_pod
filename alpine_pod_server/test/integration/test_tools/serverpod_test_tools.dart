@@ -795,7 +795,7 @@ class _AdminEndpoint {
 
   _i4.Future<_i6.Section?> getSection(
     _i1.TestSessionBuilder sessionBuilder,
-    int id,
+    _i2.UuidValue id,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -857,7 +857,7 @@ class _AdminEndpoint {
 
   _i4.Future<void> deleteSection(
     _i1.TestSessionBuilder sessionBuilder,
-    int id,
+    _i2.UuidValue id,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -918,7 +918,7 @@ class _AdminEndpoint {
 
   _i4.Future<_i7.Member?> getMember(
     _i1.TestSessionBuilder sessionBuilder,
-    int id,
+    _i2.UuidValue id,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -949,7 +949,7 @@ class _AdminEndpoint {
 
   _i4.Future<void> deleteUser(
     _i1.TestSessionBuilder sessionBuilder,
-    int memberId,
+    _i2.UuidValue memberId,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -1089,7 +1089,7 @@ class _EventEndpoint {
   _i4.Future<_i9.Event> createEvent(
     _i1.TestSessionBuilder sessionBuilder,
     _i9.Event event, {
-    List<int>? additionalManagerIds,
+    List<_i2.UuidValue>? additionalManagerIds,
     required bool notifyNewEvent,
   }) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
@@ -1125,7 +1125,7 @@ class _EventEndpoint {
 
   _i4.Future<_i9.Event> getEvent(
     _i1.TestSessionBuilder sessionBuilder,
-    int id,
+    _i2.UuidValue id,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -1187,7 +1187,7 @@ class _EventEndpoint {
 
   _i4.Future<void> deleteEvent(
     _i1.TestSessionBuilder sessionBuilder,
-    int id,
+    _i2.UuidValue id,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -1218,7 +1218,7 @@ class _EventEndpoint {
 
   _i4.Future<List<_i9.Event>> listEvents(
     _i1.TestSessionBuilder sessionBuilder,
-    int? sectionId,
+    _i2.UuidValue? sectionId,
     DateTime? startTime,
     DateTime? endTime,
     bool? onlyMyEvents,
@@ -1257,7 +1257,7 @@ class _EventEndpoint {
 
   _i4.Future<_i10.EventRegistration> registerForEvent(
     _i1.TestSessionBuilder sessionBuilder,
-    int eventId,
+    _i2.UuidValue eventId,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -1361,8 +1361,8 @@ class _EventManagerEndpoint {
 
   _i4.Future<_i10.EventRegistration> addMemberToEvent(
     _i1.TestSessionBuilder sessionBuilder,
-    int eventId,
-    int memberId,
+    _i2.UuidValue eventId,
+    _i2.UuidValue memberId,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -1396,7 +1396,7 @@ class _EventManagerEndpoint {
 
   _i4.Future<void> removeMemberFromEvent(
     _i1.TestSessionBuilder sessionBuilder,
-    int registrationId,
+    _i2.UuidValue registrationId,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -1427,7 +1427,7 @@ class _EventManagerEndpoint {
 
   _i4.Future<List<_i11.EventManager>> listEventManagers(
     _i1.TestSessionBuilder sessionBuilder,
-    int eventId,
+    _i2.UuidValue eventId,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -1458,7 +1458,7 @@ class _EventManagerEndpoint {
 
   _i4.Future<List<_i9.Event>> listEventManagerEvents(
     _i1.TestSessionBuilder sessionBuilder,
-    int memberId,
+    _i2.UuidValue memberId,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -1489,7 +1489,7 @@ class _EventManagerEndpoint {
 
   _i4.Future<List<_i9.Event>> listEventsWithoutEventManager(
     _i1.TestSessionBuilder sessionBuilder,
-    int sectionId,
+    _i2.UuidValue sectionId,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -1520,7 +1520,7 @@ class _EventManagerEndpoint {
 
   _i4.Future<List<_i11.EventManager>> listSectionEventManagers(
     _i1.TestSessionBuilder sessionBuilder,
-    int sectionId,
+    _i2.UuidValue sectionId,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -1551,7 +1551,7 @@ class _EventManagerEndpoint {
 
   _i4.Future<_i10.EventRegistration> approveRegistration(
     _i1.TestSessionBuilder sessionBuilder,
-    int registrationId,
+    _i2.UuidValue registrationId,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -1685,7 +1685,7 @@ class _EventTemplateEndpoint {
 
   _i4.Future<void> deleteTemplate(
     _i1.TestSessionBuilder sessionBuilder,
-    int id,
+    _i2.UuidValue id,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -1850,7 +1850,7 @@ class _MemberEndpoint {
 
   _i4.Future<_i7.Member?> getMember(
     _i1.TestSessionBuilder sessionBuilder,
-    int id,
+    _i2.UuidValue id,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -1881,7 +1881,7 @@ class _MemberEndpoint {
 
   _i4.Future<String?> getMemberProfileImageUrl(
     _i1.TestSessionBuilder sessionBuilder,
-    int memberId,
+    _i2.UuidValue memberId,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -1912,7 +1912,7 @@ class _MemberEndpoint {
 
   _i4.Future<List<_i13.SectionMembership>> getMemberSectionMemberships(
     _i1.TestSessionBuilder sessionBuilder,
-    int memberId,
+    _i2.UuidValue memberId,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -2004,7 +2004,7 @@ class _MemberEndpoint {
 
   _i4.Future<List<_i7.Member>> getSectionMembers(
     _i1.TestSessionBuilder sessionBuilder, {
-    int? sectionId,
+    _i2.UuidValue? sectionId,
     String? filter,
     required int limit,
     required int offset,
@@ -2043,7 +2043,7 @@ class _MemberEndpoint {
 
   _i4.Future<List<_i13.SectionMembership>> getSectionMemberships(
     _i1.TestSessionBuilder sessionBuilder,
-    int sectionId, {
+    _i2.UuidValue sectionId, {
     String? filter,
     required int limit,
     required int offset,
@@ -2082,7 +2082,7 @@ class _MemberEndpoint {
 
   _i4.Future<_i13.SectionMembership?> getMySectionMembership(
     _i1.TestSessionBuilder sessionBuilder,
-    int sectionId,
+    _i2.UuidValue sectionId,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -2143,8 +2143,8 @@ class _MemberEndpoint {
 
   _i4.Future<_i13.SectionMembership> updateMemberScopes(
     _i1.TestSessionBuilder sessionBuilder,
-    int memberId,
-    int sectionId,
+    _i2.UuidValue memberId,
+    _i2.UuidValue sectionId,
     Set<String> newScopes,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
@@ -2181,7 +2181,7 @@ class _MemberEndpoint {
   _i4.Future<_i7.Member> registerMember(
     _i1.TestSessionBuilder sessionBuilder,
     _i7.Member member,
-    List<int> sectionIds,
+    List<_i2.UuidValue> sectionIds,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -2289,7 +2289,7 @@ class _NotificationEndpoint {
 
   _i4.Future<bool> markAsRead(
     _i1.TestSessionBuilder sessionBuilder,
-    int userNotificationId,
+    _i2.UuidValue userNotificationId,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -2429,7 +2429,7 @@ class _RegistrationEndpoint {
 
   _i4.Future<_i10.EventRegistration> updateRegistrationStatus(
     _i1.TestSessionBuilder sessionBuilder,
-    int registrationId,
+    _i2.UuidValue registrationId,
     _i16.RegistrationStatus newStatus, {
     String? notes,
   }) async {
@@ -2497,7 +2497,7 @@ class _RegistrationEndpoint {
 
   _i4.Future<void> cancelRegistration(
     _i1.TestSessionBuilder sessionBuilder,
-    int registrationId,
+    _i2.UuidValue registrationId,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -2528,7 +2528,7 @@ class _RegistrationEndpoint {
 
   _i4.Future<List<_i10.EventRegistration>> getRegistrationsForEvent(
     _i1.TestSessionBuilder sessionBuilder,
-    int eventId,
+    _i2.UuidValue eventId,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -2570,7 +2570,7 @@ class _SectionEndpoint {
 
   _i4.Future<_i6.Section?> getSection(
     _i1.TestSessionBuilder sessionBuilder,
-    int id,
+    _i2.UuidValue id,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =

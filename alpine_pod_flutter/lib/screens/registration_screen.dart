@@ -20,23 +20,18 @@ class RegistrationScreen extends HookWidget {
     final emergencyNameController = useTextEditingController();
     final emergencyPhoneController = useTextEditingController();
 
-    final selectedSectionIds = useState<Set<int>>({});
+    final selectedSectionIds = useState<Set<UuidValue>>({});
 
     // Populate initial values from profile when it becomes available
     useSignalEffect(() {
       final profileValue = userProfileInfoSignal.value;
       if (profileValue is AsyncData && profileValue.value != null) {
         final profile = profileValue.value!;
-        if (firstNameController.text.isEmpty &&
-            lastNameController.text.isEmpty) {
+        if (firstNameController.text.isEmpty && lastNameController.text.isEmpty) {
           final fullName = profile.userName ?? '';
           final nameParts = fullName.split(' ');
-          firstNameController.text = nameParts.isNotEmpty
-              ? nameParts.first
-              : '';
-          lastNameController.text = nameParts.length > 1
-              ? nameParts.sublist(1).join(' ')
-              : '';
+          firstNameController.text = nameParts.isNotEmpty ? nameParts.first : '';
+          lastNameController.text = nameParts.length > 1 ? nameParts.sublist(1).join(' ') : '';
         }
         if (emailController.text.isEmpty) {
           emailController.text = profile.email ?? '';
@@ -47,9 +42,9 @@ class RegistrationScreen extends HookWidget {
     Future<void> submit() async {
       if (!formKey.currentState!.validate()) return;
       if (selectedSectionIds.value.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Please select at least one section.')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Please select at least one section.')));
         return;
       }
 
@@ -67,10 +62,7 @@ class RegistrationScreen extends HookWidget {
           userId: authInfo.authUserId,
         );
 
-        await client.member.registerMember(
-          member,
-          selectedSectionIds.value.toList(),
-        );
+        await client.member.registerMember(member, selectedSectionIds.value.toList());
 
         // Reset signals to reflect the newly created member
         currentMemberSignal.value = null;
@@ -86,9 +78,7 @@ class RegistrationScreen extends HookWidget {
         }
       } catch (e) {
         if (context.mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text('Registration failed: $e')));
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Registration failed: $e')));
         }
       }
     }
@@ -113,10 +103,7 @@ class RegistrationScreen extends HookWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Complete your profile',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
+              const Text('Complete your profile', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
               const SizedBox(height: 16),
               TextFormField(
                 controller: firstNameController,
@@ -140,43 +127,30 @@ class RegistrationScreen extends HookWidget {
               ),
               TextFormField(
                 controller: emergencyNameController,
-                decoration: const InputDecoration(
-                  labelText: 'Emergency Contact Name *',
-                ),
+                decoration: const InputDecoration(labelText: 'Emergency Contact Name *'),
                 validator: (v) => v == null || v.isEmpty ? 'Required' : null,
               ),
               TextFormField(
                 controller: emergencyPhoneController,
-                decoration: const InputDecoration(
-                  labelText: 'Emergency Contact Phone *',
-                ),
+                decoration: const InputDecoration(labelText: 'Emergency Contact Phone *'),
                 validator: (v) => v == null || v.isEmpty ? 'Required' : null,
               ),
               const SizedBox(height: 24),
-              const Text(
-                'Select Sections *',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
+              const Text('Select Sections *', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               const SizedBox(height: 8),
               SignalBuilder(
                 builder: (context) {
                   final sectionsValue = allSectionsSignal.value;
                   return switch (sectionsValue) {
-                    AsyncError(:final error) => Text(
-                      'Error loading sections: $error',
-                    ),
-                    AsyncLoading() => const Center(
-                      child: CircularProgressIndicator(),
-                    ),
+                    AsyncError(:final error) => Text('Error loading sections: $error'),
+                    AsyncLoading() => const Center(child: CircularProgressIndicator()),
                     AsyncData(value: final sections) => Column(
                       children: sections.map((section) {
                         return CheckboxListTile(
                           title: Text(section.name),
                           value: selectedSectionIds.value.contains(section.id),
                           onChanged: (bool? checked) {
-                            final newIds = Set<int>.from(
-                              selectedSectionIds.value,
-                            );
+                            final newIds = Set<UuidValue>.from(selectedSectionIds.value);
                             if (checked == true) {
                               newIds.add(section.id!);
                             } else {
@@ -195,9 +169,7 @@ class RegistrationScreen extends HookWidget {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: submit,
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                  ),
+                  style: ElevatedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 16)),
                   child: const Text('Next', style: TextStyle(fontSize: 18)),
                 ),
               ),

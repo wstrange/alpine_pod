@@ -125,7 +125,7 @@ class NotificationService {
   Future<void> dispatchBulkSectionNotification({
     required Session session,
     required String templateName,
-    required int sectionId,
+    required UuidValue sectionId,
     required Map<String, String> templateData,
     String? actionUrl,
   }) async {

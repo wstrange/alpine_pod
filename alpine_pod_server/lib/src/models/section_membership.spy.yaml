@@ -1,6 +1,7 @@
 class: SectionMembership
 table: section_memberships
 fields:
+  id: UuidValue?, defaultPersist=random_v7
   member: Member?, relation
   # sectionId: int, relation(parent=sections, onDelete=cascade)
   section: Section?, relation

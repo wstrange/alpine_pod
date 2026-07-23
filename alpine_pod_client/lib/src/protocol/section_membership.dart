@@ -29,10 +29,10 @@ abstract class SectionMembership implements _i1.SerializableModel {
   }) : syncedAt = syncedAt ?? DateTime.now();
 
   factory SectionMembership({
-    int? id,
-    required int memberId,
+    _i1.UuidValue? id,
+    required _i1.UuidValue memberId,
     _i2.Member? member,
-    required int sectionId,
+    required _i1.UuidValue sectionId,
     _i3.Section? section,
     String? externalUserId,
     DateTime? syncedAt,
@@ -42,12 +42,18 @@ abstract class SectionMembership implements _i1.SerializableModel {
 
   factory SectionMembership.fromJson(Map<String, dynamic> jsonSerialization) {
     return SectionMembership(
-      id: jsonSerialization['id'] as int?,
-      memberId: jsonSerialization['memberId'] as int,
+      id: jsonSerialization['id'] == null
+          ? null
+          : _i1.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
+      memberId: _i1.UuidValueJsonExtension.fromJson(
+        jsonSerialization['memberId'],
+      ),
       member: jsonSerialization['member'] == null
           ? null
           : _i4.Protocol().deserialize<_i2.Member>(jsonSerialization['member']),
-      sectionId: jsonSerialization['sectionId'] as int,
+      sectionId: _i1.UuidValueJsonExtension.fromJson(
+        jsonSerialization['sectionId'],
+      ),
       section: jsonSerialization['section'] == null
           ? null
           : _i4.Protocol().deserialize<_i3.Section>(
@@ -67,13 +73,13 @@ abstract class SectionMembership implements _i1.SerializableModel {
   /// The database id, set if the object has been inserted into the
   /// database or if it has been fetched from the database. Otherwise,
   /// the id will be null.
-  int? id;
+  _i1.UuidValue? id;
 
-  int memberId;
+  _i1.UuidValue memberId;
 
   _i2.Member? member;
 
-  int sectionId;
+  _i1.UuidValue sectionId;
 
   _i3.Section? section;
 
@@ -89,10 +95,10 @@ abstract class SectionMembership implements _i1.SerializableModel {
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
   SectionMembership copyWith({
-    int? id,
-    int? memberId,
+    _i1.UuidValue? id,
+    _i1.UuidValue? memberId,
     _i2.Member? member,
-    int? sectionId,
+    _i1.UuidValue? sectionId,
     _i3.Section? section,
     String? externalUserId,
     DateTime? syncedAt,
@@ -103,10 +109,10 @@ abstract class SectionMembership implements _i1.SerializableModel {
   Map<String, dynamic> toJson() {
     return {
       '__className__': 'SectionMembership',
-      if (id != null) 'id': id,
-      'memberId': memberId,
+      if (id != null) 'id': id?.toJson(),
+      'memberId': memberId.toJson(),
       if (member != null) 'member': member?.toJson(),
-      'sectionId': sectionId,
+      'sectionId': sectionId.toJson(),
       if (section != null) 'section': section?.toJson(),
       if (externalUserId != null) 'externalUserId': externalUserId,
       'syncedAt': syncedAt.toJson(),
@@ -125,10 +131,10 @@ class _Undefined {}
 
 class _SectionMembershipImpl extends SectionMembership {
   _SectionMembershipImpl({
-    int? id,
-    required int memberId,
+    _i1.UuidValue? id,
+    required _i1.UuidValue memberId,
     _i2.Member? member,
-    required int sectionId,
+    required _i1.UuidValue sectionId,
     _i3.Section? section,
     String? externalUserId,
     DateTime? syncedAt,
@@ -152,9 +158,9 @@ class _SectionMembershipImpl extends SectionMembership {
   @override
   SectionMembership copyWith({
     Object? id = _Undefined,
-    int? memberId,
+    _i1.UuidValue? memberId,
     Object? member = _Undefined,
-    int? sectionId,
+    _i1.UuidValue? sectionId,
     Object? section = _Undefined,
     Object? externalUserId = _Undefined,
     DateTime? syncedAt,
@@ -162,7 +168,7 @@ class _SectionMembershipImpl extends SectionMembership {
     Set<String>? scopes,
   }) {
     return SectionMembership(
-      id: id is int? ? id : this.id,
+      id: id is _i1.UuidValue? ? id : this.id,
       memberId: memberId ?? this.memberId,
       member: member is _i2.Member? ? member : this.member?.copyWith(),
       sectionId: sectionId ?? this.sectionId,

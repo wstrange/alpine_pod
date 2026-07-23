@@ -1,6 +1,7 @@
 class: EventTemplate
 table: event_templates
 fields:
+  id: UuidValue?, defaultPersist=random_v7
   name: String
   description: String
   content: String

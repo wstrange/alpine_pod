@@ -48,7 +48,7 @@ class EventEndpoint extends Endpoint {
   Future<Event> createEvent(
     Session session,
     Event event, {
-    List<int>? additionalManagerIds,
+    List<UuidValue>? additionalManagerIds,
     bool notifyNewEvent = true,
   }) async {
     session.log('Creating Event $event ', level: LogLevel.info);
@@ -112,7 +112,7 @@ class EventEndpoint extends Endpoint {
     return createdEvent;
   }
 
-  Future<Event> getEvent(Session session, int id) async {
+  Future<Event> getEvent(Session session, UuidValue id) async {
     final event = await Event.db.findById(
       session,
       id,
@@ -163,7 +163,7 @@ class EventEndpoint extends Endpoint {
     return updated;
   }
 
-  Future<void> deleteEvent(Session session, int id) async {
+  Future<void> deleteEvent(Session session, UuidValue id) async {
     if (!await cache.canManageEvent(session, id)) {
       throw Exception('You do not have permission to delete this event');
     }
@@ -183,7 +183,7 @@ class EventEndpoint extends Endpoint {
 
   Future<List<Event>> listEvents(
     Session session,
-    int? sectionId,
+    UuidValue? sectionId,
     DateTime? startTime,
     DateTime? endTime,
     bool? onlyMyEvents,
@@ -227,7 +227,7 @@ class EventEndpoint extends Endpoint {
     );
   }
 
-  Future<EventRegistration> registerForEvent(Session session, int eventId) async {
+  Future<EventRegistration> registerForEvent(Session session, UuidValue eventId) async {
     final authInfo = session.authenticated;
     if (authInfo == null) {
       throw Exception('User must be authenticated to register');

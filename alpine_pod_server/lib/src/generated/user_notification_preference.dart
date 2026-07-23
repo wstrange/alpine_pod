@@ -17,7 +17,7 @@ import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
 import 'package:alpine_pod_server/src/generated/protocol.dart' as _i3;
 
 abstract class UserNotificationPreference
-    implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
+    implements _i1.TableRow<_i1.UuidValue?>, _i1.ProtocolSerialization {
   UserNotificationPreference._({
     this.id,
     required this.userId,
@@ -34,7 +34,7 @@ abstract class UserNotificationPreference
        newEvents = newEvents ?? true;
 
   factory UserNotificationPreference({
-    int? id,
+    _i1.UuidValue? id,
     required _i1.UuidValue userId,
     _i2.AuthUser? user,
     bool? allowInApp,
@@ -48,7 +48,9 @@ abstract class UserNotificationPreference
     Map<String, dynamic> jsonSerialization,
   ) {
     return UserNotificationPreference(
-      id: jsonSerialization['id'] as int?,
+      id: jsonSerialization['id'] == null
+          ? null
+          : _i1.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
       userId: _i1.UuidValueJsonExtension.fromJson(jsonSerialization['userId']),
       user: jsonSerialization['user'] == null
           ? null
@@ -76,7 +78,7 @@ abstract class UserNotificationPreference
   static const db = UserNotificationPreferenceRepository._();
 
   @override
-  int? id;
+  _i1.UuidValue? id;
 
   _i1.UuidValue userId;
 
@@ -93,13 +95,13 @@ abstract class UserNotificationPreference
   bool newEvents;
 
   @override
-  _i1.Table<int?> get table => t;
+  _i1.Table<_i1.UuidValue?> get table => t;
 
   /// Returns a shallow copy of this [UserNotificationPreference]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
   UserNotificationPreference copyWith({
-    int? id,
+    _i1.UuidValue? id,
     _i1.UuidValue? userId,
     _i2.AuthUser? user,
     bool? allowInApp,
@@ -112,7 +114,7 @@ abstract class UserNotificationPreference
   Map<String, dynamic> toJson() {
     return {
       '__className__': 'UserNotificationPreference',
-      if (id != null) 'id': id,
+      if (id != null) 'id': id?.toJson(),
       'userId': userId.toJson(),
       if (user != null) 'user': user?.toJson(),
       'allowInApp': allowInApp,
@@ -127,7 +129,7 @@ abstract class UserNotificationPreference
   Map<String, dynamic> toJsonForProtocol() {
     return {
       '__className__': 'UserNotificationPreference',
-      if (id != null) 'id': id,
+      if (id != null) 'id': id?.toJson(),
       'userId': userId.toJson(),
       if (user != null) 'user': user?.toJsonForProtocol(),
       'allowInApp': allowInApp,
@@ -176,7 +178,7 @@ class _Undefined {}
 
 class _UserNotificationPreferenceImpl extends UserNotificationPreference {
   _UserNotificationPreferenceImpl({
-    int? id,
+    _i1.UuidValue? id,
     required _i1.UuidValue userId,
     _i2.AuthUser? user,
     bool? allowInApp,
@@ -210,7 +212,7 @@ class _UserNotificationPreferenceImpl extends UserNotificationPreference {
     bool? newEvents,
   }) {
     return UserNotificationPreference(
-      id: id is int? ? id : this.id,
+      id: id is _i1.UuidValue? ? id : this.id,
       userId: userId ?? this.userId,
       user: user is _i2.AuthUser? ? user : this.user?.copyWith(),
       allowInApp: allowInApp ?? this.allowInApp,
@@ -258,7 +260,7 @@ class UserNotificationPreferenceUpdateTable
   );
 }
 
-class UserNotificationPreferenceTable extends _i1.Table<int?> {
+class UserNotificationPreferenceTable extends _i1.Table<_i1.UuidValue?> {
   UserNotificationPreferenceTable({super.tableRelation})
     : super(tableName: 'user_notification_preference') {
     updateTable = UserNotificationPreferenceUpdateTable(this);
@@ -353,7 +355,7 @@ class UserNotificationPreferenceInclude extends _i1.IncludeObject {
   Map<String, _i1.Include?> get includes => {'user': _user};
 
   @override
-  _i1.Table<int?> get table => UserNotificationPreference.t;
+  _i1.Table<_i1.UuidValue?> get table => UserNotificationPreference.t;
 }
 
 class UserNotificationPreferenceIncludeList extends _i1.IncludeList {
@@ -374,7 +376,7 @@ class UserNotificationPreferenceIncludeList extends _i1.IncludeList {
   Map<String, _i1.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<int?> get table => UserNotificationPreference.t;
+  _i1.Table<_i1.UuidValue?> get table => UserNotificationPreference.t;
 }
 
 class UserNotificationPreferenceRepository {
@@ -480,7 +482,7 @@ class UserNotificationPreferenceRepository {
   /// Finds a single [UserNotificationPreference] by its [id] or null if no such row exists.
   Future<UserNotificationPreference?> findById(
     _i1.DatabaseSession session,
-    int id, {
+    _i1.UuidValue id, {
     _i1.Transaction? transaction,
     UserNotificationPreferenceInclude? include,
     _i1.LockMode? lockMode,
@@ -653,7 +655,7 @@ class UserNotificationPreferenceRepository {
   /// Returns the updated row or null if no row with the given id exists.
   Future<UserNotificationPreference?> updateById(
     _i1.DatabaseSession session,
-    int id, {
+    _i1.UuidValue id, {
     required _i1.ColumnValueListBuilder<UserNotificationPreferenceUpdateTable>
     columnValues,
     _i1.Transaction? transaction,

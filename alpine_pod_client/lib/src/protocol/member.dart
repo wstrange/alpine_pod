@@ -45,7 +45,7 @@ abstract class Member implements _i1.SerializableModel {
        updatedAt = updatedAt ?? DateTime.now();
 
   factory Member({
-    int? id,
+    _i1.UuidValue? id,
     required _i1.UuidValue userId,
     _i2.AuthUser? user,
     required String firstName,
@@ -68,7 +68,9 @@ abstract class Member implements _i1.SerializableModel {
 
   factory Member.fromJson(Map<String, dynamic> jsonSerialization) {
     return Member(
-      id: jsonSerialization['id'] as int?,
+      id: jsonSerialization['id'] == null
+          ? null
+          : _i1.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
       userId: _i1.UuidValueJsonExtension.fromJson(jsonSerialization['userId']),
       user: jsonSerialization['user'] == null
           ? null
@@ -112,7 +114,7 @@ abstract class Member implements _i1.SerializableModel {
   /// The database id, set if the object has been inserted into the
   /// database or if it has been fetched from the database. Otherwise,
   /// the id will be null.
-  int? id;
+  _i1.UuidValue? id;
 
   _i1.UuidValue userId;
 
@@ -154,7 +156,7 @@ abstract class Member implements _i1.SerializableModel {
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
   Member copyWith({
-    int? id,
+    _i1.UuidValue? id,
     _i1.UuidValue? userId,
     _i2.AuthUser? user,
     String? firstName,
@@ -178,7 +180,7 @@ abstract class Member implements _i1.SerializableModel {
   Map<String, dynamic> toJson() {
     return {
       '__className__': 'Member',
-      if (id != null) 'id': id,
+      if (id != null) 'id': id?.toJson(),
       'userId': userId.toJson(),
       if (user != null) 'user': user?.toJson(),
       'firstName': firstName,
@@ -212,7 +214,7 @@ class _Undefined {}
 
 class _MemberImpl extends Member {
   _MemberImpl({
-    int? id,
+    _i1.UuidValue? id,
     required _i1.UuidValue userId,
     _i2.AuthUser? user,
     required String firstName,
@@ -279,7 +281,7 @@ class _MemberImpl extends Member {
     Object? managedEvents = _Undefined,
   }) {
     return Member(
-      id: id is int? ? id : this.id,
+      id: id is _i1.UuidValue? ? id : this.id,
       userId: userId ?? this.userId,
       user: user is _i2.AuthUser? ? user : this.user?.copyWith(),
       firstName: firstName ?? this.firstName,

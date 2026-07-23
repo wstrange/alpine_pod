@@ -22,7 +22,7 @@ abstract class EventTemplate implements _i1.SerializableModel {
   }) : language = language ?? 'en';
 
   factory EventTemplate({
-    int? id,
+    _i1.UuidValue? id,
     required String name,
     required String description,
     required String content,
@@ -31,7 +31,9 @@ abstract class EventTemplate implements _i1.SerializableModel {
 
   factory EventTemplate.fromJson(Map<String, dynamic> jsonSerialization) {
     return EventTemplate(
-      id: jsonSerialization['id'] as int?,
+      id: jsonSerialization['id'] == null
+          ? null
+          : _i1.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
       name: jsonSerialization['name'] as String,
       description: jsonSerialization['description'] as String,
       content: jsonSerialization['content'] as String,
@@ -42,7 +44,7 @@ abstract class EventTemplate implements _i1.SerializableModel {
   /// The database id, set if the object has been inserted into the
   /// database or if it has been fetched from the database. Otherwise,
   /// the id will be null.
-  int? id;
+  _i1.UuidValue? id;
 
   String name;
 
@@ -56,7 +58,7 @@ abstract class EventTemplate implements _i1.SerializableModel {
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
   EventTemplate copyWith({
-    int? id,
+    _i1.UuidValue? id,
     String? name,
     String? description,
     String? content,
@@ -66,7 +68,7 @@ abstract class EventTemplate implements _i1.SerializableModel {
   Map<String, dynamic> toJson() {
     return {
       '__className__': 'EventTemplate',
-      if (id != null) 'id': id,
+      if (id != null) 'id': id?.toJson(),
       'name': name,
       'description': description,
       'content': content,
@@ -84,7 +86,7 @@ class _Undefined {}
 
 class _EventTemplateImpl extends EventTemplate {
   _EventTemplateImpl({
-    int? id,
+    _i1.UuidValue? id,
     required String name,
     required String description,
     required String content,
@@ -109,7 +111,7 @@ class _EventTemplateImpl extends EventTemplate {
     String? language,
   }) {
     return EventTemplate(
-      id: id is int? ? id : this.id,
+      id: id is _i1.UuidValue? ? id : this.id,
       name: name ?? this.name,
       description: description ?? this.description,
       content: content ?? this.content,

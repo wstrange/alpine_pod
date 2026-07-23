@@ -17,7 +17,8 @@ import 'event_registration.dart' as _i3;
 import 'event_manager.dart' as _i4;
 import 'package:alpine_pod_server/src/generated/protocol.dart' as _i5;
 
-abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
+abstract class Event
+    implements _i1.TableRow<_i1.UuidValue?>, _i1.ProtocolSerialization {
   Event._({
     this.id,
     required this.title,
@@ -48,7 +49,7 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
        published = published ?? false;
 
   factory Event({
-    int? id,
+    _i1.UuidValue? id,
     required String title,
     required String description,
     required String type,
@@ -65,7 +66,7 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     int? maxParticipants,
     DateTime? cancellationDeadline,
     bool? cancelled,
-    required int sectionId,
+    required _i1.UuidValue sectionId,
     _i2.Section? section,
     bool? published,
     List<_i3.EventRegistration>? eventRegistrations,
@@ -74,7 +75,9 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
 
   factory Event.fromJson(Map<String, dynamic> jsonSerialization) {
     return Event(
-      id: jsonSerialization['id'] as int?,
+      id: jsonSerialization['id'] == null
+          ? null
+          : _i1.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
       title: jsonSerialization['title'] as String,
       description: jsonSerialization['description'] as String,
       type: jsonSerialization['type'] as String,
@@ -116,7 +119,9 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       cancelled: jsonSerialization['cancelled'] == null
           ? null
           : _i1.BoolJsonExtension.fromJson(jsonSerialization['cancelled']),
-      sectionId: jsonSerialization['sectionId'] as int,
+      sectionId: _i1.UuidValueJsonExtension.fromJson(
+        jsonSerialization['sectionId'],
+      ),
       section: jsonSerialization['section'] == null
           ? null
           : _i5.Protocol().deserialize<_i2.Section>(
@@ -143,7 +148,7 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   static const db = EventRepository._();
 
   @override
-  int? id;
+  _i1.UuidValue? id;
 
   String title;
 
@@ -177,7 +182,7 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
 
   bool cancelled;
 
-  int sectionId;
+  _i1.UuidValue sectionId;
 
   _i2.Section? section;
 
@@ -188,13 +193,13 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   List<_i4.EventManager>? eventManagers;
 
   @override
-  _i1.Table<int?> get table => t;
+  _i1.Table<_i1.UuidValue?> get table => t;
 
   /// Returns a shallow copy of this [Event]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
   Event copyWith({
-    int? id,
+    _i1.UuidValue? id,
     String? title,
     String? description,
     String? type,
@@ -211,7 +216,7 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     int? maxParticipants,
     DateTime? cancellationDeadline,
     bool? cancelled,
-    int? sectionId,
+    _i1.UuidValue? sectionId,
     _i2.Section? section,
     bool? published,
     List<_i3.EventRegistration>? eventRegistrations,
@@ -221,7 +226,7 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   Map<String, dynamic> toJson() {
     return {
       '__className__': 'Event',
-      if (id != null) 'id': id,
+      if (id != null) 'id': id?.toJson(),
       'title': title,
       'description': description,
       'type': type,
@@ -241,7 +246,7 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       if (cancellationDeadline != null)
         'cancellationDeadline': cancellationDeadline?.toJson(),
       'cancelled': cancelled,
-      'sectionId': sectionId,
+      'sectionId': sectionId.toJson(),
       if (section != null) 'section': section?.toJson(),
       'published': published,
       if (eventRegistrations != null)
@@ -257,7 +262,7 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   Map<String, dynamic> toJsonForProtocol() {
     return {
       '__className__': 'Event',
-      if (id != null) 'id': id,
+      if (id != null) 'id': id?.toJson(),
       'title': title,
       'description': description,
       'type': type,
@@ -277,7 +282,7 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       if (cancellationDeadline != null)
         'cancellationDeadline': cancellationDeadline?.toJson(),
       'cancelled': cancelled,
-      'sectionId': sectionId,
+      'sectionId': sectionId.toJson(),
       if (section != null) 'section': section?.toJsonForProtocol(),
       'published': published,
       if (eventRegistrations != null)
@@ -335,7 +340,7 @@ class _Undefined {}
 
 class _EventImpl extends Event {
   _EventImpl({
-    int? id,
+    _i1.UuidValue? id,
     required String title,
     required String description,
     required String type,
@@ -352,7 +357,7 @@ class _EventImpl extends Event {
     int? maxParticipants,
     DateTime? cancellationDeadline,
     bool? cancelled,
-    required int sectionId,
+    required _i1.UuidValue sectionId,
     _i2.Section? section,
     bool? published,
     List<_i3.EventRegistration>? eventRegistrations,
@@ -404,14 +409,14 @@ class _EventImpl extends Event {
     int? maxParticipants,
     Object? cancellationDeadline = _Undefined,
     bool? cancelled,
-    int? sectionId,
+    _i1.UuidValue? sectionId,
     Object? section = _Undefined,
     bool? published,
     Object? eventRegistrations = _Undefined,
     Object? eventManagers = _Undefined,
   }) {
     return Event(
-      id: id is int? ? id : this.id,
+      id: id is _i1.UuidValue? ? id : this.id,
       title: title ?? this.title,
       description: description ?? this.description,
       type: type ?? this.type,
@@ -545,7 +550,9 @@ class EventUpdateTable extends _i1.UpdateTable<EventTable> {
     value,
   );
 
-  _i1.ColumnValue<int, int> sectionId(int value) => _i1.ColumnValue(
+  _i1.ColumnValue<_i1.UuidValue, _i1.UuidValue> sectionId(
+    _i1.UuidValue value,
+  ) => _i1.ColumnValue(
     table.sectionId,
     value,
   );
@@ -556,7 +563,7 @@ class EventUpdateTable extends _i1.UpdateTable<EventTable> {
   );
 }
 
-class EventTable extends _i1.Table<int?> {
+class EventTable extends _i1.Table<_i1.UuidValue?> {
   EventTable({super.tableRelation}) : super(tableName: 'events') {
     updateTable = EventUpdateTable(this);
     title = _i1.ColumnString(
@@ -627,7 +634,7 @@ class EventTable extends _i1.Table<int?> {
       this,
       hasDefault: true,
     );
-    sectionId = _i1.ColumnInt(
+    sectionId = _i1.ColumnUuid(
       'sectionId',
       this,
     );
@@ -672,7 +679,7 @@ class EventTable extends _i1.Table<int?> {
 
   late final _i1.ColumnBool cancelled;
 
-  late final _i1.ColumnInt sectionId;
+  late final _i1.ColumnUuid sectionId;
 
   _i2.SectionTable? _section;
 
@@ -826,7 +833,7 @@ class EventInclude extends _i1.IncludeObject {
   };
 
   @override
-  _i1.Table<int?> get table => Event.t;
+  _i1.Table<_i1.UuidValue?> get table => Event.t;
 }
 
 class EventIncludeList extends _i1.IncludeList {
@@ -847,7 +854,7 @@ class EventIncludeList extends _i1.IncludeList {
   Map<String, _i1.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<int?> get table => Event.t;
+  _i1.Table<_i1.UuidValue?> get table => Event.t;
 }
 
 class EventRepository {
@@ -959,7 +966,7 @@ class EventRepository {
   /// Finds a single [Event] by its [id] or null if no such row exists.
   Future<Event?> findById(
     _i1.DatabaseSession session,
-    int id, {
+    _i1.UuidValue id, {
     _i1.Transaction? transaction,
     EventInclude? include,
     _i1.LockMode? lockMode,
@@ -1130,7 +1137,7 @@ class EventRepository {
   /// Returns the updated row or null if no row with the given id exists.
   Future<Event?> updateById(
     _i1.DatabaseSession session,
-    int id, {
+    _i1.UuidValue id, {
     required _i1.ColumnValueListBuilder<EventUpdateTable> columnValues,
     _i1.Transaction? transaction,
   }) async {

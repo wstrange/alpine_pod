@@ -16,7 +16,7 @@ class RegistrationEndpoint extends Endpoint {
   }
 
   /// Gets the next available waitlist position for an event
-  Future<int> _getNextWaitlistPosition(Session session, int eventId) async {
+  Future<int> _getNextWaitlistPosition(Session session, UuidValue eventId) async {
     final lastWaitlisted = await EventRegistration.db.findFirstRow(
       session,
       where: (t) => t.eventId.equals(eventId),
@@ -29,7 +29,7 @@ class RegistrationEndpoint extends Endpoint {
   /// Approve or reject a registration
   Future<EventRegistration> updateRegistrationStatus(
     Session session,
-    int registrationId,
+    UuidValue registrationId,
     RegistrationStatus newStatus, {
     String? notes,
   }) async {
@@ -149,7 +149,7 @@ class RegistrationEndpoint extends Endpoint {
     return await EventRegistration.db.insertRow(session, validatedRegistration);
   }
 
-  Future<void> cancelRegistration(Session session, int registrationId) async {
+  Future<void> cancelRegistration(Session session, UuidValue registrationId) async {
     final reg = await EventRegistration.db.findById(session, registrationId);
     if (reg == null) return;
     final member = await cache.getMemberInfo(session);
@@ -162,7 +162,7 @@ class RegistrationEndpoint extends Endpoint {
     await notificationService.notifyManagersRegistrationCancelled(session, reg);
   }
 
-  Future<List<EventRegistration>> getRegistrationsForEvent(Session session, int eventId) async {
+  Future<List<EventRegistration>> getRegistrationsForEvent(Session session, UuidValue eventId) async {
     return await EventRegistration.db.find(
       session,
       where: (t) => t.eventId.equals(eventId),

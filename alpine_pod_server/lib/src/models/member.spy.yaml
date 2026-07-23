@@ -1,6 +1,7 @@
 class: Member
 table: members
 fields:
+  id: UuidValue?, defaultPersist=random_v7
   user: module:serverpod_auth_core:AuthUser?, relation(onDelete=Cascade)
   firstName: String
   lastName: String

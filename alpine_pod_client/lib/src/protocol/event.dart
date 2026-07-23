@@ -47,7 +47,7 @@ abstract class Event implements _i1.SerializableModel {
        published = published ?? false;
 
   factory Event({
-    int? id,
+    _i1.UuidValue? id,
     required String title,
     required String description,
     required String type,
@@ -64,7 +64,7 @@ abstract class Event implements _i1.SerializableModel {
     int? maxParticipants,
     DateTime? cancellationDeadline,
     bool? cancelled,
-    required int sectionId,
+    required _i1.UuidValue sectionId,
     _i2.Section? section,
     bool? published,
     List<_i3.EventRegistration>? eventRegistrations,
@@ -73,7 +73,9 @@ abstract class Event implements _i1.SerializableModel {
 
   factory Event.fromJson(Map<String, dynamic> jsonSerialization) {
     return Event(
-      id: jsonSerialization['id'] as int?,
+      id: jsonSerialization['id'] == null
+          ? null
+          : _i1.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
       title: jsonSerialization['title'] as String,
       description: jsonSerialization['description'] as String,
       type: jsonSerialization['type'] as String,
@@ -115,7 +117,9 @@ abstract class Event implements _i1.SerializableModel {
       cancelled: jsonSerialization['cancelled'] == null
           ? null
           : _i1.BoolJsonExtension.fromJson(jsonSerialization['cancelled']),
-      sectionId: jsonSerialization['sectionId'] as int,
+      sectionId: _i1.UuidValueJsonExtension.fromJson(
+        jsonSerialization['sectionId'],
+      ),
       section: jsonSerialization['section'] == null
           ? null
           : _i5.Protocol().deserialize<_i2.Section>(
@@ -140,7 +144,7 @@ abstract class Event implements _i1.SerializableModel {
   /// The database id, set if the object has been inserted into the
   /// database or if it has been fetched from the database. Otherwise,
   /// the id will be null.
-  int? id;
+  _i1.UuidValue? id;
 
   String title;
 
@@ -174,7 +178,7 @@ abstract class Event implements _i1.SerializableModel {
 
   bool cancelled;
 
-  int sectionId;
+  _i1.UuidValue sectionId;
 
   _i2.Section? section;
 
@@ -188,7 +192,7 @@ abstract class Event implements _i1.SerializableModel {
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
   Event copyWith({
-    int? id,
+    _i1.UuidValue? id,
     String? title,
     String? description,
     String? type,
@@ -205,7 +209,7 @@ abstract class Event implements _i1.SerializableModel {
     int? maxParticipants,
     DateTime? cancellationDeadline,
     bool? cancelled,
-    int? sectionId,
+    _i1.UuidValue? sectionId,
     _i2.Section? section,
     bool? published,
     List<_i3.EventRegistration>? eventRegistrations,
@@ -215,7 +219,7 @@ abstract class Event implements _i1.SerializableModel {
   Map<String, dynamic> toJson() {
     return {
       '__className__': 'Event',
-      if (id != null) 'id': id,
+      if (id != null) 'id': id?.toJson(),
       'title': title,
       'description': description,
       'type': type,
@@ -235,7 +239,7 @@ abstract class Event implements _i1.SerializableModel {
       if (cancellationDeadline != null)
         'cancellationDeadline': cancellationDeadline?.toJson(),
       'cancelled': cancelled,
-      'sectionId': sectionId,
+      'sectionId': sectionId.toJson(),
       if (section != null) 'section': section?.toJson(),
       'published': published,
       if (eventRegistrations != null)
@@ -257,7 +261,7 @@ class _Undefined {}
 
 class _EventImpl extends Event {
   _EventImpl({
-    int? id,
+    _i1.UuidValue? id,
     required String title,
     required String description,
     required String type,
@@ -274,7 +278,7 @@ class _EventImpl extends Event {
     int? maxParticipants,
     DateTime? cancellationDeadline,
     bool? cancelled,
-    required int sectionId,
+    required _i1.UuidValue sectionId,
     _i2.Section? section,
     bool? published,
     List<_i3.EventRegistration>? eventRegistrations,
@@ -326,14 +330,14 @@ class _EventImpl extends Event {
     int? maxParticipants,
     Object? cancellationDeadline = _Undefined,
     bool? cancelled,
-    int? sectionId,
+    _i1.UuidValue? sectionId,
     Object? section = _Undefined,
     bool? published,
     Object? eventRegistrations = _Undefined,
     Object? eventManagers = _Undefined,
   }) {
     return Event(
-      id: id is int? ? id : this.id,
+      id: id is _i1.UuidValue? ? id : this.id,
       title: title ?? this.title,
       description: description ?? this.description,
       type: type ?? this.type,
