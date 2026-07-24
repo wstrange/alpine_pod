@@ -8,29 +8,22 @@
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
 // ignore_for_file: invalid_use_of_internal_member
-// ignore_for_file: dead_code, unnecessary_null_comparison
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
-import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
-    as _i2;
-import 'package:alpine_pod_server/src/generated/protocol.dart' as _i3;
 
 abstract class FcmToken
-    implements _i1.TableRow<_i1.UuidValue?>, _i1.ProtocolSerialization {
+    implements _i1.TableRow<_i1.UuidValue>, _i1.ProtocolSerialization {
   FcmToken._({
-    this.id,
-    required this.userId,
-    this.user,
+    _i1.UuidValue? id,
     required this.token,
     this.deviceId,
     DateTime? updatedAt,
-  }) : updatedAt = updatedAt ?? DateTime.now();
+  }) : id = id ?? const _i1.Uuid().v7obj(),
+       updatedAt = updatedAt ?? DateTime.now();
 
   factory FcmToken({
     _i1.UuidValue? id,
-    required _i1.UuidValue userId,
-    _i2.AuthUser? user,
     required String token,
     String? deviceId,
     DateTime? updatedAt,
@@ -41,10 +34,6 @@ abstract class FcmToken
       id: jsonSerialization['id'] == null
           ? null
           : _i1.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
-      userId: _i1.UuidValueJsonExtension.fromJson(jsonSerialization['userId']),
-      user: jsonSerialization['user'] == null
-          ? null
-          : _i3.Protocol().deserialize<_i2.AuthUser>(jsonSerialization['user']),
       token: jsonSerialization['token'] as String,
       deviceId: jsonSerialization['deviceId'] as String?,
       updatedAt: jsonSerialization['updatedAt'] == null
@@ -58,11 +47,7 @@ abstract class FcmToken
   static const db = FcmTokenRepository._();
 
   @override
-  _i1.UuidValue? id;
-
-  _i1.UuidValue userId;
-
-  _i2.AuthUser? user;
+  _i1.UuidValue id;
 
   String token;
 
@@ -71,15 +56,13 @@ abstract class FcmToken
   DateTime updatedAt;
 
   @override
-  _i1.Table<_i1.UuidValue?> get table => t;
+  _i1.Table<_i1.UuidValue> get table => t;
 
   /// Returns a shallow copy of this [FcmToken]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
   FcmToken copyWith({
     _i1.UuidValue? id,
-    _i1.UuidValue? userId,
-    _i2.AuthUser? user,
     String? token,
     String? deviceId,
     DateTime? updatedAt,
@@ -88,9 +71,7 @@ abstract class FcmToken
   Map<String, dynamic> toJson() {
     return {
       '__className__': 'FcmToken',
-      if (id != null) 'id': id?.toJson(),
-      'userId': userId.toJson(),
-      if (user != null) 'user': user?.toJson(),
+      'id': id.toJson(),
       'token': token,
       if (deviceId != null) 'deviceId': deviceId,
       'updatedAt': updatedAt.toJson(),
@@ -101,17 +82,15 @@ abstract class FcmToken
   Map<String, dynamic> toJsonForProtocol() {
     return {
       '__className__': 'FcmToken',
-      if (id != null) 'id': id?.toJson(),
-      'userId': userId.toJson(),
-      if (user != null) 'user': user?.toJsonForProtocol(),
+      'id': id.toJson(),
       'token': token,
       if (deviceId != null) 'deviceId': deviceId,
       'updatedAt': updatedAt.toJson(),
     };
   }
 
-  static FcmTokenInclude include({_i2.AuthUserInclude? user}) {
-    return FcmTokenInclude._(user: user);
+  static FcmTokenInclude include() {
+    return FcmTokenInclude._();
   }
 
   static FcmTokenIncludeList includeList({
@@ -147,15 +126,11 @@ class _Undefined {}
 class _FcmTokenImpl extends FcmToken {
   _FcmTokenImpl({
     _i1.UuidValue? id,
-    required _i1.UuidValue userId,
-    _i2.AuthUser? user,
     required String token,
     String? deviceId,
     DateTime? updatedAt,
   }) : super._(
          id: id,
-         userId: userId,
-         user: user,
          token: token,
          deviceId: deviceId,
          updatedAt: updatedAt,
@@ -166,17 +141,13 @@ class _FcmTokenImpl extends FcmToken {
   @_i1.useResult
   @override
   FcmToken copyWith({
-    Object? id = _Undefined,
-    _i1.UuidValue? userId,
-    Object? user = _Undefined,
+    _i1.UuidValue? id,
     String? token,
     Object? deviceId = _Undefined,
     DateTime? updatedAt,
   }) {
     return FcmToken(
-      id: id is _i1.UuidValue? ? id : this.id,
-      userId: userId ?? this.userId,
-      user: user is _i2.AuthUser? ? user : this.user?.copyWith(),
+      id: id ?? this.id,
       token: token ?? this.token,
       deviceId: deviceId is String? ? deviceId : this.deviceId,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -186,12 +157,6 @@ class _FcmTokenImpl extends FcmToken {
 
 class FcmTokenUpdateTable extends _i1.UpdateTable<FcmTokenTable> {
   FcmTokenUpdateTable(super.table);
-
-  _i1.ColumnValue<_i1.UuidValue, _i1.UuidValue> userId(_i1.UuidValue value) =>
-      _i1.ColumnValue(
-        table.userId,
-        value,
-      );
 
   _i1.ColumnValue<String, String> token(String value) => _i1.ColumnValue(
     table.token,
@@ -210,13 +175,9 @@ class FcmTokenUpdateTable extends _i1.UpdateTable<FcmTokenTable> {
       );
 }
 
-class FcmTokenTable extends _i1.Table<_i1.UuidValue?> {
+class FcmTokenTable extends _i1.Table<_i1.UuidValue> {
   FcmTokenTable({super.tableRelation}) : super(tableName: 'fcm_tokens') {
     updateTable = FcmTokenUpdateTable(this);
-    userId = _i1.ColumnUuid(
-      'userId',
-      this,
-    );
     token = _i1.ColumnString(
       'token',
       this,
@@ -234,59 +195,29 @@ class FcmTokenTable extends _i1.Table<_i1.UuidValue?> {
 
   late final FcmTokenUpdateTable updateTable;
 
-  late final _i1.ColumnUuid userId;
-
-  _i2.AuthUserTable? _user;
-
   late final _i1.ColumnString token;
 
   late final _i1.ColumnString deviceId;
 
   late final _i1.ColumnDateTime updatedAt;
 
-  _i2.AuthUserTable get user {
-    if (_user != null) return _user!;
-    _user = _i1.createRelationTable(
-      relationFieldName: 'user',
-      field: FcmToken.t.userId,
-      foreignField: _i2.AuthUser.t.id,
-      tableRelation: tableRelation,
-      createTable: (foreignTableRelation) =>
-          _i2.AuthUserTable(tableRelation: foreignTableRelation),
-    );
-    return _user!;
-  }
-
   @override
   List<_i1.Column> get columns => [
     id,
-    userId,
     token,
     deviceId,
     updatedAt,
   ];
-
-  @override
-  _i1.Table? getRelationTable(String relationField) {
-    if (relationField == 'user') {
-      return user;
-    }
-    return null;
-  }
 }
 
 class FcmTokenInclude extends _i1.IncludeObject {
-  FcmTokenInclude._({_i2.AuthUserInclude? user}) {
-    _user = user;
-  }
-
-  _i2.AuthUserInclude? _user;
+  FcmTokenInclude._();
 
   @override
-  Map<String, _i1.Include?> get includes => {'user': _user};
+  Map<String, _i1.Include?> get includes => {};
 
   @override
-  _i1.Table<_i1.UuidValue?> get table => FcmToken.t;
+  _i1.Table<_i1.UuidValue> get table => FcmToken.t;
 }
 
 class FcmTokenIncludeList extends _i1.IncludeList {
@@ -307,13 +238,11 @@ class FcmTokenIncludeList extends _i1.IncludeList {
   Map<String, _i1.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<_i1.UuidValue?> get table => FcmToken.t;
+  _i1.Table<_i1.UuidValue> get table => FcmToken.t;
 }
 
 class FcmTokenRepository {
   const FcmTokenRepository._();
-
-  final attachRow = const FcmTokenAttachRowRepository._();
 
   /// Returns a list of [FcmToken]s matching the given query parameters.
   ///
@@ -347,7 +276,6 @@ class FcmTokenRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<FcmTokenTable>? orderByList,
     _i1.Transaction? transaction,
-    FcmTokenInclude? include,
     _i1.LockMode? lockMode,
     _i1.LockBehavior? lockBehavior,
   }) async {
@@ -360,7 +288,6 @@ class FcmTokenRepository {
       limit: limit,
       offset: offset,
       transaction: transaction,
-      include: include,
       lockMode: lockMode,
       lockBehavior: lockBehavior,
     );
@@ -392,7 +319,6 @@ class FcmTokenRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<FcmTokenTable>? orderByList,
     _i1.Transaction? transaction,
-    FcmTokenInclude? include,
     _i1.LockMode? lockMode,
     _i1.LockBehavior? lockBehavior,
   }) async {
@@ -404,7 +330,6 @@ class FcmTokenRepository {
           orderDescending,
       offset: offset,
       transaction: transaction,
-      include: include,
       lockMode: lockMode,
       lockBehavior: lockBehavior,
     );
@@ -415,14 +340,12 @@ class FcmTokenRepository {
     _i1.DatabaseSession session,
     _i1.UuidValue id, {
     _i1.Transaction? transaction,
-    FcmTokenInclude? include,
     _i1.LockMode? lockMode,
     _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<FcmToken>(
       id,
       transaction: transaction,
-      include: include,
       lockMode: lockMode,
       lockBehavior: lockBehavior,
     );
@@ -728,33 +651,6 @@ class FcmTokenRepository {
       where: where(FcmToken.t),
       lockMode: lockMode,
       lockBehavior: lockBehavior,
-      transaction: transaction,
-    );
-  }
-}
-
-class FcmTokenAttachRowRepository {
-  const FcmTokenAttachRowRepository._();
-
-  /// Creates a relation between the given [FcmToken] and [AuthUser]
-  /// by setting the [FcmToken]'s foreign key `userId` to refer to the [AuthUser].
-  Future<void> user(
-    _i1.DatabaseSession session,
-    FcmToken fcmToken,
-    _i2.AuthUser user, {
-    _i1.Transaction? transaction,
-  }) async {
-    if (fcmToken.id == null) {
-      throw ArgumentError.notNull('fcmToken.id');
-    }
-    if (user.id == null) {
-      throw ArgumentError.notNull('user.id');
-    }
-
-    var $fcmToken = fcmToken.copyWith(userId: user.id);
-    await session.db.updateRow<FcmToken>(
-      $fcmToken,
-      columns: [FcmToken.t.userId],
       transaction: transaction,
     );
   }

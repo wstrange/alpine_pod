@@ -19,7 +19,9 @@ abstract class EventTemplate implements _i1.SerializableModel {
     required this.description,
     required this.content,
     String? language,
-  }) : language = language ?? 'en';
+    DateTime? updatedAt,
+  }) : language = language ?? 'en',
+       updatedAt = updatedAt ?? DateTime.now();
 
   factory EventTemplate({
     _i1.UuidValue? id,
@@ -27,6 +29,7 @@ abstract class EventTemplate implements _i1.SerializableModel {
     required String description,
     required String content,
     String? language,
+    DateTime? updatedAt,
   }) = _EventTemplateImpl;
 
   factory EventTemplate.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -38,6 +41,9 @@ abstract class EventTemplate implements _i1.SerializableModel {
       description: jsonSerialization['description'] as String,
       content: jsonSerialization['content'] as String,
       language: jsonSerialization['language'] as String?,
+      updatedAt: jsonSerialization['updatedAt'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
     );
   }
 
@@ -54,6 +60,8 @@ abstract class EventTemplate implements _i1.SerializableModel {
 
   String language;
 
+  DateTime updatedAt;
+
   /// Returns a shallow copy of this [EventTemplate]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
@@ -63,6 +71,7 @@ abstract class EventTemplate implements _i1.SerializableModel {
     String? description,
     String? content,
     String? language,
+    DateTime? updatedAt,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -73,6 +82,7 @@ abstract class EventTemplate implements _i1.SerializableModel {
       'description': description,
       'content': content,
       'language': language,
+      'updatedAt': updatedAt.toJson(),
     };
   }
 
@@ -91,12 +101,14 @@ class _EventTemplateImpl extends EventTemplate {
     required String description,
     required String content,
     String? language,
+    DateTime? updatedAt,
   }) : super._(
          id: id,
          name: name,
          description: description,
          content: content,
          language: language,
+         updatedAt: updatedAt,
        );
 
   /// Returns a shallow copy of this [EventTemplate]
@@ -109,6 +121,7 @@ class _EventTemplateImpl extends EventTemplate {
     String? description,
     String? content,
     String? language,
+    DateTime? updatedAt,
   }) {
     return EventTemplate(
       id: id is _i1.UuidValue? ? id : this.id,
@@ -116,6 +129,7 @@ class _EventTemplateImpl extends EventTemplate {
       description: description ?? this.description,
       content: content ?? this.content,
       language: language ?? this.language,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 }

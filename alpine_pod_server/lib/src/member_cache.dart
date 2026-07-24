@@ -25,18 +25,14 @@ class MemberCache {
 
     var id = authInfo.authUserId;
 
-    final member = await Member.db.findFirstRow(session,
-        where: (t) => t.user.id.equals(authInfo.authUserId));
+    final member = await Member.db.findFirstRow(session, where: (t) => t.id.equals(authInfo.authUserId));
 
     if (member == null) {
       session.log('No member found for userInfoId $id');
       return;
     }
 
-    final memberships = await SectionMembership.db.find(
-      session,
-      where: (t) => t.memberId.equals(member.id),
-    );
+    final memberships = await SectionMembership.db.find(session, where: (t) => t.memberId.equals(member.id));
 
     final sectionScopes = {for (var m in memberships) m.sectionId: m.scopes};
     final sectionIds = sectionScopes.keys.toSet();
@@ -64,8 +60,7 @@ class MemberCache {
   }
 
   /// Gets or refreshes a cache entry for a member
-  Future<MemberInfo?> _getCacheEntry(
-      Session session, UuidValue userInfoId) async {
+  Future<MemberInfo?> _getCacheEntry(Session session, UuidValue userInfoId) async {
     // Check if entry exists and is fresh
     var entry = _cache[userInfoId];
     if (entry != null && !entry.isStale) {
@@ -114,9 +109,10 @@ class MemberCache {
     if (info.isSectionManager(event.sectionId)) return true;
 
     // Check if specifically assigned as an event manager
-    final isManager = await EventManager.db.findFirstRow(
+    final isManager =
+        await EventManager.db.findFirstRow(
           session,
-          where: (t) => t.eventId.equals(eventId) & t.memberId.equals(info.member.id!),
+          where: (t) => t.eventId.equals(eventId) & t.memberId.equals(info.member.id),
         ) !=
         null;
 
@@ -151,27 +147,19 @@ class MemberInfo {
     required this.timestamp,
   });
 
-  bool get isStale =>
-      DateTime.now().difference(timestamp).inMinutes >
-      MemberCache._maxAgeMinutes;
+  bool get isStale => DateTime.now().difference(timestamp).inMinutes > MemberCache._maxAgeMinutes;
 
   /// Returns the scopes for a specific section, or an empty set if not a member.
-  Set<String> scopesFor(UuidValue? sectionId) =>
-      sectionId == null ? {} : sectionScopes[sectionId] ?? {};
-
-
+  Set<String> scopesFor(UuidValue? sectionId) => sectionId == null ? {} : sectionScopes[sectionId] ?? {};
 
   /// Check if the user is a section manager for the given section
-  bool isSectionManager(UuidValue? sectionId) =>
-      scopesFor(sectionId).contains('sectionManager');
+  bool isSectionManager(UuidValue? sectionId) => scopesFor(sectionId).contains('sectionManager');
 
   /// Check if the user is an event manager for the given section
-  bool isEventManagerForSection(UuidValue? sectionId) =>
-      scopesFor(sectionId).contains('eventManager');
+  bool isEventManagerForSection(UuidValue? sectionId) => scopesFor(sectionId).contains('eventManager');
 }
 
 extension SessionExtension on Session {
   /// Check if the authenticated user is a global admin
-  bool isGlobalAdmin() =>
-      authenticated?.scopes.contains(Scope.admin) ?? false;
+  bool isGlobalAdmin() => authenticated?.scopes.contains(Scope.admin) ?? false;
 }

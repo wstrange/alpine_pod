@@ -8,20 +8,18 @@
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
 // ignore_for_file: invalid_use_of_internal_member
+// ignore_for_file: dead_code, unnecessary_null_comparison
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
-import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart'
-    as _i2;
+import 'package:serverpod_database/serverpod_database.dart' as _i1;
+import 'package:serverpod_client/serverpod_client.dart' as _i2;
 import 'event_registration.dart' as _i3;
 import 'event_manager.dart' as _i4;
 import 'package:alpine_pod_client/src/protocol/protocol.dart' as _i5;
 
-abstract class Member implements _i1.SerializableModel {
+abstract class Member implements _i1.TableRow<_i2.UuidValue> {
   Member._({
-    this.id,
-    required this.userId,
-    this.user,
+    _i2.UuidValue? id,
     required this.firstName,
     required this.lastName,
     this.displayName,
@@ -38,16 +36,15 @@ abstract class Member implements _i1.SerializableModel {
     DateTime? updatedAt,
     this.registrations,
     this.managedEvents,
-  }) : membershipStatus = membershipStatus ?? 'active',
+  }) : id = id ?? const _i2.Uuid().v7obj(),
+       membershipStatus = membershipStatus ?? 'active',
        waiverSignedDate =
            waiverSignedDate ?? DateTime.parse('1970-01-01T00:00:00.000Z'),
        createdAt = createdAt ?? DateTime.now(),
        updatedAt = updatedAt ?? DateTime.now();
 
   factory Member({
-    _i1.UuidValue? id,
-    required _i1.UuidValue userId,
-    _i2.AuthUser? user,
+    _i2.UuidValue? id,
     required String firstName,
     required String lastName,
     String? displayName,
@@ -70,11 +67,7 @@ abstract class Member implements _i1.SerializableModel {
     return Member(
       id: jsonSerialization['id'] == null
           ? null
-          : _i1.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
-      userId: _i1.UuidValueJsonExtension.fromJson(jsonSerialization['userId']),
-      user: jsonSerialization['user'] == null
-          ? null
-          : _i5.Protocol().deserialize<_i2.AuthUser>(jsonSerialization['user']),
+          : _i2.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
       firstName: jsonSerialization['firstName'] as String,
       lastName: jsonSerialization['lastName'] as String,
       displayName: jsonSerialization['displayName'] as String?,
@@ -88,16 +81,16 @@ abstract class Member implements _i1.SerializableModel {
       medicalConditions: jsonSerialization['medicalConditions'] as String?,
       waiverSignedDate: jsonSerialization['waiverSignedDate'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(
+          : _i2.DateTimeJsonExtension.fromJson(
               jsonSerialization['waiverSignedDate'],
             ),
       certifications: jsonSerialization['certifications'] as String?,
       createdAt: jsonSerialization['createdAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
+          : _i2.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
+          : _i2.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
       registrations: jsonSerialization['registrations'] == null
           ? null
           : _i5.Protocol().deserialize<List<_i3.EventRegistration>>(
@@ -111,14 +104,12 @@ abstract class Member implements _i1.SerializableModel {
     );
   }
 
-  /// The database id, set if the object has been inserted into the
-  /// database or if it has been fetched from the database. Otherwise,
-  /// the id will be null.
-  _i1.UuidValue? id;
+  static final t = MemberTable();
 
-  _i1.UuidValue userId;
+  static const db = MemberRepository._();
 
-  _i2.AuthUser? user;
+  @override
+  _i2.UuidValue id;
 
   String firstName;
 
@@ -152,13 +143,14 @@ abstract class Member implements _i1.SerializableModel {
 
   List<_i4.EventManager>? managedEvents;
 
+  @override
+  _i1.Table<_i2.UuidValue> get table => t;
+
   /// Returns a shallow copy of this [Member]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_i2.useResult
   Member copyWith({
-    _i1.UuidValue? id,
-    _i1.UuidValue? userId,
-    _i2.AuthUser? user,
+    _i2.UuidValue? id,
     String? firstName,
     String? lastName,
     String? displayName,
@@ -180,9 +172,7 @@ abstract class Member implements _i1.SerializableModel {
   Map<String, dynamic> toJson() {
     return {
       '__className__': 'Member',
-      if (id != null) 'id': id?.toJson(),
-      'userId': userId.toJson(),
-      if (user != null) 'user': user?.toJson(),
+      'id': id.toJson(),
       'firstName': firstName,
       'lastName': lastName,
       if (displayName != null) 'displayName': displayName,
@@ -204,9 +194,41 @@ abstract class Member implements _i1.SerializableModel {
     };
   }
 
+  static MemberInclude include({
+    _i3.EventRegistrationIncludeList? registrations,
+    _i4.EventManagerIncludeList? managedEvents,
+  }) {
+    return MemberInclude._(
+      registrations: registrations,
+      managedEvents: managedEvents,
+    );
+  }
+
+  static MemberIncludeList includeList({
+    _i1.WhereExpressionBuilder<MemberTable>? where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<MemberTable>? orderBy,
+    @Deprecated('Use desc() on the orderBy column instead.')
+    bool orderDescending = false,
+    _i1.OrderByListBuilder<MemberTable>? orderByList,
+    MemberInclude? include,
+  }) {
+    return MemberIncludeList._(
+      where: where,
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(Member.t),
+      orderDescending: // ignore: deprecated_member_use_from_same_package
+          orderDescending,
+      orderByList: orderByList?.call(Member.t),
+      include: include,
+    );
+  }
+
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _i2.SerializationManager.encode(this);
   }
 }
 
@@ -214,9 +236,7 @@ class _Undefined {}
 
 class _MemberImpl extends Member {
   _MemberImpl({
-    _i1.UuidValue? id,
-    required _i1.UuidValue userId,
-    _i2.AuthUser? user,
+    _i2.UuidValue? id,
     required String firstName,
     required String lastName,
     String? displayName,
@@ -235,8 +255,6 @@ class _MemberImpl extends Member {
     List<_i4.EventManager>? managedEvents,
   }) : super._(
          id: id,
-         userId: userId,
-         user: user,
          firstName: firstName,
          lastName: lastName,
          displayName: displayName,
@@ -257,12 +275,10 @@ class _MemberImpl extends Member {
 
   /// Returns a shallow copy of this [Member]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_i2.useResult
   @override
   Member copyWith({
-    Object? id = _Undefined,
-    _i1.UuidValue? userId,
-    Object? user = _Undefined,
+    _i2.UuidValue? id,
     String? firstName,
     String? lastName,
     Object? displayName = _Undefined,
@@ -281,9 +297,7 @@ class _MemberImpl extends Member {
     Object? managedEvents = _Undefined,
   }) {
     return Member(
-      id: id is _i1.UuidValue? ? id : this.id,
-      userId: userId ?? this.userId,
-      user: user is _i2.AuthUser? ? user : this.user?.copyWith(),
+      id: id ?? this.id,
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,
       displayName: displayName is String? ? displayName : this.displayName,
@@ -309,6 +323,859 @@ class _MemberImpl extends Member {
       managedEvents: managedEvents is List<_i4.EventManager>?
           ? managedEvents
           : this.managedEvents?.map((e0) => e0.copyWith()).toList(),
+    );
+  }
+}
+
+class MemberUpdateTable extends _i1.UpdateTable<MemberTable> {
+  MemberUpdateTable(super.table);
+
+  _i1.ColumnValue<String, String> firstName(String value) => _i1.ColumnValue(
+    table.firstName,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> lastName(String value) => _i1.ColumnValue(
+    table.lastName,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> displayName(String? value) => _i1.ColumnValue(
+    table.displayName,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> bio(String? value) => _i1.ColumnValue(
+    table.bio,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> email(String value) => _i1.ColumnValue(
+    table.email,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> phoneNumber(String value) => _i1.ColumnValue(
+    table.phoneNumber,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> membershipStatus(String value) =>
+      _i1.ColumnValue(
+        table.membershipStatus,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> emergencyContactName(String value) =>
+      _i1.ColumnValue(
+        table.emergencyContactName,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> emergencyContactPhone(String value) =>
+      _i1.ColumnValue(
+        table.emergencyContactPhone,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> medicalConditions(String? value) =>
+      _i1.ColumnValue(
+        table.medicalConditions,
+        value,
+      );
+
+  _i1.ColumnValue<DateTime, DateTime> waiverSignedDate(DateTime value) =>
+      _i1.ColumnValue(
+        table.waiverSignedDate,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> certifications(String? value) =>
+      _i1.ColumnValue(
+        table.certifications,
+        value,
+      );
+
+  _i1.ColumnValue<DateTime, DateTime> createdAt(DateTime value) =>
+      _i1.ColumnValue(
+        table.createdAt,
+        value,
+      );
+
+  _i1.ColumnValue<DateTime, DateTime> updatedAt(DateTime value) =>
+      _i1.ColumnValue(
+        table.updatedAt,
+        value,
+      );
+}
+
+class MemberTable extends _i1.Table<_i2.UuidValue> {
+  MemberTable({super.tableRelation}) : super(tableName: 'members') {
+    updateTable = MemberUpdateTable(this);
+    firstName = _i1.ColumnString(
+      'firstName',
+      this,
+    );
+    lastName = _i1.ColumnString(
+      'lastName',
+      this,
+    );
+    displayName = _i1.ColumnString(
+      'displayName',
+      this,
+    );
+    bio = _i1.ColumnString(
+      'bio',
+      this,
+    );
+    email = _i1.ColumnString(
+      'email',
+      this,
+    );
+    phoneNumber = _i1.ColumnString(
+      'phoneNumber',
+      this,
+    );
+    membershipStatus = _i1.ColumnString(
+      'membershipStatus',
+      this,
+      hasDefault: true,
+    );
+    emergencyContactName = _i1.ColumnString(
+      'emergencyContactName',
+      this,
+    );
+    emergencyContactPhone = _i1.ColumnString(
+      'emergencyContactPhone',
+      this,
+    );
+    medicalConditions = _i1.ColumnString(
+      'medicalConditions',
+      this,
+    );
+    waiverSignedDate = _i1.ColumnDateTime(
+      'waiverSignedDate',
+      this,
+      hasDefault: true,
+    );
+    certifications = _i1.ColumnString(
+      'certifications',
+      this,
+    );
+    createdAt = _i1.ColumnDateTime(
+      'createdAt',
+      this,
+      hasDefault: true,
+    );
+    updatedAt = _i1.ColumnDateTime(
+      'updatedAt',
+      this,
+      hasDefault: true,
+    );
+  }
+
+  late final MemberUpdateTable updateTable;
+
+  late final _i1.ColumnString firstName;
+
+  late final _i1.ColumnString lastName;
+
+  late final _i1.ColumnString displayName;
+
+  late final _i1.ColumnString bio;
+
+  late final _i1.ColumnString email;
+
+  late final _i1.ColumnString phoneNumber;
+
+  late final _i1.ColumnString membershipStatus;
+
+  late final _i1.ColumnString emergencyContactName;
+
+  late final _i1.ColumnString emergencyContactPhone;
+
+  late final _i1.ColumnString medicalConditions;
+
+  late final _i1.ColumnDateTime waiverSignedDate;
+
+  late final _i1.ColumnString certifications;
+
+  late final _i1.ColumnDateTime createdAt;
+
+  late final _i1.ColumnDateTime updatedAt;
+
+  _i3.EventRegistrationTable? ___registrations;
+
+  _i1.ManyRelation<_i3.EventRegistrationTable>? _registrations;
+
+  _i4.EventManagerTable? ___managedEvents;
+
+  _i1.ManyRelation<_i4.EventManagerTable>? _managedEvents;
+
+  _i3.EventRegistrationTable get __registrations {
+    if (___registrations != null) return ___registrations!;
+    ___registrations = _i1.createRelationTable(
+      relationFieldName: '__registrations',
+      field: Member.t.id,
+      foreignField: _i3.EventRegistration.t.memberId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i3.EventRegistrationTable(tableRelation: foreignTableRelation),
+    );
+    return ___registrations!;
+  }
+
+  _i4.EventManagerTable get __managedEvents {
+    if (___managedEvents != null) return ___managedEvents!;
+    ___managedEvents = _i1.createRelationTable(
+      relationFieldName: '__managedEvents',
+      field: Member.t.id,
+      foreignField: _i4.EventManager.t.memberId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i4.EventManagerTable(tableRelation: foreignTableRelation),
+    );
+    return ___managedEvents!;
+  }
+
+  _i1.ManyRelation<_i3.EventRegistrationTable> get registrations {
+    if (_registrations != null) return _registrations!;
+    var relationTable = _i1.createRelationTable(
+      relationFieldName: 'registrations',
+      field: Member.t.id,
+      foreignField: _i3.EventRegistration.t.memberId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i3.EventRegistrationTable(tableRelation: foreignTableRelation),
+    );
+    _registrations = _i1.ManyRelation<_i3.EventRegistrationTable>(
+      tableWithRelations: relationTable,
+      table: _i3.EventRegistrationTable(
+        tableRelation: relationTable.tableRelation!.lastRelation,
+      ),
+    );
+    return _registrations!;
+  }
+
+  _i1.ManyRelation<_i4.EventManagerTable> get managedEvents {
+    if (_managedEvents != null) return _managedEvents!;
+    var relationTable = _i1.createRelationTable(
+      relationFieldName: 'managedEvents',
+      field: Member.t.id,
+      foreignField: _i4.EventManager.t.memberId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i4.EventManagerTable(tableRelation: foreignTableRelation),
+    );
+    _managedEvents = _i1.ManyRelation<_i4.EventManagerTable>(
+      tableWithRelations: relationTable,
+      table: _i4.EventManagerTable(
+        tableRelation: relationTable.tableRelation!.lastRelation,
+      ),
+    );
+    return _managedEvents!;
+  }
+
+  @override
+  List<_i1.Column> get columns => [
+    id,
+    firstName,
+    lastName,
+    displayName,
+    bio,
+    email,
+    phoneNumber,
+    membershipStatus,
+    emergencyContactName,
+    emergencyContactPhone,
+    medicalConditions,
+    waiverSignedDate,
+    certifications,
+    createdAt,
+    updatedAt,
+  ];
+
+  @override
+  _i1.Table? getRelationTable(String relationField) {
+    if (relationField == 'registrations') {
+      return __registrations;
+    }
+    if (relationField == 'managedEvents') {
+      return __managedEvents;
+    }
+    return null;
+  }
+}
+
+class MemberInclude extends _i1.IncludeObject {
+  MemberInclude._({
+    _i3.EventRegistrationIncludeList? registrations,
+    _i4.EventManagerIncludeList? managedEvents,
+  }) {
+    _registrations = registrations;
+    _managedEvents = managedEvents;
+  }
+
+  _i3.EventRegistrationIncludeList? _registrations;
+
+  _i4.EventManagerIncludeList? _managedEvents;
+
+  @override
+  Map<String, _i1.Include?> get includes => {
+    'registrations': _registrations,
+    'managedEvents': _managedEvents,
+  };
+
+  @override
+  _i1.Table<_i2.UuidValue> get table => Member.t;
+}
+
+class MemberIncludeList extends _i1.IncludeList {
+  MemberIncludeList._({
+    _i1.WhereExpressionBuilder<MemberTable>? where,
+    super.limit,
+    super.offset,
+    super.orderBy,
+    @Deprecated('Use desc() on the orderBy column instead.')
+    super.orderDescending,
+    super.orderByList,
+    super.include,
+  }) {
+    super.where = where?.call(Member.t);
+  }
+
+  @override
+  Map<String, _i1.Include?> get includes => include?.includes ?? {};
+
+  @override
+  _i1.Table<_i2.UuidValue> get table => Member.t;
+}
+
+class MemberRepository {
+  const MemberRepository._();
+
+  final attach = const MemberAttachRepository._();
+
+  final attachRow = const MemberAttachRowRepository._();
+
+  /// Returns a list of [Member]s matching the given query parameters.
+  ///
+  /// Use [where] to specify which items to include in the return value.
+  /// If none is specified, all items will be returned.
+  ///
+  /// To specify the order of the items use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
+  /// The maximum number of items can be set by [limit]. If no limit is set,
+  /// all items matching the query will be returned.
+  ///
+  /// [offset] defines how many items to skip, after which [limit] (or all)
+  /// items are read from the database.
+  ///
+  /// ```dart
+  /// var persons = await Persons.db.find(
+  ///   session,
+  ///   where: (t) => t.lastName.equals('Jones'),
+  ///   orderBy: (t) => t.firstName,
+  ///   limit: 100,
+  /// );
+  /// ```
+  Future<List<Member>> find(
+    _i1.DatabaseSession session, {
+    _i1.WhereExpressionBuilder<MemberTable>? where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<MemberTable>? orderBy,
+    @Deprecated('Use desc() on the orderBy column instead.')
+    bool orderDescending = false,
+    _i1.OrderByListBuilder<MemberTable>? orderByList,
+    _i1.Transaction? transaction,
+    MemberInclude? include,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
+  }) async {
+    return session.db.find<Member>(
+      where: where?.call(Member.t),
+      orderBy: orderBy?.call(Member.t),
+      orderByList: orderByList?.call(Member.t),
+      orderDescending: // ignore: deprecated_member_use
+          orderDescending,
+      limit: limit,
+      offset: offset,
+      transaction: transaction,
+      include: include,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
+    );
+  }
+
+  /// Returns the first matching [Member] matching the given query parameters.
+  ///
+  /// Use [where] to specify which items to include in the return value.
+  /// If none is specified, all items will be returned.
+  ///
+  /// To specify the order use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
+  /// [offset] defines how many items to skip, after which the next one will be picked.
+  ///
+  /// ```dart
+  /// var youngestPerson = await Persons.db.findFirstRow(
+  ///   session,
+  ///   where: (t) => t.lastName.equals('Jones'),
+  ///   orderBy: (t) => t.age,
+  /// );
+  /// ```
+  Future<Member?> findFirstRow(
+    _i1.DatabaseSession session, {
+    _i1.WhereExpressionBuilder<MemberTable>? where,
+    int? offset,
+    _i1.OrderByBuilder<MemberTable>? orderBy,
+    @Deprecated('Use desc() on the orderBy column instead.')
+    bool orderDescending = false,
+    _i1.OrderByListBuilder<MemberTable>? orderByList,
+    _i1.Transaction? transaction,
+    MemberInclude? include,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
+  }) async {
+    return session.db.findFirstRow<Member>(
+      where: where?.call(Member.t),
+      orderBy: orderBy?.call(Member.t),
+      orderByList: orderByList?.call(Member.t),
+      orderDescending: // ignore: deprecated_member_use
+          orderDescending,
+      offset: offset,
+      transaction: transaction,
+      include: include,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
+    );
+  }
+
+  /// Finds a single [Member] by its [id] or null if no such row exists.
+  Future<Member?> findById(
+    _i1.DatabaseSession session,
+    _i2.UuidValue id, {
+    _i1.Transaction? transaction,
+    MemberInclude? include,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
+  }) async {
+    return session.db.findById<Member>(
+      id,
+      transaction: transaction,
+      include: include,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
+    );
+  }
+
+  /// Inserts all [Member]s in the list and returns the inserted rows.
+  ///
+  /// The returned [Member]s will have their `id` fields set.
+  ///
+  /// This is an atomic operation, meaning that if one of the rows fails to
+  /// insert, none of the rows will be inserted.
+  ///
+  /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
+  /// rows are silently skipped, and only the successfully inserted rows are
+  /// returned.
+  ///
+  /// If [noReturn] is set to `true`, the inserted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<Member>> insert(
+    _i1.DatabaseSession session,
+    List<Member> rows, {
+    _i1.Transaction? transaction,
+    bool ignoreConflicts = false,
+    bool noReturn = false,
+  }) async {
+    return session.db.insert<Member>(
+      rows,
+      transaction: transaction,
+      ignoreConflicts: ignoreConflicts,
+      noReturn: noReturn,
+    );
+  }
+
+  /// Inserts a single [Member] and returns the inserted row.
+  ///
+  /// The returned [Member] will have its `id` field set.
+  Future<Member> insertRow(
+    _i1.DatabaseSession session,
+    Member row, {
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.insertRow<Member>(
+      row,
+      transaction: transaction,
+    );
+  }
+
+  /// Upserts all [Member]s in the list and returns the resulting rows.
+  ///
+  /// If a row conflicts on the given [conflictColumns], the existing row is
+  /// updated with the new values. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies to rows matching the
+  /// given expression. Conflicting rows that don't match are skipped and not
+  /// returned, so the resulting list may be shorter than [rows].
+  ///
+  /// The returned [Member]s will have their `id` fields set.
+  ///
+  /// This is an atomic operation, meaning that if one of the rows fails,
+  /// none of the rows will be affected.
+  ///
+  /// If [noReturn] is set to `true`, the resulting rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<Member>> upsert(
+    _i1.DatabaseSession session,
+    List<Member> rows, {
+    required _i1.ColumnSelections<MemberTable> conflictColumns,
+    _i1.ColumnSelections<MemberTable>? updateColumns,
+    _i1.WhereExpressionBuilder<MemberTable>? updateWhere,
+    _i1.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.upsert<Member>(
+      rows,
+      conflictColumns: conflictColumns(Member.t),
+      updateColumns: updateColumns?.call(Member.t),
+      updateWhere: updateWhere?.call(Member.t),
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
+  /// Upserts a single [Member] and returns the resulting row.
+  ///
+  /// If the row conflicts on the given [conflictColumns], the existing row is
+  /// updated. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies when the existing
+  /// row matches the expression. Returns `null` if no row was affected — for
+  /// example when [updateWhere] does not match the conflicting row.
+  ///
+  /// The returned [Member] will have its `id` field set.
+  Future<Member?> upsertRow(
+    _i1.DatabaseSession session,
+    Member row, {
+    required _i1.ColumnSelections<MemberTable> conflictColumns,
+    _i1.ColumnSelections<MemberTable>? updateColumns,
+    _i1.WhereExpressionBuilder<MemberTable>? updateWhere,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.upsertRow<Member>(
+      row,
+      conflictColumns: conflictColumns(Member.t),
+      updateColumns: updateColumns?.call(Member.t),
+      updateWhere: updateWhere?.call(Member.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [Member]s in the list and returns the updated rows. If
+  /// [columns] is provided, only those columns will be updated. Defaults to
+  /// all columns.
+  /// This is an atomic operation, meaning that if one of the rows fails to
+  /// update, none of the rows will be updated.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<Member>> update(
+    _i1.DatabaseSession session,
+    List<Member> rows, {
+    _i1.ColumnSelections<MemberTable>? columns,
+    _i1.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.update<Member>(
+      rows,
+      columns: columns?.call(Member.t),
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
+  /// Updates a single [Member]. The row needs to have its id set.
+  /// Optionally, a list of [columns] can be provided to only update those
+  /// columns. Defaults to all columns.
+  Future<Member> updateRow(
+    _i1.DatabaseSession session,
+    Member row, {
+    _i1.ColumnSelections<MemberTable>? columns,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateRow<Member>(
+      row,
+      columns: columns?.call(Member.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [Member] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<Member?> updateById(
+    _i1.DatabaseSession session,
+    _i2.UuidValue id, {
+    required _i1.ColumnValueListBuilder<MemberUpdateTable> columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<Member>(
+      id,
+      columnValues: columnValues(Member.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [Member]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<Member>> updateWhere(
+    _i1.DatabaseSession session, {
+    required _i1.ColumnValueListBuilder<MemberUpdateTable> columnValues,
+    required _i1.WhereExpressionBuilder<MemberTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<MemberTable>? orderBy,
+    _i1.OrderByListBuilder<MemberTable>? orderByList,
+    @Deprecated('Use desc() on the orderBy column instead.')
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.updateWhere<Member>(
+      columnValues: columnValues(Member.t.updateTable),
+      where: where(Member.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(Member.t),
+      orderByList: orderByList?.call(Member.t),
+      orderDescending: // ignore: deprecated_member_use
+          orderDescending,
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
+  /// Deletes all [Member]s in the list and returns the deleted rows.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
+  /// This is an atomic operation, meaning that if one of the rows fail to
+  /// be deleted, none of the rows will be deleted.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<Member>> delete(
+    _i1.DatabaseSession session,
+    List<Member> rows, {
+    _i1.OrderByBuilder<MemberTable>? orderBy,
+    @Deprecated('Use desc() on the orderBy column instead.')
+    bool orderDescending = false,
+    _i1.OrderByListBuilder<MemberTable>? orderByList,
+    _i1.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.delete<Member>(
+      rows,
+      orderBy: orderBy?.call(Member.t),
+      orderByList: orderByList?.call(Member.t),
+      orderDescending: // ignore: deprecated_member_use
+          orderDescending,
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
+  /// Deletes a single [Member].
+  Future<Member> deleteRow(
+    _i1.DatabaseSession session,
+    Member row, {
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.deleteRow<Member>(
+      row,
+      transaction: transaction,
+    );
+  }
+
+  /// Deletes all rows matching the [where] expression.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<Member>> deleteWhere(
+    _i1.DatabaseSession session, {
+    required _i1.WhereExpressionBuilder<MemberTable> where,
+    _i1.OrderByBuilder<MemberTable>? orderBy,
+    @Deprecated('Use desc() on the orderBy column instead.')
+    bool orderDescending = false,
+    _i1.OrderByListBuilder<MemberTable>? orderByList,
+    _i1.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.deleteWhere<Member>(
+      where: where(Member.t),
+      orderBy: orderBy?.call(Member.t),
+      orderByList: orderByList?.call(Member.t),
+      orderDescending: // ignore: deprecated_member_use
+          orderDescending,
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
+  /// Counts the number of rows matching the [where] expression. If omitted,
+  /// will return the count of all rows in the table.
+  Future<int> count(
+    _i1.DatabaseSession session, {
+    _i1.WhereExpressionBuilder<MemberTable>? where,
+    int? limit,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.count<Member>(
+      where: where?.call(Member.t),
+      limit: limit,
+      transaction: transaction,
+    );
+  }
+
+  /// Acquires row-level locks on [Member] rows matching the [where] expression.
+  Future<void> lockRows(
+    _i1.DatabaseSession session, {
+    required _i1.WhereExpressionBuilder<MemberTable> where,
+    required _i1.LockMode lockMode,
+    required _i1.Transaction transaction,
+    _i1.LockBehavior lockBehavior = _i1.LockBehavior.wait,
+  }) async {
+    return session.db.lockRows<Member>(
+      where: where(Member.t),
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
+      transaction: transaction,
+    );
+  }
+}
+
+class MemberAttachRepository {
+  const MemberAttachRepository._();
+
+  /// Creates a relation between this [Member] and the given [EventRegistration]s
+  /// by setting each [EventRegistration]'s foreign key `memberId` to refer to this [Member].
+  Future<void> registrations(
+    _i1.DatabaseSession session,
+    Member member,
+    List<_i3.EventRegistration> eventRegistration, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (eventRegistration.any((e) => e.id == null)) {
+      throw ArgumentError.notNull('eventRegistration.id');
+    }
+    if (member.id == null) {
+      throw ArgumentError.notNull('member.id');
+    }
+
+    var $eventRegistration = eventRegistration
+        .map((e) => e.copyWith(memberId: member.id))
+        .toList();
+    await session.db.update<_i3.EventRegistration>(
+      $eventRegistration,
+      columns: [_i3.EventRegistration.t.memberId],
+      transaction: transaction,
+    );
+  }
+
+  /// Creates a relation between this [Member] and the given [EventManager]s
+  /// by setting each [EventManager]'s foreign key `memberId` to refer to this [Member].
+  Future<void> managedEvents(
+    _i1.DatabaseSession session,
+    Member member,
+    List<_i4.EventManager> eventManager, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (eventManager.any((e) => e.id == null)) {
+      throw ArgumentError.notNull('eventManager.id');
+    }
+    if (member.id == null) {
+      throw ArgumentError.notNull('member.id');
+    }
+
+    var $eventManager = eventManager
+        .map((e) => e.copyWith(memberId: member.id))
+        .toList();
+    await session.db.update<_i4.EventManager>(
+      $eventManager,
+      columns: [_i4.EventManager.t.memberId],
+      transaction: transaction,
+    );
+  }
+}
+
+class MemberAttachRowRepository {
+  const MemberAttachRowRepository._();
+
+  /// Creates a relation between this [Member] and the given [EventRegistration]
+  /// by setting the [EventRegistration]'s foreign key `memberId` to refer to this [Member].
+  Future<void> registrations(
+    _i1.DatabaseSession session,
+    Member member,
+    _i3.EventRegistration eventRegistration, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (eventRegistration.id == null) {
+      throw ArgumentError.notNull('eventRegistration.id');
+    }
+    if (member.id == null) {
+      throw ArgumentError.notNull('member.id');
+    }
+
+    var $eventRegistration = eventRegistration.copyWith(memberId: member.id);
+    await session.db.updateRow<_i3.EventRegistration>(
+      $eventRegistration,
+      columns: [_i3.EventRegistration.t.memberId],
+      transaction: transaction,
+    );
+  }
+
+  /// Creates a relation between this [Member] and the given [EventManager]
+  /// by setting the [EventManager]'s foreign key `memberId` to refer to this [Member].
+  Future<void> managedEvents(
+    _i1.DatabaseSession session,
+    Member member,
+    _i4.EventManager eventManager, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (eventManager.id == null) {
+      throw ArgumentError.notNull('eventManager.id');
+    }
+    if (member.id == null) {
+      throw ArgumentError.notNull('member.id');
+    }
+
+    var $eventManager = eventManager.copyWith(memberId: member.id);
+    await session.db.updateRow<_i4.EventManager>(
+      $eventManager,
+      columns: [_i4.EventManager.t.memberId],
+      transaction: transaction,
     );
   }
 }

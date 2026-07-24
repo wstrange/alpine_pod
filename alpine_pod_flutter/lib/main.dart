@@ -59,17 +59,8 @@ void main() async {
   // try client side db
   // does not currently work in Flutter Web
   // Resolve the database path.
-  final path = await resolveDatabasePath('app.db');
-  final session = await client.createSession(path, isDebugMode: true);
-
-  print(session);
-
-  var r = await MemberInfo.db.insert(session, [MemberInfo(firstName: 'test', lastName: 'test')]);
-  print('1. db r = $r');
-  r = await MemberInfo.db.find(session);
-  print('2. db r = $r');
-  r = await MemberInfo.db.find(session, where: (t) => t.firstName.equals('test'));
-  print('3. db r = $r');
+  //final path = await resolveDatabasePath('app.db');
+  // final session = await client.createSession(path, isDebugMode: true);
 
   runApp(const MyApp());
 }

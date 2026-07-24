@@ -315,7 +315,7 @@ class _AddParticipantDialog extends HookWidget {
   ) async {
     isLoading.value = true;
     try {
-      await client.eventManager.addMemberToEvent(event.id!, member.id!);
+      await client.eventManager.addMemberToEvent(event.id, member.id);
       onAdded();
       if (dialogContext.mounted) Navigator.of(dialogContext).pop();
       if (parentContext.mounted) {

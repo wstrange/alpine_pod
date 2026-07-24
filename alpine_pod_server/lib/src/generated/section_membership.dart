@@ -28,7 +28,9 @@ abstract class SectionMembership
     DateTime? syncedAt,
     this.sourceSystem,
     required this.scopes,
-  }) : syncedAt = syncedAt ?? DateTime.now();
+    DateTime? updatedAt,
+  }) : syncedAt = syncedAt ?? DateTime.now(),
+       updatedAt = updatedAt ?? DateTime.now();
 
   factory SectionMembership({
     _i1.UuidValue? id,
@@ -40,6 +42,7 @@ abstract class SectionMembership
     DateTime? syncedAt,
     String? sourceSystem,
     required Set<String> scopes,
+    DateTime? updatedAt,
   }) = _SectionMembershipImpl;
 
   factory SectionMembership.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -69,6 +72,9 @@ abstract class SectionMembership
       scopes: _i4.Protocol().deserialize<Set<String>>(
         jsonSerialization['scopes'],
       ),
+      updatedAt: jsonSerialization['updatedAt'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
     );
   }
 
@@ -95,6 +101,8 @@ abstract class SectionMembership
 
   Set<String> scopes;
 
+  DateTime updatedAt;
+
   @override
   _i1.Table<_i1.UuidValue?> get table => t;
 
@@ -111,6 +119,7 @@ abstract class SectionMembership
     DateTime? syncedAt,
     String? sourceSystem,
     Set<String>? scopes,
+    DateTime? updatedAt,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -125,6 +134,7 @@ abstract class SectionMembership
       'syncedAt': syncedAt.toJson(),
       if (sourceSystem != null) 'sourceSystem': sourceSystem,
       'scopes': scopes.toJson(),
+      'updatedAt': updatedAt.toJson(),
     };
   }
 
@@ -141,6 +151,7 @@ abstract class SectionMembership
       'syncedAt': syncedAt.toJson(),
       if (sourceSystem != null) 'sourceSystem': sourceSystem,
       'scopes': scopes.toJson(),
+      'updatedAt': updatedAt.toJson(),
     };
   }
 
@@ -195,6 +206,7 @@ class _SectionMembershipImpl extends SectionMembership {
     DateTime? syncedAt,
     String? sourceSystem,
     required Set<String> scopes,
+    DateTime? updatedAt,
   }) : super._(
          id: id,
          memberId: memberId,
@@ -205,6 +217,7 @@ class _SectionMembershipImpl extends SectionMembership {
          syncedAt: syncedAt,
          sourceSystem: sourceSystem,
          scopes: scopes,
+         updatedAt: updatedAt,
        );
 
   /// Returns a shallow copy of this [SectionMembership]
@@ -221,6 +234,7 @@ class _SectionMembershipImpl extends SectionMembership {
     DateTime? syncedAt,
     Object? sourceSystem = _Undefined,
     Set<String>? scopes,
+    DateTime? updatedAt,
   }) {
     return SectionMembership(
       id: id is _i1.UuidValue? ? id : this.id,
@@ -234,6 +248,7 @@ class _SectionMembershipImpl extends SectionMembership {
       syncedAt: syncedAt ?? this.syncedAt,
       sourceSystem: sourceSystem is String? ? sourceSystem : this.sourceSystem,
       scopes: scopes ?? this.scopes.map((e0) => e0).toSet(),
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 }
@@ -278,6 +293,12 @@ class SectionMembershipUpdateTable
         table.scopes,
         value,
       );
+
+  _i1.ColumnValue<DateTime, DateTime> updatedAt(DateTime value) =>
+      _i1.ColumnValue(
+        table.updatedAt,
+        value,
+      );
 }
 
 class SectionMembershipTable extends _i1.Table<_i1.UuidValue?> {
@@ -309,6 +330,11 @@ class SectionMembershipTable extends _i1.Table<_i1.UuidValue?> {
       'scopes',
       this,
     );
+    updatedAt = _i1.ColumnDateTime(
+      'updatedAt',
+      this,
+      hasDefault: true,
+    );
   }
 
   late final SectionMembershipUpdateTable updateTable;
@@ -328,6 +354,8 @@ class SectionMembershipTable extends _i1.Table<_i1.UuidValue?> {
   late final _i1.ColumnString sourceSystem;
 
   late final _i1.ColumnSerializable<Set<String>> scopes;
+
+  late final _i1.ColumnDateTime updatedAt;
 
   _i2.MemberTable get member {
     if (_member != null) return _member!;
@@ -364,6 +392,7 @@ class SectionMembershipTable extends _i1.Table<_i1.UuidValue?> {
     syncedAt,
     sourceSystem,
     scopes,
+    updatedAt,
   ];
 
   @override

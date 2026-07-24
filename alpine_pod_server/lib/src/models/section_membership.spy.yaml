@@ -1,5 +1,6 @@
 class: SectionMembership
 table: section_memberships
+database: all
 fields:
   id: UuidValue?, defaultPersist=random_v7
   member: Member?, relation

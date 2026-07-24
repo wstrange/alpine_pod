@@ -39,7 +39,7 @@ class NotificationScreen extends HookWidget {
                   onPressed: () async {
                     final unread = notificationsState.value!.where((n) => !n.isRead).toList();
                     for (var n in unread) {
-                      await client.notification.markAsRead(n.id!);
+                      await client.notification.markAsRead(n.id);
                     }
                     notificationsSignal.refresh();
                   },
@@ -105,7 +105,7 @@ class NotificationScreen extends HookWidget {
                       ),
                       direction: DismissDirection.endToStart,
                       onDismissed: (direction) async {
-                        await client.notification.markAsRead(un.id!);
+                        await client.notification.markAsRead(un.id);
                         notificationsSignal.refresh();
                       },
                       child: ListTile(
@@ -146,7 +146,7 @@ class NotificationScreen extends HookWidget {
                             : const SizedBox.shrink(),
                         onTap: () async {
                           if (!un.isRead) {
-                            await client.notification.markAsRead(un.id!);
+                            await client.notification.markAsRead(un.id);
                             notificationsSignal.refresh();
                           }
                         },

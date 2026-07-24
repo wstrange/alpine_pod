@@ -17,15 +17,17 @@ import 'member.dart' as _i3;
 import 'package:alpine_pod_server/src/generated/protocol.dart' as _i4;
 
 abstract class EventManager
-    implements _i1.TableRow<_i1.UuidValue?>, _i1.ProtocolSerialization {
+    implements _i1.TableRow<_i1.UuidValue>, _i1.ProtocolSerialization {
   EventManager._({
-    this.id,
+    _i1.UuidValue? id,
     required this.eventId,
     this.event,
     required this.memberId,
     this.member,
     this.assignedAt,
-  });
+    DateTime? updatedAt,
+  }) : id = id ?? const _i1.Uuid().v7obj(),
+       updatedAt = updatedAt ?? DateTime.now();
 
   factory EventManager({
     _i1.UuidValue? id,
@@ -34,6 +36,7 @@ abstract class EventManager
     required _i1.UuidValue memberId,
     _i3.Member? member,
     DateTime? assignedAt,
+    DateTime? updatedAt,
   }) = _EventManagerImpl;
 
   factory EventManager.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -56,6 +59,9 @@ abstract class EventManager
       assignedAt: jsonSerialization['assignedAt'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['assignedAt']),
+      updatedAt: jsonSerialization['updatedAt'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
     );
   }
 
@@ -64,7 +70,7 @@ abstract class EventManager
   static const db = EventManagerRepository._();
 
   @override
-  _i1.UuidValue? id;
+  _i1.UuidValue id;
 
   _i1.UuidValue eventId;
 
@@ -76,8 +82,10 @@ abstract class EventManager
 
   DateTime? assignedAt;
 
+  DateTime updatedAt;
+
   @override
-  _i1.Table<_i1.UuidValue?> get table => t;
+  _i1.Table<_i1.UuidValue> get table => t;
 
   /// Returns a shallow copy of this [EventManager]
   /// with some or all fields replaced by the given arguments.
@@ -89,17 +97,19 @@ abstract class EventManager
     _i1.UuidValue? memberId,
     _i3.Member? member,
     DateTime? assignedAt,
+    DateTime? updatedAt,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
       '__className__': 'EventManager',
-      if (id != null) 'id': id?.toJson(),
+      'id': id.toJson(),
       'eventId': eventId.toJson(),
       if (event != null) 'event': event?.toJson(),
       'memberId': memberId.toJson(),
       if (member != null) 'member': member?.toJson(),
       if (assignedAt != null) 'assignedAt': assignedAt?.toJson(),
+      'updatedAt': updatedAt.toJson(),
     };
   }
 
@@ -107,12 +117,13 @@ abstract class EventManager
   Map<String, dynamic> toJsonForProtocol() {
     return {
       '__className__': 'EventManager',
-      if (id != null) 'id': id?.toJson(),
+      'id': id.toJson(),
       'eventId': eventId.toJson(),
       if (event != null) 'event': event?.toJsonForProtocol(),
       'memberId': memberId.toJson(),
       if (member != null) 'member': member?.toJsonForProtocol(),
       if (assignedAt != null) 'assignedAt': assignedAt?.toJson(),
+      'updatedAt': updatedAt.toJson(),
     };
   }
 
@@ -164,6 +175,7 @@ class _EventManagerImpl extends EventManager {
     required _i1.UuidValue memberId,
     _i3.Member? member,
     DateTime? assignedAt,
+    DateTime? updatedAt,
   }) : super._(
          id: id,
          eventId: eventId,
@@ -171,6 +183,7 @@ class _EventManagerImpl extends EventManager {
          memberId: memberId,
          member: member,
          assignedAt: assignedAt,
+         updatedAt: updatedAt,
        );
 
   /// Returns a shallow copy of this [EventManager]
@@ -178,20 +191,22 @@ class _EventManagerImpl extends EventManager {
   @_i1.useResult
   @override
   EventManager copyWith({
-    Object? id = _Undefined,
+    _i1.UuidValue? id,
     _i1.UuidValue? eventId,
     Object? event = _Undefined,
     _i1.UuidValue? memberId,
     Object? member = _Undefined,
     Object? assignedAt = _Undefined,
+    DateTime? updatedAt,
   }) {
     return EventManager(
-      id: id is _i1.UuidValue? ? id : this.id,
+      id: id ?? this.id,
       eventId: eventId ?? this.eventId,
       event: event is _i2.Event? ? event : this.event?.copyWith(),
       memberId: memberId ?? this.memberId,
       member: member is _i3.Member? ? member : this.member?.copyWith(),
       assignedAt: assignedAt is DateTime? ? assignedAt : this.assignedAt,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 }
@@ -216,9 +231,15 @@ class EventManagerUpdateTable extends _i1.UpdateTable<EventManagerTable> {
         table.assignedAt,
         value,
       );
+
+  _i1.ColumnValue<DateTime, DateTime> updatedAt(DateTime value) =>
+      _i1.ColumnValue(
+        table.updatedAt,
+        value,
+      );
 }
 
-class EventManagerTable extends _i1.Table<_i1.UuidValue?> {
+class EventManagerTable extends _i1.Table<_i1.UuidValue> {
   EventManagerTable({super.tableRelation})
     : super(tableName: 'event_managers') {
     updateTable = EventManagerUpdateTable(this);
@@ -234,6 +255,11 @@ class EventManagerTable extends _i1.Table<_i1.UuidValue?> {
       'assignedAt',
       this,
     );
+    updatedAt = _i1.ColumnDateTime(
+      'updatedAt',
+      this,
+      hasDefault: true,
+    );
   }
 
   late final EventManagerUpdateTable updateTable;
@@ -247,6 +273,8 @@ class EventManagerTable extends _i1.Table<_i1.UuidValue?> {
   _i3.MemberTable? _member;
 
   late final _i1.ColumnDateTime assignedAt;
+
+  late final _i1.ColumnDateTime updatedAt;
 
   _i2.EventTable get event {
     if (_event != null) return _event!;
@@ -280,6 +308,7 @@ class EventManagerTable extends _i1.Table<_i1.UuidValue?> {
     eventId,
     memberId,
     assignedAt,
+    updatedAt,
   ];
 
   @override
@@ -314,7 +343,7 @@ class EventManagerInclude extends _i1.IncludeObject {
   };
 
   @override
-  _i1.Table<_i1.UuidValue?> get table => EventManager.t;
+  _i1.Table<_i1.UuidValue> get table => EventManager.t;
 }
 
 class EventManagerIncludeList extends _i1.IncludeList {
@@ -335,7 +364,7 @@ class EventManagerIncludeList extends _i1.IncludeList {
   Map<String, _i1.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<_i1.UuidValue?> get table => EventManager.t;
+  _i1.Table<_i1.UuidValue> get table => EventManager.t;
 }
 
 class EventManagerRepository {

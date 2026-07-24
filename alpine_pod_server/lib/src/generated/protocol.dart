@@ -22,35 +22,33 @@ import 'event_registration.dart' as _i7;
 import 'event_template.dart' as _i8;
 import 'fcm_token.dart' as _i9;
 import 'member.dart' as _i10;
-import 'member_info.dart' as _i11;
-import 'notification.dart' as _i12;
-import 'notification_channel.dart' as _i13;
-import 'notification_delivery.dart' as _i14;
-import 'notification_template.dart' as _i15;
-import 'registration_status.dart' as _i16;
-import 'section.dart' as _i17;
-import 'section_membership.dart' as _i18;
-import 'user_notification.dart' as _i19;
-import 'user_notification_preference.dart' as _i20;
-import 'package:alpine_pod_server/src/generated/section.dart' as _i21;
+import 'notification.dart' as _i11;
+import 'notification_channel.dart' as _i12;
+import 'notification_delivery.dart' as _i13;
+import 'notification_template.dart' as _i14;
+import 'registration_status.dart' as _i15;
+import 'section.dart' as _i16;
+import 'section_membership.dart' as _i17;
+import 'user_notification.dart' as _i18;
+import 'user_notification_preference.dart' as _i19;
+import 'package:alpine_pod_server/src/generated/section.dart' as _i20;
 import 'package:alpine_pod_server/src/generated/notification_delivery.dart'
-    as _i22;
-import 'package:alpine_pod_server/src/generated/event.dart' as _i23;
-import 'package:alpine_pod_server/src/generated/event_manager.dart' as _i24;
-import 'package:alpine_pod_server/src/generated/event_template.dart' as _i25;
+    as _i21;
+import 'package:alpine_pod_server/src/generated/event.dart' as _i22;
+import 'package:alpine_pod_server/src/generated/event_manager.dart' as _i23;
+import 'package:alpine_pod_server/src/generated/event_template.dart' as _i24;
 import 'package:alpine_pod_server/src/generated/section_membership.dart'
-    as _i26;
-import 'package:alpine_pod_server/src/generated/member.dart' as _i27;
-import 'package:alpine_pod_server/src/generated/user_notification.dart' as _i28;
+    as _i25;
+import 'package:alpine_pod_server/src/generated/member.dart' as _i26;
+import 'package:alpine_pod_server/src/generated/user_notification.dart' as _i27;
 import 'package:alpine_pod_server/src/generated/event_registration.dart'
-    as _i29;
+    as _i28;
 export 'event.dart';
 export 'event_manager.dart';
 export 'event_registration.dart';
 export 'event_template.dart';
 export 'fcm_token.dart';
 export 'member.dart';
-export 'member_info.dart';
 export 'notification.dart';
 export 'notification_channel.dart';
 export 'notification_delivery.dart';
@@ -79,7 +77,7 @@ class Protocol extends _i1.DatabaseSerializationManager {
           name: 'id',
           columnType: _i2.ColumnType.uuid,
           isNullable: false,
-          dartType: 'UuidValue?',
+          dartType: 'UuidValue',
           columnDefault: 'random_v7',
         ),
         _i2.ColumnDefinition(
@@ -99,6 +97,13 @@ class Protocol extends _i1.DatabaseSerializationManager {
           columnType: _i2.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'updatedAt',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'now',
         ),
       ],
       foreignKeys: [
@@ -239,6 +244,13 @@ class Protocol extends _i1.DatabaseSerializationManager {
           dartType: 'DateTime',
         ),
         _i2.ColumnDefinition(
+          name: 'updatedAt',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'now',
+        ),
+        _i2.ColumnDefinition(
           name: 'noShow',
           columnType: _i2.ColumnType.boolean,
           isNullable: false,
@@ -344,6 +356,13 @@ class Protocol extends _i1.DatabaseSerializationManager {
           dartType: 'String',
           columnDefault: '\'en\'',
         ),
+        _i2.ColumnDefinition(
+          name: 'updatedAt',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'now',
+        ),
       ],
       foreignKeys: [],
       indexes: [],
@@ -359,7 +378,7 @@ class Protocol extends _i1.DatabaseSerializationManager {
           name: 'id',
           columnType: _i2.ColumnType.uuid,
           isNullable: false,
-          dartType: 'UuidValue?',
+          dartType: 'UuidValue',
           columnDefault: 'random_v7',
         ),
         _i2.ColumnDefinition(
@@ -475,6 +494,13 @@ class Protocol extends _i1.DatabaseSerializationManager {
           dartType: 'bool',
           columnDefault: 'false',
         ),
+        _i2.ColumnDefinition(
+          name: 'updatedAt',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'now',
+        ),
       ],
       foreignKeys: [
         _i2.ForeignKeyDefinition(
@@ -528,14 +554,8 @@ class Protocol extends _i1.DatabaseSerializationManager {
           name: 'id',
           columnType: _i2.ColumnType.uuid,
           isNullable: false,
-          dartType: 'UuidValue?',
-          columnDefault: 'random_v7',
-        ),
-        _i2.ColumnDefinition(
-          name: 'userId',
-          columnType: _i2.ColumnType.uuid,
-          isNullable: false,
           dartType: 'UuidValue',
+          columnDefault: 'random_v7',
         ),
         _i2.ColumnDefinition(
           name: 'token',
@@ -557,18 +577,7 @@ class Protocol extends _i1.DatabaseSerializationManager {
           columnDefault: 'now',
         ),
       ],
-      foreignKeys: [
-        _i2.ForeignKeyDefinition(
-          constraintName: 'fcm_tokens_fk_0',
-          columns: ['userId'],
-          referenceTable: 'serverpod_auth_core_user',
-          referenceTableSchema: 'public',
-          referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.cascade,
-          matchType: null,
-        ),
-      ],
+      foreignKeys: [],
       indexes: [
         _i2.IndexDefinition(
           indexName: 'token_idx',
@@ -589,7 +598,7 @@ class Protocol extends _i1.DatabaseSerializationManager {
           elements: [
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
-              definition: 'userId',
+              definition: 'id',
             ),
           ],
           type: 'btree',
@@ -609,14 +618,8 @@ class Protocol extends _i1.DatabaseSerializationManager {
           name: 'id',
           columnType: _i2.ColumnType.uuid,
           isNullable: false,
-          dartType: 'UuidValue?',
-          columnDefault: 'random_v7',
-        ),
-        _i2.ColumnDefinition(
-          name: 'userId',
-          columnType: _i2.ColumnType.uuid,
-          isNullable: false,
           dartType: 'UuidValue',
+          columnDefault: 'random_v7',
         ),
         _i2.ColumnDefinition(
           name: 'firstName',
@@ -707,26 +710,15 @@ class Protocol extends _i1.DatabaseSerializationManager {
           columnDefault: 'now',
         ),
       ],
-      foreignKeys: [
-        _i2.ForeignKeyDefinition(
-          constraintName: 'members_fk_0',
-          columns: ['userId'],
-          referenceTable: 'serverpod_auth_core_user',
-          referenceTableSchema: 'public',
-          referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.cascade,
-          matchType: null,
-        ),
-      ],
+      foreignKeys: [],
       indexes: [
         _i2.IndexDefinition(
-          indexName: 'authuser_idx',
+          indexName: 'member_id_idx',
           tableSpace: null,
           elements: [
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
-              definition: 'userId',
+              definition: 'id',
             ),
           ],
           type: 'btree',
@@ -803,6 +795,13 @@ class Protocol extends _i1.DatabaseSerializationManager {
           columnType: _i2.ColumnType.timestampWithoutTimeZone,
           isNullable: false,
           dartType: 'DateTime',
+        ),
+        _i2.ColumnDefinition(
+          name: 'updatedAt',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'now',
         ),
       ],
       foreignKeys: [
@@ -894,6 +893,13 @@ class Protocol extends _i1.DatabaseSerializationManager {
           columnType: _i2.ColumnType.timestampWithoutTimeZone,
           isNullable: false,
           dartType: 'DateTime',
+        ),
+        _i2.ColumnDefinition(
+          name: 'updatedAt',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'now',
         ),
       ],
       foreignKeys: [
@@ -1004,6 +1010,7 @@ class Protocol extends _i1.DatabaseSerializationManager {
           columnType: _i2.ColumnType.timestampWithoutTimeZone,
           isNullable: false,
           dartType: 'DateTime',
+          columnDefault: 'now',
         ),
       ],
       foreignKeys: [],
@@ -1073,6 +1080,13 @@ class Protocol extends _i1.DatabaseSerializationManager {
           columnType: _i2.ColumnType.json,
           isNullable: false,
           dartType: 'Set<String>',
+        ),
+        _i2.ColumnDefinition(
+          name: 'updatedAt',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'now',
         ),
       ],
       foreignKeys: [
@@ -1155,6 +1169,13 @@ class Protocol extends _i1.DatabaseSerializationManager {
           isNullable: true,
           dartType: 'String?',
         ),
+        _i2.ColumnDefinition(
+          name: 'updatedAt',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'now',
+        ),
       ],
       foreignKeys: [],
       indexes: [
@@ -1184,14 +1205,8 @@ class Protocol extends _i1.DatabaseSerializationManager {
           name: 'id',
           columnType: _i2.ColumnType.uuid,
           isNullable: false,
-          dartType: 'UuidValue?',
-          columnDefault: 'random_v7',
-        ),
-        _i2.ColumnDefinition(
-          name: 'userId',
-          columnType: _i2.ColumnType.uuid,
-          isNullable: false,
           dartType: 'UuidValue',
+          columnDefault: 'random_v7',
         ),
         _i2.ColumnDefinition(
           name: 'notificationId',
@@ -1225,20 +1240,17 @@ class Protocol extends _i1.DatabaseSerializationManager {
           isNullable: false,
           dartType: 'DateTime',
         ),
+        _i2.ColumnDefinition(
+          name: 'updatedAt',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'now',
+        ),
       ],
       foreignKeys: [
         _i2.ForeignKeyDefinition(
           constraintName: 'user_notification_fk_0',
-          columns: ['userId'],
-          referenceTable: 'serverpod_auth_core_user',
-          referenceTableSchema: 'public',
-          referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.cascade,
-          matchType: null,
-        ),
-        _i2.ForeignKeyDefinition(
-          constraintName: 'user_notification_fk_1',
           columns: ['notificationId'],
           referenceTable: 'notification',
           referenceTableSchema: 'public',
@@ -1255,7 +1267,7 @@ class Protocol extends _i1.DatabaseSerializationManager {
           elements: [
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
-              definition: 'userId',
+              definition: 'id',
             ),
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
@@ -1281,12 +1293,6 @@ class Protocol extends _i1.DatabaseSerializationManager {
           isNullable: false,
           dartType: 'UuidValue?',
           columnDefault: 'random_v7',
-        ),
-        _i2.ColumnDefinition(
-          name: 'userId',
-          columnType: _i2.ColumnType.uuid,
-          isNullable: false,
-          dartType: 'UuidValue',
         ),
         _i2.ColumnDefinition(
           name: 'allowInApp',
@@ -1323,19 +1329,15 @@ class Protocol extends _i1.DatabaseSerializationManager {
           dartType: 'bool',
           columnDefault: 'true',
         ),
-      ],
-      foreignKeys: [
-        _i2.ForeignKeyDefinition(
-          constraintName: 'user_notification_preference_fk_0',
-          columns: ['userId'],
-          referenceTable: 'serverpod_auth_core_user',
-          referenceTableSchema: 'public',
-          referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.cascade,
-          matchType: null,
+        _i2.ColumnDefinition(
+          name: 'updatedAt',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'now',
         ),
       ],
+      foreignKeys: [],
       indexes: [
         _i2.IndexDefinition(
           indexName: 'user_type_unique_idx',
@@ -1344,10 +1346,6 @@ class Protocol extends _i1.DatabaseSerializationManager {
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
               definition: 'id',
-            ),
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'userId',
             ),
           ],
           type: 'btree',
@@ -1407,35 +1405,32 @@ class Protocol extends _i1.DatabaseSerializationManager {
     if (t == _i10.Member) {
       return _i10.Member.fromJson(data) as T;
     }
-    if (t == _i11.MemberInfo) {
-      return _i11.MemberInfo.fromJson(data) as T;
+    if (t == _i11.Notification) {
+      return _i11.Notification.fromJson(data) as T;
     }
-    if (t == _i12.Notification) {
-      return _i12.Notification.fromJson(data) as T;
+    if (t == _i12.NotificationChannel) {
+      return _i12.NotificationChannel.fromJson(data) as T;
     }
-    if (t == _i13.NotificationChannel) {
-      return _i13.NotificationChannel.fromJson(data) as T;
+    if (t == _i13.NotificationDelivery) {
+      return _i13.NotificationDelivery.fromJson(data) as T;
     }
-    if (t == _i14.NotificationDelivery) {
-      return _i14.NotificationDelivery.fromJson(data) as T;
+    if (t == _i14.NotificationTemplate) {
+      return _i14.NotificationTemplate.fromJson(data) as T;
     }
-    if (t == _i15.NotificationTemplate) {
-      return _i15.NotificationTemplate.fromJson(data) as T;
+    if (t == _i15.RegistrationStatus) {
+      return _i15.RegistrationStatus.fromJson(data) as T;
     }
-    if (t == _i16.RegistrationStatus) {
-      return _i16.RegistrationStatus.fromJson(data) as T;
+    if (t == _i16.Section) {
+      return _i16.Section.fromJson(data) as T;
     }
-    if (t == _i17.Section) {
-      return _i17.Section.fromJson(data) as T;
+    if (t == _i17.SectionMembership) {
+      return _i17.SectionMembership.fromJson(data) as T;
     }
-    if (t == _i18.SectionMembership) {
-      return _i18.SectionMembership.fromJson(data) as T;
+    if (t == _i18.UserNotification) {
+      return _i18.UserNotification.fromJson(data) as T;
     }
-    if (t == _i19.UserNotification) {
-      return _i19.UserNotification.fromJson(data) as T;
-    }
-    if (t == _i20.UserNotificationPreference) {
-      return _i20.UserNotificationPreference.fromJson(data) as T;
+    if (t == _i19.UserNotificationPreference) {
+      return _i19.UserNotificationPreference.fromJson(data) as T;
     }
     if (t == _i1.getType<_i5.Event?>()) {
       return (data != null ? _i5.Event.fromJson(data) : null) as T;
@@ -1455,40 +1450,37 @@ class Protocol extends _i1.DatabaseSerializationManager {
     if (t == _i1.getType<_i10.Member?>()) {
       return (data != null ? _i10.Member.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i11.MemberInfo?>()) {
-      return (data != null ? _i11.MemberInfo.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i11.Notification?>()) {
+      return (data != null ? _i11.Notification.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i12.Notification?>()) {
-      return (data != null ? _i12.Notification.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i13.NotificationChannel?>()) {
-      return (data != null ? _i13.NotificationChannel.fromJson(data) : null)
+    if (t == _i1.getType<_i12.NotificationChannel?>()) {
+      return (data != null ? _i12.NotificationChannel.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i14.NotificationDelivery?>()) {
-      return (data != null ? _i14.NotificationDelivery.fromJson(data) : null)
+    if (t == _i1.getType<_i13.NotificationDelivery?>()) {
+      return (data != null ? _i13.NotificationDelivery.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i15.NotificationTemplate?>()) {
-      return (data != null ? _i15.NotificationTemplate.fromJson(data) : null)
+    if (t == _i1.getType<_i14.NotificationTemplate?>()) {
+      return (data != null ? _i14.NotificationTemplate.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i16.RegistrationStatus?>()) {
-      return (data != null ? _i16.RegistrationStatus.fromJson(data) : null)
+    if (t == _i1.getType<_i15.RegistrationStatus?>()) {
+      return (data != null ? _i15.RegistrationStatus.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i17.Section?>()) {
-      return (data != null ? _i17.Section.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i16.Section?>()) {
+      return (data != null ? _i16.Section.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i18.SectionMembership?>()) {
-      return (data != null ? _i18.SectionMembership.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i17.SectionMembership?>()) {
+      return (data != null ? _i17.SectionMembership.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i19.UserNotification?>()) {
-      return (data != null ? _i19.UserNotification.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i18.UserNotification?>()) {
+      return (data != null ? _i18.UserNotification.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i20.UserNotificationPreference?>()) {
+    if (t == _i1.getType<_i19.UserNotificationPreference?>()) {
       return (data != null
-              ? _i20.UserNotificationPreference.fromJson(data)
+              ? _i19.UserNotificationPreference.fromJson(data)
               : null)
           as T;
     }
@@ -1529,13 +1521,13 @@ class Protocol extends _i1.DatabaseSerializationManager {
     if (t == Set<String>) {
       return (data as List).map((e) => deserialize<String>(e)).toSet() as T;
     }
-    if (t == List<_i21.Section>) {
-      return (data as List).map((e) => deserialize<_i21.Section>(e)).toList()
+    if (t == List<_i20.Section>) {
+      return (data as List).map((e) => deserialize<_i20.Section>(e)).toList()
           as T;
     }
-    if (t == List<_i22.NotificationDelivery>) {
+    if (t == List<_i21.NotificationDelivery>) {
       return (data as List)
-              .map((e) => deserialize<_i22.NotificationDelivery>(e))
+              .map((e) => deserialize<_i21.NotificationDelivery>(e))
               .toList()
           as T;
     }
@@ -1551,44 +1543,44 @@ class Protocol extends _i1.DatabaseSerializationManager {
               : null)
           as T;
     }
-    if (t == List<_i23.Event>) {
-      return (data as List).map((e) => deserialize<_i23.Event>(e)).toList()
+    if (t == List<_i22.Event>) {
+      return (data as List).map((e) => deserialize<_i22.Event>(e)).toList()
           as T;
     }
-    if (t == List<_i24.EventManager>) {
+    if (t == List<_i23.EventManager>) {
       return (data as List)
-              .map((e) => deserialize<_i24.EventManager>(e))
+              .map((e) => deserialize<_i23.EventManager>(e))
               .toList()
           as T;
     }
-    if (t == List<_i25.EventTemplate>) {
+    if (t == List<_i24.EventTemplate>) {
       return (data as List)
-              .map((e) => deserialize<_i25.EventTemplate>(e))
+              .map((e) => deserialize<_i24.EventTemplate>(e))
               .toList()
           as T;
     }
-    if (t == List<_i26.SectionMembership>) {
+    if (t == List<_i25.SectionMembership>) {
       return (data as List)
-              .map((e) => deserialize<_i26.SectionMembership>(e))
+              .map((e) => deserialize<_i25.SectionMembership>(e))
               .toList()
           as T;
     }
-    if (t == List<_i27.Member>) {
-      return (data as List).map((e) => deserialize<_i27.Member>(e)).toList()
+    if (t == List<_i26.Member>) {
+      return (data as List).map((e) => deserialize<_i26.Member>(e)).toList()
           as T;
     }
     if (t == Set<String>) {
       return (data as List).map((e) => deserialize<String>(e)).toSet() as T;
     }
-    if (t == List<_i28.UserNotification>) {
+    if (t == List<_i27.UserNotification>) {
       return (data as List)
-              .map((e) => deserialize<_i28.UserNotification>(e))
+              .map((e) => deserialize<_i27.UserNotification>(e))
               .toList()
           as T;
     }
-    if (t == List<_i29.EventRegistration>) {
+    if (t == List<_i28.EventRegistration>) {
       return (data as List)
-              .map((e) => deserialize<_i29.EventRegistration>(e))
+              .map((e) => deserialize<_i28.EventRegistration>(e))
               .toList()
           as T;
     }
@@ -1612,16 +1604,15 @@ class Protocol extends _i1.DatabaseSerializationManager {
       _i8.EventTemplate => 'EventTemplate',
       _i9.FcmToken => 'FcmToken',
       _i10.Member => 'Member',
-      _i11.MemberInfo => 'MemberInfo',
-      _i12.Notification => 'Notification',
-      _i13.NotificationChannel => 'NotificationChannel',
-      _i14.NotificationDelivery => 'NotificationDelivery',
-      _i15.NotificationTemplate => 'NotificationTemplate',
-      _i16.RegistrationStatus => 'RegistrationStatus',
-      _i17.Section => 'Section',
-      _i18.SectionMembership => 'SectionMembership',
-      _i19.UserNotification => 'UserNotification',
-      _i20.UserNotificationPreference => 'UserNotificationPreference',
+      _i11.Notification => 'Notification',
+      _i12.NotificationChannel => 'NotificationChannel',
+      _i13.NotificationDelivery => 'NotificationDelivery',
+      _i14.NotificationTemplate => 'NotificationTemplate',
+      _i15.RegistrationStatus => 'RegistrationStatus',
+      _i16.Section => 'Section',
+      _i17.SectionMembership => 'SectionMembership',
+      _i18.UserNotification => 'UserNotification',
+      _i19.UserNotificationPreference => 'UserNotificationPreference',
       _ => null,
     };
   }
@@ -1648,25 +1639,23 @@ class Protocol extends _i1.DatabaseSerializationManager {
         return 'FcmToken';
       case _i10.Member():
         return 'Member';
-      case _i11.MemberInfo():
-        return 'MemberInfo';
-      case _i12.Notification():
+      case _i11.Notification():
         return 'Notification';
-      case _i13.NotificationChannel():
+      case _i12.NotificationChannel():
         return 'NotificationChannel';
-      case _i14.NotificationDelivery():
+      case _i13.NotificationDelivery():
         return 'NotificationDelivery';
-      case _i15.NotificationTemplate():
+      case _i14.NotificationTemplate():
         return 'NotificationTemplate';
-      case _i16.RegistrationStatus():
+      case _i15.RegistrationStatus():
         return 'RegistrationStatus';
-      case _i17.Section():
+      case _i16.Section():
         return 'Section';
-      case _i18.SectionMembership():
+      case _i17.SectionMembership():
         return 'SectionMembership';
-      case _i19.UserNotification():
+      case _i18.UserNotification():
         return 'UserNotification';
-      case _i20.UserNotificationPreference():
+      case _i19.UserNotificationPreference():
         return 'UserNotificationPreference';
     }
     className = _i3.Protocol().getClassNameForObject(data);
@@ -1712,35 +1701,32 @@ class Protocol extends _i1.DatabaseSerializationManager {
     if (dataClassName == 'Member') {
       return deserialize<_i10.Member>(data['data']);
     }
-    if (dataClassName == 'MemberInfo') {
-      return deserialize<_i11.MemberInfo>(data['data']);
-    }
     if (dataClassName == 'Notification') {
-      return deserialize<_i12.Notification>(data['data']);
+      return deserialize<_i11.Notification>(data['data']);
     }
     if (dataClassName == 'NotificationChannel') {
-      return deserialize<_i13.NotificationChannel>(data['data']);
+      return deserialize<_i12.NotificationChannel>(data['data']);
     }
     if (dataClassName == 'NotificationDelivery') {
-      return deserialize<_i14.NotificationDelivery>(data['data']);
+      return deserialize<_i13.NotificationDelivery>(data['data']);
     }
     if (dataClassName == 'NotificationTemplate') {
-      return deserialize<_i15.NotificationTemplate>(data['data']);
+      return deserialize<_i14.NotificationTemplate>(data['data']);
     }
     if (dataClassName == 'RegistrationStatus') {
-      return deserialize<_i16.RegistrationStatus>(data['data']);
+      return deserialize<_i15.RegistrationStatus>(data['data']);
     }
     if (dataClassName == 'Section') {
-      return deserialize<_i17.Section>(data['data']);
+      return deserialize<_i16.Section>(data['data']);
     }
     if (dataClassName == 'SectionMembership') {
-      return deserialize<_i18.SectionMembership>(data['data']);
+      return deserialize<_i17.SectionMembership>(data['data']);
     }
     if (dataClassName == 'UserNotification') {
-      return deserialize<_i19.UserNotification>(data['data']);
+      return deserialize<_i18.UserNotification>(data['data']);
     }
     if (dataClassName == 'UserNotificationPreference') {
-      return deserialize<_i20.UserNotificationPreference>(data['data']);
+      return deserialize<_i19.UserNotificationPreference>(data['data']);
     }
     if (dataClassName.startsWith('serverpod_auth_idp.')) {
       data['className'] = dataClassName.substring(19);
@@ -1795,20 +1781,20 @@ class Protocol extends _i1.DatabaseSerializationManager {
         return _i9.FcmToken.t;
       case _i10.Member:
         return _i10.Member.t;
-      case _i12.Notification:
-        return _i12.Notification.t;
-      case _i14.NotificationDelivery:
-        return _i14.NotificationDelivery.t;
-      case _i15.NotificationTemplate:
-        return _i15.NotificationTemplate.t;
-      case _i17.Section:
-        return _i17.Section.t;
-      case _i18.SectionMembership:
-        return _i18.SectionMembership.t;
-      case _i19.UserNotification:
-        return _i19.UserNotification.t;
-      case _i20.UserNotificationPreference:
-        return _i20.UserNotificationPreference.t;
+      case _i11.Notification:
+        return _i11.Notification.t;
+      case _i13.NotificationDelivery:
+        return _i13.NotificationDelivery.t;
+      case _i14.NotificationTemplate:
+        return _i14.NotificationTemplate.t;
+      case _i16.Section:
+        return _i16.Section.t;
+      case _i17.SectionMembership:
+        return _i17.SectionMembership.t;
+      case _i18.UserNotification:
+        return _i18.UserNotification.t;
+      case _i19.UserNotificationPreference:
+        return _i19.UserNotificationPreference.t;
     }
     return null;
   }

@@ -59,7 +59,7 @@ class RegistrationScreen extends HookWidget {
           phoneNumber: phoneController.text,
           emergencyContactName: emergencyNameController.text,
           emergencyContactPhone: emergencyPhoneController.text,
-          userId: authInfo.authUserId,
+          id: authInfo.authUserId,
         );
 
         await client.member.registerMember(member, selectedSectionIds.value.toList());

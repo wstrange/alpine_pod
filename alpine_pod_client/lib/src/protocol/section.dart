@@ -10,41 +10,49 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import 'package:serverpod_database/serverpod_database.dart' as _i1;
+import 'package:serverpod_client/serverpod_client.dart' as _i2;
 
-abstract class Section implements _i1.SerializableModel {
+abstract class Section implements _i1.TableRow<_i2.UuidValue?> {
   Section._({
     this.id,
     required this.name,
     required this.description,
     this.location,
     this.contactInfo,
-  });
+    DateTime? updatedAt,
+  }) : updatedAt = updatedAt ?? DateTime.now();
 
   factory Section({
-    _i1.UuidValue? id,
+    _i2.UuidValue? id,
     required String name,
     required String description,
     String? location,
     String? contactInfo,
+    DateTime? updatedAt,
   }) = _SectionImpl;
 
   factory Section.fromJson(Map<String, dynamic> jsonSerialization) {
     return Section(
       id: jsonSerialization['id'] == null
           ? null
-          : _i1.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
+          : _i2.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
       name: jsonSerialization['name'] as String,
       description: jsonSerialization['description'] as String,
       location: jsonSerialization['location'] as String?,
       contactInfo: jsonSerialization['contactInfo'] as String?,
+      updatedAt: jsonSerialization['updatedAt'] == null
+          ? null
+          : _i2.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
     );
   }
 
-  /// The database id, set if the object has been inserted into the
-  /// database or if it has been fetched from the database. Otherwise,
-  /// the id will be null.
-  _i1.UuidValue? id;
+  static final t = SectionTable();
+
+  static const db = SectionRepository._();
+
+  @override
+  _i2.UuidValue? id;
 
   String name;
 
@@ -54,15 +62,21 @@ abstract class Section implements _i1.SerializableModel {
 
   String? contactInfo;
 
+  DateTime updatedAt;
+
+  @override
+  _i1.Table<_i2.UuidValue?> get table => t;
+
   /// Returns a shallow copy of this [Section]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_i2.useResult
   Section copyWith({
-    _i1.UuidValue? id,
+    _i2.UuidValue? id,
     String? name,
     String? description,
     String? location,
     String? contactInfo,
+    DateTime? updatedAt,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -73,12 +87,39 @@ abstract class Section implements _i1.SerializableModel {
       'description': description,
       if (location != null) 'location': location,
       if (contactInfo != null) 'contactInfo': contactInfo,
+      'updatedAt': updatedAt.toJson(),
     };
+  }
+
+  static SectionInclude include() {
+    return SectionInclude._();
+  }
+
+  static SectionIncludeList includeList({
+    _i1.WhereExpressionBuilder<SectionTable>? where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<SectionTable>? orderBy,
+    @Deprecated('Use desc() on the orderBy column instead.')
+    bool orderDescending = false,
+    _i1.OrderByListBuilder<SectionTable>? orderByList,
+    SectionInclude? include,
+  }) {
+    return SectionIncludeList._(
+      where: where,
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(Section.t),
+      orderDescending: // ignore: deprecated_member_use_from_same_package
+          orderDescending,
+      orderByList: orderByList?.call(Section.t),
+      include: include,
+    );
   }
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _i2.SerializationManager.encode(this);
   }
 }
 
@@ -86,22 +127,24 @@ class _Undefined {}
 
 class _SectionImpl extends Section {
   _SectionImpl({
-    _i1.UuidValue? id,
+    _i2.UuidValue? id,
     required String name,
     required String description,
     String? location,
     String? contactInfo,
+    DateTime? updatedAt,
   }) : super._(
          id: id,
          name: name,
          description: description,
          location: location,
          contactInfo: contactInfo,
+         updatedAt: updatedAt,
        );
 
   /// Returns a shallow copy of this [Section]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_i2.useResult
   @override
   Section copyWith({
     Object? id = _Undefined,
@@ -109,13 +152,540 @@ class _SectionImpl extends Section {
     String? description,
     Object? location = _Undefined,
     Object? contactInfo = _Undefined,
+    DateTime? updatedAt,
   }) {
     return Section(
-      id: id is _i1.UuidValue? ? id : this.id,
+      id: id is _i2.UuidValue? ? id : this.id,
       name: name ?? this.name,
       description: description ?? this.description,
       location: location is String? ? location : this.location,
       contactInfo: contactInfo is String? ? contactInfo : this.contactInfo,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+}
+
+class SectionUpdateTable extends _i1.UpdateTable<SectionTable> {
+  SectionUpdateTable(super.table);
+
+  _i1.ColumnValue<String, String> name(String value) => _i1.ColumnValue(
+    table.name,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> description(String value) => _i1.ColumnValue(
+    table.description,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> location(String? value) => _i1.ColumnValue(
+    table.location,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> contactInfo(String? value) => _i1.ColumnValue(
+    table.contactInfo,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> updatedAt(DateTime value) =>
+      _i1.ColumnValue(
+        table.updatedAt,
+        value,
+      );
+}
+
+class SectionTable extends _i1.Table<_i2.UuidValue?> {
+  SectionTable({super.tableRelation}) : super(tableName: 'sections') {
+    updateTable = SectionUpdateTable(this);
+    name = _i1.ColumnString(
+      'name',
+      this,
+    );
+    description = _i1.ColumnString(
+      'description',
+      this,
+    );
+    location = _i1.ColumnString(
+      'location',
+      this,
+    );
+    contactInfo = _i1.ColumnString(
+      'contactInfo',
+      this,
+    );
+    updatedAt = _i1.ColumnDateTime(
+      'updatedAt',
+      this,
+      hasDefault: true,
+    );
+  }
+
+  late final SectionUpdateTable updateTable;
+
+  late final _i1.ColumnString name;
+
+  late final _i1.ColumnString description;
+
+  late final _i1.ColumnString location;
+
+  late final _i1.ColumnString contactInfo;
+
+  late final _i1.ColumnDateTime updatedAt;
+
+  @override
+  List<_i1.Column> get columns => [
+    id,
+    name,
+    description,
+    location,
+    contactInfo,
+    updatedAt,
+  ];
+}
+
+class SectionInclude extends _i1.IncludeObject {
+  SectionInclude._();
+
+  @override
+  Map<String, _i1.Include?> get includes => {};
+
+  @override
+  _i1.Table<_i2.UuidValue?> get table => Section.t;
+}
+
+class SectionIncludeList extends _i1.IncludeList {
+  SectionIncludeList._({
+    _i1.WhereExpressionBuilder<SectionTable>? where,
+    super.limit,
+    super.offset,
+    super.orderBy,
+    @Deprecated('Use desc() on the orderBy column instead.')
+    super.orderDescending,
+    super.orderByList,
+    super.include,
+  }) {
+    super.where = where?.call(Section.t);
+  }
+
+  @override
+  Map<String, _i1.Include?> get includes => include?.includes ?? {};
+
+  @override
+  _i1.Table<_i2.UuidValue?> get table => Section.t;
+}
+
+class SectionRepository {
+  const SectionRepository._();
+
+  /// Returns a list of [Section]s matching the given query parameters.
+  ///
+  /// Use [where] to specify which items to include in the return value.
+  /// If none is specified, all items will be returned.
+  ///
+  /// To specify the order of the items use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
+  /// The maximum number of items can be set by [limit]. If no limit is set,
+  /// all items matching the query will be returned.
+  ///
+  /// [offset] defines how many items to skip, after which [limit] (or all)
+  /// items are read from the database.
+  ///
+  /// ```dart
+  /// var persons = await Persons.db.find(
+  ///   session,
+  ///   where: (t) => t.lastName.equals('Jones'),
+  ///   orderBy: (t) => t.firstName,
+  ///   limit: 100,
+  /// );
+  /// ```
+  Future<List<Section>> find(
+    _i1.DatabaseSession session, {
+    _i1.WhereExpressionBuilder<SectionTable>? where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<SectionTable>? orderBy,
+    @Deprecated('Use desc() on the orderBy column instead.')
+    bool orderDescending = false,
+    _i1.OrderByListBuilder<SectionTable>? orderByList,
+    _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
+  }) async {
+    return session.db.find<Section>(
+      where: where?.call(Section.t),
+      orderBy: orderBy?.call(Section.t),
+      orderByList: orderByList?.call(Section.t),
+      orderDescending: // ignore: deprecated_member_use
+          orderDescending,
+      limit: limit,
+      offset: offset,
+      transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
+    );
+  }
+
+  /// Returns the first matching [Section] matching the given query parameters.
+  ///
+  /// Use [where] to specify which items to include in the return value.
+  /// If none is specified, all items will be returned.
+  ///
+  /// To specify the order use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
+  /// [offset] defines how many items to skip, after which the next one will be picked.
+  ///
+  /// ```dart
+  /// var youngestPerson = await Persons.db.findFirstRow(
+  ///   session,
+  ///   where: (t) => t.lastName.equals('Jones'),
+  ///   orderBy: (t) => t.age,
+  /// );
+  /// ```
+  Future<Section?> findFirstRow(
+    _i1.DatabaseSession session, {
+    _i1.WhereExpressionBuilder<SectionTable>? where,
+    int? offset,
+    _i1.OrderByBuilder<SectionTable>? orderBy,
+    @Deprecated('Use desc() on the orderBy column instead.')
+    bool orderDescending = false,
+    _i1.OrderByListBuilder<SectionTable>? orderByList,
+    _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
+  }) async {
+    return session.db.findFirstRow<Section>(
+      where: where?.call(Section.t),
+      orderBy: orderBy?.call(Section.t),
+      orderByList: orderByList?.call(Section.t),
+      orderDescending: // ignore: deprecated_member_use
+          orderDescending,
+      offset: offset,
+      transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
+    );
+  }
+
+  /// Finds a single [Section] by its [id] or null if no such row exists.
+  Future<Section?> findById(
+    _i1.DatabaseSession session,
+    _i2.UuidValue id, {
+    _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
+  }) async {
+    return session.db.findById<Section>(
+      id,
+      transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
+    );
+  }
+
+  /// Inserts all [Section]s in the list and returns the inserted rows.
+  ///
+  /// The returned [Section]s will have their `id` fields set.
+  ///
+  /// This is an atomic operation, meaning that if one of the rows fails to
+  /// insert, none of the rows will be inserted.
+  ///
+  /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
+  /// rows are silently skipped, and only the successfully inserted rows are
+  /// returned.
+  ///
+  /// If [noReturn] is set to `true`, the inserted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<Section>> insert(
+    _i1.DatabaseSession session,
+    List<Section> rows, {
+    _i1.Transaction? transaction,
+    bool ignoreConflicts = false,
+    bool noReturn = false,
+  }) async {
+    return session.db.insert<Section>(
+      rows,
+      transaction: transaction,
+      ignoreConflicts: ignoreConflicts,
+      noReturn: noReturn,
+    );
+  }
+
+  /// Inserts a single [Section] and returns the inserted row.
+  ///
+  /// The returned [Section] will have its `id` field set.
+  Future<Section> insertRow(
+    _i1.DatabaseSession session,
+    Section row, {
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.insertRow<Section>(
+      row,
+      transaction: transaction,
+    );
+  }
+
+  /// Upserts all [Section]s in the list and returns the resulting rows.
+  ///
+  /// If a row conflicts on the given [conflictColumns], the existing row is
+  /// updated with the new values. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies to rows matching the
+  /// given expression. Conflicting rows that don't match are skipped and not
+  /// returned, so the resulting list may be shorter than [rows].
+  ///
+  /// The returned [Section]s will have their `id` fields set.
+  ///
+  /// This is an atomic operation, meaning that if one of the rows fails,
+  /// none of the rows will be affected.
+  ///
+  /// If [noReturn] is set to `true`, the resulting rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<Section>> upsert(
+    _i1.DatabaseSession session,
+    List<Section> rows, {
+    required _i1.ColumnSelections<SectionTable> conflictColumns,
+    _i1.ColumnSelections<SectionTable>? updateColumns,
+    _i1.WhereExpressionBuilder<SectionTable>? updateWhere,
+    _i1.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.upsert<Section>(
+      rows,
+      conflictColumns: conflictColumns(Section.t),
+      updateColumns: updateColumns?.call(Section.t),
+      updateWhere: updateWhere?.call(Section.t),
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
+  /// Upserts a single [Section] and returns the resulting row.
+  ///
+  /// If the row conflicts on the given [conflictColumns], the existing row is
+  /// updated. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies when the existing
+  /// row matches the expression. Returns `null` if no row was affected — for
+  /// example when [updateWhere] does not match the conflicting row.
+  ///
+  /// The returned [Section] will have its `id` field set.
+  Future<Section?> upsertRow(
+    _i1.DatabaseSession session,
+    Section row, {
+    required _i1.ColumnSelections<SectionTable> conflictColumns,
+    _i1.ColumnSelections<SectionTable>? updateColumns,
+    _i1.WhereExpressionBuilder<SectionTable>? updateWhere,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.upsertRow<Section>(
+      row,
+      conflictColumns: conflictColumns(Section.t),
+      updateColumns: updateColumns?.call(Section.t),
+      updateWhere: updateWhere?.call(Section.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [Section]s in the list and returns the updated rows. If
+  /// [columns] is provided, only those columns will be updated. Defaults to
+  /// all columns.
+  /// This is an atomic operation, meaning that if one of the rows fails to
+  /// update, none of the rows will be updated.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<Section>> update(
+    _i1.DatabaseSession session,
+    List<Section> rows, {
+    _i1.ColumnSelections<SectionTable>? columns,
+    _i1.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.update<Section>(
+      rows,
+      columns: columns?.call(Section.t),
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
+  /// Updates a single [Section]. The row needs to have its id set.
+  /// Optionally, a list of [columns] can be provided to only update those
+  /// columns. Defaults to all columns.
+  Future<Section> updateRow(
+    _i1.DatabaseSession session,
+    Section row, {
+    _i1.ColumnSelections<SectionTable>? columns,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateRow<Section>(
+      row,
+      columns: columns?.call(Section.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [Section] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<Section?> updateById(
+    _i1.DatabaseSession session,
+    _i2.UuidValue id, {
+    required _i1.ColumnValueListBuilder<SectionUpdateTable> columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<Section>(
+      id,
+      columnValues: columnValues(Section.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [Section]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<Section>> updateWhere(
+    _i1.DatabaseSession session, {
+    required _i1.ColumnValueListBuilder<SectionUpdateTable> columnValues,
+    required _i1.WhereExpressionBuilder<SectionTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<SectionTable>? orderBy,
+    _i1.OrderByListBuilder<SectionTable>? orderByList,
+    @Deprecated('Use desc() on the orderBy column instead.')
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.updateWhere<Section>(
+      columnValues: columnValues(Section.t.updateTable),
+      where: where(Section.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(Section.t),
+      orderByList: orderByList?.call(Section.t),
+      orderDescending: // ignore: deprecated_member_use
+          orderDescending,
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
+  /// Deletes all [Section]s in the list and returns the deleted rows.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
+  /// This is an atomic operation, meaning that if one of the rows fail to
+  /// be deleted, none of the rows will be deleted.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<Section>> delete(
+    _i1.DatabaseSession session,
+    List<Section> rows, {
+    _i1.OrderByBuilder<SectionTable>? orderBy,
+    @Deprecated('Use desc() on the orderBy column instead.')
+    bool orderDescending = false,
+    _i1.OrderByListBuilder<SectionTable>? orderByList,
+    _i1.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.delete<Section>(
+      rows,
+      orderBy: orderBy?.call(Section.t),
+      orderByList: orderByList?.call(Section.t),
+      orderDescending: // ignore: deprecated_member_use
+          orderDescending,
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
+  /// Deletes a single [Section].
+  Future<Section> deleteRow(
+    _i1.DatabaseSession session,
+    Section row, {
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.deleteRow<Section>(
+      row,
+      transaction: transaction,
+    );
+  }
+
+  /// Deletes all rows matching the [where] expression.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<Section>> deleteWhere(
+    _i1.DatabaseSession session, {
+    required _i1.WhereExpressionBuilder<SectionTable> where,
+    _i1.OrderByBuilder<SectionTable>? orderBy,
+    @Deprecated('Use desc() on the orderBy column instead.')
+    bool orderDescending = false,
+    _i1.OrderByListBuilder<SectionTable>? orderByList,
+    _i1.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.deleteWhere<Section>(
+      where: where(Section.t),
+      orderBy: orderBy?.call(Section.t),
+      orderByList: orderByList?.call(Section.t),
+      orderDescending: // ignore: deprecated_member_use
+          orderDescending,
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
+  /// Counts the number of rows matching the [where] expression. If omitted,
+  /// will return the count of all rows in the table.
+  Future<int> count(
+    _i1.DatabaseSession session, {
+    _i1.WhereExpressionBuilder<SectionTable>? where,
+    int? limit,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.count<Section>(
+      where: where?.call(Section.t),
+      limit: limit,
+      transaction: transaction,
+    );
+  }
+
+  /// Acquires row-level locks on [Section] rows matching the [where] expression.
+  Future<void> lockRows(
+    _i1.DatabaseSession session, {
+    required _i1.WhereExpressionBuilder<SectionTable> where,
+    required _i1.LockMode lockMode,
+    required _i1.Transaction transaction,
+    _i1.LockBehavior lockBehavior = _i1.LockBehavior.wait,
+  }) async {
+    return session.db.lockRows<Section>(
+      where: where(Section.t),
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
+      transaction: transaction,
     );
   }
 }

@@ -31,7 +31,7 @@ class MemberAvatar extends StatelessWidget {
     }
 
     return FutureBuilder<String?>(
-      future: client.member.getMemberProfileImageUrl(member!.id!),
+      future: client.member.getMemberProfileImageUrl(member!.id),
       builder: (context, snapshot) {
         final imageUrl = snapshot.data;
         return CircleAvatar(

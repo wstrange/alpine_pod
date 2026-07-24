@@ -27,7 +27,8 @@ abstract class Notification
     required this.renderedBody,
     this.renderedHtml,
     required this.createdAt,
-  });
+    DateTime? updatedAt,
+  }) : updatedAt = updatedAt ?? DateTime.now();
 
   factory Notification({
     _i1.UuidValue? id,
@@ -39,6 +40,7 @@ abstract class Notification
     required String renderedBody,
     String? renderedHtml,
     required DateTime createdAt,
+    DateTime? updatedAt,
   }) = _NotificationImpl;
 
   factory Notification.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -64,6 +66,9 @@ abstract class Notification
       createdAt: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['createdAt'],
       ),
+      updatedAt: jsonSerialization['updatedAt'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
     );
   }
 
@@ -90,6 +95,8 @@ abstract class Notification
 
   DateTime createdAt;
 
+  DateTime updatedAt;
+
   @override
   _i1.Table<_i1.UuidValue?> get table => t;
 
@@ -106,6 +113,7 @@ abstract class Notification
     String? renderedBody,
     String? renderedHtml,
     DateTime? createdAt,
+    DateTime? updatedAt,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -120,6 +128,7 @@ abstract class Notification
       'renderedBody': renderedBody,
       if (renderedHtml != null) 'renderedHtml': renderedHtml,
       'createdAt': createdAt.toJson(),
+      'updatedAt': updatedAt.toJson(),
     };
   }
 
@@ -136,6 +145,7 @@ abstract class Notification
       'renderedBody': renderedBody,
       if (renderedHtml != null) 'renderedHtml': renderedHtml,
       'createdAt': createdAt.toJson(),
+      'updatedAt': updatedAt.toJson(),
     };
   }
 
@@ -186,6 +196,7 @@ class _NotificationImpl extends Notification {
     required String renderedBody,
     String? renderedHtml,
     required DateTime createdAt,
+    DateTime? updatedAt,
   }) : super._(
          id: id,
          templateId: templateId,
@@ -196,6 +207,7 @@ class _NotificationImpl extends Notification {
          renderedBody: renderedBody,
          renderedHtml: renderedHtml,
          createdAt: createdAt,
+         updatedAt: updatedAt,
        );
 
   /// Returns a shallow copy of this [Notification]
@@ -212,6 +224,7 @@ class _NotificationImpl extends Notification {
     String? renderedBody,
     Object? renderedHtml = _Undefined,
     DateTime? createdAt,
+    DateTime? updatedAt,
   }) {
     return Notification(
       id: id is _i1.UuidValue? ? id : this.id,
@@ -235,6 +248,7 @@ class _NotificationImpl extends Notification {
       renderedBody: renderedBody ?? this.renderedBody,
       renderedHtml: renderedHtml is String? ? renderedHtml : this.renderedHtml,
       createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 }
@@ -283,6 +297,12 @@ class NotificationUpdateTable extends _i1.UpdateTable<NotificationTable> {
         table.createdAt,
         value,
       );
+
+  _i1.ColumnValue<DateTime, DateTime> updatedAt(DateTime value) =>
+      _i1.ColumnValue(
+        table.updatedAt,
+        value,
+      );
 }
 
 class NotificationTable extends _i1.Table<_i1.UuidValue?> {
@@ -316,6 +336,11 @@ class NotificationTable extends _i1.Table<_i1.UuidValue?> {
       'createdAt',
       this,
     );
+    updatedAt = _i1.ColumnDateTime(
+      'updatedAt',
+      this,
+      hasDefault: true,
+    );
   }
 
   late final NotificationUpdateTable updateTable;
@@ -335,6 +360,8 @@ class NotificationTable extends _i1.Table<_i1.UuidValue?> {
   late final _i1.ColumnString renderedHtml;
 
   late final _i1.ColumnDateTime createdAt;
+
+  late final _i1.ColumnDateTime updatedAt;
 
   _i2.NotificationTemplateTable get template {
     if (_template != null) return _template!;
@@ -359,6 +386,7 @@ class NotificationTable extends _i1.Table<_i1.UuidValue?> {
     renderedBody,
     renderedHtml,
     createdAt,
+    updatedAt,
   ];
 
   @override

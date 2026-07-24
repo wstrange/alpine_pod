@@ -162,7 +162,7 @@ class MemberDirectoryListWidget extends StatelessWidget {
                   onPressed: () {
                     Navigator.of(context).pop();
                     if (onScopesUpdated != null) {
-                      onScopesUpdated!(member.id!, selectedScopes);
+                      onScopesUpdated!(member.id, selectedScopes);
                     }
                   },
                   child: const Text('Save'),

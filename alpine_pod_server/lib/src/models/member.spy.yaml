@@ -1,8 +1,9 @@
 class: Member
 table: members
+database: all
 fields:
-  id: UuidValue?, defaultPersist=random_v7
-  user: module:serverpod_auth_core:AuthUser?, relation(onDelete=Cascade)
+  # This gets set to the users id when the member is created
+  id: UuidValue, defaultModel=random_v7
   firstName: String
   lastName: String
   displayName: String?
@@ -21,8 +22,8 @@ fields:
   registrations: List<EventRegistration>?, relation(name=member_registrations)
   managedEvents: List<EventManager>?, relation(name=member_managers)
 indexes:
-  authuser_idx:
-    fields: userId
+  member_id_idx:
+    fields: id
     unique: true
   email_idx:
     fields: email

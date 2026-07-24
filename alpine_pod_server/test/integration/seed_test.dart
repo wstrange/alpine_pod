@@ -123,7 +123,7 @@ void main() {
             phoneNumber: '555-0000',
             emergencyContactName: 'Emergency Contact',
             emergencyContactPhone: '555-0001',
-            userId: auModel.id,
+            id: auModel.id,
           ),
         );
         print('Created Admin Member profile: $adminMember');
@@ -135,7 +135,7 @@ void main() {
         await endpoints.member.addMemberToSection(
           authSession,
           SectionMembership(
-            memberId: adminMember.id!,
+            memberId: adminMember.id,
             sectionId: national.id!,
             scopes: {CustomScope.sectionManager.name!, CustomScope.member.name!},
           ),
@@ -175,7 +175,7 @@ void main() {
               phoneNumber: '555-1212',
               emergencyContactName: 'Santa',
               emergencyContactPhone: '5555555',
-              userId: au.id,
+              id: au.id,
             ),
           );
           // print('Created member profile: $m');
@@ -185,7 +185,7 @@ void main() {
           // assign to first and second sections
           await endpoints.member.addMemberToSection(
             authSession,
-            SectionMembership(memberId: m.id!, sectionId: s1.id!, scopes: scopes),
+            SectionMembership(memberId: m.id, sectionId: s1.id!, scopes: scopes),
           );
 
           // print('Created section membership: $sm');
@@ -216,7 +216,7 @@ void main() {
           final member = testMembers[memberIndex];
 
           final userAuthSession = sessionBuilder.copyWith(
-            authentication: AuthenticationOverride.authenticationInfo(member.userId.toString(), {
+            authentication: AuthenticationOverride.authenticationInfo(member.id.toString(), {
               CustomScope.member,
               CustomScope.sectionManager,
               CustomScope.eventManager,
@@ -267,7 +267,7 @@ void main() {
 
 Future<void> enableAllNotificationsForUser(Session session, UuidValue userId) async {
   final preference = UserNotificationPreference(
-    userId: userId,
+    id: userId,
     newEvents: true,
     allowInApp: true,
     allowEmail: true,

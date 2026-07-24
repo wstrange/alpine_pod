@@ -1,8 +1,9 @@
 class: FcmToken
 table: fcm_tokens
 fields:
-  id: UuidValue?, defaultPersist=random_v7
-  user: module:serverpod_auth_core:AuthUser?, relation(onDelete=Cascade)
+# Set to the users id
+  id: UuidValue, defaultModel=random_v7
+  # user: module:serverpod_auth_core:AuthUser?, relation(onDelete=Cascade)
   token: String
   deviceId: String?
   updatedAt: DateTime, default=now
@@ -11,4 +12,4 @@ indexes:
     fields: token
     unique: true
   fcm_user_idx:
-    fields: userId
+    fields: id

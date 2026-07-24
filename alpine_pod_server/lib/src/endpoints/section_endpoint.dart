@@ -22,19 +22,15 @@ class SectionEndpoint extends Endpoint {
     if (authInfo == null) {
       return [];
     }
-    final userId = authInfo.authUserId;
+    final id = authInfo.authUserId;
     // get the memberId
-    final member = await Member.db
-        .findFirstRow(session, where: (t) => t.user.id.equals(userId));
+    final member = await Member.db.findFirstRow(session, where: (t) => t.id.equals(id));
     if (member == null) {
       return [];
     }
     final memberId = member.id;
 
-    final memberships = await SectionMembership.db.find(
-      session,
-      where: (t) => t.memberId.equals(memberId),
-    );
+    final memberships = await SectionMembership.db.find(session, where: (t) => t.memberId.equals(memberId));
 
     if (memberships.isEmpty) {
       return [];
@@ -42,9 +38,6 @@ class SectionEndpoint extends Endpoint {
 
     final sectionIds = memberships.map((e) => e.sectionId).toList();
 
-    return await Section.db.find(
-      session,
-      where: (t) => t.id.inSet(sectionIds.toSet()),
-    );
+    return await Section.db.find(session, where: (t) => t.id.inSet(sectionIds.toSet()));
   }
 }

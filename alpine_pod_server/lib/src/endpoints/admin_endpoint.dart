@@ -67,11 +67,7 @@ class AdminEndpoint extends Endpoint {
       // 2. Delete the auth user record.
       // This will cascade to delete the Member record and EventManager records
       // because of the onDelete: Cascade defined in member.spy.yaml and event_manager.spy.yaml
-      await AuthServices.instance.authUsers.delete(
-        session,
-        authUserId: member.userId,
-        transaction: transaction,
-      );
+      await AuthServices.instance.authUsers.delete(session, authUserId: member.id, transaction: transaction);
     });
   }
 
@@ -97,17 +93,11 @@ class AdminEndpoint extends Endpoint {
   }
 
   Future<void> clearNotificationDeliveries(Session session) async {
-    await NotificationDelivery.db.deleteWhere(
-      session,
-      where: (t) => Constant.bool(true),
-    );
+    await NotificationDelivery.db.deleteWhere(session, where: (t) => Constant.bool(true));
   }
 
   Future<void> retryFailedNotifications(Session session) async {
-    final failed = await NotificationDelivery.db.find(
-      session,
-      where: (t) => t.status.equals('failed'),
-    );
+    final failed = await NotificationDelivery.db.find(session, where: (t) => t.status.equals('failed'));
     for (var delivery in failed) {
       delivery.status = 'pending';
       delivery.attempts = 0;
@@ -116,4 +106,3 @@ class AdminEndpoint extends Endpoint {
     }
   }
 }
-

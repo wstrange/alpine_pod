@@ -52,7 +52,7 @@ class HomeScreen extends SignalWidget {
               title: const Text('Profile'),
               onTap: () {
                 final m = currentMemberSignal.value;
-                if (m == null || m.id == null) return;
+                if (m == null) return;
                 final id = m.id.toString();
 
                 Navigator.pop(context); // Close the drawer

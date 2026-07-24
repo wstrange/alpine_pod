@@ -55,7 +55,7 @@ void main() {
       // Assign member to section
       await endpoints.member.addMemberToSection(
         adminAuth,
-        SectionMembership(sectionId: section.id!, memberId: member.id!, scopes: {CustomScope.member.name!}),
+        SectionMembership(sectionId: section.id!, memberId: member.id, scopes: {CustomScope.member.name!}),
       );
 
       // Create an event
@@ -79,7 +79,7 @@ void main() {
 
     test('Assign and list event managers', () async {
       // Creator is already assigned as a manager
-      final initialManagers = await endpoints.eventManager.listEventManagers(adminAuth, event.id!);
+      final initialManagers = await endpoints.eventManager.listEventManagers(adminAuth, event.id);
       expect(initialManagers.length, equals(1));
 
       // Create another member to assign
@@ -90,7 +90,7 @@ void main() {
         genData.member(userId: otherAuthUser.id, email: 'other-${Uuid().v4()}@example.com'),
       );
 
-      final manager = EventManager(eventId: event.id!, memberId: otherMember.id!);
+      final manager = EventManager(eventId: event.id, memberId: otherMember.id);
 
       final assigned = await endpoints.eventManager.assignEventManager(adminAuth, manager);
 
@@ -98,19 +98,19 @@ void main() {
       expect(assigned.eventId, equals(event.id));
       expect(assigned.memberId, equals(otherMember.id));
 
-      final managers = await endpoints.eventManager.listEventManagers(adminAuth, event.id!);
+      final managers = await endpoints.eventManager.listEventManagers(adminAuth, event.id);
 
       expect(managers.length, equals(2));
     });
 
     test('Remove event manager', () async {
-      final manager = EventManager(eventId: event.id!, memberId: member.id!);
+      final manager = EventManager(eventId: event.id, memberId: member.id);
 
       // Note: We can't remove the last manager if there are active registrations,
       // but here there are none.
       await endpoints.eventManager.removeEventManager(adminAuth, manager);
 
-      final managers = await endpoints.eventManager.listEventManagers(adminAuth, event.id!);
+      final managers = await endpoints.eventManager.listEventManagers(adminAuth, event.id);
       expect(managers.isEmpty, isTrue);
     });
   });

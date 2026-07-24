@@ -1,5 +1,6 @@
 class: EventRegistration
 table: event_registrations
+database: all
 fields:
   id: UuidValue?, defaultPersist=random_v7
   # user: module:serverpod_auth_core:AuthUser?, relation(onDelete=Cascade)

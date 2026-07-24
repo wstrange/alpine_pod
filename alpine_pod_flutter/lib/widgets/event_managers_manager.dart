@@ -84,7 +84,7 @@ class EventManagersManager extends HookWidget {
     if (eventId != null) {
       // Immediate server action
       try {
-        await client.eventManager.removeEventManager(EventManager(eventId: eventId!, memberId: member.id!));
+        await client.eventManager.removeEventManager(EventManager(eventId: eventId!, memberId: member.id));
         onChanged(managers.where((m) => m.id != member.id).toList());
       } catch (e) {
         if (context.mounted) {
@@ -102,12 +102,12 @@ class EventManagersManager extends HookWidget {
       context: context,
       builder: (ctx) => _AddManagerDialog(
         sectionId: sectionId,
-        alreadyManagerIds: managers.map((m) => m.id!).toSet(),
+        alreadyManagerIds: managers.map((m) => m.id).toSet(),
         onAdded: (member) async {
           if (eventId != null) {
             // Immediate server action
             try {
-              await client.eventManager.assignEventManager(EventManager(eventId: eventId!, memberId: member.id!));
+              await client.eventManager.assignEventManager(EventManager(eventId: eventId!, memberId: member.id));
               onChanged([...managers, member]);
             } catch (e) {
               if (context.mounted) {

@@ -514,7 +514,7 @@ class _MembersTab extends HookWidget {
       if (!confirmed || !context.mounted) return;
       final messenger = ScaffoldMessenger.of(context);
       try {
-        await client.admin.deleteUser(member.id!);
+        await client.admin.deleteUser(member.id);
         messenger.showSnackBar(
           SnackBar(
             content: Text('"$fullName" deleted.'),

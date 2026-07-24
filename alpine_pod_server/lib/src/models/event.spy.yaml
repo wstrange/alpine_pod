@@ -1,7 +1,8 @@
 class: Event
 table: events
+database: all
 fields:
-  id: UuidValue?, defaultPersist=random_v7
+  id: UuidValue, defaultModel=random_v7
   title: String
   description: String
   type: String

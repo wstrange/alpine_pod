@@ -1,8 +1,10 @@
 class: UserNotificationPreference
 table: user_notification_preference
+database: all
 fields:
+  # set to the users id
   id: UuidValue?, defaultPersist=random_v7
-  user: module:serverpod_auth_core:AuthUser?, relation(onDelete=Cascade)
+  # user: module:serverpod_auth_core:AuthUser?, relation(onDelete=Cascade)
   # InApp is always true
   allowInApp: bool, default=true
   allowEmail: bool, default=true
@@ -14,5 +16,5 @@ fields:
 
 indexes:
   user_type_unique_idx:
-    fields: id, userId
+    fields: id
     unique: true

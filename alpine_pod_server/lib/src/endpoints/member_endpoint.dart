@@ -10,7 +10,7 @@ class MemberEndpoint extends Endpoint {
       return null;
     }
 
-    var m = await Member.db.findFirstRow(session, where: (t) => t.user.id.equals(authInfo.authUserId));
+    var m = await Member.db.findFirstRow(session, where: (t) => t.id.equals(authInfo.authUserId));
     return m;
   }
 
@@ -95,7 +95,7 @@ class MemberEndpoint extends Endpoint {
       }
     }
 
-    final profile = await AuthServices.instance.userProfiles.maybeFindUserProfileByUserId(session, member.userId);
+    final profile = await AuthServices.instance.userProfiles.maybeFindUserProfileByUserId(session, member.id);
 
     final url = profile?.imageUrl?.toString();
 
@@ -128,25 +128,25 @@ class MemberEndpoint extends Endpoint {
     final callerInfo = await cache.getMemberInfo(session);
     if (callerInfo == null) throw Exception('Not authenticated');
 
-    // Find the existing record to check userId
-    final existing = await Member.db.findById(session, member.id!);
+    // Find the existing record to check id
+    final existing = await Member.db.findById(session, member.id);
     if (existing == null) throw Exception('Member not found');
 
     if (!session.isGlobalAdmin() && existing.id != callerInfo.member.id) {
       throw Exception('You do not have permission to update this member');
     }
 
-    // Prevent changing the userId associated with the member record
+    // Prevent changing the id associated with the member record
     // even for admins, to keep the link to the Auth record stable.
-    final toUpdate = member.copyWith(userId: existing.userId, updatedAt: DateTime.now());
+    final toUpdate = member.copyWith(id: existing.id, updatedAt: DateTime.now());
 
     final updated = await Member.db.updateRow(session, toUpdate);
 
     // If it's the current user, invalidate their cache
-    if (existing.userId == callerInfo.member.userId) {
+    if (existing.id == callerInfo.member.id) {
       cache.invalidateCache(session);
     } else {
-      cache.invalidateUserCache(existing.userId);
+      cache.invalidateUserCache(existing.id);
     }
 
     return updated;
@@ -246,7 +246,7 @@ class MemberEndpoint extends Endpoint {
     final memberMap = <UuidValue, Member>{};
     for (var m in memberships) {
       if (m.member != null) {
-        memberMap[m.member!.id!] = m.member!;
+        memberMap[m.member!.id] = m.member!;
       }
     }
 
@@ -340,7 +340,7 @@ class MemberEndpoint extends Endpoint {
       throw Exception('Target member is not in this section');
     }
 
-    // Find the member to get the userId for auth update
+    // Find the member to get the id for auth update
     final targetMember = await Member.db.findById(session, memberId);
     if (targetMember == null) throw Exception('Target member not found');
 
@@ -362,7 +362,7 @@ class MemberEndpoint extends Endpoint {
     final allMemberships = await SectionMembership.db.find(session, where: (t) => t.memberId.equals(memberId));
 
     // Fetch the existing user to preserve global/admin scopes
-    final authUser = await AuthServices.instance.authUsers.get(session, authUserId: targetMember.userId);
+    final authUser = await AuthServices.instance.authUsers.get(session, authUserId: targetMember.id);
 
     // Keep global/admin scopes that are not managed by section memberships
     final preservedScopes = authUser.scopeNames.where((s) => s == 'serverpod.admin' || s == 'admin').toSet();
@@ -377,10 +377,10 @@ class MemberEndpoint extends Endpoint {
     final Set<Scope> authScopes = mergedScopes.map((s) => Scope(s)).toSet();
 
     // Update the AuthUser scopes
-    await AuthServices.instance.authUsers.update(session, authUserId: targetMember.userId, scopes: authScopes);
+    await AuthServices.instance.authUsers.update(session, authUserId: targetMember.id, scopes: authScopes);
 
     // Invalidate the cache for the updated member so their new scopes take effect immediately
-    cache.invalidateUserCache(targetMember.userId);
+    cache.invalidateUserCache(targetMember.id);
   }
 
   /// Atomic registration: creates a Member profile and multiple Section memberships.
@@ -392,7 +392,7 @@ class MemberEndpoint extends Endpoint {
       // 1. Create or verify member profile
       var existingMember = await Member.db.findFirstRow(
         session,
-        where: (t) => t.user.id.equals(authInfo.authUserId),
+        where: (t) => t.id.equals(authInfo.authUserId),
         transaction: transaction,
       );
 
@@ -400,7 +400,7 @@ class MemberEndpoint extends Endpoint {
       if (existingMember == null) {
         // Ensure the email matches the authenticated user if not provided
         final memberToInsert = member.copyWith(
-          userId: authInfo.authUserId,
+          id: authInfo.authUserId,
           createdAt: DateTime.now(),
           updatedAt: DateTime.now(),
         );
@@ -415,7 +415,7 @@ class MemberEndpoint extends Endpoint {
       for (final sectionId in sectionIds) {
         final existingMembership = await SectionMembership.db.findFirstRow(
           session,
-          where: (t) => t.memberId.equals(createdMember.id!) & t.sectionId.equals(sectionId),
+          where: (t) => t.memberId.equals(createdMember.id) & t.sectionId.equals(sectionId),
           transaction: transaction,
         );
 
@@ -423,7 +423,7 @@ class MemberEndpoint extends Endpoint {
           await SectionMembership.db.insertRow(
             session,
             SectionMembership(
-              memberId: createdMember.id!,
+              memberId: createdMember.id,
               sectionId: sectionId,
               syncedAt: DateTime.now(),
               scopes: {'member'},
@@ -434,7 +434,7 @@ class MemberEndpoint extends Endpoint {
       }
 
       // 3. Sync scopes
-      await _syncUserScopes(session, createdMember.id!);
+      await _syncUserScopes(session, createdMember.id);
 
       return createdMember;
     });
@@ -444,13 +444,13 @@ class MemberEndpoint extends Endpoint {
   // Future<String?> getProfileUploadUrl(Session session, String filename) async {
   //   // Verifies the user is logged in
 
-  //   var userId = session.authenticated?.authUserId;
-  //   if (userId == null) return null;
+  //   var id = session.authenticated?.authUserId;
+  //   if (id == null) return null;
 
   //   // "public" is the default public storage pool configured in Serverpod
   //   var uploadDescription = await session.storage.createDirectUploadDescription(
   //     storageId: 'public',
-  //     path: 'profiles/$userId/$filename',
+  //     path: 'profiles/$id/$filename',
   //   );
 
   //   return uploadDescription?.url;
@@ -458,10 +458,10 @@ class MemberEndpoint extends Endpoint {
 
   // // Step B: Verify the upload completed and attach the public URL to the user database
   // Future<bool> verifyAndSetProfilePicture(Session session, String filename) async {
-  //   var userId = await session.auth.authenticatedUserId;
-  //   if (userId == null) return false;
+  //   var id = await session.auth.authenticatedUserId;
+  //   if (id == null) return false;
 
-  //   var path = 'profiles/$userId/$filename';
+  //   var path = 'profiles/$id/$filename';
   //   var fileExists = await session.storage.fileExists(storageId: 'public', path: path);
 
   //   if (fileExists) {

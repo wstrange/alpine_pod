@@ -46,21 +46,21 @@ class NotificationService {
     // Bulk-fetch preferences for all recipients.
     final preferences = await UserNotificationPreference.db.find(
       session,
-      where: (p) => p.userId.inSet(recipientUserIds.toSet()),
+      where: (p) => p.id.inSet(recipientUserIds.toSet()),
     );
-    final prefMap = {for (final p in preferences) p.userId: p};
+    final prefMap = {for (final p in preferences) p.id: p};
 
     final now = DateTime.now();
     final deliveries = <NotificationDelivery>[];
 
-    for (final userId in recipientUserIds) {
-      final pref = prefMap[userId];
+    for (final id in recipientUserIds) {
+      final pref = prefMap[id];
       final allowInApp = isAlwaysNotify || (pref?.allowInApp ?? true);
       final allowEmail = isAlwaysNotify || (pref?.allowEmail ?? true);
       final allowPush = isAlwaysNotify || (pref?.allowPush ?? true);
       final allowSms = isAlwaysNotify || (pref?.allowSms ?? false);
       // get the users email
-      final member = await Member.db.findFirstRow(session, where: (member) => member.userId.equals(userId));
+      final member = await Member.db.findFirstRow(session, where: (member) => member.id.equals(id));
       // This is really for logging / debug purposes.
       final info = '${member?.email} ${member?.firstName} ${member?.lastName}';
       print('Info == $info');
@@ -69,7 +69,7 @@ class NotificationService {
         deliveries.add(
           NotificationDelivery(
             notificationId: coreNotification.id!,
-            recipientUserId: userId,
+            recipientUserId: id,
             channel: NotificationChannel.inApp,
             createdAt: now,
             info: info,
@@ -80,7 +80,7 @@ class NotificationService {
         deliveries.add(
           NotificationDelivery(
             notificationId: coreNotification.id!,
-            recipientUserId: userId,
+            recipientUserId: id,
             channel: NotificationChannel.email,
             createdAt: now,
             info: info,
@@ -91,7 +91,7 @@ class NotificationService {
         deliveries.add(
           NotificationDelivery(
             notificationId: coreNotification.id!,
-            recipientUserId: userId,
+            recipientUserId: id,
             channel: NotificationChannel.push,
             createdAt: now,
             info: info,
@@ -102,7 +102,7 @@ class NotificationService {
         deliveries.add(
           NotificationDelivery(
             notificationId: coreNotification.id!,
-            recipientUserId: userId,
+            recipientUserId: id,
             channel: NotificationChannel.sms,
             createdAt: now,
             info: info,
@@ -206,7 +206,7 @@ class NotificationService {
     await dispatchNotification(
       session: session,
       templateName: 'registration-approved',
-      recipientUserIds: [member.userId],
+      recipientUserIds: [member.id],
       templateData: {'title': title, 'body': 'Your registration for "$title" has been approved.'},
     );
   }
@@ -224,7 +224,7 @@ class NotificationService {
     await dispatchNotification(
       session: session,
       templateName: 'registration-cancelled',
-      recipientUserIds: [member.userId],
+      recipientUserIds: [member.id],
       templateData: {'title': title, 'body': 'Your registration for $title has been cancelled.'},
     );
   }
@@ -242,7 +242,7 @@ class NotificationService {
     await dispatchNotification(
       session: session,
       templateName: 'add-to-waitlist',
-      recipientUserIds: [member.userId],
+      recipientUserIds: [member.id],
       templateData: {'title': title, 'body': 'You have been added to the waitlist for $title.'},
       actionUrl: '/event-view/${event?.id}',
     );
@@ -254,7 +254,7 @@ class NotificationService {
       where: (er) => er.eventId.equals(event.id),
       include: EventRegistration.include(member: Member.include()),
     );
-    final recipientUserIds = registrations.map((r) => r.member?.userId).nonNulls.toList();
+    final recipientUserIds = registrations.map((r) => r.member?.id).nonNulls.toList();
     if (recipientUserIds.isEmpty) return;
 
     await dispatchNotification(
@@ -297,7 +297,7 @@ class NotificationService {
       include: EventManager.include(member: Member.include()),
     );
 
-    final recipientUserIds = managers.map((manager) => manager.member?.userId).nonNulls.toList();
+    final recipientUserIds = managers.map((manager) => manager.member?.id).nonNulls.toList();
     if (recipientUserIds.isEmpty) return;
 
     await dispatchNotification(
@@ -318,7 +318,7 @@ class NotificationService {
       where: (em) => em.eventId.equals(er.eventId),
       include: EventManager.include(member: Member.include()),
     );
-    final recipientUserIds = managers.map((m) => m.member?.userId).nonNulls.toList();
+    final recipientUserIds = managers.map((m) => m.member?.id).nonNulls.toList();
     if (recipientUserIds.isEmpty) return;
 
     await dispatchNotification(
@@ -339,7 +339,7 @@ class NotificationService {
       where: (em) => em.eventId.equals(er.eventId),
       include: EventManager.include(member: Member.include()),
     );
-    final recipientUserIds = managers.map((m) => m.member?.userId).nonNulls.toList();
+    final recipientUserIds = managers.map((m) => m.member?.id).nonNulls.toList();
     if (recipientUserIds.isEmpty) return;
 
     await dispatchNotification(

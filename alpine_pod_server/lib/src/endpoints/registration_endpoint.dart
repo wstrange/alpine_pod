@@ -111,7 +111,7 @@ class RegistrationEndpoint extends Endpoint {
       await notificationService.dispatchNotification(
         session: session,
         templateName: 'event-registered',
-        recipientUserIds: [memberInfo.member.userId],
+        recipientUserIds: [memberInfo.member.id!],
         templateData: {'title': event.title, 'event_url': '/event-view/${event.id}'},
         actionUrl: '/event-view/${event.id}',
       );
@@ -136,7 +136,7 @@ class RegistrationEndpoint extends Endpoint {
     // Get waitlist position if needed
     int? waitlistPosition;
     if (status == RegistrationStatus.waitlisted) {
-      waitlistPosition = await _getNextWaitlistPosition(session, event.id ?? registration.eventId);
+      waitlistPosition = await _getNextWaitlistPosition(session, event.id);
     }
 
     // Create validated registration with computed fields

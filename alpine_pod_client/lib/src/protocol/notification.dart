@@ -25,7 +25,8 @@ abstract class Notification implements _i1.SerializableModel {
     required this.renderedBody,
     this.renderedHtml,
     required this.createdAt,
-  });
+    DateTime? updatedAt,
+  }) : updatedAt = updatedAt ?? DateTime.now();
 
   factory Notification({
     _i1.UuidValue? id,
@@ -37,6 +38,7 @@ abstract class Notification implements _i1.SerializableModel {
     required String renderedBody,
     String? renderedHtml,
     required DateTime createdAt,
+    DateTime? updatedAt,
   }) = _NotificationImpl;
 
   factory Notification.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -62,6 +64,9 @@ abstract class Notification implements _i1.SerializableModel {
       createdAt: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['createdAt'],
       ),
+      updatedAt: jsonSerialization['updatedAt'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
     );
   }
 
@@ -86,6 +91,8 @@ abstract class Notification implements _i1.SerializableModel {
 
   DateTime createdAt;
 
+  DateTime updatedAt;
+
   /// Returns a shallow copy of this [Notification]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
@@ -99,6 +106,7 @@ abstract class Notification implements _i1.SerializableModel {
     String? renderedBody,
     String? renderedHtml,
     DateTime? createdAt,
+    DateTime? updatedAt,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -113,6 +121,7 @@ abstract class Notification implements _i1.SerializableModel {
       'renderedBody': renderedBody,
       if (renderedHtml != null) 'renderedHtml': renderedHtml,
       'createdAt': createdAt.toJson(),
+      'updatedAt': updatedAt.toJson(),
     };
   }
 
@@ -135,6 +144,7 @@ class _NotificationImpl extends Notification {
     required String renderedBody,
     String? renderedHtml,
     required DateTime createdAt,
+    DateTime? updatedAt,
   }) : super._(
          id: id,
          templateId: templateId,
@@ -145,6 +155,7 @@ class _NotificationImpl extends Notification {
          renderedBody: renderedBody,
          renderedHtml: renderedHtml,
          createdAt: createdAt,
+         updatedAt: updatedAt,
        );
 
   /// Returns a shallow copy of this [Notification]
@@ -161,6 +172,7 @@ class _NotificationImpl extends Notification {
     String? renderedBody,
     Object? renderedHtml = _Undefined,
     DateTime? createdAt,
+    DateTime? updatedAt,
   }) {
     return Notification(
       id: id is _i1.UuidValue? ? id : this.id,
@@ -184,6 +196,7 @@ class _NotificationImpl extends Notification {
       renderedBody: renderedBody ?? this.renderedBody,
       renderedHtml: renderedHtml is String? ? renderedHtml : this.renderedHtml,
       createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 }

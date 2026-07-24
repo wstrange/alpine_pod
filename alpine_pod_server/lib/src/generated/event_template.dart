@@ -20,7 +20,9 @@ abstract class EventTemplate
     required this.description,
     required this.content,
     String? language,
-  }) : language = language ?? 'en';
+    DateTime? updatedAt,
+  }) : language = language ?? 'en',
+       updatedAt = updatedAt ?? DateTime.now();
 
   factory EventTemplate({
     _i1.UuidValue? id,
@@ -28,6 +30,7 @@ abstract class EventTemplate
     required String description,
     required String content,
     String? language,
+    DateTime? updatedAt,
   }) = _EventTemplateImpl;
 
   factory EventTemplate.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -39,6 +42,9 @@ abstract class EventTemplate
       description: jsonSerialization['description'] as String,
       content: jsonSerialization['content'] as String,
       language: jsonSerialization['language'] as String?,
+      updatedAt: jsonSerialization['updatedAt'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
     );
   }
 
@@ -57,6 +63,8 @@ abstract class EventTemplate
 
   String language;
 
+  DateTime updatedAt;
+
   @override
   _i1.Table<_i1.UuidValue?> get table => t;
 
@@ -69,6 +77,7 @@ abstract class EventTemplate
     String? description,
     String? content,
     String? language,
+    DateTime? updatedAt,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -79,6 +88,7 @@ abstract class EventTemplate
       'description': description,
       'content': content,
       'language': language,
+      'updatedAt': updatedAt.toJson(),
     };
   }
 
@@ -91,6 +101,7 @@ abstract class EventTemplate
       'description': description,
       'content': content,
       'language': language,
+      'updatedAt': updatedAt.toJson(),
     };
   }
 
@@ -135,12 +146,14 @@ class _EventTemplateImpl extends EventTemplate {
     required String description,
     required String content,
     String? language,
+    DateTime? updatedAt,
   }) : super._(
          id: id,
          name: name,
          description: description,
          content: content,
          language: language,
+         updatedAt: updatedAt,
        );
 
   /// Returns a shallow copy of this [EventTemplate]
@@ -153,6 +166,7 @@ class _EventTemplateImpl extends EventTemplate {
     String? description,
     String? content,
     String? language,
+    DateTime? updatedAt,
   }) {
     return EventTemplate(
       id: id is _i1.UuidValue? ? id : this.id,
@@ -160,6 +174,7 @@ class _EventTemplateImpl extends EventTemplate {
       description: description ?? this.description,
       content: content ?? this.content,
       language: language ?? this.language,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 }
@@ -186,6 +201,12 @@ class EventTemplateUpdateTable extends _i1.UpdateTable<EventTemplateTable> {
     table.language,
     value,
   );
+
+  _i1.ColumnValue<DateTime, DateTime> updatedAt(DateTime value) =>
+      _i1.ColumnValue(
+        table.updatedAt,
+        value,
+      );
 }
 
 class EventTemplateTable extends _i1.Table<_i1.UuidValue?> {
@@ -209,6 +230,11 @@ class EventTemplateTable extends _i1.Table<_i1.UuidValue?> {
       this,
       hasDefault: true,
     );
+    updatedAt = _i1.ColumnDateTime(
+      'updatedAt',
+      this,
+      hasDefault: true,
+    );
   }
 
   late final EventTemplateUpdateTable updateTable;
@@ -221,6 +247,8 @@ class EventTemplateTable extends _i1.Table<_i1.UuidValue?> {
 
   late final _i1.ColumnString language;
 
+  late final _i1.ColumnDateTime updatedAt;
+
   @override
   List<_i1.Column> get columns => [
     id,
@@ -228,6 +256,7 @@ class EventTemplateTable extends _i1.Table<_i1.UuidValue?> {
     description,
     content,
     language,
+    updatedAt,
   ];
 }
 

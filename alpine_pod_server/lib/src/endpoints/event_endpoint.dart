@@ -72,7 +72,7 @@ class EventEndpoint extends Endpoint {
       // Find the member for this user
       final member = await Member.db.findFirstRow(
         session,
-        where: (t) => t.user.id.equals(authInfo.authUserId),
+        where: (t) => t.id.equals(authInfo.authUserId),
         transaction: transaction,
       );
 
@@ -131,7 +131,6 @@ class EventEndpoint extends Endpoint {
 
   Future<Event> updateEvent(Session session, Event event) async {
     session.log('Update Event $event');
-    if (event.id == null) throw Exception('Event ID is required for updates');
 
     final existing = await Event.db.findById(session, event.id!);
     if (existing == null) throw Exception('Event not found');
@@ -210,8 +209,8 @@ class EventEndpoint extends Endpoint {
           // or registrant (can only see published)
           where =
               where &
-              (t.eventManagers.any((m) => m.member.user.id.equals(authInfo.authUserId)) |
-                  (t.eventRegistrations.any((r) => r.member.user.id.equals(authInfo.authUserId)) &
+              (t.eventManagers.any((m) => m.member.id.equals(authInfo.authUserId)) |
+                  (t.eventRegistrations.any((r) => r.member.id.equals(authInfo.authUserId)) &
                       t.published.equals(true)));
         } else {
           where = where & t.published.equals(true);
@@ -232,7 +231,7 @@ class EventEndpoint extends Endpoint {
     if (authInfo == null) {
       throw Exception('User must be authenticated to register');
     }
-    final member = await Member.db.findFirstRow(session, where: (t) => t.user.id.equals(authInfo.authUserId));
+    final member = await Member.db.findFirstRow(session, where: (t) => t.id.equals(authInfo.authUserId));
 
     if (member == null) {
       throw Exception('Member profile not found');
@@ -310,7 +309,7 @@ class EventEndpoint extends Endpoint {
       await notificationService.dispatchNotification(
         session: session,
         templateName: 'event-registered',
-        recipientUserIds: [member.userId],
+        recipientUserIds: [member.id],
         templateData: {'title': event.title, 'event_url': '/events/${event.id}'},
         actionUrl: '/event-view/${event.id}',
       );

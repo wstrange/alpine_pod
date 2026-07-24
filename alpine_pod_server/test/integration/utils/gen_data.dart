@@ -15,9 +15,7 @@ class GenData {
   final Faker faker;
   final Random _rnd;
 
-  GenData({Faker? faker, Random? random})
-      : faker = faker ?? Faker(),
-        _rnd = random ?? Random();
+  GenData({Faker? faker, Random? random}) : faker = faker ?? Faker(), _rnd = random ?? Random();
 
   // Example generator for a Member entity.
   //
@@ -49,10 +47,9 @@ class GenData {
       email: email ?? f.internet.email(),
       displayName: displayName ?? '$fn $ln',
       bio: bio ?? f.lorem.sentence(),
-      createdAt: createdAt ??
-          DateTime.now().subtract(Duration(days: _rnd.nextInt(365))),
+      createdAt: createdAt ?? DateTime.now().subtract(Duration(days: _rnd.nextInt(365))),
       updatedAt: updatedAt ?? DateTime.now(),
-      userId: userId ?? Uuid().v4obj(),
+      id: userId ?? Uuid().v4obj(),
     );
   }
 

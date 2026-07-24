@@ -36,10 +36,12 @@ abstract class EventRegistration
     String? paymentStatus,
     double? paymentAmount,
     required this.modifiedAt,
+    DateTime? updatedAt,
     bool? noShow,
   }) : additionalGuests = additionalGuests ?? 0,
        paymentStatus = paymentStatus ?? 'N/A',
        paymentAmount = paymentAmount ?? 0.0,
+       updatedAt = updatedAt ?? DateTime.now(),
        noShow = noShow ?? false;
 
   factory EventRegistration({
@@ -59,6 +61,7 @@ abstract class EventRegistration
     String? paymentStatus,
     double? paymentAmount,
     required DateTime modifiedAt,
+    DateTime? updatedAt,
     bool? noShow,
   }) = _EventRegistrationImpl;
 
@@ -102,6 +105,9 @@ abstract class EventRegistration
       modifiedAt: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['modifiedAt'],
       ),
+      updatedAt: jsonSerialization['updatedAt'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
       noShow: jsonSerialization['noShow'] == null
           ? null
           : _i1.BoolJsonExtension.fromJson(jsonSerialization['noShow']),
@@ -145,6 +151,8 @@ abstract class EventRegistration
 
   DateTime modifiedAt;
 
+  DateTime updatedAt;
+
   bool noShow;
 
   @override
@@ -170,6 +178,7 @@ abstract class EventRegistration
     String? paymentStatus,
     double? paymentAmount,
     DateTime? modifiedAt,
+    DateTime? updatedAt,
     bool? noShow,
   });
   @override
@@ -192,6 +201,7 @@ abstract class EventRegistration
       'paymentStatus': paymentStatus,
       'paymentAmount': paymentAmount,
       'modifiedAt': modifiedAt.toJson(),
+      'updatedAt': updatedAt.toJson(),
       'noShow': noShow,
     };
   }
@@ -216,6 +226,7 @@ abstract class EventRegistration
       'paymentStatus': paymentStatus,
       'paymentAmount': paymentAmount,
       'modifiedAt': modifiedAt.toJson(),
+      'updatedAt': updatedAt.toJson(),
       'noShow': noShow,
     };
   }
@@ -278,6 +289,7 @@ class _EventRegistrationImpl extends EventRegistration {
     String? paymentStatus,
     double? paymentAmount,
     required DateTime modifiedAt,
+    DateTime? updatedAt,
     bool? noShow,
   }) : super._(
          id: id,
@@ -296,6 +308,7 @@ class _EventRegistrationImpl extends EventRegistration {
          paymentStatus: paymentStatus,
          paymentAmount: paymentAmount,
          modifiedAt: modifiedAt,
+         updatedAt: updatedAt,
          noShow: noShow,
        );
 
@@ -320,6 +333,7 @@ class _EventRegistrationImpl extends EventRegistration {
     String? paymentStatus,
     double? paymentAmount,
     DateTime? modifiedAt,
+    DateTime? updatedAt,
     bool? noShow,
   }) {
     return EventRegistration(
@@ -347,6 +361,7 @@ class _EventRegistrationImpl extends EventRegistration {
       paymentStatus: paymentStatus ?? this.paymentStatus,
       paymentAmount: paymentAmount ?? this.paymentAmount,
       modifiedAt: modifiedAt ?? this.modifiedAt,
+      updatedAt: updatedAt ?? this.updatedAt,
       noShow: noShow ?? this.noShow,
     );
   }
@@ -431,6 +446,12 @@ class EventRegistrationUpdateTable
         value,
       );
 
+  _i1.ColumnValue<DateTime, DateTime> updatedAt(DateTime value) =>
+      _i1.ColumnValue(
+        table.updatedAt,
+        value,
+      );
+
   _i1.ColumnValue<bool, bool> noShow(bool value) => _i1.ColumnValue(
     table.noShow,
     value,
@@ -497,6 +518,11 @@ class EventRegistrationTable extends _i1.Table<_i1.UuidValue?> {
       'modifiedAt',
       this,
     );
+    updatedAt = _i1.ColumnDateTime(
+      'updatedAt',
+      this,
+      hasDefault: true,
+    );
     noShow = _i1.ColumnBool(
       'noShow',
       this,
@@ -535,6 +561,8 @@ class EventRegistrationTable extends _i1.Table<_i1.UuidValue?> {
   late final _i1.ColumnDouble paymentAmount;
 
   late final _i1.ColumnDateTime modifiedAt;
+
+  late final _i1.ColumnDateTime updatedAt;
 
   late final _i1.ColumnBool noShow;
 
@@ -580,6 +608,7 @@ class EventRegistrationTable extends _i1.Table<_i1.UuidValue?> {
     paymentStatus,
     paymentAmount,
     modifiedAt,
+    updatedAt,
     noShow,
   ];
 

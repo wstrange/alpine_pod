@@ -18,9 +18,9 @@ import 'event_manager.dart' as _i4;
 import 'package:alpine_pod_server/src/generated/protocol.dart' as _i5;
 
 abstract class Event
-    implements _i1.TableRow<_i1.UuidValue?>, _i1.ProtocolSerialization {
+    implements _i1.TableRow<_i1.UuidValue>, _i1.ProtocolSerialization {
   Event._({
-    this.id,
+    _i1.UuidValue? id,
     required this.title,
     required this.description,
     required this.type,
@@ -42,11 +42,14 @@ abstract class Event
     bool? published,
     this.eventRegistrations,
     this.eventManagers,
-  }) : requiresApproval = requiresApproval ?? true,
+    DateTime? updatedAt,
+  }) : id = id ?? const _i1.Uuid().v7obj(),
+       requiresApproval = requiresApproval ?? true,
        minimumParticipants = minimumParticipants ?? 0,
        maxParticipants = maxParticipants ?? 8,
        cancelled = cancelled ?? false,
-       published = published ?? false;
+       published = published ?? false,
+       updatedAt = updatedAt ?? DateTime.now();
 
   factory Event({
     _i1.UuidValue? id,
@@ -71,6 +74,7 @@ abstract class Event
     bool? published,
     List<_i3.EventRegistration>? eventRegistrations,
     List<_i4.EventManager>? eventManagers,
+    DateTime? updatedAt,
   }) = _EventImpl;
 
   factory Event.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -140,6 +144,9 @@ abstract class Event
           : _i5.Protocol().deserialize<List<_i4.EventManager>>(
               jsonSerialization['eventManagers'],
             ),
+      updatedAt: jsonSerialization['updatedAt'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
     );
   }
 
@@ -148,7 +155,7 @@ abstract class Event
   static const db = EventRepository._();
 
   @override
-  _i1.UuidValue? id;
+  _i1.UuidValue id;
 
   String title;
 
@@ -192,8 +199,10 @@ abstract class Event
 
   List<_i4.EventManager>? eventManagers;
 
+  DateTime updatedAt;
+
   @override
-  _i1.Table<_i1.UuidValue?> get table => t;
+  _i1.Table<_i1.UuidValue> get table => t;
 
   /// Returns a shallow copy of this [Event]
   /// with some or all fields replaced by the given arguments.
@@ -221,12 +230,13 @@ abstract class Event
     bool? published,
     List<_i3.EventRegistration>? eventRegistrations,
     List<_i4.EventManager>? eventManagers,
+    DateTime? updatedAt,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
       '__className__': 'Event',
-      if (id != null) 'id': id?.toJson(),
+      'id': id.toJson(),
       'title': title,
       'description': description,
       'type': type,
@@ -255,6 +265,7 @@ abstract class Event
         ),
       if (eventManagers != null)
         'eventManagers': eventManagers?.toJson(valueToJson: (v) => v.toJson()),
+      'updatedAt': updatedAt.toJson(),
     };
   }
 
@@ -262,7 +273,7 @@ abstract class Event
   Map<String, dynamic> toJsonForProtocol() {
     return {
       '__className__': 'Event',
-      if (id != null) 'id': id?.toJson(),
+      'id': id.toJson(),
       'title': title,
       'description': description,
       'type': type,
@@ -293,6 +304,7 @@ abstract class Event
         'eventManagers': eventManagers?.toJson(
           valueToJson: (v) => v.toJsonForProtocol(),
         ),
+      'updatedAt': updatedAt.toJson(),
     };
   }
 
@@ -362,6 +374,7 @@ class _EventImpl extends Event {
     bool? published,
     List<_i3.EventRegistration>? eventRegistrations,
     List<_i4.EventManager>? eventManagers,
+    DateTime? updatedAt,
   }) : super._(
          id: id,
          title: title,
@@ -385,6 +398,7 @@ class _EventImpl extends Event {
          published: published,
          eventRegistrations: eventRegistrations,
          eventManagers: eventManagers,
+         updatedAt: updatedAt,
        );
 
   /// Returns a shallow copy of this [Event]
@@ -392,7 +406,7 @@ class _EventImpl extends Event {
   @_i1.useResult
   @override
   Event copyWith({
-    Object? id = _Undefined,
+    _i1.UuidValue? id,
     String? title,
     String? description,
     String? type,
@@ -414,9 +428,10 @@ class _EventImpl extends Event {
     bool? published,
     Object? eventRegistrations = _Undefined,
     Object? eventManagers = _Undefined,
+    DateTime? updatedAt,
   }) {
     return Event(
-      id: id is _i1.UuidValue? ? id : this.id,
+      id: id ?? this.id,
       title: title ?? this.title,
       description: description ?? this.description,
       type: type ?? this.type,
@@ -454,6 +469,7 @@ class _EventImpl extends Event {
       eventManagers: eventManagers is List<_i4.EventManager>?
           ? eventManagers
           : this.eventManagers?.map((e0) => e0.copyWith()).toList(),
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 }
@@ -561,9 +577,15 @@ class EventUpdateTable extends _i1.UpdateTable<EventTable> {
     table.published,
     value,
   );
+
+  _i1.ColumnValue<DateTime, DateTime> updatedAt(DateTime value) =>
+      _i1.ColumnValue(
+        table.updatedAt,
+        value,
+      );
 }
 
-class EventTable extends _i1.Table<_i1.UuidValue?> {
+class EventTable extends _i1.Table<_i1.UuidValue> {
   EventTable({super.tableRelation}) : super(tableName: 'events') {
     updateTable = EventUpdateTable(this);
     title = _i1.ColumnString(
@@ -643,6 +665,11 @@ class EventTable extends _i1.Table<_i1.UuidValue?> {
       this,
       hasDefault: true,
     );
+    updatedAt = _i1.ColumnDateTime(
+      'updatedAt',
+      this,
+      hasDefault: true,
+    );
   }
 
   late final EventUpdateTable updateTable;
@@ -692,6 +719,8 @@ class EventTable extends _i1.Table<_i1.UuidValue?> {
   _i4.EventManagerTable? ___eventManagers;
 
   _i1.ManyRelation<_i4.EventManagerTable>? _eventManagers;
+
+  late final _i1.ColumnDateTime updatedAt;
 
   _i2.SectionTable get section {
     if (_section != null) return _section!;
@@ -791,6 +820,7 @@ class EventTable extends _i1.Table<_i1.UuidValue?> {
     cancelled,
     sectionId,
     published,
+    updatedAt,
   ];
 
   @override
@@ -833,7 +863,7 @@ class EventInclude extends _i1.IncludeObject {
   };
 
   @override
-  _i1.Table<_i1.UuidValue?> get table => Event.t;
+  _i1.Table<_i1.UuidValue> get table => Event.t;
 }
 
 class EventIncludeList extends _i1.IncludeList {
@@ -854,7 +884,7 @@ class EventIncludeList extends _i1.IncludeList {
   Map<String, _i1.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<_i1.UuidValue?> get table => Event.t;
+  _i1.Table<_i1.UuidValue> get table => Event.t;
 }
 
 class EventRepository {

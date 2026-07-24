@@ -8,40 +8,35 @@
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
 // ignore_for_file: invalid_use_of_internal_member
-// ignore_for_file: dead_code, unnecessary_null_comparison
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
-import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
-    as _i2;
-import 'package:alpine_pod_server/src/generated/protocol.dart' as _i3;
 
 abstract class UserNotificationPreference
     implements _i1.TableRow<_i1.UuidValue?>, _i1.ProtocolSerialization {
   UserNotificationPreference._({
     this.id,
-    required this.userId,
-    this.user,
     bool? allowInApp,
     bool? allowEmail,
     bool? allowPush,
     bool? allowSms,
     bool? newEvents,
+    DateTime? updatedAt,
   }) : allowInApp = allowInApp ?? true,
        allowEmail = allowEmail ?? true,
        allowPush = allowPush ?? true,
        allowSms = allowSms ?? false,
-       newEvents = newEvents ?? true;
+       newEvents = newEvents ?? true,
+       updatedAt = updatedAt ?? DateTime.now();
 
   factory UserNotificationPreference({
     _i1.UuidValue? id,
-    required _i1.UuidValue userId,
-    _i2.AuthUser? user,
     bool? allowInApp,
     bool? allowEmail,
     bool? allowPush,
     bool? allowSms,
     bool? newEvents,
+    DateTime? updatedAt,
   }) = _UserNotificationPreferenceImpl;
 
   factory UserNotificationPreference.fromJson(
@@ -51,10 +46,6 @@ abstract class UserNotificationPreference
       id: jsonSerialization['id'] == null
           ? null
           : _i1.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
-      userId: _i1.UuidValueJsonExtension.fromJson(jsonSerialization['userId']),
-      user: jsonSerialization['user'] == null
-          ? null
-          : _i3.Protocol().deserialize<_i2.AuthUser>(jsonSerialization['user']),
       allowInApp: jsonSerialization['allowInApp'] == null
           ? null
           : _i1.BoolJsonExtension.fromJson(jsonSerialization['allowInApp']),
@@ -70,6 +61,9 @@ abstract class UserNotificationPreference
       newEvents: jsonSerialization['newEvents'] == null
           ? null
           : _i1.BoolJsonExtension.fromJson(jsonSerialization['newEvents']),
+      updatedAt: jsonSerialization['updatedAt'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
     );
   }
 
@@ -79,10 +73,6 @@ abstract class UserNotificationPreference
 
   @override
   _i1.UuidValue? id;
-
-  _i1.UuidValue userId;
-
-  _i2.AuthUser? user;
 
   bool allowInApp;
 
@@ -94,6 +84,8 @@ abstract class UserNotificationPreference
 
   bool newEvents;
 
+  DateTime updatedAt;
+
   @override
   _i1.Table<_i1.UuidValue?> get table => t;
 
@@ -102,26 +94,24 @@ abstract class UserNotificationPreference
   @_i1.useResult
   UserNotificationPreference copyWith({
     _i1.UuidValue? id,
-    _i1.UuidValue? userId,
-    _i2.AuthUser? user,
     bool? allowInApp,
     bool? allowEmail,
     bool? allowPush,
     bool? allowSms,
     bool? newEvents,
+    DateTime? updatedAt,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
       '__className__': 'UserNotificationPreference',
       if (id != null) 'id': id?.toJson(),
-      'userId': userId.toJson(),
-      if (user != null) 'user': user?.toJson(),
       'allowInApp': allowInApp,
       'allowEmail': allowEmail,
       'allowPush': allowPush,
       'allowSms': allowSms,
       'newEvents': newEvents,
+      'updatedAt': updatedAt.toJson(),
     };
   }
 
@@ -130,20 +120,17 @@ abstract class UserNotificationPreference
     return {
       '__className__': 'UserNotificationPreference',
       if (id != null) 'id': id?.toJson(),
-      'userId': userId.toJson(),
-      if (user != null) 'user': user?.toJsonForProtocol(),
       'allowInApp': allowInApp,
       'allowEmail': allowEmail,
       'allowPush': allowPush,
       'allowSms': allowSms,
       'newEvents': newEvents,
+      'updatedAt': updatedAt.toJson(),
     };
   }
 
-  static UserNotificationPreferenceInclude include({
-    _i2.AuthUserInclude? user,
-  }) {
-    return UserNotificationPreferenceInclude._(user: user);
+  static UserNotificationPreferenceInclude include() {
+    return UserNotificationPreferenceInclude._();
   }
 
   static UserNotificationPreferenceIncludeList includeList({
@@ -179,22 +166,20 @@ class _Undefined {}
 class _UserNotificationPreferenceImpl extends UserNotificationPreference {
   _UserNotificationPreferenceImpl({
     _i1.UuidValue? id,
-    required _i1.UuidValue userId,
-    _i2.AuthUser? user,
     bool? allowInApp,
     bool? allowEmail,
     bool? allowPush,
     bool? allowSms,
     bool? newEvents,
+    DateTime? updatedAt,
   }) : super._(
          id: id,
-         userId: userId,
-         user: user,
          allowInApp: allowInApp,
          allowEmail: allowEmail,
          allowPush: allowPush,
          allowSms: allowSms,
          newEvents: newEvents,
+         updatedAt: updatedAt,
        );
 
   /// Returns a shallow copy of this [UserNotificationPreference]
@@ -203,23 +188,21 @@ class _UserNotificationPreferenceImpl extends UserNotificationPreference {
   @override
   UserNotificationPreference copyWith({
     Object? id = _Undefined,
-    _i1.UuidValue? userId,
-    Object? user = _Undefined,
     bool? allowInApp,
     bool? allowEmail,
     bool? allowPush,
     bool? allowSms,
     bool? newEvents,
+    DateTime? updatedAt,
   }) {
     return UserNotificationPreference(
       id: id is _i1.UuidValue? ? id : this.id,
-      userId: userId ?? this.userId,
-      user: user is _i2.AuthUser? ? user : this.user?.copyWith(),
       allowInApp: allowInApp ?? this.allowInApp,
       allowEmail: allowEmail ?? this.allowEmail,
       allowPush: allowPush ?? this.allowPush,
       allowSms: allowSms ?? this.allowSms,
       newEvents: newEvents ?? this.newEvents,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 }
@@ -227,12 +210,6 @@ class _UserNotificationPreferenceImpl extends UserNotificationPreference {
 class UserNotificationPreferenceUpdateTable
     extends _i1.UpdateTable<UserNotificationPreferenceTable> {
   UserNotificationPreferenceUpdateTable(super.table);
-
-  _i1.ColumnValue<_i1.UuidValue, _i1.UuidValue> userId(_i1.UuidValue value) =>
-      _i1.ColumnValue(
-        table.userId,
-        value,
-      );
 
   _i1.ColumnValue<bool, bool> allowInApp(bool value) => _i1.ColumnValue(
     table.allowInApp,
@@ -258,16 +235,18 @@ class UserNotificationPreferenceUpdateTable
     table.newEvents,
     value,
   );
+
+  _i1.ColumnValue<DateTime, DateTime> updatedAt(DateTime value) =>
+      _i1.ColumnValue(
+        table.updatedAt,
+        value,
+      );
 }
 
 class UserNotificationPreferenceTable extends _i1.Table<_i1.UuidValue?> {
   UserNotificationPreferenceTable({super.tableRelation})
     : super(tableName: 'user_notification_preference') {
     updateTable = UserNotificationPreferenceUpdateTable(this);
-    userId = _i1.ColumnUuid(
-      'userId',
-      this,
-    );
     allowInApp = _i1.ColumnBool(
       'allowInApp',
       this,
@@ -293,13 +272,14 @@ class UserNotificationPreferenceTable extends _i1.Table<_i1.UuidValue?> {
       this,
       hasDefault: true,
     );
+    updatedAt = _i1.ColumnDateTime(
+      'updatedAt',
+      this,
+      hasDefault: true,
+    );
   }
 
   late final UserNotificationPreferenceUpdateTable updateTable;
-
-  late final _i1.ColumnUuid userId;
-
-  _i2.AuthUserTable? _user;
 
   late final _i1.ColumnBool allowInApp;
 
@@ -311,48 +291,25 @@ class UserNotificationPreferenceTable extends _i1.Table<_i1.UuidValue?> {
 
   late final _i1.ColumnBool newEvents;
 
-  _i2.AuthUserTable get user {
-    if (_user != null) return _user!;
-    _user = _i1.createRelationTable(
-      relationFieldName: 'user',
-      field: UserNotificationPreference.t.userId,
-      foreignField: _i2.AuthUser.t.id,
-      tableRelation: tableRelation,
-      createTable: (foreignTableRelation) =>
-          _i2.AuthUserTable(tableRelation: foreignTableRelation),
-    );
-    return _user!;
-  }
+  late final _i1.ColumnDateTime updatedAt;
 
   @override
   List<_i1.Column> get columns => [
     id,
-    userId,
     allowInApp,
     allowEmail,
     allowPush,
     allowSms,
     newEvents,
+    updatedAt,
   ];
-
-  @override
-  _i1.Table? getRelationTable(String relationField) {
-    if (relationField == 'user') {
-      return user;
-    }
-    return null;
-  }
 }
 
 class UserNotificationPreferenceInclude extends _i1.IncludeObject {
-  UserNotificationPreferenceInclude._({_i2.AuthUserInclude? user}) {
-    _user = user;
-  }
-
-  _i2.AuthUserInclude? _user;
+  UserNotificationPreferenceInclude._();
 
   @override
-  Map<String, _i1.Include?> get includes => {'user': _user};
+  Map<String, _i1.Include?> get includes => {};
 
   @override
   _i1.Table<_i1.UuidValue?> get table => UserNotificationPreference.t;
@@ -381,8 +338,6 @@ class UserNotificationPreferenceIncludeList extends _i1.IncludeList {
 
 class UserNotificationPreferenceRepository {
   const UserNotificationPreferenceRepository._();
-
-  final attachRow = const UserNotificationPreferenceAttachRowRepository._();
 
   /// Returns a list of [UserNotificationPreference]s matching the given query parameters.
   ///
@@ -416,7 +371,6 @@ class UserNotificationPreferenceRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<UserNotificationPreferenceTable>? orderByList,
     _i1.Transaction? transaction,
-    UserNotificationPreferenceInclude? include,
     _i1.LockMode? lockMode,
     _i1.LockBehavior? lockBehavior,
   }) async {
@@ -429,7 +383,6 @@ class UserNotificationPreferenceRepository {
       limit: limit,
       offset: offset,
       transaction: transaction,
-      include: include,
       lockMode: lockMode,
       lockBehavior: lockBehavior,
     );
@@ -461,7 +414,6 @@ class UserNotificationPreferenceRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<UserNotificationPreferenceTable>? orderByList,
     _i1.Transaction? transaction,
-    UserNotificationPreferenceInclude? include,
     _i1.LockMode? lockMode,
     _i1.LockBehavior? lockBehavior,
   }) async {
@@ -473,7 +425,6 @@ class UserNotificationPreferenceRepository {
           orderDescending,
       offset: offset,
       transaction: transaction,
-      include: include,
       lockMode: lockMode,
       lockBehavior: lockBehavior,
     );
@@ -484,14 +435,12 @@ class UserNotificationPreferenceRepository {
     _i1.DatabaseSession session,
     _i1.UuidValue id, {
     _i1.Transaction? transaction,
-    UserNotificationPreferenceInclude? include,
     _i1.LockMode? lockMode,
     _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<UserNotificationPreference>(
       id,
       transaction: transaction,
-      include: include,
       lockMode: lockMode,
       lockBehavior: lockBehavior,
     );
@@ -801,35 +750,6 @@ class UserNotificationPreferenceRepository {
       where: where(UserNotificationPreference.t),
       lockMode: lockMode,
       lockBehavior: lockBehavior,
-      transaction: transaction,
-    );
-  }
-}
-
-class UserNotificationPreferenceAttachRowRepository {
-  const UserNotificationPreferenceAttachRowRepository._();
-
-  /// Creates a relation between the given [UserNotificationPreference] and [AuthUser]
-  /// by setting the [UserNotificationPreference]'s foreign key `userId` to refer to the [AuthUser].
-  Future<void> user(
-    _i1.DatabaseSession session,
-    UserNotificationPreference userNotificationPreference,
-    _i2.AuthUser user, {
-    _i1.Transaction? transaction,
-  }) async {
-    if (userNotificationPreference.id == null) {
-      throw ArgumentError.notNull('userNotificationPreference.id');
-    }
-    if (user.id == null) {
-      throw ArgumentError.notNull('user.id');
-    }
-
-    var $userNotificationPreference = userNotificationPreference.copyWith(
-      userId: user.id,
-    );
-    await session.db.updateRow<UserNotificationPreference>(
-      $userNotificationPreference,
-      columns: [UserNotificationPreference.t.userId],
       transaction: transaction,
     );
   }

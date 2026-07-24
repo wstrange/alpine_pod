@@ -50,7 +50,7 @@ class _MemberEditForm extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final memberId = member.id!;
+    final memberId = member.id;
     final firstNameController = useTextEditingController(text: member.firstName);
     final lastNameController = useTextEditingController(text: member.lastName);
     final displayNameController = useTextEditingController(text: member.displayName);
@@ -133,7 +133,7 @@ class _MemberEditForm extends HookWidget {
 
         final allSectionsValue = allSectionsSignal.value;
         final isGlobalAdmin = isGlobalAdminSignal.value;
-        final canEditProfileImage = authUserSignal.value?.authUserId == member.userId;
+        final canEditProfileImage = authUserSignal.value?.authUserId == member.id;
 
         return Column(
           children: [

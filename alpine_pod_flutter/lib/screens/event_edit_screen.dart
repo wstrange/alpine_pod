@@ -118,7 +118,7 @@ class EventEditScreen extends HookWidget {
       if (!formKey.currentState!.validate()) return;
 
       final activeEvent = loadedEvent.value ?? event;
-      final isCreating = activeEvent == null || activeEvent.id == null;
+      final isCreating = activeEvent == null;
 
       // Read signal values imperatively for the save action
       final section = sectionSignal.value;
@@ -175,7 +175,7 @@ class EventEditScreen extends HookWidget {
           // Pass additional manager IDs (excluding creator who is added by default)
           final additionalManagerIds = managers.value
               .where((m) => m.id != currentMember?.id)
-              .map((m) => m.id!)
+              .map((m) => m.id)
               .toList();
 
           savedEvent = await client.event.createEvent(
@@ -216,7 +216,7 @@ class EventEditScreen extends HookWidget {
     }
 
     final activeEvent = loadedEvent.value ?? event;
-    final isCreating = activeEvent == null || activeEvent.id == null;
+    final isCreating = activeEvent == null;
 
     if (isLoading.value) {
       return Scaffold(

@@ -21,34 +21,32 @@ import 'event_registration.dart' as _i6;
 import 'event_template.dart' as _i7;
 import 'fcm_token.dart' as _i8;
 import 'member.dart' as _i9;
-import 'member_info.dart' as _i10;
-import 'notification.dart' as _i11;
-import 'notification_channel.dart' as _i12;
-import 'notification_delivery.dart' as _i13;
-import 'notification_template.dart' as _i14;
-import 'registration_status.dart' as _i15;
-import 'section.dart' as _i16;
-import 'section_membership.dart' as _i17;
-import 'user_notification.dart' as _i18;
-import 'user_notification_preference.dart' as _i19;
-import 'package:serverpod_client/serverpod_client.dart' as _i20;
-import 'package:alpine_pod_client/src/protocol/section.dart' as _i21;
+import 'notification.dart' as _i10;
+import 'notification_channel.dart' as _i11;
+import 'notification_delivery.dart' as _i12;
+import 'notification_template.dart' as _i13;
+import 'registration_status.dart' as _i14;
+import 'section.dart' as _i15;
+import 'section_membership.dart' as _i16;
+import 'user_notification.dart' as _i17;
+import 'user_notification_preference.dart' as _i18;
+import 'package:serverpod_client/serverpod_client.dart' as _i19;
+import 'package:alpine_pod_client/src/protocol/section.dart' as _i20;
 import 'package:alpine_pod_client/src/protocol/notification_delivery.dart'
-    as _i22;
-import 'package:alpine_pod_client/src/protocol/event.dart' as _i23;
-import 'package:alpine_pod_client/src/protocol/event_manager.dart' as _i24;
-import 'package:alpine_pod_client/src/protocol/event_template.dart' as _i25;
-import 'package:alpine_pod_client/src/protocol/section_membership.dart' as _i26;
-import 'package:alpine_pod_client/src/protocol/member.dart' as _i27;
-import 'package:alpine_pod_client/src/protocol/user_notification.dart' as _i28;
-import 'package:alpine_pod_client/src/protocol/event_registration.dart' as _i29;
+    as _i21;
+import 'package:alpine_pod_client/src/protocol/event.dart' as _i22;
+import 'package:alpine_pod_client/src/protocol/event_manager.dart' as _i23;
+import 'package:alpine_pod_client/src/protocol/event_template.dart' as _i24;
+import 'package:alpine_pod_client/src/protocol/section_membership.dart' as _i25;
+import 'package:alpine_pod_client/src/protocol/member.dart' as _i26;
+import 'package:alpine_pod_client/src/protocol/user_notification.dart' as _i27;
+import 'package:alpine_pod_client/src/protocol/event_registration.dart' as _i28;
 export 'event.dart';
 export 'event_manager.dart';
 export 'event_registration.dart';
 export 'event_template.dart';
 export 'fcm_token.dart';
 export 'member.dart';
-export 'member_info.dart';
 export 'notification.dart';
 export 'notification_channel.dart';
 export 'notification_delivery.dart';
@@ -69,8 +67,90 @@ class Protocol extends _i1.DatabaseSerializationManager {
 
   static final List<_i1.TableDefinition> targetTableDefinitions = [
     _i1.TableDefinition(
-      name: 'member_info',
-      dartName: 'MemberInfo',
+      name: 'event_managers',
+      dartName: 'EventManager',
+      schema: 'public',
+      module: 'alpine_pod',
+      columns: [
+        _i1.ColumnDefinition(
+          name: 'id',
+          columnType: _i1.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
+          columnDefault: 'random_v7',
+        ),
+        _i1.ColumnDefinition(
+          name: 'eventId',
+          columnType: _i1.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
+        ),
+        _i1.ColumnDefinition(
+          name: 'memberId',
+          columnType: _i1.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
+        ),
+        _i1.ColumnDefinition(
+          name: 'assignedAt',
+          columnType: _i1.ColumnType.timestampWithoutTimeZone,
+          isNullable: true,
+          dartType: 'DateTime?',
+        ),
+        _i1.ColumnDefinition(
+          name: 'updatedAt',
+          columnType: _i1.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'now',
+        ),
+      ],
+      foreignKeys: [
+        _i1.ForeignKeyDefinition(
+          constraintName: 'event_managers_fk_0',
+          columns: ['eventId'],
+          referenceTable: 'events',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _i1.ForeignKeyAction.noAction,
+          onDelete: _i1.ForeignKeyAction.cascade,
+          matchType: null,
+        ),
+        _i1.ForeignKeyDefinition(
+          constraintName: 'event_managers_fk_1',
+          columns: ['memberId'],
+          referenceTable: 'members',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _i1.ForeignKeyAction.noAction,
+          onDelete: _i1.ForeignKeyAction.cascade,
+          matchType: null,
+        ),
+      ],
+      indexes: [
+        _i1.IndexDefinition(
+          indexName: 'event_manager_idx',
+          tableSpace: null,
+          elements: [
+            _i1.IndexElementDefinition(
+              type: _i1.IndexElementDefinitionType.column,
+              definition: 'eventId',
+            ),
+            _i1.IndexElementDefinition(
+              type: _i1.IndexElementDefinitionType.column,
+              definition: 'memberId',
+            ),
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _i1.TableDefinition(
+      name: 'event_registrations',
+      dartName: 'EventRegistration',
       schema: 'public',
       module: 'alpine_pod',
       columns: [
@@ -79,6 +159,351 @@ class Protocol extends _i1.DatabaseSerializationManager {
           columnType: _i1.ColumnType.uuid,
           isNullable: false,
           dartType: 'UuidValue?',
+          columnDefault: 'random_v7',
+        ),
+        _i1.ColumnDefinition(
+          name: 'memberId',
+          columnType: _i1.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
+        ),
+        _i1.ColumnDefinition(
+          name: 'eventId',
+          columnType: _i1.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
+        ),
+        _i1.ColumnDefinition(
+          name: 'registrationStatus',
+          columnType: _i1.ColumnType.text,
+          isNullable: false,
+          dartType: 'protocol:RegistrationStatus',
+        ),
+        _i1.ColumnDefinition(
+          name: 'registrationDate',
+          columnType: _i1.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+        _i1.ColumnDefinition(
+          name: 'carPoolPreference',
+          columnType: _i1.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i1.ColumnDefinition(
+          name: 'additionalGuests',
+          columnType: _i1.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+          columnDefault: '0',
+        ),
+        _i1.ColumnDefinition(
+          name: 'waiverAccepted',
+          columnType: _i1.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+        ),
+        _i1.ColumnDefinition(
+          name: 'participantNotes',
+          columnType: _i1.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i1.ColumnDefinition(
+          name: 'waitlistPosition',
+          columnType: _i1.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
+        _i1.ColumnDefinition(
+          name: 'waitlistedAt',
+          columnType: _i1.ColumnType.timestampWithoutTimeZone,
+          isNullable: true,
+          dartType: 'DateTime?',
+        ),
+        _i1.ColumnDefinition(
+          name: 'paymentStatus',
+          columnType: _i1.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+          columnDefault: '\'N/A\'',
+        ),
+        _i1.ColumnDefinition(
+          name: 'paymentAmount',
+          columnType: _i1.ColumnType.doublePrecision,
+          isNullable: false,
+          dartType: 'double',
+          columnDefault: '0.0',
+        ),
+        _i1.ColumnDefinition(
+          name: 'modifiedAt',
+          columnType: _i1.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+        _i1.ColumnDefinition(
+          name: 'updatedAt',
+          columnType: _i1.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'now',
+        ),
+        _i1.ColumnDefinition(
+          name: 'noShow',
+          columnType: _i1.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
+        ),
+      ],
+      foreignKeys: [
+        _i1.ForeignKeyDefinition(
+          constraintName: 'event_registrations_fk_0',
+          columns: ['memberId'],
+          referenceTable: 'members',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _i1.ForeignKeyAction.noAction,
+          onDelete: _i1.ForeignKeyAction.noAction,
+          matchType: null,
+        ),
+        _i1.ForeignKeyDefinition(
+          constraintName: 'event_registrations_fk_1',
+          columns: ['eventId'],
+          referenceTable: 'events',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _i1.ForeignKeyAction.noAction,
+          onDelete: _i1.ForeignKeyAction.noAction,
+          matchType: null,
+        ),
+      ],
+      indexes: [
+        _i1.IndexDefinition(
+          indexName: 'user_event_idx',
+          tableSpace: null,
+          elements: [
+            _i1.IndexElementDefinition(
+              type: _i1.IndexElementDefinitionType.column,
+              definition: 'memberId',
+            ),
+            _i1.IndexElementDefinition(
+              type: _i1.IndexElementDefinitionType.column,
+              definition: 'eventId',
+            ),
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: false,
+        ),
+        _i1.IndexDefinition(
+          indexName: 'event_status_idx',
+          tableSpace: null,
+          elements: [
+            _i1.IndexElementDefinition(
+              type: _i1.IndexElementDefinitionType.column,
+              definition: 'eventId',
+            ),
+            _i1.IndexElementDefinition(
+              type: _i1.IndexElementDefinitionType.column,
+              definition: 'registrationStatus',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _i1.TableDefinition(
+      name: 'events',
+      dartName: 'Event',
+      schema: 'public',
+      module: 'alpine_pod',
+      columns: [
+        _i1.ColumnDefinition(
+          name: 'id',
+          columnType: _i1.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
+          columnDefault: 'random_v7',
+        ),
+        _i1.ColumnDefinition(
+          name: 'title',
+          columnType: _i1.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i1.ColumnDefinition(
+          name: 'description',
+          columnType: _i1.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i1.ColumnDefinition(
+          name: 'type',
+          columnType: _i1.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i1.ColumnDefinition(
+          name: 'startTime',
+          columnType: _i1.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+        _i1.ColumnDefinition(
+          name: 'endTime',
+          columnType: _i1.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+        _i1.ColumnDefinition(
+          name: 'eventLocation',
+          columnType: _i1.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i1.ColumnDefinition(
+          name: 'carpoolLocation',
+          columnType: _i1.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i1.ColumnDefinition(
+          name: 'carpoolTime',
+          columnType: _i1.ColumnType.timestampWithoutTimeZone,
+          isNullable: true,
+          dartType: 'DateTime?',
+        ),
+        _i1.ColumnDefinition(
+          name: 'registrationDeadline',
+          columnType: _i1.ColumnType.timestampWithoutTimeZone,
+          isNullable: true,
+          dartType: 'DateTime?',
+        ),
+        _i1.ColumnDefinition(
+          name: 'registrationStartDate',
+          columnType: _i1.ColumnType.timestampWithoutTimeZone,
+          isNullable: true,
+          dartType: 'DateTime?',
+        ),
+        _i1.ColumnDefinition(
+          name: 'registrationFee',
+          columnType: _i1.ColumnType.doublePrecision,
+          isNullable: true,
+          dartType: 'double?',
+        ),
+        _i1.ColumnDefinition(
+          name: 'requiresApproval',
+          columnType: _i1.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'true',
+        ),
+        _i1.ColumnDefinition(
+          name: 'minimumParticipants',
+          columnType: _i1.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+          columnDefault: '0',
+        ),
+        _i1.ColumnDefinition(
+          name: 'maxParticipants',
+          columnType: _i1.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+          columnDefault: '8',
+        ),
+        _i1.ColumnDefinition(
+          name: 'cancellationDeadline',
+          columnType: _i1.ColumnType.timestampWithoutTimeZone,
+          isNullable: true,
+          dartType: 'DateTime?',
+        ),
+        _i1.ColumnDefinition(
+          name: 'cancelled',
+          columnType: _i1.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
+        ),
+        _i1.ColumnDefinition(
+          name: 'sectionId',
+          columnType: _i1.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
+        ),
+        _i1.ColumnDefinition(
+          name: 'published',
+          columnType: _i1.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
+        ),
+        _i1.ColumnDefinition(
+          name: 'updatedAt',
+          columnType: _i1.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'now',
+        ),
+      ],
+      foreignKeys: [
+        _i1.ForeignKeyDefinition(
+          constraintName: 'events_fk_0',
+          columns: ['sectionId'],
+          referenceTable: 'sections',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _i1.ForeignKeyAction.noAction,
+          onDelete: _i1.ForeignKeyAction.noAction,
+          matchType: null,
+        ),
+      ],
+      indexes: [
+        _i1.IndexDefinition(
+          indexName: 'upcoming_events_idx',
+          tableSpace: null,
+          elements: [
+            _i1.IndexElementDefinition(
+              type: _i1.IndexElementDefinitionType.column,
+              definition: 'startTime',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+        _i1.IndexDefinition(
+          indexName: 'section_idx',
+          tableSpace: null,
+          elements: [
+            _i1.IndexElementDefinition(
+              type: _i1.IndexElementDefinitionType.column,
+              definition: 'sectionId',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _i1.TableDefinition(
+      name: 'members',
+      dartName: 'Member',
+      schema: 'public',
+      module: 'alpine_pod',
+      columns: [
+        _i1.ColumnDefinition(
+          name: 'id',
+          columnType: _i1.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
           columnDefault: 'random_v7',
         ),
         _i1.ColumnDefinition(
@@ -93,9 +518,350 @@ class Protocol extends _i1.DatabaseSerializationManager {
           isNullable: false,
           dartType: 'String',
         ),
+        _i1.ColumnDefinition(
+          name: 'displayName',
+          columnType: _i1.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i1.ColumnDefinition(
+          name: 'bio',
+          columnType: _i1.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i1.ColumnDefinition(
+          name: 'email',
+          columnType: _i1.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i1.ColumnDefinition(
+          name: 'phoneNumber',
+          columnType: _i1.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i1.ColumnDefinition(
+          name: 'membershipStatus',
+          columnType: _i1.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+          columnDefault: '\'active\'',
+        ),
+        _i1.ColumnDefinition(
+          name: 'emergencyContactName',
+          columnType: _i1.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i1.ColumnDefinition(
+          name: 'emergencyContactPhone',
+          columnType: _i1.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i1.ColumnDefinition(
+          name: 'medicalConditions',
+          columnType: _i1.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i1.ColumnDefinition(
+          name: 'waiverSignedDate',
+          columnType: _i1.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: '1970-01-01T00:00:00.000Z',
+        ),
+        _i1.ColumnDefinition(
+          name: 'certifications',
+          columnType: _i1.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i1.ColumnDefinition(
+          name: 'createdAt',
+          columnType: _i1.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'now',
+        ),
+        _i1.ColumnDefinition(
+          name: 'updatedAt',
+          columnType: _i1.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'now',
+        ),
       ],
       foreignKeys: [],
-      indexes: [],
+      indexes: [
+        _i1.IndexDefinition(
+          indexName: 'member_id_idx',
+          tableSpace: null,
+          elements: [
+            _i1.IndexElementDefinition(
+              type: _i1.IndexElementDefinitionType.column,
+              definition: 'id',
+            ),
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: false,
+        ),
+        _i1.IndexDefinition(
+          indexName: 'email_idx',
+          tableSpace: null,
+          elements: [
+            _i1.IndexElementDefinition(
+              type: _i1.IndexElementDefinitionType.column,
+              definition: 'email',
+            ),
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _i1.TableDefinition(
+      name: 'section_memberships',
+      dartName: 'SectionMembership',
+      schema: 'public',
+      module: 'alpine_pod',
+      columns: [
+        _i1.ColumnDefinition(
+          name: 'id',
+          columnType: _i1.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue?',
+          columnDefault: 'random_v7',
+        ),
+        _i1.ColumnDefinition(
+          name: 'memberId',
+          columnType: _i1.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
+        ),
+        _i1.ColumnDefinition(
+          name: 'sectionId',
+          columnType: _i1.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
+        ),
+        _i1.ColumnDefinition(
+          name: 'externalUserId',
+          columnType: _i1.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i1.ColumnDefinition(
+          name: 'syncedAt',
+          columnType: _i1.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'now',
+        ),
+        _i1.ColumnDefinition(
+          name: 'sourceSystem',
+          columnType: _i1.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i1.ColumnDefinition(
+          name: 'scopes',
+          columnType: _i1.ColumnType.json,
+          isNullable: false,
+          dartType: 'Set<String>',
+        ),
+        _i1.ColumnDefinition(
+          name: 'updatedAt',
+          columnType: _i1.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'now',
+        ),
+      ],
+      foreignKeys: [
+        _i1.ForeignKeyDefinition(
+          constraintName: 'section_memberships_fk_0',
+          columns: ['memberId'],
+          referenceTable: 'members',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _i1.ForeignKeyAction.noAction,
+          onDelete: _i1.ForeignKeyAction.noAction,
+          matchType: null,
+        ),
+        _i1.ForeignKeyDefinition(
+          constraintName: 'section_memberships_fk_1',
+          columns: ['sectionId'],
+          referenceTable: 'sections',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _i1.ForeignKeyAction.noAction,
+          onDelete: _i1.ForeignKeyAction.noAction,
+          matchType: null,
+        ),
+      ],
+      indexes: [
+        _i1.IndexDefinition(
+          indexName: 'user_section_unique_idx',
+          tableSpace: null,
+          elements: [
+            _i1.IndexElementDefinition(
+              type: _i1.IndexElementDefinitionType.column,
+              definition: 'memberId',
+            ),
+            _i1.IndexElementDefinition(
+              type: _i1.IndexElementDefinitionType.column,
+              definition: 'sectionId',
+            ),
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _i1.TableDefinition(
+      name: 'sections',
+      dartName: 'Section',
+      schema: 'public',
+      module: 'alpine_pod',
+      columns: [
+        _i1.ColumnDefinition(
+          name: 'id',
+          columnType: _i1.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue?',
+          columnDefault: 'random_v7',
+        ),
+        _i1.ColumnDefinition(
+          name: 'name',
+          columnType: _i1.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i1.ColumnDefinition(
+          name: 'description',
+          columnType: _i1.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i1.ColumnDefinition(
+          name: 'location',
+          columnType: _i1.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i1.ColumnDefinition(
+          name: 'contactInfo',
+          columnType: _i1.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i1.ColumnDefinition(
+          name: 'updatedAt',
+          columnType: _i1.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'now',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _i1.IndexDefinition(
+          indexName: 'idx_sections_name',
+          tableSpace: null,
+          elements: [
+            _i1.IndexElementDefinition(
+              type: _i1.IndexElementDefinitionType.column,
+              definition: 'name',
+            ),
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _i1.TableDefinition(
+      name: 'user_notification_preference',
+      dartName: 'UserNotificationPreference',
+      schema: 'public',
+      module: 'alpine_pod',
+      columns: [
+        _i1.ColumnDefinition(
+          name: 'id',
+          columnType: _i1.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue?',
+          columnDefault: 'random_v7',
+        ),
+        _i1.ColumnDefinition(
+          name: 'allowInApp',
+          columnType: _i1.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'true',
+        ),
+        _i1.ColumnDefinition(
+          name: 'allowEmail',
+          columnType: _i1.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'true',
+        ),
+        _i1.ColumnDefinition(
+          name: 'allowPush',
+          columnType: _i1.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'true',
+        ),
+        _i1.ColumnDefinition(
+          name: 'allowSms',
+          columnType: _i1.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
+        ),
+        _i1.ColumnDefinition(
+          name: 'newEvents',
+          columnType: _i1.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'true',
+        ),
+        _i1.ColumnDefinition(
+          name: 'updatedAt',
+          columnType: _i1.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'now',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _i1.IndexDefinition(
+          indexName: 'user_type_unique_idx',
+          tableSpace: null,
+          elements: [
+            _i1.IndexElementDefinition(
+              type: _i1.IndexElementDefinitionType.column,
+              definition: 'id',
+            ),
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: false,
+        ),
+      ],
       managed: true,
     ),
     ..._i2.Protocol() is _i1.DatabaseSerializationManager
@@ -153,88 +919,82 @@ class Protocol extends _i1.DatabaseSerializationManager {
     if (t == _i9.Member) {
       return _i9.Member.fromJson(data) as T;
     }
-    if (t == _i10.MemberInfo) {
-      return _i10.MemberInfo.fromJson(data) as T;
+    if (t == _i10.Notification) {
+      return _i10.Notification.fromJson(data) as T;
     }
-    if (t == _i11.Notification) {
-      return _i11.Notification.fromJson(data) as T;
+    if (t == _i11.NotificationChannel) {
+      return _i11.NotificationChannel.fromJson(data) as T;
     }
-    if (t == _i12.NotificationChannel) {
-      return _i12.NotificationChannel.fromJson(data) as T;
+    if (t == _i12.NotificationDelivery) {
+      return _i12.NotificationDelivery.fromJson(data) as T;
     }
-    if (t == _i13.NotificationDelivery) {
-      return _i13.NotificationDelivery.fromJson(data) as T;
+    if (t == _i13.NotificationTemplate) {
+      return _i13.NotificationTemplate.fromJson(data) as T;
     }
-    if (t == _i14.NotificationTemplate) {
-      return _i14.NotificationTemplate.fromJson(data) as T;
+    if (t == _i14.RegistrationStatus) {
+      return _i14.RegistrationStatus.fromJson(data) as T;
     }
-    if (t == _i15.RegistrationStatus) {
-      return _i15.RegistrationStatus.fromJson(data) as T;
+    if (t == _i15.Section) {
+      return _i15.Section.fromJson(data) as T;
     }
-    if (t == _i16.Section) {
-      return _i16.Section.fromJson(data) as T;
+    if (t == _i16.SectionMembership) {
+      return _i16.SectionMembership.fromJson(data) as T;
     }
-    if (t == _i17.SectionMembership) {
-      return _i17.SectionMembership.fromJson(data) as T;
+    if (t == _i17.UserNotification) {
+      return _i17.UserNotification.fromJson(data) as T;
     }
-    if (t == _i18.UserNotification) {
-      return _i18.UserNotification.fromJson(data) as T;
+    if (t == _i18.UserNotificationPreference) {
+      return _i18.UserNotificationPreference.fromJson(data) as T;
     }
-    if (t == _i19.UserNotificationPreference) {
-      return _i19.UserNotificationPreference.fromJson(data) as T;
-    }
-    if (t == _i20.getType<_i4.Event?>()) {
+    if (t == _i19.getType<_i4.Event?>()) {
       return (data != null ? _i4.Event.fromJson(data) : null) as T;
     }
-    if (t == _i20.getType<_i5.EventManager?>()) {
+    if (t == _i19.getType<_i5.EventManager?>()) {
       return (data != null ? _i5.EventManager.fromJson(data) : null) as T;
     }
-    if (t == _i20.getType<_i6.EventRegistration?>()) {
+    if (t == _i19.getType<_i6.EventRegistration?>()) {
       return (data != null ? _i6.EventRegistration.fromJson(data) : null) as T;
     }
-    if (t == _i20.getType<_i7.EventTemplate?>()) {
+    if (t == _i19.getType<_i7.EventTemplate?>()) {
       return (data != null ? _i7.EventTemplate.fromJson(data) : null) as T;
     }
-    if (t == _i20.getType<_i8.FcmToken?>()) {
+    if (t == _i19.getType<_i8.FcmToken?>()) {
       return (data != null ? _i8.FcmToken.fromJson(data) : null) as T;
     }
-    if (t == _i20.getType<_i9.Member?>()) {
+    if (t == _i19.getType<_i9.Member?>()) {
       return (data != null ? _i9.Member.fromJson(data) : null) as T;
     }
-    if (t == _i20.getType<_i10.MemberInfo?>()) {
-      return (data != null ? _i10.MemberInfo.fromJson(data) : null) as T;
+    if (t == _i19.getType<_i10.Notification?>()) {
+      return (data != null ? _i10.Notification.fromJson(data) : null) as T;
     }
-    if (t == _i20.getType<_i11.Notification?>()) {
-      return (data != null ? _i11.Notification.fromJson(data) : null) as T;
-    }
-    if (t == _i20.getType<_i12.NotificationChannel?>()) {
-      return (data != null ? _i12.NotificationChannel.fromJson(data) : null)
+    if (t == _i19.getType<_i11.NotificationChannel?>()) {
+      return (data != null ? _i11.NotificationChannel.fromJson(data) : null)
           as T;
     }
-    if (t == _i20.getType<_i13.NotificationDelivery?>()) {
-      return (data != null ? _i13.NotificationDelivery.fromJson(data) : null)
+    if (t == _i19.getType<_i12.NotificationDelivery?>()) {
+      return (data != null ? _i12.NotificationDelivery.fromJson(data) : null)
           as T;
     }
-    if (t == _i20.getType<_i14.NotificationTemplate?>()) {
-      return (data != null ? _i14.NotificationTemplate.fromJson(data) : null)
+    if (t == _i19.getType<_i13.NotificationTemplate?>()) {
+      return (data != null ? _i13.NotificationTemplate.fromJson(data) : null)
           as T;
     }
-    if (t == _i20.getType<_i15.RegistrationStatus?>()) {
-      return (data != null ? _i15.RegistrationStatus.fromJson(data) : null)
+    if (t == _i19.getType<_i14.RegistrationStatus?>()) {
+      return (data != null ? _i14.RegistrationStatus.fromJson(data) : null)
           as T;
     }
-    if (t == _i20.getType<_i16.Section?>()) {
-      return (data != null ? _i16.Section.fromJson(data) : null) as T;
+    if (t == _i19.getType<_i15.Section?>()) {
+      return (data != null ? _i15.Section.fromJson(data) : null) as T;
     }
-    if (t == _i20.getType<_i17.SectionMembership?>()) {
-      return (data != null ? _i17.SectionMembership.fromJson(data) : null) as T;
+    if (t == _i19.getType<_i16.SectionMembership?>()) {
+      return (data != null ? _i16.SectionMembership.fromJson(data) : null) as T;
     }
-    if (t == _i20.getType<_i18.UserNotification?>()) {
-      return (data != null ? _i18.UserNotification.fromJson(data) : null) as T;
+    if (t == _i19.getType<_i17.UserNotification?>()) {
+      return (data != null ? _i17.UserNotification.fromJson(data) : null) as T;
     }
-    if (t == _i20.getType<_i19.UserNotificationPreference?>()) {
+    if (t == _i19.getType<_i18.UserNotificationPreference?>()) {
       return (data != null
-              ? _i19.UserNotificationPreference.fromJson(data)
+              ? _i18.UserNotificationPreference.fromJson(data)
               : null)
           as T;
     }
@@ -244,7 +1004,7 @@ class Protocol extends _i1.DatabaseSerializationManager {
               .toList()
           as T;
     }
-    if (t == _i20.getType<List<_i6.EventRegistration>?>()) {
+    if (t == _i19.getType<List<_i6.EventRegistration>?>()) {
       return (data != null
               ? (data as List)
                     .map((e) => deserialize<_i6.EventRegistration>(e))
@@ -258,7 +1018,7 @@ class Protocol extends _i1.DatabaseSerializationManager {
               .toList()
           as T;
     }
-    if (t == _i20.getType<List<_i5.EventManager>?>()) {
+    if (t == _i19.getType<List<_i5.EventManager>?>()) {
       return (data != null
               ? (data as List)
                     .map((e) => deserialize<_i5.EventManager>(e))
@@ -275,75 +1035,75 @@ class Protocol extends _i1.DatabaseSerializationManager {
     if (t == Set<String>) {
       return (data as List).map((e) => deserialize<String>(e)).toSet() as T;
     }
-    if (t == List<_i21.Section>) {
-      return (data as List).map((e) => deserialize<_i21.Section>(e)).toList()
+    if (t == List<_i20.Section>) {
+      return (data as List).map((e) => deserialize<_i20.Section>(e)).toList()
           as T;
     }
-    if (t == List<_i22.NotificationDelivery>) {
+    if (t == List<_i21.NotificationDelivery>) {
       return (data as List)
-              .map((e) => deserialize<_i22.NotificationDelivery>(e))
+              .map((e) => deserialize<_i21.NotificationDelivery>(e))
               .toList()
           as T;
     }
-    if (t == List<_i20.UuidValue>) {
-      return (data as List).map((e) => deserialize<_i20.UuidValue>(e)).toList()
+    if (t == List<_i19.UuidValue>) {
+      return (data as List).map((e) => deserialize<_i19.UuidValue>(e)).toList()
           as T;
     }
-    if (t == _i20.getType<List<_i20.UuidValue>?>()) {
+    if (t == _i19.getType<List<_i19.UuidValue>?>()) {
       return (data != null
               ? (data as List)
-                    .map((e) => deserialize<_i20.UuidValue>(e))
+                    .map((e) => deserialize<_i19.UuidValue>(e))
                     .toList()
               : null)
           as T;
     }
-    if (t == List<_i23.Event>) {
-      return (data as List).map((e) => deserialize<_i23.Event>(e)).toList()
+    if (t == List<_i22.Event>) {
+      return (data as List).map((e) => deserialize<_i22.Event>(e)).toList()
           as T;
     }
-    if (t == List<_i24.EventManager>) {
+    if (t == List<_i23.EventManager>) {
       return (data as List)
-              .map((e) => deserialize<_i24.EventManager>(e))
+              .map((e) => deserialize<_i23.EventManager>(e))
               .toList()
           as T;
     }
-    if (t == List<_i25.EventTemplate>) {
+    if (t == List<_i24.EventTemplate>) {
       return (data as List)
-              .map((e) => deserialize<_i25.EventTemplate>(e))
+              .map((e) => deserialize<_i24.EventTemplate>(e))
               .toList()
           as T;
     }
-    if (t == List<_i26.SectionMembership>) {
+    if (t == List<_i25.SectionMembership>) {
       return (data as List)
-              .map((e) => deserialize<_i26.SectionMembership>(e))
+              .map((e) => deserialize<_i25.SectionMembership>(e))
               .toList()
           as T;
     }
-    if (t == List<_i27.Member>) {
-      return (data as List).map((e) => deserialize<_i27.Member>(e)).toList()
+    if (t == List<_i26.Member>) {
+      return (data as List).map((e) => deserialize<_i26.Member>(e)).toList()
           as T;
     }
     if (t == Set<String>) {
       return (data as List).map((e) => deserialize<String>(e)).toSet() as T;
     }
-    if (t == List<_i28.UserNotification>) {
+    if (t == List<_i27.UserNotification>) {
       return (data as List)
-              .map((e) => deserialize<_i28.UserNotification>(e))
+              .map((e) => deserialize<_i27.UserNotification>(e))
               .toList()
           as T;
     }
-    if (t == List<_i29.EventRegistration>) {
+    if (t == List<_i28.EventRegistration>) {
       return (data as List)
-              .map((e) => deserialize<_i29.EventRegistration>(e))
+              .map((e) => deserialize<_i28.EventRegistration>(e))
               .toList()
           as T;
     }
     try {
       return _i2.Protocol().deserialize<T>(data, t);
-    } on _i20.DeserializationTypeNotFoundException catch (_) {}
+    } on _i19.DeserializationTypeNotFoundException catch (_) {}
     try {
       return _i3.Protocol().deserialize<T>(data, t);
-    } on _i20.DeserializationTypeNotFoundException catch (_) {}
+    } on _i19.DeserializationTypeNotFoundException catch (_) {}
     return super.deserialize<T>(data, t);
   }
 
@@ -355,16 +1115,15 @@ class Protocol extends _i1.DatabaseSerializationManager {
       _i7.EventTemplate => 'EventTemplate',
       _i8.FcmToken => 'FcmToken',
       _i9.Member => 'Member',
-      _i10.MemberInfo => 'MemberInfo',
-      _i11.Notification => 'Notification',
-      _i12.NotificationChannel => 'NotificationChannel',
-      _i13.NotificationDelivery => 'NotificationDelivery',
-      _i14.NotificationTemplate => 'NotificationTemplate',
-      _i15.RegistrationStatus => 'RegistrationStatus',
-      _i16.Section => 'Section',
-      _i17.SectionMembership => 'SectionMembership',
-      _i18.UserNotification => 'UserNotification',
-      _i19.UserNotificationPreference => 'UserNotificationPreference',
+      _i10.Notification => 'Notification',
+      _i11.NotificationChannel => 'NotificationChannel',
+      _i12.NotificationDelivery => 'NotificationDelivery',
+      _i13.NotificationTemplate => 'NotificationTemplate',
+      _i14.RegistrationStatus => 'RegistrationStatus',
+      _i15.Section => 'Section',
+      _i16.SectionMembership => 'SectionMembership',
+      _i17.UserNotification => 'UserNotification',
+      _i18.UserNotificationPreference => 'UserNotificationPreference',
       _ => null,
     };
   }
@@ -391,25 +1150,23 @@ class Protocol extends _i1.DatabaseSerializationManager {
         return 'FcmToken';
       case _i9.Member():
         return 'Member';
-      case _i10.MemberInfo():
-        return 'MemberInfo';
-      case _i11.Notification():
+      case _i10.Notification():
         return 'Notification';
-      case _i12.NotificationChannel():
+      case _i11.NotificationChannel():
         return 'NotificationChannel';
-      case _i13.NotificationDelivery():
+      case _i12.NotificationDelivery():
         return 'NotificationDelivery';
-      case _i14.NotificationTemplate():
+      case _i13.NotificationTemplate():
         return 'NotificationTemplate';
-      case _i15.RegistrationStatus():
+      case _i14.RegistrationStatus():
         return 'RegistrationStatus';
-      case _i16.Section():
+      case _i15.Section():
         return 'Section';
-      case _i17.SectionMembership():
+      case _i16.SectionMembership():
         return 'SectionMembership';
-      case _i18.UserNotification():
+      case _i17.UserNotification():
         return 'UserNotification';
-      case _i19.UserNotificationPreference():
+      case _i18.UserNotificationPreference():
         return 'UserNotificationPreference';
     }
     className = _i2.Protocol().getClassNameForObject(data);
@@ -451,35 +1208,32 @@ class Protocol extends _i1.DatabaseSerializationManager {
     if (dataClassName == 'Member') {
       return deserialize<_i9.Member>(data['data']);
     }
-    if (dataClassName == 'MemberInfo') {
-      return deserialize<_i10.MemberInfo>(data['data']);
-    }
     if (dataClassName == 'Notification') {
-      return deserialize<_i11.Notification>(data['data']);
+      return deserialize<_i10.Notification>(data['data']);
     }
     if (dataClassName == 'NotificationChannel') {
-      return deserialize<_i12.NotificationChannel>(data['data']);
+      return deserialize<_i11.NotificationChannel>(data['data']);
     }
     if (dataClassName == 'NotificationDelivery') {
-      return deserialize<_i13.NotificationDelivery>(data['data']);
+      return deserialize<_i12.NotificationDelivery>(data['data']);
     }
     if (dataClassName == 'NotificationTemplate') {
-      return deserialize<_i14.NotificationTemplate>(data['data']);
+      return deserialize<_i13.NotificationTemplate>(data['data']);
     }
     if (dataClassName == 'RegistrationStatus') {
-      return deserialize<_i15.RegistrationStatus>(data['data']);
+      return deserialize<_i14.RegistrationStatus>(data['data']);
     }
     if (dataClassName == 'Section') {
-      return deserialize<_i16.Section>(data['data']);
+      return deserialize<_i15.Section>(data['data']);
     }
     if (dataClassName == 'SectionMembership') {
-      return deserialize<_i17.SectionMembership>(data['data']);
+      return deserialize<_i16.SectionMembership>(data['data']);
     }
     if (dataClassName == 'UserNotification') {
-      return deserialize<_i18.UserNotification>(data['data']);
+      return deserialize<_i17.UserNotification>(data['data']);
     }
     if (dataClassName == 'UserNotificationPreference') {
-      return deserialize<_i19.UserNotificationPreference>(data['data']);
+      return deserialize<_i18.UserNotificationPreference>(data['data']);
     }
     if (dataClassName.startsWith('serverpod_auth_idp.')) {
       data['className'] = dataClassName.substring(19);
@@ -518,8 +1272,20 @@ class Protocol extends _i1.DatabaseSerializationManager {
       }
     }
     switch (t) {
-      case _i10.MemberInfo:
-        return _i10.MemberInfo.t;
+      case _i4.Event:
+        return _i4.Event.t;
+      case _i5.EventManager:
+        return _i5.EventManager.t;
+      case _i6.EventRegistration:
+        return _i6.EventRegistration.t;
+      case _i9.Member:
+        return _i9.Member.t;
+      case _i15.Section:
+        return _i15.Section.t;
+      case _i16.SectionMembership:
+        return _i16.SectionMembership.t;
+      case _i18.UserNotificationPreference:
+        return _i18.UserNotificationPreference.t;
     }
     return null;
   }

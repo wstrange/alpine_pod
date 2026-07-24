@@ -20,7 +20,8 @@ abstract class Section
     required this.description,
     this.location,
     this.contactInfo,
-  });
+    DateTime? updatedAt,
+  }) : updatedAt = updatedAt ?? DateTime.now();
 
   factory Section({
     _i1.UuidValue? id,
@@ -28,6 +29,7 @@ abstract class Section
     required String description,
     String? location,
     String? contactInfo,
+    DateTime? updatedAt,
   }) = _SectionImpl;
 
   factory Section.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -39,6 +41,9 @@ abstract class Section
       description: jsonSerialization['description'] as String,
       location: jsonSerialization['location'] as String?,
       contactInfo: jsonSerialization['contactInfo'] as String?,
+      updatedAt: jsonSerialization['updatedAt'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
     );
   }
 
@@ -57,6 +62,8 @@ abstract class Section
 
   String? contactInfo;
 
+  DateTime updatedAt;
+
   @override
   _i1.Table<_i1.UuidValue?> get table => t;
 
@@ -69,6 +76,7 @@ abstract class Section
     String? description,
     String? location,
     String? contactInfo,
+    DateTime? updatedAt,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -79,6 +87,7 @@ abstract class Section
       'description': description,
       if (location != null) 'location': location,
       if (contactInfo != null) 'contactInfo': contactInfo,
+      'updatedAt': updatedAt.toJson(),
     };
   }
 
@@ -91,6 +100,7 @@ abstract class Section
       'description': description,
       if (location != null) 'location': location,
       if (contactInfo != null) 'contactInfo': contactInfo,
+      'updatedAt': updatedAt.toJson(),
     };
   }
 
@@ -135,12 +145,14 @@ class _SectionImpl extends Section {
     required String description,
     String? location,
     String? contactInfo,
+    DateTime? updatedAt,
   }) : super._(
          id: id,
          name: name,
          description: description,
          location: location,
          contactInfo: contactInfo,
+         updatedAt: updatedAt,
        );
 
   /// Returns a shallow copy of this [Section]
@@ -153,6 +165,7 @@ class _SectionImpl extends Section {
     String? description,
     Object? location = _Undefined,
     Object? contactInfo = _Undefined,
+    DateTime? updatedAt,
   }) {
     return Section(
       id: id is _i1.UuidValue? ? id : this.id,
@@ -160,6 +173,7 @@ class _SectionImpl extends Section {
       description: description ?? this.description,
       location: location is String? ? location : this.location,
       contactInfo: contactInfo is String? ? contactInfo : this.contactInfo,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 }
@@ -186,6 +200,12 @@ class SectionUpdateTable extends _i1.UpdateTable<SectionTable> {
     table.contactInfo,
     value,
   );
+
+  _i1.ColumnValue<DateTime, DateTime> updatedAt(DateTime value) =>
+      _i1.ColumnValue(
+        table.updatedAt,
+        value,
+      );
 }
 
 class SectionTable extends _i1.Table<_i1.UuidValue?> {
@@ -207,6 +227,11 @@ class SectionTable extends _i1.Table<_i1.UuidValue?> {
       'contactInfo',
       this,
     );
+    updatedAt = _i1.ColumnDateTime(
+      'updatedAt',
+      this,
+      hasDefault: true,
+    );
   }
 
   late final SectionUpdateTable updateTable;
@@ -219,6 +244,8 @@ class SectionTable extends _i1.Table<_i1.UuidValue?> {
 
   late final _i1.ColumnString contactInfo;
 
+  late final _i1.ColumnDateTime updatedAt;
+
   @override
   List<_i1.Column> get columns => [
     id,
@@ -226,6 +253,7 @@ class SectionTable extends _i1.Table<_i1.UuidValue?> {
     description,
     location,
     contactInfo,
+    updatedAt,
   ];
 }
 

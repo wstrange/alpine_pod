@@ -1,8 +1,10 @@
 class: UserNotification
 table: user_notification
+database: server
 fields:
-  id: UuidValue?, defaultPersist=random_v7
-  user: module:serverpod_auth_core:AuthUser?, relation(onDelete=Cascade)
+  # set to the users id
+  id: UuidValue, defaultModel=random_v7
+  # user: module:serverpod_auth_core:AuthUser?, relation(onDelete=Cascade)
   notification: Notification?, relation
   isRead: bool, default=false
   isSeen: bool, default=false
@@ -12,4 +14,4 @@ fields:
 
 indexes:
   user_feed_idx:
-    fields: userId, createdAt
+    fields: id, createdAt

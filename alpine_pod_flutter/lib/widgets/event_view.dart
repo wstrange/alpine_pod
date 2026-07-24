@@ -34,13 +34,13 @@ class EventView extends HookWidget {
     }, []);
 
     // Fetch full event details (registrations, managers)
-    final detailsFuture = useMemoized(() => client.event.getEvent(event.id!), [event.id, refreshCount.value]);
+    final detailsFuture = useMemoized(() => client.event.getEvent(event.id), [event.id, refreshCount.value]);
 
     final snapshot = useFuture(detailsFuture);
 
     Future<void> register() async {
       try {
-        final reg = await client.event.registerForEvent(event.id!);
+        final reg = await client.event.registerForEvent(event.id);
         if (context.mounted) {
           final isWaitlisted = reg.registrationStatus == RegistrationStatus.waitlisted;
           ScaffoldMessenger.of(context).showSnackBar(

@@ -60,7 +60,7 @@ class NotificationScheduler extends FutureCall {
       include: SectionMembership.include(member: Member.include()),
     );
 
-    final memberUserIds = memberships.map((sm) => sm.member?.userId).nonNulls.toList();
+    final memberUserIds = memberships.map((sm) => sm.member?.id).nonNulls.toList();
     if (memberUserIds.isEmpty) {
       await _markSent(session, bulkDelivery);
       return;
@@ -69,9 +69,9 @@ class NotificationScheduler extends FutureCall {
     // Fetch preferences for all members in one query.
     final preferences = await UserNotificationPreference.db.find(
       session,
-      where: (p) => p.userId.inSet(memberUserIds.toSet()),
+      where: (p) => p.id.inSet(memberUserIds.toSet()),
     );
-    final prefMap = {for (final p in preferences) p.userId: p};
+    final prefMap = {for (final p in preferences) p.id: p};
 
     // For event-created notifications, also filter by the newEvents preference.
     final notification = bulkDelivery.notification;
@@ -81,8 +81,8 @@ class NotificationScheduler extends FutureCall {
     final now = DateTime.now();
     final childDeliveries = <NotificationDelivery>[];
 
-    for (final userId in memberUserIds) {
-      final pref = prefMap[userId];
+    for (final id in memberUserIds) {
+      final pref = prefMap[id];
 
       // Check if user wants new-event notifications.
       if (isNewEventTemplate && pref != null && !pref.newEvents) {
@@ -105,13 +105,13 @@ class NotificationScheduler extends FutureCall {
       }
 
       // get debug info
-      final m = await Member.db.findFirstRow(session, where: (m) => m.userId.equals(userId));
+      final m = await Member.db.findFirstRow(session, where: (m) => m.id.equals(id));
       final info = '${m?.email} ${m?.firstName} ${m?.lastName}';
 
       childDeliveries.add(
         NotificationDelivery(
           notificationId: bulkDelivery.notificationId,
-          recipientUserId: userId,
+          recipientUserId: id,
           channel: channel,
           createdAt: now,
           info: info,
@@ -151,7 +151,7 @@ class NotificationScheduler extends FutureCall {
   Future<void> _deliverInApp(Session session, NotificationDelivery delivery, Notification notification) async {
     await UserNotification.db.insertRow(
       session,
-      UserNotification(userId: delivery.recipientUserId!, notificationId: notification.id!, createdAt: DateTime.now()),
+      UserNotification(id: delivery.recipientUserId!, notificationId: notification.id!, createdAt: DateTime.now()),
     );
     await _markSent(session, delivery);
   }
@@ -164,7 +164,7 @@ class NotificationScheduler extends FutureCall {
       return;
     }
 
-    final member = await Member.db.findFirstRow(session, where: (m) => m.userId.equals(delivery.recipientUserId!));
+    final member = await Member.db.findFirstRow(session, where: (m) => m.id.equals(delivery.recipientUserId!));
 
     if (member == null || member.email.isEmpty) {
       await _markFailed(session, delivery, 'Recipient has no email address');
@@ -186,7 +186,7 @@ class NotificationScheduler extends FutureCall {
 
   /// Sends a push notification via FCM.
   Future<void> _deliverPush(Session session, NotificationDelivery delivery, Notification notification) async {
-    final fcmTokens = await FcmToken.db.find(session, where: (t) => t.userId.equals(delivery.recipientUserId!));
+    final fcmTokens = await FcmToken.db.find(session, where: (t) => t.id.equals(delivery.recipientUserId!));
 
     if (fcmTokens.isEmpty) {
       // No device registered — nothing to send.

@@ -21,8 +21,8 @@ abstract class NotificationTemplate
     required this.bodyTemplate,
     this.htmlTemplate,
     required this.createdAt,
-    required this.updatedAt,
-  });
+    DateTime? updatedAt,
+  }) : updatedAt = updatedAt ?? DateTime.now();
 
   factory NotificationTemplate({
     _i1.UuidValue? id,
@@ -31,7 +31,7 @@ abstract class NotificationTemplate
     required String bodyTemplate,
     String? htmlTemplate,
     required DateTime createdAt,
-    required DateTime updatedAt,
+    DateTime? updatedAt,
   }) = _NotificationTemplateImpl;
 
   factory NotificationTemplate.fromJson(
@@ -48,9 +48,9 @@ abstract class NotificationTemplate
       createdAt: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['createdAt'],
       ),
-      updatedAt: _i1.DateTimeJsonExtension.fromJson(
-        jsonSerialization['updatedAt'],
-      ),
+      updatedAt: jsonSerialization['updatedAt'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
     );
   }
 
@@ -158,7 +158,7 @@ class _NotificationTemplateImpl extends NotificationTemplate {
     required String bodyTemplate,
     String? htmlTemplate,
     required DateTime createdAt,
-    required DateTime updatedAt,
+    DateTime? updatedAt,
   }) : super._(
          id: id,
          name: name,
@@ -260,6 +260,7 @@ class NotificationTemplateTable extends _i1.Table<_i1.UuidValue?> {
     updatedAt = _i1.ColumnDateTime(
       'updatedAt',
       this,
+      hasDefault: true,
     );
   }
 
