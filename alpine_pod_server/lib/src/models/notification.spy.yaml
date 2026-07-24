@@ -11,3 +11,5 @@ fields:
   renderedBody: String
   renderedHtml: String?
   createdAt: DateTime
+  updatedAt: DateTime, default=now
+

@@ -8,6 +8,8 @@ fields:
   isSeen: bool, default=false
   readAt: DateTime?
   createdAt: DateTime
+  updatedAt: DateTime, default=now
+
 indexes:
   user_feed_idx:
     fields: userId, createdAt

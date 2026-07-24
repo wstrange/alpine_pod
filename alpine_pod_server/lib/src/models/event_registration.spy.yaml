@@ -19,7 +19,9 @@ fields:
   paymentStatus: String, default='N/A' # pending, completed, refunded
   paymentAmount: double, default=0.0
   modifiedAt: DateTime
+  updatedAt: DateTime, default=now
   noShow: bool, default=false
+
 indexes:
   user_event_idx:
     fields: memberId, eventId

@@ -6,6 +6,8 @@ fields:
   description: String
   location: String?
   contactInfo: String?
+  updatedAt: DateTime, default=now
+
 indexes:
   idx_sections_name:
     fields: name

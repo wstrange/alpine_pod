@@ -6,3 +6,5 @@ fields:
   description: String
   content: String
   language: String, default='en'
+  updatedAt: DateTime, default=now
+

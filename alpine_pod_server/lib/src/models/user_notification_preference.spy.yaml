@@ -10,6 +10,8 @@ fields:
   allowSms: bool, default=false
   # True if the user wants to be notified of new events
   newEvents: bool, default=true
+  updatedAt: DateTime, default=now
+
 indexes:
   user_type_unique_idx:
     fields: id, userId

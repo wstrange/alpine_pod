@@ -5,3 +5,5 @@ fields:
   id: UuidValue?, defaultPersist=random_v7
   firstName: String
   lastName: String
+  updatedAt: DateTime, default=now
+

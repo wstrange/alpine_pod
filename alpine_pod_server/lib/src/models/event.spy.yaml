@@ -25,6 +25,8 @@ fields:
   published: bool, default=false
   eventRegistrations: List<EventRegistration>?, relation(name=event_registrations)
   eventManagers: List<EventManager>?, relation(name=event_managers)
+  updatedAt: DateTime, default=now
+
 indexes:
   upcoming_events_idx:
     fields: startTime

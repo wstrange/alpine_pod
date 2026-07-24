@@ -5,6 +5,8 @@ fields:
   event: Event?, relation(name=event_managers, onDelete=Cascade)
   member: Member?, relation(name=member_managers, onDelete=Cascade)
   assignedAt: DateTime?
+  updatedAt: DateTime, default=now
+
 indexes:
   event_manager_idx:
     fields: eventId, memberId
