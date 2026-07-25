@@ -3,11 +3,15 @@ import 'dart:async';
 import 'package:alpine_pod_client/alpine_pod_client.dart';
 import 'package:logging/logging.dart';
 import 'package:serverpod_auth_idp_flutter/serverpod_auth_idp_flutter.dart';
+import 'package:serverpod_database/serverpod_database.dart';
 import 'package:signals_flutter/signals_flutter.dart';
+
 
 ///
 late Client client;
 late FlutterAuthSessionManager sessionManager;
+late DatabaseSession dbSession;
+
 
 final log = Logger('signals');
 

@@ -9,11 +9,15 @@ import 'package:serverpod_auth_idp_flutter/serverpod_auth_idp_flutter.dart';
 import 'package:serverpod_auth_idp_flutter_facebook/serverpod_auth_idp_flutter_facebook.dart';
 // import 'package:serverpod_auth_idp_flutter_facebook/serverpod_auth_idp_flutter_facebook.dart';
 import 'package:serverpod_flutter/serverpod_flutter.dart';
+
+
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
 import 'signals.dart';
 import 'router.dart';
+import 'services/connectivity_service.dart';
+
 
 // final host = 'Warrens-MacBook-Air.local';
 // final host = 'localhost';
@@ -39,6 +43,8 @@ void main() async {
     ..connectivityMonitor = FlutterConnectivityMonitor()
     ..authSessionManager = FlutterAuthSessionManager();
 
+  connectivityService.initialize(client.connectivityMonitor);
+
   sessionManager = client.auth;
   await sessionManager.initialize();
 
@@ -51,19 +57,17 @@ void main() async {
 
   await sessionManager.initializeFacebookSignIn(appId: '954559893876564');
 
-  // todo: add any things that need to be refreshed in the background
-  Timer.periodic(const Duration(seconds: 120), (timer) {
-    notificationsSignal.refresh(); // get updated notifications
-  });
-
-  // try client side db
-  // does not currently work in Flutter Web
-  // Resolve the database path.
-  //final path = await resolveDatabasePath('app.db');
-  // final session = await client.createSession(path, isDebugMode: true);
+  // Initialize client-side SQLite database session
+  try {
+    final dbPath = await resolveDatabasePath('alpine_pod.db');
+    dbSession = await client.createSession(dbPath, isDebugMode: kDebugMode);
+  } catch (e, stack) {
+    Logger.root.severe('Failed to initialize client database session', e, stack);
+  }
 
   runApp(const MyApp());
 }
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

@@ -1,0 +1,149 @@
+import 'package:alpine_pod_client/alpine_pod_client.dart';
+import 'package:logging/logging.dart';
+import 'package:serverpod_database/serverpod_database.dart';
+import '../services/connectivity_service.dart';
+import '../services/sync_service.dart';
+import '../signals.dart';
+
+final _log = Logger('EventRepository');
+
+class EventRepository {
+  static final EventRepository _instance = EventRepository._internal();
+  factory EventRepository() => _instance;
+  EventRepository._internal();
+
+  /// Reads events from the local SQLite cache.
+  /// If online and cache is empty, triggers a sync first.
+  Future<List<Event>> listEvents(
+    UuidValue? sectionId,
+    DateTime? startTime,
+    DateTime? endTime,
+    bool? onlyMyEvents,
+  ) async {
+    try {
+      // Query local cache first
+      final cachedEvents = await Event.db.find(
+        dbSession,
+        where: (t) {
+          Expression where = Constant.bool(true);
+          if (sectionId != null) {
+            where = where & t.sectionId.equals(sectionId);
+          }
+          if (startTime != null) {
+            where = where & (t.endTime >= startTime);
+          }
+          if (endTime != null) {
+            where = where & (t.startTime <= endTime);
+          }
+          return where;
+        },
+        orderBy: (t) => t.startTime,
+      );
+
+      if (cachedEvents.isNotEmpty || !isOnlineSignal.value) {
+        return cachedEvents;
+      }
+    } catch (e) {
+      _log.warning('Failed to query local Event cache, falling back to server: $e');
+    }
+
+    // Fallback: sync from server and return
+    if (isOnlineSignal.value) {
+      final now = startTime ?? DateTime.now();
+      final start = startTime ?? DateTime(now.year, now.month - 1, 1);
+      final end = endTime ?? DateTime(now.year, now.month + 2, 0);
+      return await syncService.syncEvents(sectionId, start, end, onlyMyEvents ?? false);
+    }
+
+    return [];
+  }
+
+  /// Gets a single event by ID from cache or server.
+  Future<Event?> getEvent(UuidValue id) async {
+    try {
+      final cached = await Event.db.findById(dbSession, id);
+      if (cached != null) return cached;
+    } catch (e) {
+      _log.warning('Local cache lookup failed for event $id: $e');
+    }
+
+    if (isOnlineSignal.value) {
+      return await client.event.getEvent(id);
+    }
+    return null;
+  }
+
+  /// Creates a new event via the server API, then syncs to update local cache.
+  Future<Event> createEvent(
+    Event event, {
+    List<UuidValue>? additionalManagerIds,
+    bool notifyNewEvent = true,
+  }) async {
+    if (!isOnlineSignal.value) {
+      throw Exception('You are currently offline. Event creation requires an internet connection.');
+    }
+
+    final created = await client.event.createEvent(
+      event,
+      additionalManagerIds: additionalManagerIds,
+      notifyNewEvent: notifyNewEvent,
+    );
+
+    // Sync section events to update local cache
+    final now = created.startTime;
+    final start = DateTime(now.year, now.month - 1, 1);
+    final end = DateTime(now.year, now.month + 2, 0);
+    await syncService.syncEvents(created.sectionId, start, end, false);
+
+    return created;
+  }
+
+  /// Updates an event via server API and syncs local cache.
+  Future<Event> updateEvent(Event event) async {
+    if (!isOnlineSignal.value) {
+      throw Exception('You are currently offline. Updating events requires an internet connection.');
+    }
+
+    final updated = await client.event.updateEvent(event);
+
+    final now = updated.startTime;
+    final start = DateTime(now.year, now.month - 1, 1);
+    final end = DateTime(now.year, now.month + 2, 0);
+    await syncService.syncEvents(updated.sectionId, start, end, false);
+
+    return updated;
+  }
+
+  /// Deletes an event via server API and syncs local cache.
+  Future<void> deleteEvent(UuidValue id, UuidValue? sectionId) async {
+    if (!isOnlineSignal.value) {
+      throw Exception('You are currently offline. Deleting events requires an internet connection.');
+    }
+
+    await client.event.deleteEvent(id);
+
+    // Remove from local cache
+    await Event.db.deleteWhere(dbSession, where: (t) => t.id.equals(id));
+  }
+
+  /// Registers for an event via server API and syncs local cache.
+  Future<EventRegistration> registerForEvent(UuidValue eventId, UuidValue? sectionId) async {
+    if (!isOnlineSignal.value) {
+      throw Exception('You are currently offline. Registration requires an internet connection.');
+    }
+
+    final registration = await client.event.registerForEvent(eventId);
+
+    // Refresh event cache
+    if (sectionId != null) {
+      final now = DateTime.now();
+      final start = DateTime(now.year, now.month - 1, 1);
+      final end = DateTime(now.year, now.month + 2, 0);
+      await syncService.syncEvents(sectionId, start, end, false);
+    }
+
+    return registration;
+  }
+}
+
+final eventRepository = EventRepository();

@@ -20,8 +20,10 @@ echo "========================================="
 "$SCRIPT_DIR/reset_db.sh"
 
 
+rm -fr migrations/*
+
 serverpod generate
-serverpod create-migration
+serverpod create-migration --force
 
 # ---------------------------------------------------------------------------
 # 2. Apply migrations
