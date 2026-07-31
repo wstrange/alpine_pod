@@ -65,7 +65,7 @@ class MemberRepository {
       throw Exception('You are currently offline. Signing waiver requires an internet connection.');
     }
 
-    final member = await client.member.signWaiver();
+    final member = await client.member.acceptWaiver();
     await syncService.syncCurrentMember();
     return member;
   }
