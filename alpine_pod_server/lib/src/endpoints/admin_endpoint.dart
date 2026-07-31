@@ -84,8 +84,7 @@ class AdminEndpoint extends Endpoint {
     return await NotificationDelivery.db.find(
       session,
       where: where != null ? (_) => where! : null,
-      orderBy: (t) => t.createdAt,
-      orderDescending: true,
+      orderBy: (t) => t.createdAt.desc(),
       limit: limit,
       offset: offset,
       include: NotificationDelivery.include(notification: Notification.include()),

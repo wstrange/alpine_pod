@@ -17,6 +17,7 @@ import 'package:path_provider/path_provider.dart';
 import 'signals.dart';
 import 'router.dart';
 import 'services/connectivity_service.dart';
+import 'services/sync_service.dart';
 
 
 // final host = 'Warrens-MacBook-Air.local';
@@ -61,6 +62,7 @@ void main() async {
   try {
     final dbPath = await resolveDatabasePath('alpine_pod.db');
     dbSession = await client.createSession(dbPath, isDebugMode: kDebugMode);
+    syncService.initializePeriodicSync();
   } catch (e, stack) {
     Logger.root.severe('Failed to initialize client database session', e, stack);
   }

@@ -152,8 +152,6 @@ abstract class UserNotification
     int? limit,
     int? offset,
     _i1.OrderByBuilder<UserNotificationTable>? orderBy,
-    @Deprecated('Use desc() on the orderBy column instead.')
-    bool orderDescending = false,
     _i1.OrderByListBuilder<UserNotificationTable>? orderByList,
     UserNotificationInclude? include,
   }) {
@@ -162,8 +160,6 @@ abstract class UserNotification
       limit: limit,
       offset: offset,
       orderBy: orderBy?.call(UserNotification.t),
-      orderDescending: // ignore: deprecated_member_use_from_same_package
-          orderDescending,
       orderByList: orderByList?.call(UserNotification.t),
       include: include,
     );
@@ -369,8 +365,6 @@ class UserNotificationIncludeList extends _i1.IncludeList {
     super.limit,
     super.offset,
     super.orderBy,
-    @Deprecated('Use desc() on the orderBy column instead.')
-    super.orderDescending,
     super.orderByList,
     super.include,
   }) {
@@ -417,8 +411,6 @@ class UserNotificationRepository {
     int? limit,
     int? offset,
     _i1.OrderByBuilder<UserNotificationTable>? orderBy,
-    @Deprecated('Use desc() on the orderBy column instead.')
-    bool orderDescending = false,
     _i1.OrderByListBuilder<UserNotificationTable>? orderByList,
     _i1.Transaction? transaction,
     UserNotificationInclude? include,
@@ -429,8 +421,6 @@ class UserNotificationRepository {
       where: where?.call(UserNotification.t),
       orderBy: orderBy?.call(UserNotification.t),
       orderByList: orderByList?.call(UserNotification.t),
-      orderDescending: // ignore: deprecated_member_use
-          orderDescending,
       limit: limit,
       offset: offset,
       transaction: transaction,
@@ -462,8 +452,6 @@ class UserNotificationRepository {
     _i1.WhereExpressionBuilder<UserNotificationTable>? where,
     int? offset,
     _i1.OrderByBuilder<UserNotificationTable>? orderBy,
-    @Deprecated('Use desc() on the orderBy column instead.')
-    bool orderDescending = false,
     _i1.OrderByListBuilder<UserNotificationTable>? orderByList,
     _i1.Transaction? transaction,
     UserNotificationInclude? include,
@@ -474,8 +462,6 @@ class UserNotificationRepository {
       where: where?.call(UserNotification.t),
       orderBy: orderBy?.call(UserNotification.t),
       orderByList: orderByList?.call(UserNotification.t),
-      orderDescending: // ignore: deprecated_member_use
-          orderDescending,
       offset: offset,
       transaction: transaction,
       include: include,
@@ -685,8 +671,6 @@ class UserNotificationRepository {
     int? offset,
     _i1.OrderByBuilder<UserNotificationTable>? orderBy,
     _i1.OrderByListBuilder<UserNotificationTable>? orderByList,
-    @Deprecated('Use desc() on the orderBy column instead.')
-    bool orderDescending = false,
     _i1.Transaction? transaction,
     bool noReturn = false,
   }) async {
@@ -697,8 +681,6 @@ class UserNotificationRepository {
       offset: offset,
       orderBy: orderBy?.call(UserNotification.t),
       orderByList: orderByList?.call(UserNotification.t),
-      orderDescending: // ignore: deprecated_member_use
-          orderDescending,
       transaction: transaction,
       noReturn: noReturn,
     );
@@ -719,8 +701,6 @@ class UserNotificationRepository {
     _i1.DatabaseSession session,
     List<UserNotification> rows, {
     _i1.OrderByBuilder<UserNotificationTable>? orderBy,
-    @Deprecated('Use desc() on the orderBy column instead.')
-    bool orderDescending = false,
     _i1.OrderByListBuilder<UserNotificationTable>? orderByList,
     _i1.Transaction? transaction,
     bool noReturn = false,
@@ -729,8 +709,6 @@ class UserNotificationRepository {
       rows,
       orderBy: orderBy?.call(UserNotification.t),
       orderByList: orderByList?.call(UserNotification.t),
-      orderDescending: // ignore: deprecated_member_use
-          orderDescending,
       transaction: transaction,
       noReturn: noReturn,
     );
@@ -760,8 +738,6 @@ class UserNotificationRepository {
     _i1.DatabaseSession session, {
     required _i1.WhereExpressionBuilder<UserNotificationTable> where,
     _i1.OrderByBuilder<UserNotificationTable>? orderBy,
-    @Deprecated('Use desc() on the orderBy column instead.')
-    bool orderDescending = false,
     _i1.OrderByListBuilder<UserNotificationTable>? orderByList,
     _i1.Transaction? transaction,
     bool noReturn = false,
@@ -770,8 +746,6 @@ class UserNotificationRepository {
       where: where(UserNotification.t),
       orderBy: orderBy?.call(UserNotification.t),
       orderByList: orderByList?.call(UserNotification.t),
-      orderDescending: // ignore: deprecated_member_use
-          orderDescending,
       transaction: transaction,
       noReturn: noReturn,
     );

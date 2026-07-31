@@ -17,7 +17,8 @@ import 'member.dart' as _i3;
 import 'section.dart' as _i4;
 import 'package:alpine_pod_client/src/protocol/protocol.dart' as _i5;
 
-abstract class SectionMembership implements _i1.TableRow<_i2.UuidValue?> {
+abstract class SectionMembership
+    implements _i1.TableRow<_i2.UuidValue?>, _i2.ProtocolSerialization {
   SectionMembership._({
     this.id,
     required this.memberId,
@@ -138,6 +139,23 @@ abstract class SectionMembership implements _i1.TableRow<_i2.UuidValue?> {
     };
   }
 
+  @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'SectionMembership',
+      if (id != null) 'id': id?.toJson(),
+      'memberId': memberId.toJson(),
+      if (member != null) 'member': member?.toJsonForProtocol(),
+      'sectionId': sectionId.toJson(),
+      if (section != null) 'section': section?.toJsonForProtocol(),
+      if (externalUserId != null) 'externalUserId': externalUserId,
+      'syncedAt': syncedAt.toJson(),
+      if (sourceSystem != null) 'sourceSystem': sourceSystem,
+      'scopes': scopes.toJson(),
+      'updatedAt': updatedAt.toJson(),
+    };
+  }
+
   static SectionMembershipInclude include({
     _i3.MemberInclude? member,
     _i4.SectionInclude? section,
@@ -153,8 +171,6 @@ abstract class SectionMembership implements _i1.TableRow<_i2.UuidValue?> {
     int? limit,
     int? offset,
     _i1.OrderByBuilder<SectionMembershipTable>? orderBy,
-    @Deprecated('Use desc() on the orderBy column instead.')
-    bool orderDescending = false,
     _i1.OrderByListBuilder<SectionMembershipTable>? orderByList,
     SectionMembershipInclude? include,
   }) {
@@ -163,8 +179,6 @@ abstract class SectionMembership implements _i1.TableRow<_i2.UuidValue?> {
       limit: limit,
       offset: offset,
       orderBy: orderBy?.call(SectionMembership.t),
-      orderDescending: // ignore: deprecated_member_use_from_same_package
-          orderDescending,
       orderByList: orderByList?.call(SectionMembership.t),
       include: include,
     );
@@ -419,8 +433,6 @@ class SectionMembershipIncludeList extends _i1.IncludeList {
     super.limit,
     super.offset,
     super.orderBy,
-    @Deprecated('Use desc() on the orderBy column instead.')
-    super.orderDescending,
     super.orderByList,
     super.include,
   }) {
@@ -467,8 +479,6 @@ class SectionMembershipRepository {
     int? limit,
     int? offset,
     _i1.OrderByBuilder<SectionMembershipTable>? orderBy,
-    @Deprecated('Use desc() on the orderBy column instead.')
-    bool orderDescending = false,
     _i1.OrderByListBuilder<SectionMembershipTable>? orderByList,
     _i1.Transaction? transaction,
     SectionMembershipInclude? include,
@@ -479,8 +489,6 @@ class SectionMembershipRepository {
       where: where?.call(SectionMembership.t),
       orderBy: orderBy?.call(SectionMembership.t),
       orderByList: orderByList?.call(SectionMembership.t),
-      orderDescending: // ignore: deprecated_member_use
-          orderDescending,
       limit: limit,
       offset: offset,
       transaction: transaction,
@@ -512,8 +520,6 @@ class SectionMembershipRepository {
     _i1.WhereExpressionBuilder<SectionMembershipTable>? where,
     int? offset,
     _i1.OrderByBuilder<SectionMembershipTable>? orderBy,
-    @Deprecated('Use desc() on the orderBy column instead.')
-    bool orderDescending = false,
     _i1.OrderByListBuilder<SectionMembershipTable>? orderByList,
     _i1.Transaction? transaction,
     SectionMembershipInclude? include,
@@ -524,8 +530,6 @@ class SectionMembershipRepository {
       where: where?.call(SectionMembership.t),
       orderBy: orderBy?.call(SectionMembership.t),
       orderByList: orderByList?.call(SectionMembership.t),
-      orderDescending: // ignore: deprecated_member_use
-          orderDescending,
       offset: offset,
       transaction: transaction,
       include: include,
@@ -735,8 +739,6 @@ class SectionMembershipRepository {
     int? offset,
     _i1.OrderByBuilder<SectionMembershipTable>? orderBy,
     _i1.OrderByListBuilder<SectionMembershipTable>? orderByList,
-    @Deprecated('Use desc() on the orderBy column instead.')
-    bool orderDescending = false,
     _i1.Transaction? transaction,
     bool noReturn = false,
   }) async {
@@ -747,8 +749,6 @@ class SectionMembershipRepository {
       offset: offset,
       orderBy: orderBy?.call(SectionMembership.t),
       orderByList: orderByList?.call(SectionMembership.t),
-      orderDescending: // ignore: deprecated_member_use
-          orderDescending,
       transaction: transaction,
       noReturn: noReturn,
     );
@@ -769,8 +769,6 @@ class SectionMembershipRepository {
     _i1.DatabaseSession session,
     List<SectionMembership> rows, {
     _i1.OrderByBuilder<SectionMembershipTable>? orderBy,
-    @Deprecated('Use desc() on the orderBy column instead.')
-    bool orderDescending = false,
     _i1.OrderByListBuilder<SectionMembershipTable>? orderByList,
     _i1.Transaction? transaction,
     bool noReturn = false,
@@ -779,8 +777,6 @@ class SectionMembershipRepository {
       rows,
       orderBy: orderBy?.call(SectionMembership.t),
       orderByList: orderByList?.call(SectionMembership.t),
-      orderDescending: // ignore: deprecated_member_use
-          orderDescending,
       transaction: transaction,
       noReturn: noReturn,
     );
@@ -810,8 +806,6 @@ class SectionMembershipRepository {
     _i1.DatabaseSession session, {
     required _i1.WhereExpressionBuilder<SectionMembershipTable> where,
     _i1.OrderByBuilder<SectionMembershipTable>? orderBy,
-    @Deprecated('Use desc() on the orderBy column instead.')
-    bool orderDescending = false,
     _i1.OrderByListBuilder<SectionMembershipTable>? orderByList,
     _i1.Transaction? transaction,
     bool noReturn = false,
@@ -820,8 +814,6 @@ class SectionMembershipRepository {
       where: where(SectionMembership.t),
       orderBy: orderBy?.call(SectionMembership.t),
       orderByList: orderByList?.call(SectionMembership.t),
-      orderDescending: // ignore: deprecated_member_use
-          orderDescending,
       transaction: transaction,
       noReturn: noReturn,
     );

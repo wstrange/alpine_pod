@@ -2,56 +2,6 @@
 
 
 
-## Admin Screen
-* Add a way to add / edit sections.
-* User search and delete
-* consider adding bulk create endpoint for testing
-
-
-## General
-
-
-
-## Registration
-- Set roles?
-- When registering the section selection screen hangs. Probably the call to getSectionsForCurrentUser() is not working as expected - stale.
-
-
-
-notifications: When the user navs to the screen, refresh right away - dont wait for the timer.
-
-Roles - section admins should be able to add trip leaders, participants.
-
-* improve seedtest. Create more realistic data. More trips that are closer to real life. Different sections.
-
-
-*
-
-issue: when the admin invokes the member-edit screen - the server role check fails beacuse the admin user does not have a profile.
-
-
-Notifications:  android, etc. Bulk email. Way of allowing users to subscribe to channels (e.g. ski channel, bike channel, etc).
-
-* Need to save to DB, and then use FutureCalls to schedule send.
-* DB notification schema could have flags for various types of notification (email, sms, in-app, app-push). You might want to send on multiple channels.
-* should have category (for push notification channels)
-
-
-Bugs:
-
-* Admin - user list does not update if a users profile is edited. Maybe admins should not be able to edit profiles?
-* After new login, after completing waiver, the section selection screen hangs.
-
-
-
-TODO:
-
-Admin
-- Add a new user
-- Update user list after adding or deleting a new user.
-- Show sections in user list
-
-
 
 Maps package: https://pub.dev/packages/goodmap
 
@@ -69,13 +19,17 @@ Events - probably want to be selective on which events to cache.
 
 getMemberProfileImageUrl is expensive. Should we return it as part of the member profile? Make it a non DB field, but get it from the user object.  Could also cache it on the client.  Maybe the client should have a member cache.
 
-Events and user profiles. Cache??
-
 
 Need a strategy for offline first in Flutter using serverpod_offline_sync.
 Concerned about explosion of data with scope sharing mechanism.
 What about a Hybrid approach?  Use serverpod_offline_sync for read only data, and
 use the server API for any updates or writes.
+
+
+Complete the implementation plan for offline first:
+* [x] Flutter screens should read from the repo service. (Refactored signals to use repository services)
+* [x] Repo should return data from local cache if offline. If online, repo fetches & updates cache.
+* [x] Local cache is periodically refreshed in background (`SyncService.initializePeriodicSync()`).
 
 
 

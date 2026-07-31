@@ -113,8 +113,6 @@ abstract class Section
     int? limit,
     int? offset,
     _i1.OrderByBuilder<SectionTable>? orderBy,
-    @Deprecated('Use desc() on the orderBy column instead.')
-    bool orderDescending = false,
     _i1.OrderByListBuilder<SectionTable>? orderByList,
     SectionInclude? include,
   }) {
@@ -123,8 +121,6 @@ abstract class Section
       limit: limit,
       offset: offset,
       orderBy: orderBy?.call(Section.t),
-      orderDescending: // ignore: deprecated_member_use_from_same_package
-          orderDescending,
       orderByList: orderByList?.call(Section.t),
       include: include,
     );
@@ -273,8 +269,6 @@ class SectionIncludeList extends _i1.IncludeList {
     super.limit,
     super.offset,
     super.orderBy,
-    @Deprecated('Use desc() on the orderBy column instead.')
-    super.orderDescending,
     super.orderByList,
     super.include,
   }) {
@@ -319,8 +313,6 @@ class SectionRepository {
     int? limit,
     int? offset,
     _i1.OrderByBuilder<SectionTable>? orderBy,
-    @Deprecated('Use desc() on the orderBy column instead.')
-    bool orderDescending = false,
     _i1.OrderByListBuilder<SectionTable>? orderByList,
     _i1.Transaction? transaction,
     _i1.LockMode? lockMode,
@@ -330,8 +322,6 @@ class SectionRepository {
       where: where?.call(Section.t),
       orderBy: orderBy?.call(Section.t),
       orderByList: orderByList?.call(Section.t),
-      orderDescending: // ignore: deprecated_member_use
-          orderDescending,
       limit: limit,
       offset: offset,
       transaction: transaction,
@@ -362,8 +352,6 @@ class SectionRepository {
     _i1.WhereExpressionBuilder<SectionTable>? where,
     int? offset,
     _i1.OrderByBuilder<SectionTable>? orderBy,
-    @Deprecated('Use desc() on the orderBy column instead.')
-    bool orderDescending = false,
     _i1.OrderByListBuilder<SectionTable>? orderByList,
     _i1.Transaction? transaction,
     _i1.LockMode? lockMode,
@@ -373,8 +361,6 @@ class SectionRepository {
       where: where?.call(Section.t),
       orderBy: orderBy?.call(Section.t),
       orderByList: orderByList?.call(Section.t),
-      orderDescending: // ignore: deprecated_member_use
-          orderDescending,
       offset: offset,
       transaction: transaction,
       lockMode: lockMode,
@@ -579,8 +565,6 @@ class SectionRepository {
     int? offset,
     _i1.OrderByBuilder<SectionTable>? orderBy,
     _i1.OrderByListBuilder<SectionTable>? orderByList,
-    @Deprecated('Use desc() on the orderBy column instead.')
-    bool orderDescending = false,
     _i1.Transaction? transaction,
     bool noReturn = false,
   }) async {
@@ -591,8 +575,6 @@ class SectionRepository {
       offset: offset,
       orderBy: orderBy?.call(Section.t),
       orderByList: orderByList?.call(Section.t),
-      orderDescending: // ignore: deprecated_member_use
-          orderDescending,
       transaction: transaction,
       noReturn: noReturn,
     );
@@ -613,8 +595,6 @@ class SectionRepository {
     _i1.DatabaseSession session,
     List<Section> rows, {
     _i1.OrderByBuilder<SectionTable>? orderBy,
-    @Deprecated('Use desc() on the orderBy column instead.')
-    bool orderDescending = false,
     _i1.OrderByListBuilder<SectionTable>? orderByList,
     _i1.Transaction? transaction,
     bool noReturn = false,
@@ -623,8 +603,6 @@ class SectionRepository {
       rows,
       orderBy: orderBy?.call(Section.t),
       orderByList: orderByList?.call(Section.t),
-      orderDescending: // ignore: deprecated_member_use
-          orderDescending,
       transaction: transaction,
       noReturn: noReturn,
     );
@@ -654,8 +632,6 @@ class SectionRepository {
     _i1.DatabaseSession session, {
     required _i1.WhereExpressionBuilder<SectionTable> where,
     _i1.OrderByBuilder<SectionTable>? orderBy,
-    @Deprecated('Use desc() on the orderBy column instead.')
-    bool orderDescending = false,
     _i1.OrderByListBuilder<SectionTable>? orderByList,
     _i1.Transaction? transaction,
     bool noReturn = false,
@@ -664,8 +640,6 @@ class SectionRepository {
       where: where(Section.t),
       orderBy: orderBy?.call(Section.t),
       orderByList: orderByList?.call(Section.t),
-      orderDescending: // ignore: deprecated_member_use
-          orderDescending,
       transaction: transaction,
       noReturn: noReturn,
     );

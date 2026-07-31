@@ -13,8 +13,7 @@ class NotificationEndpoint extends Endpoint {
     final userNotifications = await UserNotification.db.find(
       session,
       where: (t) => t.id.equals(currentUserId),
-      orderBy: (t) => t.createdAt,
-      orderDescending: true,
+      orderBy: (t) => t.createdAt.desc(),
       limit: limit,
       offset: offset,
       include: UserNotification.include(notification: Notification.include()),

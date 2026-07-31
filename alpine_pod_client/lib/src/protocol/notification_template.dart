@@ -12,7 +12,8 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 
-abstract class NotificationTemplate implements _i1.SerializableModel {
+abstract class NotificationTemplate
+    implements _i1.SerializableModel, _i1.ProtocolSerialization {
   NotificationTemplate._({
     this.id,
     required this.name,
@@ -84,6 +85,20 @@ abstract class NotificationTemplate implements _i1.SerializableModel {
   });
   @override
   Map<String, dynamic> toJson() {
+    return {
+      '__className__': 'NotificationTemplate',
+      if (id != null) 'id': id?.toJson(),
+      'name': name,
+      'titleTemplate': titleTemplate,
+      'bodyTemplate': bodyTemplate,
+      if (htmlTemplate != null) 'htmlTemplate': htmlTemplate,
+      'createdAt': createdAt.toJson(),
+      'updatedAt': updatedAt.toJson(),
+    };
+  }
+
+  @override
+  Map<String, dynamic> toJsonForProtocol() {
     return {
       '__className__': 'NotificationTemplate',
       if (id != null) 'id': id?.toJson(),

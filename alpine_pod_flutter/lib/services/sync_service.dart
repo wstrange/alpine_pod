@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:alpine_pod_client/alpine_pod_client.dart';
 import 'package:logging/logging.dart';
 import 'package:serverpod_database/serverpod_database.dart';
@@ -13,6 +14,18 @@ class SyncService {
 
   bool _isSyncing = false;
   bool get isSyncing => _isSyncing;
+  Timer? _periodicSyncTimer;
+
+  /// Initializes periodic syncing every 5 minutes when online.
+  void initializePeriodicSync({Duration interval = const Duration(minutes: 5)}) {
+    _periodicSyncTimer?.cancel();
+    _periodicSyncTimer = Timer.periodic(interval, (_) {
+      if (isOnlineSignal.value && sessionManager.isAuthenticated) {
+        _log.info('Triggering periodic background sync');
+        syncAll(currentSectionId: sectionSignal.value?.id);
+      }
+    });
+  }
 
   /// Performs an eager sync of all user-accessible data from the server
   /// into the local SQLite database cache.

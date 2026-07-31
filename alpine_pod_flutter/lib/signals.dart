@@ -1,11 +1,12 @@
-import 'dart:async';
-
 import 'package:alpine_pod_client/alpine_pod_client.dart';
 import 'package:logging/logging.dart';
 import 'package:serverpod_auth_idp_flutter/serverpod_auth_idp_flutter.dart';
 import 'package:serverpod_database/serverpod_database.dart';
 import 'package:signals_flutter/signals_flutter.dart';
-
+import 'repositories/event_repository.dart';
+import 'repositories/member_repository.dart';
+import 'repositories/notification_repository.dart';
+import 'repositories/section_repository.dart';
 
 ///
 late Client client;
@@ -34,9 +35,9 @@ final authUserSignal = computed<AuthSuccess?>(() {
   return client.auth.authInfo;
 }, options: ComputedOptions(name: 'authUserSignal'));
 
-// Get a list of all sections in the database
+// Get a list of all sections in the database from SectionRepository (cache-first)
 final allSectionsSignal = futureSignal(() async {
-  return await client.section.listSections();
+  return await sectionRepository.listSections();
 });
 
 final currentMemberSignal = signal<Member?>(
@@ -44,16 +45,7 @@ final currentMemberSignal = signal<Member?>(
   options: SignalOptions(name: 'currentMemberSignal'),
 );
 
-// Get the member record for the current user
-// final currentMemberAsyncSignal = futureSignal<Member?>(() async {
-//   final m = await client.member.getCurrentMember();
-//   print('Fetched current member $m');
-//   return m;
-// }, options: AsyncSignalOptions(dependencies: [authUserSignal], name: 'currentMemberSignal', lazy: false));
-
-// List of All sections that the current user is a member of
-// rebuild based on the currentMemberSignal, which gets updated in the router AFTER the
-// authUser Signal is updated.  Avoids a race condition.
+// List of All sections that the current user is a member of (cache-first via MemberRepository)
 final allMySectionMembershipsSignal = futureSignal<List<SectionMembership>>(
   () async {
     final member = currentMemberSignal.value;
@@ -63,8 +55,7 @@ final allMySectionMembershipsSignal = futureSignal<List<SectionMembership>>(
       );
       return <SectionMembership>[];
     }
-    final x = await client.member.getAllMySectionMemberships();
-    return x;
+    return await memberRepository.getAllMySectionMemberships();
   },
   options: AsyncSignalOptions(
     dependencies: [currentMemberSignal],
@@ -76,12 +67,12 @@ final allMySectionMembershipsSignal = futureSignal<List<SectionMembership>>(
 // The currently selected section when the user logged in.
 final sectionSignal = signal<Section?>(null);
 
-// Get the SectionMemberShip for the current Section
+// Get the SectionMemberShip for the current Section via SectionRepository
 final mySectionMembershipSignal = futureSignal(
   () async {
     final s = sectionSignal.value;
     if (s == null) return null;
-    return await client.member.getMySectionMembership(s.id!);
+    return await sectionRepository.getMySectionMembership(s.id!);
   },
   options: AsyncSignalOptions(
     dependencies: [sectionSignal],
@@ -110,8 +101,6 @@ final canCreateEventsSignal = computed(() {
 });
 
 /// selected date in the calendar view
-// todo: Should the signals below be moved into the calendar view widget?
-
 final selectedDateSignal = signal<DateTime>(
   DateTime.now().copyWith(
     hour: 0,
@@ -124,31 +113,25 @@ final selectedDateSignal = signal<DateTime>(
 
 final showMyEventsOnlySignal = signal<bool>(false);
 
-// The currently events that are visible in the calendar view
-// todo: when should this be reloaded? What if the events change on the server,
-// or the user updates the event. Should we use a stream instead? Or a timer?
-// or pull to refresh?
-
-// needs to be a stream that refreshes every 30 seconds.
+// Currently visible events in calendar view via EventRepository (cache-first)
 final currentEventsSignal = futureSignal<List<Event>>(
   () async {
     final s = sectionSignal.value;
     final date = selectedDateSignal.value;
     final onlyMyEvents = showMyEventsOnlySignal.value;
 
-    // Calculate start of month and ensure it's neutralized to 00:00:00
+    // Calculate start of month and end of month
     final start = DateTime(date.year, date.month, 1);
     final nextMonth = date.month == 12 ? 1 : date.month + 1;
     final nextMonthYear = date.month == 12 ? date.year + 1 : date.year;
     final end = DateTime(nextMonthYear, nextMonth, 1);
 
-    final events = await client.event.listEvents(
+    return await eventRepository.listEvents(
       s?.id,
       start,
       end,
       onlyMyEvents,
     );
-    return events;
   },
   options: AsyncSignalOptions(
     dependencies: [sectionSignal, selectedDateSignal, showMyEventsOnlySignal],
@@ -160,7 +143,7 @@ final notificationsSignal = futureSignal<List<UserNotification>>(
   () async {
     final i = authUserSignal.value;
     if (i == null) return <UserNotification>[];
-    return await client.notification.getMyFeed(limit: 30, offset: 0);
+    return await notificationRepository.getMyFeed(limit: 30, offset: 0);
   },
   options: AsyncSignalOptions(
     dependencies: [],
@@ -169,13 +152,11 @@ final notificationsSignal = futureSignal<List<UserNotification>>(
   ),
 );
 
-// TODO: Do we need this stream? Is there a better way to do this?
 final notificationStreamSignal = streamSignal<List<UserNotification>>(
   () async* {
     while (true) {
       if (!sessionManager.isAuthenticated) yield <UserNotification>[];
-      final n = await client.notification.getMyFeed(limit: 30, offset: 0);
-      // update notifications.
+      final n = await notificationRepository.getMyFeed(limit: 30, offset: 0);
       notificationsSignal.value = AsyncData(n);
       yield n;
       await Future.delayed(const Duration(seconds: 30));
@@ -192,9 +173,9 @@ final unreadNotificationsCountSignal = computed(() {
   return 0;
 });
 
-final notificationPreferencesSignal = futureSignal<UserNotificationPreference>(
+final notificationPreferencesSignal = futureSignal<UserNotificationPreference?>(
   () async {
-    return await client.notification.getMyPreferences();
+    return await notificationRepository.getMyPreferences();
   },
   options: AsyncSignalOptions(name: 'notificationPreferencesSignal'),
 );

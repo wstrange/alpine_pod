@@ -18,7 +18,8 @@ import 'event.dart' as _i4;
 import 'registration_status.dart' as _i5;
 import 'package:alpine_pod_client/src/protocol/protocol.dart' as _i6;
 
-abstract class EventRegistration implements _i1.TableRow<_i2.UuidValue?> {
+abstract class EventRegistration
+    implements _i1.TableRow<_i2.UuidValue?>, _i2.ProtocolSerialization {
   EventRegistration._({
     this.id,
     required this.memberId,
@@ -206,6 +207,31 @@ abstract class EventRegistration implements _i1.TableRow<_i2.UuidValue?> {
     };
   }
 
+  @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'EventRegistration',
+      if (id != null) 'id': id?.toJson(),
+      'memberId': memberId.toJson(),
+      if (member != null) 'member': member?.toJsonForProtocol(),
+      'eventId': eventId.toJson(),
+      if (event != null) 'event': event?.toJsonForProtocol(),
+      'registrationStatus': registrationStatus.toJson(),
+      'registrationDate': registrationDate.toJson(),
+      if (carPoolPreference != null) 'carPoolPreference': carPoolPreference,
+      'additionalGuests': additionalGuests,
+      'waiverAccepted': waiverAccepted,
+      if (participantNotes != null) 'participantNotes': participantNotes,
+      if (waitlistPosition != null) 'waitlistPosition': waitlistPosition,
+      if (waitlistedAt != null) 'waitlistedAt': waitlistedAt?.toJson(),
+      'paymentStatus': paymentStatus,
+      'paymentAmount': paymentAmount,
+      'modifiedAt': modifiedAt.toJson(),
+      'updatedAt': updatedAt.toJson(),
+      'noShow': noShow,
+    };
+  }
+
   static EventRegistrationInclude include({
     _i3.MemberInclude? member,
     _i4.EventInclude? event,
@@ -221,8 +247,6 @@ abstract class EventRegistration implements _i1.TableRow<_i2.UuidValue?> {
     int? limit,
     int? offset,
     _i1.OrderByBuilder<EventRegistrationTable>? orderBy,
-    @Deprecated('Use desc() on the orderBy column instead.')
-    bool orderDescending = false,
     _i1.OrderByListBuilder<EventRegistrationTable>? orderByList,
     EventRegistrationInclude? include,
   }) {
@@ -231,8 +255,6 @@ abstract class EventRegistration implements _i1.TableRow<_i2.UuidValue?> {
       limit: limit,
       offset: offset,
       orderBy: orderBy?.call(EventRegistration.t),
-      orderDescending: // ignore: deprecated_member_use_from_same_package
-          orderDescending,
       orderByList: orderByList?.call(EventRegistration.t),
       include: include,
     );
@@ -628,8 +650,6 @@ class EventRegistrationIncludeList extends _i1.IncludeList {
     super.limit,
     super.offset,
     super.orderBy,
-    @Deprecated('Use desc() on the orderBy column instead.')
-    super.orderDescending,
     super.orderByList,
     super.include,
   }) {
@@ -676,8 +696,6 @@ class EventRegistrationRepository {
     int? limit,
     int? offset,
     _i1.OrderByBuilder<EventRegistrationTable>? orderBy,
-    @Deprecated('Use desc() on the orderBy column instead.')
-    bool orderDescending = false,
     _i1.OrderByListBuilder<EventRegistrationTable>? orderByList,
     _i1.Transaction? transaction,
     EventRegistrationInclude? include,
@@ -688,8 +706,6 @@ class EventRegistrationRepository {
       where: where?.call(EventRegistration.t),
       orderBy: orderBy?.call(EventRegistration.t),
       orderByList: orderByList?.call(EventRegistration.t),
-      orderDescending: // ignore: deprecated_member_use
-          orderDescending,
       limit: limit,
       offset: offset,
       transaction: transaction,
@@ -721,8 +737,6 @@ class EventRegistrationRepository {
     _i1.WhereExpressionBuilder<EventRegistrationTable>? where,
     int? offset,
     _i1.OrderByBuilder<EventRegistrationTable>? orderBy,
-    @Deprecated('Use desc() on the orderBy column instead.')
-    bool orderDescending = false,
     _i1.OrderByListBuilder<EventRegistrationTable>? orderByList,
     _i1.Transaction? transaction,
     EventRegistrationInclude? include,
@@ -733,8 +747,6 @@ class EventRegistrationRepository {
       where: where?.call(EventRegistration.t),
       orderBy: orderBy?.call(EventRegistration.t),
       orderByList: orderByList?.call(EventRegistration.t),
-      orderDescending: // ignore: deprecated_member_use
-          orderDescending,
       offset: offset,
       transaction: transaction,
       include: include,
@@ -944,8 +956,6 @@ class EventRegistrationRepository {
     int? offset,
     _i1.OrderByBuilder<EventRegistrationTable>? orderBy,
     _i1.OrderByListBuilder<EventRegistrationTable>? orderByList,
-    @Deprecated('Use desc() on the orderBy column instead.')
-    bool orderDescending = false,
     _i1.Transaction? transaction,
     bool noReturn = false,
   }) async {
@@ -956,8 +966,6 @@ class EventRegistrationRepository {
       offset: offset,
       orderBy: orderBy?.call(EventRegistration.t),
       orderByList: orderByList?.call(EventRegistration.t),
-      orderDescending: // ignore: deprecated_member_use
-          orderDescending,
       transaction: transaction,
       noReturn: noReturn,
     );
@@ -978,8 +986,6 @@ class EventRegistrationRepository {
     _i1.DatabaseSession session,
     List<EventRegistration> rows, {
     _i1.OrderByBuilder<EventRegistrationTable>? orderBy,
-    @Deprecated('Use desc() on the orderBy column instead.')
-    bool orderDescending = false,
     _i1.OrderByListBuilder<EventRegistrationTable>? orderByList,
     _i1.Transaction? transaction,
     bool noReturn = false,
@@ -988,8 +994,6 @@ class EventRegistrationRepository {
       rows,
       orderBy: orderBy?.call(EventRegistration.t),
       orderByList: orderByList?.call(EventRegistration.t),
-      orderDescending: // ignore: deprecated_member_use
-          orderDescending,
       transaction: transaction,
       noReturn: noReturn,
     );
@@ -1019,8 +1023,6 @@ class EventRegistrationRepository {
     _i1.DatabaseSession session, {
     required _i1.WhereExpressionBuilder<EventRegistrationTable> where,
     _i1.OrderByBuilder<EventRegistrationTable>? orderBy,
-    @Deprecated('Use desc() on the orderBy column instead.')
-    bool orderDescending = false,
     _i1.OrderByListBuilder<EventRegistrationTable>? orderByList,
     _i1.Transaction? transaction,
     bool noReturn = false,
@@ -1029,8 +1031,6 @@ class EventRegistrationRepository {
       where: where(EventRegistration.t),
       orderBy: orderBy?.call(EventRegistration.t),
       orderByList: orderByList?.call(EventRegistration.t),
-      orderDescending: // ignore: deprecated_member_use
-          orderDescending,
       transaction: transaction,
       noReturn: noReturn,
     );

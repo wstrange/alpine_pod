@@ -20,8 +20,7 @@ class RegistrationEndpoint extends Endpoint {
     final lastWaitlisted = await EventRegistration.db.findFirstRow(
       session,
       where: (t) => t.eventId.equals(eventId),
-      orderBy: (t) => t.waitlistPosition,
-      orderDescending: true,
+      orderBy: (t) => t.waitlistPosition.desc(),
     );
     return (lastWaitlisted?.waitlistPosition ?? 0) + 1;
   }

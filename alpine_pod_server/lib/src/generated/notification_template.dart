@@ -125,8 +125,6 @@ abstract class NotificationTemplate
     int? limit,
     int? offset,
     _i1.OrderByBuilder<NotificationTemplateTable>? orderBy,
-    @Deprecated('Use desc() on the orderBy column instead.')
-    bool orderDescending = false,
     _i1.OrderByListBuilder<NotificationTemplateTable>? orderByList,
     NotificationTemplateInclude? include,
   }) {
@@ -135,8 +133,6 @@ abstract class NotificationTemplate
       limit: limit,
       offset: offset,
       orderBy: orderBy?.call(NotificationTemplate.t),
-      orderDescending: // ignore: deprecated_member_use_from_same_package
-          orderDescending,
       orderByList: orderByList?.call(NotificationTemplate.t),
       include: include,
     );
@@ -306,8 +302,6 @@ class NotificationTemplateIncludeList extends _i1.IncludeList {
     super.limit,
     super.offset,
     super.orderBy,
-    @Deprecated('Use desc() on the orderBy column instead.')
-    super.orderDescending,
     super.orderByList,
     super.include,
   }) {
@@ -352,8 +346,6 @@ class NotificationTemplateRepository {
     int? limit,
     int? offset,
     _i1.OrderByBuilder<NotificationTemplateTable>? orderBy,
-    @Deprecated('Use desc() on the orderBy column instead.')
-    bool orderDescending = false,
     _i1.OrderByListBuilder<NotificationTemplateTable>? orderByList,
     _i1.Transaction? transaction,
     _i1.LockMode? lockMode,
@@ -363,8 +355,6 @@ class NotificationTemplateRepository {
       where: where?.call(NotificationTemplate.t),
       orderBy: orderBy?.call(NotificationTemplate.t),
       orderByList: orderByList?.call(NotificationTemplate.t),
-      orderDescending: // ignore: deprecated_member_use
-          orderDescending,
       limit: limit,
       offset: offset,
       transaction: transaction,
@@ -395,8 +385,6 @@ class NotificationTemplateRepository {
     _i1.WhereExpressionBuilder<NotificationTemplateTable>? where,
     int? offset,
     _i1.OrderByBuilder<NotificationTemplateTable>? orderBy,
-    @Deprecated('Use desc() on the orderBy column instead.')
-    bool orderDescending = false,
     _i1.OrderByListBuilder<NotificationTemplateTable>? orderByList,
     _i1.Transaction? transaction,
     _i1.LockMode? lockMode,
@@ -406,8 +394,6 @@ class NotificationTemplateRepository {
       where: where?.call(NotificationTemplate.t),
       orderBy: orderBy?.call(NotificationTemplate.t),
       orderByList: orderByList?.call(NotificationTemplate.t),
-      orderDescending: // ignore: deprecated_member_use
-          orderDescending,
       offset: offset,
       transaction: transaction,
       lockMode: lockMode,
@@ -614,8 +600,6 @@ class NotificationTemplateRepository {
     int? offset,
     _i1.OrderByBuilder<NotificationTemplateTable>? orderBy,
     _i1.OrderByListBuilder<NotificationTemplateTable>? orderByList,
-    @Deprecated('Use desc() on the orderBy column instead.')
-    bool orderDescending = false,
     _i1.Transaction? transaction,
     bool noReturn = false,
   }) async {
@@ -626,8 +610,6 @@ class NotificationTemplateRepository {
       offset: offset,
       orderBy: orderBy?.call(NotificationTemplate.t),
       orderByList: orderByList?.call(NotificationTemplate.t),
-      orderDescending: // ignore: deprecated_member_use
-          orderDescending,
       transaction: transaction,
       noReturn: noReturn,
     );
@@ -648,8 +630,6 @@ class NotificationTemplateRepository {
     _i1.DatabaseSession session,
     List<NotificationTemplate> rows, {
     _i1.OrderByBuilder<NotificationTemplateTable>? orderBy,
-    @Deprecated('Use desc() on the orderBy column instead.')
-    bool orderDescending = false,
     _i1.OrderByListBuilder<NotificationTemplateTable>? orderByList,
     _i1.Transaction? transaction,
     bool noReturn = false,
@@ -658,8 +638,6 @@ class NotificationTemplateRepository {
       rows,
       orderBy: orderBy?.call(NotificationTemplate.t),
       orderByList: orderByList?.call(NotificationTemplate.t),
-      orderDescending: // ignore: deprecated_member_use
-          orderDescending,
       transaction: transaction,
       noReturn: noReturn,
     );
@@ -689,8 +667,6 @@ class NotificationTemplateRepository {
     _i1.DatabaseSession session, {
     required _i1.WhereExpressionBuilder<NotificationTemplateTable> where,
     _i1.OrderByBuilder<NotificationTemplateTable>? orderBy,
-    @Deprecated('Use desc() on the orderBy column instead.')
-    bool orderDescending = false,
     _i1.OrderByListBuilder<NotificationTemplateTable>? orderByList,
     _i1.Transaction? transaction,
     bool noReturn = false,
@@ -699,8 +675,6 @@ class NotificationTemplateRepository {
       where: where(NotificationTemplate.t),
       orderBy: orderBy?.call(NotificationTemplate.t),
       orderByList: orderByList?.call(NotificationTemplate.t),
-      orderDescending: // ignore: deprecated_member_use
-          orderDescending,
       transaction: transaction,
       noReturn: noReturn,
     );

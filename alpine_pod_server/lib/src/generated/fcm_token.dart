@@ -98,8 +98,6 @@ abstract class FcmToken
     int? limit,
     int? offset,
     _i1.OrderByBuilder<FcmTokenTable>? orderBy,
-    @Deprecated('Use desc() on the orderBy column instead.')
-    bool orderDescending = false,
     _i1.OrderByListBuilder<FcmTokenTable>? orderByList,
     FcmTokenInclude? include,
   }) {
@@ -108,8 +106,6 @@ abstract class FcmToken
       limit: limit,
       offset: offset,
       orderBy: orderBy?.call(FcmToken.t),
-      orderDescending: // ignore: deprecated_member_use_from_same_package
-          orderDescending,
       orderByList: orderByList?.call(FcmToken.t),
       include: include,
     );
@@ -226,8 +222,6 @@ class FcmTokenIncludeList extends _i1.IncludeList {
     super.limit,
     super.offset,
     super.orderBy,
-    @Deprecated('Use desc() on the orderBy column instead.')
-    super.orderDescending,
     super.orderByList,
     super.include,
   }) {
@@ -272,8 +266,6 @@ class FcmTokenRepository {
     int? limit,
     int? offset,
     _i1.OrderByBuilder<FcmTokenTable>? orderBy,
-    @Deprecated('Use desc() on the orderBy column instead.')
-    bool orderDescending = false,
     _i1.OrderByListBuilder<FcmTokenTable>? orderByList,
     _i1.Transaction? transaction,
     _i1.LockMode? lockMode,
@@ -283,8 +275,6 @@ class FcmTokenRepository {
       where: where?.call(FcmToken.t),
       orderBy: orderBy?.call(FcmToken.t),
       orderByList: orderByList?.call(FcmToken.t),
-      orderDescending: // ignore: deprecated_member_use
-          orderDescending,
       limit: limit,
       offset: offset,
       transaction: transaction,
@@ -315,8 +305,6 @@ class FcmTokenRepository {
     _i1.WhereExpressionBuilder<FcmTokenTable>? where,
     int? offset,
     _i1.OrderByBuilder<FcmTokenTable>? orderBy,
-    @Deprecated('Use desc() on the orderBy column instead.')
-    bool orderDescending = false,
     _i1.OrderByListBuilder<FcmTokenTable>? orderByList,
     _i1.Transaction? transaction,
     _i1.LockMode? lockMode,
@@ -326,8 +314,6 @@ class FcmTokenRepository {
       where: where?.call(FcmToken.t),
       orderBy: orderBy?.call(FcmToken.t),
       orderByList: orderByList?.call(FcmToken.t),
-      orderDescending: // ignore: deprecated_member_use
-          orderDescending,
       offset: offset,
       transaction: transaction,
       lockMode: lockMode,
@@ -532,8 +518,6 @@ class FcmTokenRepository {
     int? offset,
     _i1.OrderByBuilder<FcmTokenTable>? orderBy,
     _i1.OrderByListBuilder<FcmTokenTable>? orderByList,
-    @Deprecated('Use desc() on the orderBy column instead.')
-    bool orderDescending = false,
     _i1.Transaction? transaction,
     bool noReturn = false,
   }) async {
@@ -544,8 +528,6 @@ class FcmTokenRepository {
       offset: offset,
       orderBy: orderBy?.call(FcmToken.t),
       orderByList: orderByList?.call(FcmToken.t),
-      orderDescending: // ignore: deprecated_member_use
-          orderDescending,
       transaction: transaction,
       noReturn: noReturn,
     );
@@ -566,8 +548,6 @@ class FcmTokenRepository {
     _i1.DatabaseSession session,
     List<FcmToken> rows, {
     _i1.OrderByBuilder<FcmTokenTable>? orderBy,
-    @Deprecated('Use desc() on the orderBy column instead.')
-    bool orderDescending = false,
     _i1.OrderByListBuilder<FcmTokenTable>? orderByList,
     _i1.Transaction? transaction,
     bool noReturn = false,
@@ -576,8 +556,6 @@ class FcmTokenRepository {
       rows,
       orderBy: orderBy?.call(FcmToken.t),
       orderByList: orderByList?.call(FcmToken.t),
-      orderDescending: // ignore: deprecated_member_use
-          orderDescending,
       transaction: transaction,
       noReturn: noReturn,
     );
@@ -607,8 +585,6 @@ class FcmTokenRepository {
     _i1.DatabaseSession session, {
     required _i1.WhereExpressionBuilder<FcmTokenTable> where,
     _i1.OrderByBuilder<FcmTokenTable>? orderBy,
-    @Deprecated('Use desc() on the orderBy column instead.')
-    bool orderDescending = false,
     _i1.OrderByListBuilder<FcmTokenTable>? orderByList,
     _i1.Transaction? transaction,
     bool noReturn = false,
@@ -617,8 +593,6 @@ class FcmTokenRepository {
       where: where(FcmToken.t),
       orderBy: orderBy?.call(FcmToken.t),
       orderByList: orderByList?.call(FcmToken.t),
-      orderDescending: // ignore: deprecated_member_use
-          orderDescending,
       transaction: transaction,
       noReturn: noReturn,
     );

@@ -142,8 +142,6 @@ abstract class EventManager
     int? limit,
     int? offset,
     _i1.OrderByBuilder<EventManagerTable>? orderBy,
-    @Deprecated('Use desc() on the orderBy column instead.')
-    bool orderDescending = false,
     _i1.OrderByListBuilder<EventManagerTable>? orderByList,
     EventManagerInclude? include,
   }) {
@@ -152,8 +150,6 @@ abstract class EventManager
       limit: limit,
       offset: offset,
       orderBy: orderBy?.call(EventManager.t),
-      orderDescending: // ignore: deprecated_member_use_from_same_package
-          orderDescending,
       orderByList: orderByList?.call(EventManager.t),
       include: include,
     );
@@ -352,8 +348,6 @@ class EventManagerIncludeList extends _i1.IncludeList {
     super.limit,
     super.offset,
     super.orderBy,
-    @Deprecated('Use desc() on the orderBy column instead.')
-    super.orderDescending,
     super.orderByList,
     super.include,
   }) {
@@ -400,8 +394,6 @@ class EventManagerRepository {
     int? limit,
     int? offset,
     _i1.OrderByBuilder<EventManagerTable>? orderBy,
-    @Deprecated('Use desc() on the orderBy column instead.')
-    bool orderDescending = false,
     _i1.OrderByListBuilder<EventManagerTable>? orderByList,
     _i1.Transaction? transaction,
     EventManagerInclude? include,
@@ -412,8 +404,6 @@ class EventManagerRepository {
       where: where?.call(EventManager.t),
       orderBy: orderBy?.call(EventManager.t),
       orderByList: orderByList?.call(EventManager.t),
-      orderDescending: // ignore: deprecated_member_use
-          orderDescending,
       limit: limit,
       offset: offset,
       transaction: transaction,
@@ -445,8 +435,6 @@ class EventManagerRepository {
     _i1.WhereExpressionBuilder<EventManagerTable>? where,
     int? offset,
     _i1.OrderByBuilder<EventManagerTable>? orderBy,
-    @Deprecated('Use desc() on the orderBy column instead.')
-    bool orderDescending = false,
     _i1.OrderByListBuilder<EventManagerTable>? orderByList,
     _i1.Transaction? transaction,
     EventManagerInclude? include,
@@ -457,8 +445,6 @@ class EventManagerRepository {
       where: where?.call(EventManager.t),
       orderBy: orderBy?.call(EventManager.t),
       orderByList: orderByList?.call(EventManager.t),
-      orderDescending: // ignore: deprecated_member_use
-          orderDescending,
       offset: offset,
       transaction: transaction,
       include: include,
@@ -666,8 +652,6 @@ class EventManagerRepository {
     int? offset,
     _i1.OrderByBuilder<EventManagerTable>? orderBy,
     _i1.OrderByListBuilder<EventManagerTable>? orderByList,
-    @Deprecated('Use desc() on the orderBy column instead.')
-    bool orderDescending = false,
     _i1.Transaction? transaction,
     bool noReturn = false,
   }) async {
@@ -678,8 +662,6 @@ class EventManagerRepository {
       offset: offset,
       orderBy: orderBy?.call(EventManager.t),
       orderByList: orderByList?.call(EventManager.t),
-      orderDescending: // ignore: deprecated_member_use
-          orderDescending,
       transaction: transaction,
       noReturn: noReturn,
     );
@@ -700,8 +682,6 @@ class EventManagerRepository {
     _i1.DatabaseSession session,
     List<EventManager> rows, {
     _i1.OrderByBuilder<EventManagerTable>? orderBy,
-    @Deprecated('Use desc() on the orderBy column instead.')
-    bool orderDescending = false,
     _i1.OrderByListBuilder<EventManagerTable>? orderByList,
     _i1.Transaction? transaction,
     bool noReturn = false,
@@ -710,8 +690,6 @@ class EventManagerRepository {
       rows,
       orderBy: orderBy?.call(EventManager.t),
       orderByList: orderByList?.call(EventManager.t),
-      orderDescending: // ignore: deprecated_member_use
-          orderDescending,
       transaction: transaction,
       noReturn: noReturn,
     );
@@ -741,8 +719,6 @@ class EventManagerRepository {
     _i1.DatabaseSession session, {
     required _i1.WhereExpressionBuilder<EventManagerTable> where,
     _i1.OrderByBuilder<EventManagerTable>? orderBy,
-    @Deprecated('Use desc() on the orderBy column instead.')
-    bool orderDescending = false,
     _i1.OrderByListBuilder<EventManagerTable>? orderByList,
     _i1.Transaction? transaction,
     bool noReturn = false,
@@ -751,8 +727,6 @@ class EventManagerRepository {
       where: where(EventManager.t),
       orderBy: orderBy?.call(EventManager.t),
       orderByList: orderByList?.call(EventManager.t),
-      orderDescending: // ignore: deprecated_member_use
-          orderDescending,
       transaction: transaction,
       noReturn: noReturn,
     );

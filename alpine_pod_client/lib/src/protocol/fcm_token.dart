@@ -12,7 +12,8 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 
-abstract class FcmToken implements _i1.SerializableModel {
+abstract class FcmToken
+    implements _i1.SerializableModel, _i1.ProtocolSerialization {
   FcmToken._({
     _i1.UuidValue? id,
     required this.token,
@@ -61,6 +62,17 @@ abstract class FcmToken implements _i1.SerializableModel {
   });
   @override
   Map<String, dynamic> toJson() {
+    return {
+      '__className__': 'FcmToken',
+      'id': id.toJson(),
+      'token': token,
+      if (deviceId != null) 'deviceId': deviceId,
+      'updatedAt': updatedAt.toJson(),
+    };
+  }
+
+  @override
+  Map<String, dynamic> toJsonForProtocol() {
     return {
       '__className__': 'FcmToken',
       'id': id.toJson(),

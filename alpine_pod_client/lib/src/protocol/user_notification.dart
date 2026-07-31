@@ -14,7 +14,8 @@ import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import 'notification.dart' as _i2;
 import 'package:alpine_pod_client/src/protocol/protocol.dart' as _i3;
 
-abstract class UserNotification implements _i1.SerializableModel {
+abstract class UserNotification
+    implements _i1.SerializableModel, _i1.ProtocolSerialization {
   UserNotification._({
     _i1.UuidValue? id,
     required this.notificationId,
@@ -108,6 +109,22 @@ abstract class UserNotification implements _i1.SerializableModel {
       'id': id.toJson(),
       'notificationId': notificationId.toJson(),
       if (notification != null) 'notification': notification?.toJson(),
+      'isRead': isRead,
+      'isSeen': isSeen,
+      if (readAt != null) 'readAt': readAt?.toJson(),
+      'createdAt': createdAt.toJson(),
+      'updatedAt': updatedAt.toJson(),
+    };
+  }
+
+  @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'UserNotification',
+      'id': id.toJson(),
+      'notificationId': notificationId.toJson(),
+      if (notification != null)
+        'notification': notification?.toJsonForProtocol(),
       'isRead': isRead,
       'isSeen': isSeen,
       if (readAt != null) 'readAt': readAt?.toJson(),
