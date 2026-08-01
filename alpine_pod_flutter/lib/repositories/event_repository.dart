@@ -6,12 +6,9 @@ import '../services/sync_service.dart';
 import '../signals.dart';
 
 final _log = Logger('EventRepository');
+final eventRepository = EventRepository();
 
 class EventRepository {
-  static final EventRepository _instance = EventRepository._internal();
-  factory EventRepository() => _instance;
-  EventRepository._internal();
-
   /// Reads events from the local SQLite cache.
   /// If online and cache is empty, triggers a sync first.
   Future<List<Event>> listEvents(
@@ -74,11 +71,7 @@ class EventRepository {
   }
 
   /// Creates a new event via the server API, then syncs to update local cache.
-  Future<Event> createEvent(
-    Event event, {
-    List<UuidValue>? additionalManagerIds,
-    bool notifyNewEvent = true,
-  }) async {
+  Future<Event> createEvent(Event event, {List<UuidValue>? additionalManagerIds, bool notifyNewEvent = true}) async {
     if (!isOnlineSignal.value) {
       throw Exception('You are currently offline. Event creation requires an internet connection.');
     }
@@ -145,5 +138,3 @@ class EventRepository {
     return registration;
   }
 }
-
-final eventRepository = EventRepository();

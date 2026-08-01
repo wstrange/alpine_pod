@@ -6,11 +6,9 @@ import '../signals.dart';
 
 final _log = Logger('NotificationRepository');
 
-class NotificationRepository {
-  static final NotificationRepository _instance = NotificationRepository._internal();
-  factory NotificationRepository() => _instance;
-  NotificationRepository._internal();
+final notificationRepository = NotificationRepository();
 
+class NotificationRepository {
   /// Gets notifications feed from server API.
   Future<List<UserNotification>> getMyFeed({int limit = 30, int offset = 0}) async {
     if (isOnlineSignal.value) {
@@ -42,5 +40,3 @@ class NotificationRepository {
     return null;
   }
 }
-
-final notificationRepository = NotificationRepository();

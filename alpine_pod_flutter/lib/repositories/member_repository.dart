@@ -6,12 +6,9 @@ import '../services/sync_service.dart';
 import '../signals.dart';
 
 final _log = Logger('MemberRepository');
+final memberRepository = MemberRepository();
 
 class MemberRepository {
-  static final MemberRepository _instance = MemberRepository._internal();
-  factory MemberRepository() => _instance;
-  MemberRepository._internal();
-
   /// Gets the member profile for the current user from local cache.
   Future<Member?> getCurrentMember() async {
     try {
@@ -30,10 +27,7 @@ class MemberRepository {
   /// Gets all section memberships for the current user from local cache.
   Future<List<SectionMembership>> getAllMySectionMemberships() async {
     try {
-      final memberships = await SectionMembership.db.find(
-        dbSession,
-        where: (t) => Constant.bool(true),
-      );
+      final memberships = await SectionMembership.db.find(dbSession, where: (t) => Constant.bool(true));
       if (memberships.isNotEmpty || !isOnlineSignal.value) {
         return memberships;
       }
@@ -70,5 +64,3 @@ class MemberRepository {
     return member;
   }
 }
-
-final memberRepository = MemberRepository();

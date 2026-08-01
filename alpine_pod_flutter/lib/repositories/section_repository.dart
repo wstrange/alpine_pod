@@ -5,19 +5,13 @@ import '../services/sync_service.dart';
 import '../signals.dart';
 
 final _log = Logger('SectionRepository');
+final sectionRepository = SectionRepository();
 
 class SectionRepository {
-  static final SectionRepository _instance = SectionRepository._internal();
-  factory SectionRepository() => _instance;
-  SectionRepository._internal();
-
   /// Gets all sections from local SQLite cache, or syncs from server if online.
   Future<List<Section>> listSections() async {
     try {
-      final cachedSections = await Section.db.find(
-        dbSession,
-        orderBy: (t) => t.name,
-      );
+      final cachedSections = await Section.db.find(dbSession, orderBy: (t) => t.name);
       if (cachedSections.isNotEmpty || !isOnlineSignal.value) {
         return cachedSections;
       }
@@ -55,5 +49,3 @@ class SectionRepository {
     return null;
   }
 }
-
-final sectionRepository = SectionRepository();
