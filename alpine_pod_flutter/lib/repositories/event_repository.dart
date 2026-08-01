@@ -18,7 +18,10 @@ class EventRepository {
     bool? onlyMyEvents,
   ) async {
     try {
-      // Query local cache first
+      final currentMember = currentMemberSignal.value;
+      final memberId = currentMember?.id;
+
+      // Query local cache first matching server logic
       final cachedEvents = await Event.db.find(
         dbSession,
         where: (t) {
@@ -32,9 +35,27 @@ class EventRepository {
           if (endTime != null) {
             where = where & (t.startTime <= endTime);
           }
+
+          if (onlyMyEvents == true && memberId != null) {
+            where = where &
+                (t.eventManagers.any((m) => m.memberId.equals(memberId)) |
+                    (t.eventRegistrations.any((r) => r.memberId.equals(memberId)) &
+                        t.published.equals(true)));
+          } else {
+            where = where & t.published.equals(true);
+          }
+
           return where;
         },
         orderBy: (t) => t.startTime,
+        include: Event.include(
+          eventManagers: EventManager.includeList(
+            include: EventManager.include(member: Member.include()),
+          ),
+          eventRegistrations: EventRegistration.includeList(
+            include: EventRegistration.include(member: Member.include()),
+          ),
+        ),
       );
 
       if (cachedEvents.isNotEmpty || !isOnlineSignal.value) {
@@ -58,7 +79,18 @@ class EventRepository {
   /// Gets a single event by ID from cache or server.
   Future<Event?> getEvent(UuidValue id) async {
     try {
-      final cached = await Event.db.findById(dbSession, id);
+      final cached = await Event.db.findById(
+        dbSession,
+        id,
+        include: Event.include(
+          eventManagers: EventManager.includeList(
+            include: EventManager.include(member: Member.include()),
+          ),
+          eventRegistrations: EventRegistration.includeList(
+            include: EventRegistration.include(member: Member.include()),
+          ),
+        ),
+      );
       if (cached != null) return cached;
     } catch (e) {
       _log.warning('Local cache lookup failed for event $id: $e');

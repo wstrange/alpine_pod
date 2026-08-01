@@ -36,24 +36,14 @@ class EventCard extends StatelessWidget {
                     CircleAvatar(
                       radius: 20,
                       backgroundColor: primaryColor.withValues(alpha: 0.1),
-                      child: Icon(
-                        Icons.campaign,
-                        color: primaryColor,
-                        size: 20,
-                      ),
+                      child: Icon(Icons.campaign, color: primaryColor, size: 20),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            event.title,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                          Text(event.title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                           const SizedBox(height: 2),
                           Wrap(
                             crossAxisAlignment: WrapCrossAlignment.center,
@@ -61,21 +51,11 @@ class EventCard extends StatelessWidget {
                             runSpacing: 4,
                             children: [
                               Text(
-                                formatEventRange(
-                                  event.startTime,
-                                  event.endTime,
-                                ),
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: primaryColor,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                                formatEventRange(event.startTime, event.endTime),
+                                style: TextStyle(fontSize: 12, color: primaryColor, fontWeight: FontWeight.bold),
                               ),
                               Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                  vertical: 2,
-                                ),
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                                 decoration: BoxDecoration(
                                   color: Colors.blueGrey.withValues(alpha: 0.1),
                                   borderRadius: BorderRadius.circular(12),
@@ -91,40 +71,26 @@ class EventCard extends StatelessWidget {
                               ),
                               if (isPast)
                                 Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 6,
-                                    vertical: 2,
-                                  ),
+                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                                   decoration: BoxDecoration(
                                     color: Colors.grey.withValues(alpha: 0.2),
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: const Text(
                                     'PAST',
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.grey,
-                                    ),
+                                    style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.grey),
                                   ),
                                 ),
                               if (!event.published)
                                 Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 6,
-                                    vertical: 2,
-                                  ),
+                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                                   decoration: BoxDecoration(
                                     color: Colors.orange.withValues(alpha: 0.2),
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: const Text(
                                     'DRAFT',
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.orange,
-                                    ),
+                                    style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.orange),
                                   ),
                                 ),
                             ],
@@ -143,10 +109,7 @@ class EventCard extends StatelessWidget {
                   event.description,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: Colors.black.withValues(alpha: 0.6),
-                  ),
+                  style: TextStyle(fontSize: 13, color: Colors.black.withValues(alpha: 0.6)),
                 ),
                 const SizedBox(height: 10),
                 _ParticipantSummary(event: event, isPast: isPast),
@@ -167,7 +130,7 @@ class _ParticipantSummary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final registered = event.eventRegistrations!.length;
+    final registered = event.eventRegistrations?.length ?? 0;
     final max = event.maxParticipants;
     final isFull = max > 0 && registered >= max;
     final isNearlyFull = max > 0 && registered / max >= 0.8;
@@ -192,11 +155,7 @@ class _ParticipantSummary extends StatelessWidget {
         const SizedBox(width: 4),
         Text(
           spotsLabel,
-          style: TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-            color: color,
-          ),
+          style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: color),
         ),
         if (max > 0 && !isFull) ...[
           const SizedBox(width: 6),
