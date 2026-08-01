@@ -37,10 +37,10 @@ class EventRepository {
           }
 
           if (onlyMyEvents == true && memberId != null) {
-            where = where &
+            where =
+                where &
                 (t.eventManagers.any((m) => m.memberId.equals(memberId)) |
-                    (t.eventRegistrations.any((r) => r.memberId.equals(memberId)) &
-                        t.published.equals(true)));
+                    (t.eventRegistrations.any((r) => r.memberId.equals(memberId)) & t.published.equals(true)));
           } else {
             where = where & t.published.equals(true);
           }
@@ -49,9 +49,7 @@ class EventRepository {
         },
         orderBy: (t) => t.startTime,
         include: Event.include(
-          eventManagers: EventManager.includeList(
-            include: EventManager.include(member: Member.include()),
-          ),
+          eventManagers: EventManager.includeList(include: EventManager.include(member: Member.include())),
           eventRegistrations: EventRegistration.includeList(
             include: EventRegistration.include(member: Member.include()),
           ),
@@ -83,9 +81,7 @@ class EventRepository {
         dbSession,
         id,
         include: Event.include(
-          eventManagers: EventManager.includeList(
-            include: EventManager.include(member: Member.include()),
-          ),
+          eventManagers: EventManager.includeList(include: EventManager.include(member: Member.include())),
           eventRegistrations: EventRegistration.includeList(
             include: EventRegistration.include(member: Member.include()),
           ),
@@ -160,13 +156,61 @@ class EventRepository {
     final registration = await client.event.registerForEvent(eventId);
 
     // Refresh event cache
+    // todo: Better to fetch the event and update it directly???
+    await syncEvents(sectionId);
+
+    return registration;
+  }
+
+  Future<void> syncEvents(UuidValue? sectionId) async {
     if (sectionId != null) {
       final now = DateTime.now();
       final start = DateTime(now.year, now.month - 1, 1);
       final end = DateTime(now.year, now.month + 2, 0);
       await syncService.syncEvents(sectionId, start, end, false);
     }
+  }
 
+  Future<void> cancelRegistration(UuidValue registrationId, UuidValue memberId) async {
+    await client.registration.cancelRegistration(registrationId);
+
+    await EventRegistration.db.deleteWhere(dbSession, where: (t) => t.id.equals(registrationId));
+
+    await syncService.syncAll(currentSectionId: sectionSignal.value?.id);
+    currentEventsSignal.refresh();
+  }
+
+  /// Removes a member registration from an event via server API and refreshes cache.
+  Future<void> removeMemberFromEvent(UuidValue registrationId, {UuidValue? sectionId}) async {
+    if (!isOnlineSignal.value) {
+      throw Exception('You are currently offline. Participant updates require an internet connection.');
+    }
+
+    await client.eventManager.removeMemberFromEvent(registrationId);
+    await syncEvents(sectionId ?? sectionSignal.value?.id);
+    currentEventsSignal.refresh();
+  }
+
+  /// Approves a member registration for an event via server API and refreshes cache.
+  Future<void> approveRegistration(UuidValue registrationId, {UuidValue? sectionId}) async {
+    if (!isOnlineSignal.value) {
+      throw Exception('You are currently offline. Approving registration requires an internet connection.');
+    }
+
+    await client.eventManager.approveRegistration(registrationId);
+    await syncEvents(sectionId ?? sectionSignal.value?.id);
+    currentEventsSignal.refresh();
+  }
+
+  /// Adds a member to an event as a participant via server API and refreshes cache.
+  Future<EventRegistration> addMemberToEvent(UuidValue eventId, UuidValue memberId, {UuidValue? sectionId}) async {
+    if (!isOnlineSignal.value) {
+      throw Exception('You are currently offline. Adding participant requires an internet connection.');
+    }
+
+    final registration = await client.eventManager.addMemberToEvent(eventId, memberId);
+    await syncEvents(sectionId ?? sectionSignal.value?.id);
+    currentEventsSignal.refresh();
     return registration;
   }
 }

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:alpine_pod_client/alpine_pod_client.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import '../repositories/event_repository.dart';
 import '../signals.dart';
 import 'member_avatar.dart';
 import 'member_details_dialog.dart';
@@ -45,6 +46,13 @@ class EventParticipantsManager extends HookWidget {
           ],
         ),
         const SizedBox(height: 8),
+
+        if (confirmed.isEmpty && waitlisted.isEmpty)
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 8),
+            child: Text('No participants yet.', style: TextStyle(color: Colors.grey)),
+          ),
+
         if (confirmed.isNotEmpty) ...[
           Text('Confirmed (${confirmed.length})', style: Theme.of(context).textTheme.titleSmall),
           const SizedBox(height: 4),
@@ -53,6 +61,7 @@ class EventParticipantsManager extends HookWidget {
           ),
           const SizedBox(height: 8),
         ],
+
         if (waitlisted.isNotEmpty) ...[
           Text(
             'Waitlist – Pending Approval (${waitlisted.length})',
@@ -67,8 +76,6 @@ class EventParticipantsManager extends HookWidget {
             ),
           ),
         ],
-        if (confirmed.isEmpty && waitlisted.isEmpty)
-          const Padding(padding: EdgeInsets.symmetric(vertical: 8), child: Text('No participants yet.')),
       ],
     );
   }
@@ -97,10 +104,11 @@ class EventParticipantsManager extends HookWidget {
     if (confirmed != true || !context.mounted) return;
 
     try {
-      await client.eventManager.removeMemberFromEvent(reg.id!);
+
+
+      await eventRepository.removeMemberFromEvent(reg.id!, sectionId: event.sectionId);
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('$name removed from event.')));
-        currentEventsSignal.refresh();
         onRefresh();
       }
     } catch (e) {
@@ -116,10 +124,9 @@ class EventParticipantsManager extends HookWidget {
         : 'this participant';
 
     try {
-      await client.eventManager.approveRegistration(reg.id!);
+      await eventRepository.approveRegistration(reg.id!, sectionId: event.sectionId);
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('$name approved and confirmed.')));
-        currentEventsSignal.refresh();
         onRefresh();
       }
     } catch (e) {
@@ -136,7 +143,6 @@ class EventParticipantsManager extends HookWidget {
         event: event,
         alreadyRegisteredIds: {...confirmed.map((r) => r.memberId), ...waitlisted.map((r) => r.memberId)},
         onAdded: () {
-          currentEventsSignal.refresh();
           onRefresh();
         },
       ),
@@ -315,7 +321,7 @@ class _AddParticipantDialog extends HookWidget {
   ) async {
     isLoading.value = true;
     try {
-      await client.eventManager.addMemberToEvent(event.id, member.id);
+      await eventRepository.addMemberToEvent(event.id, member.id, sectionId: event.sectionId);
       onAdded();
       if (dialogContext.mounted) Navigator.of(dialogContext).pop();
       if (parentContext.mounted) {

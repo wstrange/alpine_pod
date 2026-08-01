@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:signals_flutter/signals_flutter.dart';
+import '../repositories/event_repository.dart';
 import '../signals.dart';
 import '../util.dart';
 import 'event_participants_manager.dart';
@@ -63,9 +64,9 @@ class EventView extends HookWidget {
       }
     }
 
-    Future<void> cancelRegistration(UuidValue registrationId) async {
+    Future<void> cancelRegistration(UuidValue registrationId, UuidValue memberId) async {
       try {
-        await client.registration.cancelRegistration(registrationId);
+        await eventRepository.cancelRegistration(registrationId, memberId);
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Registration cancelled.')));
           // Refresh global list; the useEffect subscription will bump refreshCount
@@ -334,7 +335,7 @@ class EventView extends HookWidget {
                           padding: const EdgeInsets.symmetric(vertical: 16.0),
                           child: isRegistered
                               ? ElevatedButton.icon(
-                                  onPressed: () => cancelRegistration(myRegistration.id!),
+                                  onPressed: () => cancelRegistration(myRegistration.id!, myRegistration.memberId),
                                   icon: const Icon(Icons.cancel_outlined),
                                   label: const Text('Cancel My Registration'),
                                   style: ElevatedButton.styleFrom(

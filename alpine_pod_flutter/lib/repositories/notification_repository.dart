@@ -1,7 +1,7 @@
 import 'package:alpine_pod_client/alpine_pod_client.dart';
 import 'package:logging/logging.dart';
 import '../services/connectivity_service.dart';
-import '../services/sync_service.dart';
+// import '../services/sync_service.dart';
 import '../signals.dart';
 
 final _log = Logger('NotificationRepository');
@@ -22,20 +22,22 @@ class NotificationRepository {
   }
 
   /// Gets user notification preferences from local cache or server.
+  /// TODO: For now always get from server
   Future<UserNotificationPreference?> getMyPreferences() async {
-    try {
-      final cached = await UserNotificationPreference.db.find(dbSession, limit: 1);
-      if (cached.isNotEmpty || !isOnlineSignal.value) {
-        return cached.first;
-      }
-    } catch (e) {
-      _log.warning('Failed to load notification preferences from local cache: $e');
-    }
+    // try {
+    //   final cached = await UserNotificationPreference.db.find(dbSession, limit: 1);
+    //   if (cached.isNotEmpty || !isOnlineSignal.value) {
+    //     return cached.first;
+    //   }
+    // } catch (e) {
+    //   _log.warning('Failed to load notification preferences from local cache: $e');
+    // }
 
     if (isOnlineSignal.value) {
-      await syncService.syncNotificationPreferences();
-      final cached = await UserNotificationPreference.db.find(dbSession, limit: 1);
-      if (cached.isNotEmpty) return cached.first;
+      // await syncService.syncNotificationPreferences();
+      // final cached = await UserNotificationPreference.db.find(dbSession, limit: 1);
+      // if (cached.isNotEmpty) return cached.first;
+      return await client.notification.getMyPreferences();
     }
     return null;
   }

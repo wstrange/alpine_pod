@@ -14,7 +14,7 @@ class SyncService {
   Timer? _periodicSyncTimer;
 
   /// Initializes periodic syncing every 5 minutes when online.
-  void initializePeriodicSync({Duration interval = const Duration(minutes: 5)}) {
+  void initializePeriodicSync({Duration interval = const Duration(minutes: 1)}) {
     _periodicSyncTimer?.cancel();
 
     // quick sync to start
