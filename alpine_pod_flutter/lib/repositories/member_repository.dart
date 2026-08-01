@@ -63,4 +63,56 @@ class MemberRepository {
     await syncService.syncCurrentMember();
     return member;
   }
+
+  /// Gets section members for a specific section ID from local cache or server.
+  Future<List<Member>> getSectionMembers({UuidValue? sectionId, String? filter, int limit = 50, int offset = 0}) async {
+    try {
+      if (sectionId != null) {
+        final memberships = await SectionMembership.db.find(
+          dbSession,
+          where: (t) {
+            Expression expr = t.sectionId.equals(sectionId);
+            if (filter != null && filter.isNotEmpty) {
+              expr =
+                  expr &
+                  (t.member.firstName.ilike('%$filter%') |
+                      t.member.lastName.ilike('%$filter%') |
+                      t.member.email.ilike('%$filter%'));
+            }
+            return expr;
+          },
+          include: SectionMembership.include(member: Member.include()),
+        );
+
+        final members = memberships.map((m) => m.member).whereType<Member>().toList();
+
+        if (members.isNotEmpty || !isOnlineSignal.value) {
+          return members;
+        }
+      } else {
+        final members = await Member.db.find(
+          dbSession,
+          where: (t) {
+            if (filter != null && filter.isNotEmpty) {
+              return t.firstName.ilike('%$filter%') | t.lastName.ilike('%$filter%') | t.email.ilike('%$filter%');
+            }
+            return Constant.bool(true);
+          },
+          limit: limit,
+          offset: offset,
+        );
+
+        if (members.isNotEmpty || !isOnlineSignal.value) {
+          return members;
+        }
+      }
+    } catch (e) {
+      _log.warning('Failed to load section members from local cache: $e');
+    }
+
+    if (isOnlineSignal.value) {
+      return await client.member.getSectionMembers(sectionId: sectionId, filter: filter, limit: limit, offset: offset);
+    }
+    return [];
+  }
 }
