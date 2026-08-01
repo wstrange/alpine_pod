@@ -23,7 +23,8 @@ database:
 
 apiServer:
   port: 8080
-  publicHost: warren.home
+  # publicHost: warren.home
+  publicHost: localhost
   publicPort: 8080
   publicScheme: http
 
@@ -37,7 +38,8 @@ insightsServer:
 # Configuration for the web server.
 webServer:
   port: 8082
-  publicHost: warren.home
+  # publicHost: warren.home
+  publicHost: localhost
   publicPort: 8082
   publicScheme: http
 

@@ -10,7 +10,6 @@ import 'package:serverpod_auth_idp_flutter_facebook/serverpod_auth_idp_flutter_f
 // import 'package:serverpod_auth_idp_flutter_facebook/serverpod_auth_idp_flutter_facebook.dart';
 import 'package:serverpod_flutter/serverpod_flutter.dart';
 
-
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
@@ -19,10 +18,9 @@ import 'router.dart';
 import 'services/connectivity_service.dart';
 import 'services/sync_service.dart';
 
-
-// final host = 'Warrens-MacBook-Air.local';
+final host = 'Warrens-MacBook-Air.local';
 // final host = 'localhost';
-final host = 'warren.home';
+// final host = 'warren.home';
 
 void main() async {
   Logger.root.level = Level.ALL;
@@ -46,19 +44,7 @@ void main() async {
 
   connectivityService.initialize(client.connectivityMonitor);
 
-  sessionManager = client.auth;
-  await sessionManager.initialize();
-
-  await sessionManager.initializeGoogleSignIn(
-    // Acording to docs, this is not needed. web/index.html should be enough.
-    clientId: '465372895035-35rlrpfdibu9r1435kg9vsoua640e50o.apps.googleusercontent.com',
-    // serverClientId:
-    //     '465372895035-35rlrpfdibu9r1435kg9vsoua640e50o.apps.googleusercontent.com',
-  );
-
-  await sessionManager.initializeFacebookSignIn(appId: '954559893876564');
-
-  // Initialize client-side SQLite database session
+  // Initialize client-side SQLite database session before initializing auth/signals
   try {
     final dbPath = await resolveDatabasePath('alpine_pod.db');
     dbSession = await client.createSession(dbPath, isDebugMode: kDebugMode);
@@ -67,9 +53,11 @@ void main() async {
     Logger.root.severe('Failed to initialize client database session', e, stack);
   }
 
+  sessionManager = client.auth;
+  await sessionManager.initialize();
+
   runApp(const MyApp());
 }
-
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

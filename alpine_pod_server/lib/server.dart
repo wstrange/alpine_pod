@@ -77,12 +77,13 @@ void run(List<String> args) async {
           transaction: transaction,
         );
       },
-
     ),
   );
 
   // Setup a default page at the web root.
   pod.webServer.addRoute(HelloRoute(), '/hello');
+  // Callback for PKCE OAuth flow
+  pod.webServer.addRoute(FlutterWebAuth2CallbackRoute(), '/auth/callback');
 
   // Start the server.
   await pod.start();
