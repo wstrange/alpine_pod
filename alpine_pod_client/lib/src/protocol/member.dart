@@ -31,6 +31,7 @@ abstract class Member
     required this.emergencyContactName,
     required this.emergencyContactPhone,
     this.medicalConditions,
+    this.profileImageUrl,
     DateTime? waiverSignedDate,
     this.certifications,
     DateTime? createdAt,
@@ -56,6 +57,7 @@ abstract class Member
     required String emergencyContactName,
     required String emergencyContactPhone,
     String? medicalConditions,
+    String? profileImageUrl,
     DateTime? waiverSignedDate,
     String? certifications,
     DateTime? createdAt,
@@ -80,6 +82,7 @@ abstract class Member
       emergencyContactPhone:
           jsonSerialization['emergencyContactPhone'] as String,
       medicalConditions: jsonSerialization['medicalConditions'] as String?,
+      profileImageUrl: jsonSerialization['profileImageUrl'] as String?,
       waiverSignedDate: jsonSerialization['waiverSignedDate'] == null
           ? null
           : _i2.DateTimeJsonExtension.fromJson(
@@ -132,6 +135,8 @@ abstract class Member
 
   String? medicalConditions;
 
+  String? profileImageUrl;
+
   DateTime waiverSignedDate;
 
   String? certifications;
@@ -162,6 +167,7 @@ abstract class Member
     String? emergencyContactName,
     String? emergencyContactPhone,
     String? medicalConditions,
+    String? profileImageUrl,
     DateTime? waiverSignedDate,
     String? certifications,
     DateTime? createdAt,
@@ -184,6 +190,7 @@ abstract class Member
       'emergencyContactName': emergencyContactName,
       'emergencyContactPhone': emergencyContactPhone,
       if (medicalConditions != null) 'medicalConditions': medicalConditions,
+      if (profileImageUrl != null) 'profileImageUrl': profileImageUrl,
       'waiverSignedDate': waiverSignedDate.toJson(),
       if (certifications != null) 'certifications': certifications,
       'createdAt': createdAt.toJson(),
@@ -210,6 +217,7 @@ abstract class Member
       'emergencyContactName': emergencyContactName,
       'emergencyContactPhone': emergencyContactPhone,
       if (medicalConditions != null) 'medicalConditions': medicalConditions,
+      if (profileImageUrl != null) 'profileImageUrl': profileImageUrl,
       'waiverSignedDate': waiverSignedDate.toJson(),
       if (certifications != null) 'certifications': certifications,
       'createdAt': createdAt.toJson(),
@@ -274,6 +282,7 @@ class _MemberImpl extends Member {
     required String emergencyContactName,
     required String emergencyContactPhone,
     String? medicalConditions,
+    String? profileImageUrl,
     DateTime? waiverSignedDate,
     String? certifications,
     DateTime? createdAt,
@@ -292,6 +301,7 @@ class _MemberImpl extends Member {
          emergencyContactName: emergencyContactName,
          emergencyContactPhone: emergencyContactPhone,
          medicalConditions: medicalConditions,
+         profileImageUrl: profileImageUrl,
          waiverSignedDate: waiverSignedDate,
          certifications: certifications,
          createdAt: createdAt,
@@ -316,6 +326,7 @@ class _MemberImpl extends Member {
     String? emergencyContactName,
     String? emergencyContactPhone,
     Object? medicalConditions = _Undefined,
+    Object? profileImageUrl = _Undefined,
     DateTime? waiverSignedDate,
     Object? certifications = _Undefined,
     DateTime? createdAt,
@@ -338,6 +349,9 @@ class _MemberImpl extends Member {
       medicalConditions: medicalConditions is String?
           ? medicalConditions
           : this.medicalConditions,
+      profileImageUrl: profileImageUrl is String?
+          ? profileImageUrl
+          : this.profileImageUrl,
       waiverSignedDate: waiverSignedDate ?? this.waiverSignedDate,
       certifications: certifications is String?
           ? certifications
@@ -411,6 +425,12 @@ class MemberUpdateTable extends _i1.UpdateTable<MemberTable> {
         value,
       );
 
+  _i1.ColumnValue<String, String> profileImageUrl(String? value) =>
+      _i1.ColumnValue(
+        table.profileImageUrl,
+        value,
+      );
+
   _i1.ColumnValue<DateTime, DateTime> waiverSignedDate(DateTime value) =>
       _i1.ColumnValue(
         table.waiverSignedDate,
@@ -480,6 +500,10 @@ class MemberTable extends _i1.Table<_i2.UuidValue> {
       'medicalConditions',
       this,
     );
+    profileImageUrl = _i1.ColumnString(
+      'profileImageUrl',
+      this,
+    );
     waiverSignedDate = _i1.ColumnDateTime(
       'waiverSignedDate',
       this,
@@ -522,6 +546,8 @@ class MemberTable extends _i1.Table<_i2.UuidValue> {
   late final _i1.ColumnString emergencyContactPhone;
 
   late final _i1.ColumnString medicalConditions;
+
+  late final _i1.ColumnString profileImageUrl;
 
   late final _i1.ColumnDateTime waiverSignedDate;
 
@@ -616,6 +642,7 @@ class MemberTable extends _i1.Table<_i2.UuidValue> {
     emergencyContactName,
     emergencyContactPhone,
     medicalConditions,
+    profileImageUrl,
     waiverSignedDate,
     certifications,
     createdAt,

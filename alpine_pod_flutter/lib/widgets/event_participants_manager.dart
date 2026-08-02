@@ -104,8 +104,6 @@ class EventParticipantsManager extends HookWidget {
     if (confirmed != true || !context.mounted) return;
 
     try {
-
-
       await eventRepository.removeMemberFromEvent(reg.id!, sectionId: event.sectionId);
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('$name removed from event.')));
@@ -161,16 +159,16 @@ class _ParticipantTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final member = registration.member;
-    final name = member != null ? member.displayName ?? '${member.firstName} ${member.lastName}' : 'Unknown Member';
+    final member = registration.member!;
+    final name = member.displayName ?? '${member.firstName} ${member.lastName}';
 
     return ListTile(
       dense: true,
       contentPadding: const EdgeInsets.symmetric(horizontal: 4),
       leading: MemberAvatar(member: member, radius: 18, initialsStyle: const TextStyle(fontSize: 14)),
       title: Text(name, style: const TextStyle(fontSize: 14)),
-      subtitle: member != null ? Text(member.email, style: const TextStyle(fontSize: 12)) : null,
-      onTap: member != null ? () => showMemberDetailsDialog(context, member) : null,
+      subtitle: Text(member.email, style: const TextStyle(fontSize: 12)),
+      onTap: () => showMemberDetailsDialog(context, member),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [

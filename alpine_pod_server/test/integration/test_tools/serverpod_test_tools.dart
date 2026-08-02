@@ -28,12 +28,12 @@ import 'package:alpine_pod_server/src/generated/event_manager.dart' as _i11;
 import 'package:alpine_pod_server/src/generated/event_template.dart' as _i12;
 import 'package:alpine_pod_server/src/generated/section_membership.dart'
     as _i13;
-import 'package:alpine_pod_server/src/generated/user_notification.dart' as _i14;
+import 'dart:typed_data' as _i14;
+import 'package:alpine_pod_server/src/generated/user_notification.dart' as _i15;
 import 'package:alpine_pod_server/src/generated/user_notification_preference.dart'
-    as _i15;
-import 'package:alpine_pod_server/src/generated/registration_status.dart'
     as _i16;
-import 'dart:typed_data' as _i17;
+import 'package:alpine_pod_server/src/generated/registration_status.dart'
+    as _i17;
 import 'package:alpine_pod_server/src/generated/future_calls.dart' as _i18;
 import 'package:alpine_pod_server/src/generated/protocol.dart';
 import 'package:alpine_pod_server/src/generated/endpoints.dart';
@@ -1886,37 +1886,6 @@ class _MemberEndpoint {
     });
   }
 
-  _i4.Future<String?> getMemberProfileImageUrl(
-    _i1.TestSessionBuilder sessionBuilder,
-    _i2.UuidValue memberId,
-  ) async {
-    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
-      var _localUniqueSession =
-          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
-            endpoint: 'member',
-            method: 'getMemberProfileImageUrl',
-          );
-      try {
-        var _localCallContext = await _endpointDispatch.getMethodCallContext(
-          createSessionCallback: (_) => _localUniqueSession,
-          endpointPath: 'member',
-          methodName: 'getMemberProfileImageUrl',
-          parameters: _i1.testObjectToJson({'memberId': memberId}),
-          serializationManager: _serializationManager,
-        );
-        var _localReturnValue =
-            await (_localCallContext.method.call(
-                  _localUniqueSession,
-                  _localCallContext.arguments,
-                )
-                as _i4.Future<String?>);
-        return _localReturnValue;
-      } finally {
-        await _localUniqueSession.close();
-      }
-    });
-  }
-
   _i4.Future<List<_i13.SectionMembership>> getMemberSectionMemberships(
     _i1.TestSessionBuilder sessionBuilder,
     _i2.UuidValue memberId,
@@ -2219,6 +2188,37 @@ class _MemberEndpoint {
       }
     });
   }
+
+  _i4.Future<void> setMemberProfileUrl(
+    _i1.TestSessionBuilder sessionBuilder,
+    _i14.ByteData data,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'member',
+            method: 'setMemberProfileUrl',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'member',
+          methodName: 'setMemberProfileUrl',
+          parameters: _i1.testObjectToJson({'data': data}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i4.Future<void>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
 }
 
 class _NotificationEndpoint {
@@ -2231,7 +2231,7 @@ class _NotificationEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i4.Future<List<_i14.UserNotification>> getMyFeed(
+  _i4.Future<List<_i15.UserNotification>> getMyFeed(
     _i1.TestSessionBuilder sessionBuilder, {
     required int limit,
     required int offset,
@@ -2258,7 +2258,7 @@ class _NotificationEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i4.Future<List<_i14.UserNotification>>);
+                as _i4.Future<List<_i15.UserNotification>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2327,7 +2327,7 @@ class _NotificationEndpoint {
     });
   }
 
-  _i4.Future<_i15.UserNotificationPreference> getMyPreferences(
+  _i4.Future<_i16.UserNotificationPreference> getMyPreferences(
     _i1.TestSessionBuilder sessionBuilder,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
@@ -2349,7 +2349,7 @@ class _NotificationEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i4.Future<_i15.UserNotificationPreference>);
+                as _i4.Future<_i16.UserNotificationPreference>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2357,9 +2357,9 @@ class _NotificationEndpoint {
     });
   }
 
-  _i4.Future<_i15.UserNotificationPreference> savePreference(
+  _i4.Future<_i16.UserNotificationPreference> savePreference(
     _i1.TestSessionBuilder sessionBuilder,
-    _i15.UserNotificationPreference preference,
+    _i16.UserNotificationPreference preference,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -2380,7 +2380,7 @@ class _NotificationEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i4.Future<_i15.UserNotificationPreference>);
+                as _i4.Future<_i16.UserNotificationPreference>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2437,7 +2437,7 @@ class _RegistrationEndpoint {
   _i4.Future<_i10.EventRegistration> updateRegistrationStatus(
     _i1.TestSessionBuilder sessionBuilder,
     _i2.UuidValue registrationId,
-    _i16.RegistrationStatus newStatus, {
+    _i17.RegistrationStatus newStatus, {
     String? notes,
   }) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
@@ -2679,7 +2679,7 @@ class _UserProfileEndpoint {
 
   _i4.Future<_i5.UserProfileModel> setUserImage(
     _i1.TestSessionBuilder sessionBuilder,
-    _i17.ByteData image,
+    _i14.ByteData image,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =

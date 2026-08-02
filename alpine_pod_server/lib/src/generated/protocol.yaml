@@ -55,7 +55,6 @@ member:
   - addMemberToSection:
   - removeMemberFromSection:
   - getMember:
-  - getMemberProfileImageUrl:
   - getMemberSectionMemberships:
   - updateMember:
   - acceptWaiver:
@@ -65,6 +64,7 @@ member:
   - getAllMySectionMemberships:
   - updateMemberScopes:
   - registerMember:
+  - setMemberProfileUrl:
 notification:
   - getMyFeed:
   - deleteAll:

@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_auth_idp_server/core.dart';
 import '../generated/protocol.dart';
@@ -10,7 +12,15 @@ class MemberEndpoint extends Endpoint {
       return null;
     }
 
-    var m = await Member.db.findFirstRow(session, where: (t) => t.id.equals(authInfo.authUserId));
+    return await _getMember(session, authInfo.authUserId);
+  }
+
+  Future<Member?> _getMember(Session session, UuidValue memberId) async {
+    var m = await Member.db.findFirstRow(session, where: (t) => t.id.equals(memberId));
+
+    if (m != null && m.profileImageUrl == null) {
+      m = m.copyWith(profileImageUrl: await _getMemberProfileImageUrl(session, m));
+    }
     return m;
   }
 
@@ -77,24 +87,7 @@ class MemberEndpoint extends Endpoint {
     return await Member.db.findById(session, id);
   }
 
-  Future<String?> getMemberProfileImageUrl(Session session, UuidValue memberId) async {
-    final callerInfo = await cache.getMemberInfo(session);
-    if (callerInfo == null) throw Exception('Not authenticated');
-
-    final member = await Member.db.findById(session, memberId);
-    if (member == null) return null;
-
-    if (!session.isGlobalAdmin() && callerInfo.member.id != memberId) {
-      final sharedMembership = await SectionMembership.db.findFirstRow(
-        session,
-        where: (t) => t.memberId.equals(memberId) & t.sectionId.inSet(callerInfo.sectionIds),
-      );
-
-      if (sharedMembership == null) {
-        throw Exception('You do not have permission to view this member');
-      }
-    }
-
+  Future<String?> _getMemberProfileImageUrl(Session session, Member member) async {
     final profile = await AuthServices.instance.userProfiles.maybeFindUserProfileByUserId(session, member.id);
 
     final url = profile?.imageUrl?.toString();
@@ -440,39 +433,33 @@ class MemberEndpoint extends Endpoint {
     });
   }
 
-  // // Step A: Generate a secure destination URL for the client
-  // Future<String?> getProfileUploadUrl(Session session, String filename) async {
-  //   // Verifies the user is logged in
+  // Set the profile image for the current user
 
-  //   var id = session.authenticated?.authUserId;
-  //   if (id == null) return null;
+  Future<void> setMemberProfileUrl(Session session, ByteData data) async {
+    final authInfo = session.authenticated;
+    // todo: We can create a util method for this
+    if (authInfo == null) throw Exception('Not authenticated');
 
-  //   // "public" is the default public storage pool configured in Serverpod
-  //   var uploadDescription = await session.storage.createDirectUploadDescription(
-  //     storageId: 'public',
-  //     path: 'profiles/$id/$filename',
-  //   );
+    final member = await Member.db.findById(session, authInfo.authUserId);
+    if (member == null) throw Exception('Member not found');
 
-  //   return uploadDescription?.url;
-  // }
+    member.profileImageUrl = data.toString();
 
-  // // Step B: Verify the upload completed and attach the public URL to the user database
-  // Future<bool> verifyAndSetProfilePicture(Session session, String filename) async {
-  //   var id = await session.auth.authenticatedUserId;
-  //   if (id == null) return false;
+    await Member.db.updateRow(session, member);
 
-  //   var path = 'profiles/$id/$filename';
-  //   var fileExists = await session.storage.fileExists(storageId: 'public', path: path);
+    // todo:
+    // final up = await UserProfile.db.findById(session, member.id);
+    // if (up == null) throw Exception('User profile not found');
 
-  //   if (fileExists) {
-  //     // Get the absolute public URL of the file
-  //     var publicUrl = await session.storage.getPublicUrl(storageId: 'public', path: path);
+    // final image = UserProfileImage(
+    //   id: member.id,
+    //   image: data,
+    //   userProfileId: member.id,
+    //   storageId: 'user_photos',
+    //   path: 'user_photos/${member.id}',
+    //   url: data.toString(),
+    // );
 
-  //     // TODO: Update your User record in the database with the publicUrl
-  //     // await User.db.updateRow(session, user..profilePic = publicUrl);
-
-  //     return true;
-  //   }
-  //   return false
-  // }
+    // await UserProfileImage.db.updateRow(session, image);
+  }
 }

@@ -28,13 +28,13 @@ import 'package:alpine_pod_server/src/generated/event_template.dart' as _i15;
 import 'package:alpine_pod_server/src/generated/member.dart' as _i16;
 import 'package:alpine_pod_server/src/generated/section_membership.dart'
     as _i17;
+import 'dart:typed_data' as _i18;
 import 'package:alpine_pod_server/src/generated/user_notification_preference.dart'
-    as _i18;
-import 'package:alpine_pod_server/src/generated/registration_status.dart'
     as _i19;
-import 'package:alpine_pod_server/src/generated/event_registration.dart'
+import 'package:alpine_pod_server/src/generated/registration_status.dart'
     as _i20;
-import 'dart:typed_data' as _i21;
+import 'package:alpine_pod_server/src/generated/event_registration.dart'
+    as _i21;
 import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart'
     as _i22;
 import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
@@ -1117,25 +1117,6 @@ class Endpoints extends _i1.EndpointDispatch {
                 params['id'],
               ),
         ),
-        'getMemberProfileImageUrl': _i1.MethodConnector(
-          name: 'getMemberProfileImageUrl',
-          params: {
-            'memberId': _i1.ParameterDescription(
-              name: 'memberId',
-              type: _i1.getType<_i1.UuidValue>(),
-              nullable: false,
-            ),
-          },
-          call:
-              (
-                _i1.Session session,
-                Map<String, dynamic> params,
-              ) async => (endpoints['member'] as _i7.MemberEndpoint)
-                  .getMemberProfileImageUrl(
-                    session,
-                    params['memberId'],
-                  ),
-        ),
         'getMemberSectionMemberships': _i1.MethodConnector(
           name: 'getMemberSectionMemberships',
           params: {
@@ -1343,6 +1324,25 @@ class Endpoints extends _i1.EndpointDispatch {
                     params['sectionIds'],
                   ),
         ),
+        'setMemberProfileUrl': _i1.MethodConnector(
+          name: 'setMemberProfileUrl',
+          params: {
+            'data': _i1.ParameterDescription(
+              name: 'data',
+              type: _i1.getType<_i18.ByteData>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['member'] as _i7.MemberEndpoint)
+                  .setMemberProfileUrl(
+                    session,
+                    params['data'],
+                  ),
+        ),
       },
     );
     connectors['notification'] = _i1.EndpointConnector(
@@ -1418,7 +1418,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'preference': _i1.ParameterDescription(
               name: 'preference',
-              type: _i1.getType<_i18.UserNotificationPreference>(),
+              type: _i1.getType<_i19.UserNotificationPreference>(),
               nullable: false,
             ),
           },
@@ -1473,7 +1473,7 @@ class Endpoints extends _i1.EndpointDispatch {
             ),
             'newStatus': _i1.ParameterDescription(
               name: 'newStatus',
-              type: _i1.getType<_i19.RegistrationStatus>(),
+              type: _i1.getType<_i20.RegistrationStatus>(),
               nullable: false,
             ),
             'notes': _i1.ParameterDescription(
@@ -1499,7 +1499,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'registration': _i1.ParameterDescription(
               name: 'registration',
-              type: _i1.getType<_i20.EventRegistration>(),
+              type: _i1.getType<_i21.EventRegistration>(),
               nullable: false,
             ),
           },
@@ -1607,7 +1607,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'image': _i1.ParameterDescription(
               name: 'image',
-              type: _i1.getType<_i21.ByteData>(),
+              type: _i1.getType<_i18.ByteData>(),
               nullable: false,
             ),
           },

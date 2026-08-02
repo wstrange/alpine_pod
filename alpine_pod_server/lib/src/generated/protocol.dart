@@ -684,6 +684,12 @@ class Protocol extends _i1.DatabaseSerializationManager {
           dartType: 'String?',
         ),
         _i2.ColumnDefinition(
+          name: 'profileImageUrl',
+          columnType: _i2.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i2.ColumnDefinition(
           name: 'waiverSignedDate',
           columnType: _i2.ColumnType.timestampWithoutTimeZone,
           isNullable: false,
