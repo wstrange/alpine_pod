@@ -127,10 +127,10 @@ final currentEventsSignal = futureSignal<List<Event>>(
     final end = DateTime(nextMonthYear, nextMonth, 1);
 
     return await eventRepository.listEvents(
-      s?.id,
-      start,
-      end,
-      onlyMyEvents,
+      sectionId: s?.id,
+      startTime: start,
+      endTime: end,
+      onlyMyEvents: onlyMyEvents,
     );
   },
   options: AsyncSignalOptions(

@@ -152,6 +152,8 @@ class EventEndpoint extends Endpoint {
 
     final wasPublished = existing.published;
     final wasCancelled = existing.cancelled;
+    event.updatedAt = DateTime.now().toUtc();
+
     final updated = await Event.db.updateRow(session, event);
     if (!wasPublished && updated.published) {
       await notificationService.notifyEventCreated(session, updated);
@@ -181,12 +183,13 @@ class EventEndpoint extends Endpoint {
   }
 
   Future<List<Event>> listEvents(
-    Session session,
+    Session session, {
     UuidValue? sectionId,
     DateTime? startTime,
     DateTime? endTime,
-    bool? onlyMyEvents,
-  ) async {
+    bool onlyMyEvents = false,
+    DateTime? sinceLastUpdateTime,
+  }) async {
     final authInfo = session.authenticated;
 
     // Return all events for the section or all events for admin
@@ -203,8 +206,11 @@ class EventEndpoint extends Endpoint {
         if (endTime != null) {
           where = where & (t.startTime <= endTime);
         }
+        if (sinceLastUpdateTime != null) {
+          where = where & (t.updatedAt > sinceLastUpdateTime);
+        }
 
-        if (onlyMyEvents == true && authInfo != null) {
+        if (onlyMyEvents && authInfo != null) {
           // Filter to only events where the user is a manager (can see draft/published)
           // or registrant (can only see published)
           where =

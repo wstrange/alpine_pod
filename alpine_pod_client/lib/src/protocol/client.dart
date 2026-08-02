@@ -456,12 +456,13 @@ class EndpointEvent extends _i2.EndpointRef {
         {'id': id},
       );
 
-  _i3.Future<List<_i8.Event>> listEvents(
+  _i3.Future<List<_i8.Event>> listEvents({
     _i2.UuidValue? sectionId,
     DateTime? startTime,
     DateTime? endTime,
-    bool? onlyMyEvents,
-  ) => caller.callServerEndpoint<List<_i8.Event>>(
+    required bool onlyMyEvents,
+    DateTime? sinceLastUpdateTime,
+  }) => caller.callServerEndpoint<List<_i8.Event>>(
     'event',
     'listEvents',
     {
@@ -469,6 +470,7 @@ class EndpointEvent extends _i2.EndpointRef {
       'startTime': startTime,
       'endTime': endTime,
       'onlyMyEvents': onlyMyEvents,
+      'sinceLastUpdateTime': sinceLastUpdateTime,
     },
   );
 

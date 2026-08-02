@@ -11,12 +11,12 @@ final eventRepository = EventRepository();
 class EventRepository {
   /// Reads events from the local SQLite cache.
   /// If online and cache is empty, triggers a sync first.
-  Future<List<Event>> listEvents(
+  Future<List<Event>> listEvents({
     UuidValue? sectionId,
     DateTime? startTime,
     DateTime? endTime,
-    bool? onlyMyEvents,
-  ) async {
+    bool onlyMyEvents = false,
+  }) async {
     try {
       final currentMember = currentMemberSignal.value;
       final memberId = currentMember?.id;
@@ -36,7 +36,7 @@ class EventRepository {
             where = where & (t.startTime <= endTime);
           }
 
-          if (onlyMyEvents == true && memberId != null) {
+          if (onlyMyEvents && memberId != null) {
             where =
                 where &
                 (t.eventManagers.any((m) => m.memberId.equals(memberId)) |
@@ -65,10 +65,10 @@ class EventRepository {
 
     // Fallback: sync from server and return
     if (isOnlineSignal.value) {
-      final now = startTime ?? DateTime.now();
+      final now = DateTime.now();
       final start = startTime ?? DateTime(now.year, now.month - 1, 1);
       final end = endTime ?? DateTime(now.year, now.month + 2, 0);
-      return await syncService.syncEvents(sectionId, start, end, onlyMyEvents ?? false);
+      return await syncService.syncEvents(sectionId, start, end, onlyMyEvents);
     }
 
     return [];

@@ -142,11 +142,23 @@ class SyncService {
     }
   }
 
+  Future<void> syncMemberProfiles(UuidValue sectionId) async {
+    final members = await client.member.getSectionMembers(limit: 1000, offset: 0, sectionId: sectionId);
+    for (final member in members) {
+      await _upsertMember(member);
+    }
+  }
+
   /// Syncs events, event managers, and registrations for a section and date window.
   Future<List<Event>> syncEvents(UuidValue? sectionId, DateTime startTime, DateTime endTime, bool onlyMyEvents) async {
     if (!isOnlineSignal.value) return [];
     try {
-      final events = await client.event.listEvents(sectionId, startTime, endTime, onlyMyEvents);
+      final events = await client.event.listEvents(
+        sectionId: sectionId,
+        startTime: startTime,
+        endTime: endTime,
+        onlyMyEvents: onlyMyEvents,
+      );
 
       _log.info('Got ${events.length} events from server');
 

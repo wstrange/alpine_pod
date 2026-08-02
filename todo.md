@@ -20,16 +20,12 @@ Events - probably want to be selective on which events to cache.
 getMemberProfileImageUrl is expensive. Should we return it as part of the member profile? Make it a non DB field, but get it from the user object.  Could also cache it on the client.  Maybe the client should have a member cache.
 
 
-Need a strategy for offline first in Flutter using serverpod_offline_sync.
-Concerned about explosion of data with scope sharing mechanism.
-What about a Hybrid approach?  Use serverpod_offline_sync for read only data, and
-use the server API for any updates or writes.
+Working on:
+- Integrate getMemberProfileImageUrl into the Member object on server side
+- sync service just needs to sync since last update time
 
 
-Complete the implementation plan for offline first:
-* [x] Flutter screens should read from the repo service. (Refactored signals to use repository services)
-* [x] Repo should return data from local cache if offline. If online, repo fetches & updates cache.
-* [x] Local cache is periodically refreshed in background (`SyncService.initializePeriodicSync()`).
+
 
 
 

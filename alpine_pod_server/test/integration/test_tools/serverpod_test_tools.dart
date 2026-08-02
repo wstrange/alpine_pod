@@ -1222,12 +1222,13 @@ class _EventEndpoint {
   }
 
   _i4.Future<List<_i9.Event>> listEvents(
-    _i1.TestSessionBuilder sessionBuilder,
+    _i1.TestSessionBuilder sessionBuilder, {
     _i2.UuidValue? sectionId,
     DateTime? startTime,
     DateTime? endTime,
-    bool? onlyMyEvents,
-  ) async {
+    required bool onlyMyEvents,
+    DateTime? sinceLastUpdateTime,
+  }) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
           (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
@@ -1244,6 +1245,7 @@ class _EventEndpoint {
             'startTime': startTime,
             'endTime': endTime,
             'onlyMyEvents': onlyMyEvents,
+            'sinceLastUpdateTime': sinceLastUpdateTime,
           }),
           serializationManager: _serializationManager,
         );

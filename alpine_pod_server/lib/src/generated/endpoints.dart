@@ -725,7 +725,12 @@ class Endpoints extends _i1.EndpointDispatch {
             ),
             'onlyMyEvents': _i1.ParameterDescription(
               name: 'onlyMyEvents',
-              type: _i1.getType<bool?>(),
+              type: _i1.getType<bool>(),
+              nullable: false,
+            ),
+            'sinceLastUpdateTime': _i1.ParameterDescription(
+              name: 'sinceLastUpdateTime',
+              type: _i1.getType<DateTime?>(),
               nullable: true,
             ),
           },
@@ -735,10 +740,11 @@ class Endpoints extends _i1.EndpointDispatch {
                 Map<String, dynamic> params,
               ) async => (endpoints['event'] as _i4.EventEndpoint).listEvents(
                 session,
-                params['sectionId'],
-                params['startTime'],
-                params['endTime'],
-                params['onlyMyEvents'],
+                sectionId: params['sectionId'],
+                startTime: params['startTime'],
+                endTime: params['endTime'],
+                onlyMyEvents: params['onlyMyEvents'],
+                sinceLastUpdateTime: params['sinceLastUpdateTime'],
               ),
         ),
         'registerForEvent': _i1.MethodConnector(
