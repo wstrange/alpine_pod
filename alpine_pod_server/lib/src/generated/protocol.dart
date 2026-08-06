@@ -1216,6 +1216,12 @@ class Protocol extends _i1.DatabaseSerializationManager {
           columnDefault: 'random_v7',
         ),
         _i2.ColumnDefinition(
+          name: 'userId',
+          columnType: _i2.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
+        ),
+        _i2.ColumnDefinition(
           name: 'notificationId',
           columnType: _i2.ColumnType.uuid,
           isNullable: false,
@@ -1258,6 +1264,16 @@ class Protocol extends _i1.DatabaseSerializationManager {
       foreignKeys: [
         _i2.ForeignKeyDefinition(
           constraintName: 'user_notification_fk_0',
+          columns: ['userId'],
+          referenceTable: 'serverpod_auth_core_user',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _i2.ForeignKeyAction.noAction,
+          onDelete: _i2.ForeignKeyAction.cascade,
+          matchType: null,
+        ),
+        _i2.ForeignKeyDefinition(
+          constraintName: 'user_notification_fk_1',
           columns: ['notificationId'],
           referenceTable: 'notification',
           referenceTableSchema: 'public',
@@ -1274,7 +1290,7 @@ class Protocol extends _i1.DatabaseSerializationManager {
           elements: [
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
+              definition: 'userId',
             ),
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,

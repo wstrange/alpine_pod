@@ -70,8 +70,10 @@ Future<bool> pickCropAndCompressImage(BuildContext context) async {
 
   // 4. Upload to Serverpod
   final byteData = compressedBytes.buffer.asByteData();
-  await client.member.setMemberProfileUrl(byteData);
-  await client.userProfile.setUserImage(byteData);
+  final model = await client.userProfile.setUserImage(byteData);
+  await client.member.setMemberProfileUrl(model.imageUrl.toString());
+  //  await client.member.setMemberProfileUrl(byteData);
+
   return true;
 }
 

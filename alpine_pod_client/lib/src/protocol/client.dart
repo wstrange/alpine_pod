@@ -25,12 +25,12 @@ import 'package:alpine_pod_client/src/protocol/event_registration.dart' as _i9;
 import 'package:alpine_pod_client/src/protocol/event_manager.dart' as _i10;
 import 'package:alpine_pod_client/src/protocol/event_template.dart' as _i11;
 import 'package:alpine_pod_client/src/protocol/section_membership.dart' as _i12;
-import 'dart:typed_data' as _i13;
-import 'package:alpine_pod_client/src/protocol/user_notification.dart' as _i14;
+import 'package:alpine_pod_client/src/protocol/user_notification.dart' as _i13;
 import 'package:alpine_pod_client/src/protocol/user_notification_preference.dart'
-    as _i15;
+    as _i14;
 import 'package:alpine_pod_client/src/protocol/registration_status.dart'
-    as _i16;
+    as _i15;
+import 'dart:typed_data' as _i16;
 import 'package:http/http.dart' as _i17;
 import 'protocol.dart' as _i18;
 import 'package:serverpod_database/serverpod_database.dart' as _i19;
@@ -775,11 +775,11 @@ class EndpointMember extends _i2.EndpointRef {
     },
   );
 
-  _i3.Future<void> setMemberProfileUrl(_i13.ByteData data) =>
+  _i3.Future<void> setMemberProfileUrl(String imageUrl) =>
       caller.callServerEndpoint<void>(
         'member',
         'setMemberProfileUrl',
-        {'data': data},
+        {'imageUrl': imageUrl},
       );
 }
 
@@ -790,10 +790,10 @@ class EndpointNotification extends _i2.EndpointRef {
   @override
   String get name => 'notification';
 
-  _i3.Future<List<_i14.UserNotification>> getMyFeed({
+  _i3.Future<List<_i13.UserNotification>> getMyFeed({
     required int limit,
     required int offset,
-  }) => caller.callServerEndpoint<List<_i14.UserNotification>>(
+  }) => caller.callServerEndpoint<List<_i13.UserNotification>>(
     'notification',
     'getMyFeed',
     {
@@ -816,16 +816,16 @@ class EndpointNotification extends _i2.EndpointRef {
         {'userNotificationId': userNotificationId},
       );
 
-  _i3.Future<_i15.UserNotificationPreference> getMyPreferences() =>
-      caller.callServerEndpoint<_i15.UserNotificationPreference>(
+  _i3.Future<_i14.UserNotificationPreference> getMyPreferences() =>
+      caller.callServerEndpoint<_i14.UserNotificationPreference>(
         'notification',
         'getMyPreferences',
         {},
       );
 
-  _i3.Future<_i15.UserNotificationPreference> savePreference(
-    _i15.UserNotificationPreference preference,
-  ) => caller.callServerEndpoint<_i15.UserNotificationPreference>(
+  _i3.Future<_i14.UserNotificationPreference> savePreference(
+    _i14.UserNotificationPreference preference,
+  ) => caller.callServerEndpoint<_i14.UserNotificationPreference>(
     'notification',
     'savePreference',
     {'preference': preference},
@@ -854,7 +854,7 @@ class EndpointRegistration extends _i2.EndpointRef {
   /// Approve or reject a registration
   _i3.Future<_i9.EventRegistration> updateRegistrationStatus(
     _i2.UuidValue registrationId,
-    _i16.RegistrationStatus newStatus, {
+    _i15.RegistrationStatus newStatus, {
     String? notes,
   }) => caller.callServerEndpoint<_i9.EventRegistration>(
     'registration',
@@ -928,7 +928,7 @@ class EndpointUserProfile extends _i4.EndpointUserProfileEditBase {
   String get name => 'userProfile';
 
   @override
-  _i3.Future<_i4.UserProfileModel> setUserImage(_i13.ByteData image) =>
+  _i3.Future<_i4.UserProfileModel> setUserImage(_i16.ByteData image) =>
       caller.callServerEndpoint<_i4.UserProfileModel>(
         'userProfile',
         'setUserImage',

@@ -3,6 +3,19 @@ sections:
     description: Calgary Section
     location: Room 101
     contactInfo: 555-121-23456
+  - name: Edmonton
+    description: Edmonton Section
+    location: Room 101
+    contactInfo: 555-121-23456
+  - name: Vancouver
+    description: Vancouver Section
+    location: Room 101
+    contactInfo: 555-121-23456
+  - name: National
+    description: National Events
+    location: canmore
+    contactInfo:
+
 
 eventTemplates:
   - name: standard-hike

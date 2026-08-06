@@ -151,7 +151,7 @@ class NotificationScheduler extends FutureCall {
   Future<void> _deliverInApp(Session session, NotificationDelivery delivery, Notification notification) async {
     await UserNotification.db.insertRow(
       session,
-      UserNotification(id: delivery.recipientUserId!, notificationId: notification.id!, createdAt: DateTime.now()),
+      UserNotification(userId: delivery.recipientUserId!, notificationId: notification.id!, createdAt: DateTime.now()),
     );
     await _markSent(session, delivery);
   }

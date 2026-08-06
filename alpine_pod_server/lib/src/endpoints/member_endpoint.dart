@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_auth_idp_server/core.dart';
 import '../generated/protocol.dart';
@@ -435,7 +433,7 @@ class MemberEndpoint extends Endpoint {
 
   // Set the profile image for the current user
 
-  Future<void> setMemberProfileUrl(Session session, ByteData data) async {
+  Future<void> setMemberProfileUrl(Session session, String imageUrl) async {
     final authInfo = session.authenticated;
     // todo: We can create a util method for this
     if (authInfo == null) throw Exception('Not authenticated');
@@ -443,23 +441,11 @@ class MemberEndpoint extends Endpoint {
     final member = await Member.db.findById(session, authInfo.authUserId);
     if (member == null) throw Exception('Member not found');
 
-    member.profileImageUrl = data.toString();
+    member.profileImageUrl = imageUrl;
 
     await Member.db.updateRow(session, member);
 
-    // todo:
-    // final up = await UserProfile.db.findById(session, member.id);
-    // if (up == null) throw Exception('User profile not found');
-
-    // final image = UserProfileImage(
-    //   id: member.id,
-    //   image: data,
-    //   userProfileId: member.id,
-    //   storageId: 'user_photos',
-    //   path: 'user_photos/${member.id}',
-    //   url: data.toString(),
-    // );
-
-    // await UserProfileImage.db.updateRow(session, image);
+    // todo: find out how to call this enpoint directly
+    //     final userInfo = await Users.findUserByUserId(session, member.id);
   }
 }

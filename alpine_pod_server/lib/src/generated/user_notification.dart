@@ -12,13 +12,17 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
-import 'notification.dart' as _i2;
-import 'package:alpine_pod_server/src/generated/protocol.dart' as _i3;
+import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
+    as _i2;
+import 'notification.dart' as _i3;
+import 'package:alpine_pod_server/src/generated/protocol.dart' as _i4;
 
 abstract class UserNotification
     implements _i1.TableRow<_i1.UuidValue>, _i1.ProtocolSerialization {
   UserNotification._({
     _i1.UuidValue? id,
+    required this.userId,
+    this.user,
     required this.notificationId,
     this.notification,
     bool? isRead,
@@ -33,8 +37,10 @@ abstract class UserNotification
 
   factory UserNotification({
     _i1.UuidValue? id,
+    required _i1.UuidValue userId,
+    _i2.AuthUser? user,
     required _i1.UuidValue notificationId,
-    _i2.Notification? notification,
+    _i3.Notification? notification,
     bool? isRead,
     bool? isSeen,
     DateTime? readAt,
@@ -47,12 +53,16 @@ abstract class UserNotification
       id: jsonSerialization['id'] == null
           ? null
           : _i1.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
+      userId: _i1.UuidValueJsonExtension.fromJson(jsonSerialization['userId']),
+      user: jsonSerialization['user'] == null
+          ? null
+          : _i4.Protocol().deserialize<_i2.AuthUser>(jsonSerialization['user']),
       notificationId: _i1.UuidValueJsonExtension.fromJson(
         jsonSerialization['notificationId'],
       ),
       notification: jsonSerialization['notification'] == null
           ? null
-          : _i3.Protocol().deserialize<_i2.Notification>(
+          : _i4.Protocol().deserialize<_i3.Notification>(
               jsonSerialization['notification'],
             ),
       isRead: jsonSerialization['isRead'] == null
@@ -80,9 +90,13 @@ abstract class UserNotification
   @override
   _i1.UuidValue id;
 
+  _i1.UuidValue userId;
+
+  _i2.AuthUser? user;
+
   _i1.UuidValue notificationId;
 
-  _i2.Notification? notification;
+  _i3.Notification? notification;
 
   bool isRead;
 
@@ -102,8 +116,10 @@ abstract class UserNotification
   @_i1.useResult
   UserNotification copyWith({
     _i1.UuidValue? id,
+    _i1.UuidValue? userId,
+    _i2.AuthUser? user,
     _i1.UuidValue? notificationId,
-    _i2.Notification? notification,
+    _i3.Notification? notification,
     bool? isRead,
     bool? isSeen,
     DateTime? readAt,
@@ -115,6 +131,8 @@ abstract class UserNotification
     return {
       '__className__': 'UserNotification',
       'id': id.toJson(),
+      'userId': userId.toJson(),
+      if (user != null) 'user': user?.toJson(),
       'notificationId': notificationId.toJson(),
       if (notification != null) 'notification': notification?.toJson(),
       'isRead': isRead,
@@ -130,6 +148,8 @@ abstract class UserNotification
     return {
       '__className__': 'UserNotification',
       'id': id.toJson(),
+      'userId': userId.toJson(),
+      if (user != null) 'user': user?.toJson(),
       'notificationId': notificationId.toJson(),
       if (notification != null)
         'notification': notification?.toJsonForProtocol(),
@@ -142,9 +162,13 @@ abstract class UserNotification
   }
 
   static UserNotificationInclude include({
-    _i2.NotificationInclude? notification,
+    _i2.AuthUserInclude? user,
+    _i3.NotificationInclude? notification,
   }) {
-    return UserNotificationInclude._(notification: notification);
+    return UserNotificationInclude._(
+      user: user,
+      notification: notification,
+    );
   }
 
   static UserNotificationIncludeList includeList({
@@ -176,8 +200,10 @@ class _Undefined {}
 class _UserNotificationImpl extends UserNotification {
   _UserNotificationImpl({
     _i1.UuidValue? id,
+    required _i1.UuidValue userId,
+    _i2.AuthUser? user,
     required _i1.UuidValue notificationId,
-    _i2.Notification? notification,
+    _i3.Notification? notification,
     bool? isRead,
     bool? isSeen,
     DateTime? readAt,
@@ -185,6 +211,8 @@ class _UserNotificationImpl extends UserNotification {
     DateTime? updatedAt,
   }) : super._(
          id: id,
+         userId: userId,
+         user: user,
          notificationId: notificationId,
          notification: notification,
          isRead: isRead,
@@ -200,6 +228,8 @@ class _UserNotificationImpl extends UserNotification {
   @override
   UserNotification copyWith({
     _i1.UuidValue? id,
+    _i1.UuidValue? userId,
+    Object? user = _Undefined,
     _i1.UuidValue? notificationId,
     Object? notification = _Undefined,
     bool? isRead,
@@ -210,8 +240,10 @@ class _UserNotificationImpl extends UserNotification {
   }) {
     return UserNotification(
       id: id ?? this.id,
+      userId: userId ?? this.userId,
+      user: user is _i2.AuthUser? ? user : this.user?.copyWith(),
       notificationId: notificationId ?? this.notificationId,
-      notification: notification is _i2.Notification?
+      notification: notification is _i3.Notification?
           ? notification
           : this.notification?.copyWith(),
       isRead: isRead ?? this.isRead,
@@ -226,6 +258,12 @@ class _UserNotificationImpl extends UserNotification {
 class UserNotificationUpdateTable
     extends _i1.UpdateTable<UserNotificationTable> {
   UserNotificationUpdateTable(super.table);
+
+  _i1.ColumnValue<_i1.UuidValue, _i1.UuidValue> userId(_i1.UuidValue value) =>
+      _i1.ColumnValue(
+        table.userId,
+        value,
+      );
 
   _i1.ColumnValue<_i1.UuidValue, _i1.UuidValue> notificationId(
     _i1.UuidValue value,
@@ -267,6 +305,10 @@ class UserNotificationTable extends _i1.Table<_i1.UuidValue> {
   UserNotificationTable({super.tableRelation})
     : super(tableName: 'user_notification') {
     updateTable = UserNotificationUpdateTable(this);
+    userId = _i1.ColumnUuid(
+      'userId',
+      this,
+    );
     notificationId = _i1.ColumnUuid(
       'notificationId',
       this,
@@ -298,9 +340,13 @@ class UserNotificationTable extends _i1.Table<_i1.UuidValue> {
 
   late final UserNotificationUpdateTable updateTable;
 
+  late final _i1.ColumnUuid userId;
+
+  _i2.AuthUserTable? _user;
+
   late final _i1.ColumnUuid notificationId;
 
-  _i2.NotificationTable? _notification;
+  _i3.NotificationTable? _notification;
 
   late final _i1.ColumnBool isRead;
 
@@ -312,15 +358,28 @@ class UserNotificationTable extends _i1.Table<_i1.UuidValue> {
 
   late final _i1.ColumnDateTime updatedAt;
 
-  _i2.NotificationTable get notification {
+  _i2.AuthUserTable get user {
+    if (_user != null) return _user!;
+    _user = _i1.createRelationTable(
+      relationFieldName: 'user',
+      field: UserNotification.t.userId,
+      foreignField: _i2.AuthUser.t.id,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i2.AuthUserTable(tableRelation: foreignTableRelation),
+    );
+    return _user!;
+  }
+
+  _i3.NotificationTable get notification {
     if (_notification != null) return _notification!;
     _notification = _i1.createRelationTable(
       relationFieldName: 'notification',
       field: UserNotification.t.notificationId,
-      foreignField: _i2.Notification.t.id,
+      foreignField: _i3.Notification.t.id,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i2.NotificationTable(tableRelation: foreignTableRelation),
+          _i3.NotificationTable(tableRelation: foreignTableRelation),
     );
     return _notification!;
   }
@@ -328,6 +387,7 @@ class UserNotificationTable extends _i1.Table<_i1.UuidValue> {
   @override
   List<_i1.Column> get columns => [
     id,
+    userId,
     notificationId,
     isRead,
     isSeen,
@@ -338,6 +398,9 @@ class UserNotificationTable extends _i1.Table<_i1.UuidValue> {
 
   @override
   _i1.Table? getRelationTable(String relationField) {
+    if (relationField == 'user') {
+      return user;
+    }
     if (relationField == 'notification') {
       return notification;
     }
@@ -346,14 +409,23 @@ class UserNotificationTable extends _i1.Table<_i1.UuidValue> {
 }
 
 class UserNotificationInclude extends _i1.IncludeObject {
-  UserNotificationInclude._({_i2.NotificationInclude? notification}) {
+  UserNotificationInclude._({
+    _i2.AuthUserInclude? user,
+    _i3.NotificationInclude? notification,
+  }) {
+    _user = user;
     _notification = notification;
   }
 
-  _i2.NotificationInclude? _notification;
+  _i2.AuthUserInclude? _user;
+
+  _i3.NotificationInclude? _notification;
 
   @override
-  Map<String, _i1.Include?> get includes => {'notification': _notification};
+  Map<String, _i1.Include?> get includes => {
+    'user': _user,
+    'notification': _notification,
+  };
 
   @override
   _i1.Table<_i1.UuidValue> get table => UserNotification.t;
@@ -786,12 +858,35 @@ class UserNotificationRepository {
 class UserNotificationAttachRowRepository {
   const UserNotificationAttachRowRepository._();
 
+  /// Creates a relation between the given [UserNotification] and [AuthUser]
+  /// by setting the [UserNotification]'s foreign key `userId` to refer to the [AuthUser].
+  Future<void> user(
+    _i1.DatabaseSession session,
+    UserNotification userNotification,
+    _i2.AuthUser user, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (userNotification.id == null) {
+      throw ArgumentError.notNull('userNotification.id');
+    }
+    if (user.id == null) {
+      throw ArgumentError.notNull('user.id');
+    }
+
+    var $userNotification = userNotification.copyWith(userId: user.id);
+    await session.db.updateRow<UserNotification>(
+      $userNotification,
+      columns: [UserNotification.t.userId],
+      transaction: transaction,
+    );
+  }
+
   /// Creates a relation between the given [UserNotification] and [Notification]
   /// by setting the [UserNotification]'s foreign key `notificationId` to refer to the [Notification].
   Future<void> notification(
     _i1.DatabaseSession session,
     UserNotification userNotification,
-    _i2.Notification notification, {
+    _i3.Notification notification, {
     _i1.Transaction? transaction,
   }) async {
     if (userNotification.id == null) {

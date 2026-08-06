@@ -11,13 +11,17 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
-import 'notification.dart' as _i2;
-import 'package:alpine_pod_client/src/protocol/protocol.dart' as _i3;
+import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart'
+    as _i2;
+import 'notification.dart' as _i3;
+import 'package:alpine_pod_client/src/protocol/protocol.dart' as _i4;
 
 abstract class UserNotification
     implements _i1.SerializableModel, _i1.ProtocolSerialization {
   UserNotification._({
     _i1.UuidValue? id,
+    required this.userId,
+    this.user,
     required this.notificationId,
     this.notification,
     bool? isRead,
@@ -32,8 +36,10 @@ abstract class UserNotification
 
   factory UserNotification({
     _i1.UuidValue? id,
+    required _i1.UuidValue userId,
+    _i2.AuthUser? user,
     required _i1.UuidValue notificationId,
-    _i2.Notification? notification,
+    _i3.Notification? notification,
     bool? isRead,
     bool? isSeen,
     DateTime? readAt,
@@ -46,12 +52,16 @@ abstract class UserNotification
       id: jsonSerialization['id'] == null
           ? null
           : _i1.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
+      userId: _i1.UuidValueJsonExtension.fromJson(jsonSerialization['userId']),
+      user: jsonSerialization['user'] == null
+          ? null
+          : _i4.Protocol().deserialize<_i2.AuthUser>(jsonSerialization['user']),
       notificationId: _i1.UuidValueJsonExtension.fromJson(
         jsonSerialization['notificationId'],
       ),
       notification: jsonSerialization['notification'] == null
           ? null
-          : _i3.Protocol().deserialize<_i2.Notification>(
+          : _i4.Protocol().deserialize<_i3.Notification>(
               jsonSerialization['notification'],
             ),
       isRead: jsonSerialization['isRead'] == null
@@ -75,9 +85,13 @@ abstract class UserNotification
   /// The id of the object.
   _i1.UuidValue id;
 
+  _i1.UuidValue userId;
+
+  _i2.AuthUser? user;
+
   _i1.UuidValue notificationId;
 
-  _i2.Notification? notification;
+  _i3.Notification? notification;
 
   bool isRead;
 
@@ -94,8 +108,10 @@ abstract class UserNotification
   @_i1.useResult
   UserNotification copyWith({
     _i1.UuidValue? id,
+    _i1.UuidValue? userId,
+    _i2.AuthUser? user,
     _i1.UuidValue? notificationId,
-    _i2.Notification? notification,
+    _i3.Notification? notification,
     bool? isRead,
     bool? isSeen,
     DateTime? readAt,
@@ -107,6 +123,8 @@ abstract class UserNotification
     return {
       '__className__': 'UserNotification',
       'id': id.toJson(),
+      'userId': userId.toJson(),
+      if (user != null) 'user': user?.toJson(),
       'notificationId': notificationId.toJson(),
       if (notification != null) 'notification': notification?.toJson(),
       'isRead': isRead,
@@ -122,6 +140,8 @@ abstract class UserNotification
     return {
       '__className__': 'UserNotification',
       'id': id.toJson(),
+      'userId': userId.toJson(),
+      if (user != null) 'user': user?.toJson(),
       'notificationId': notificationId.toJson(),
       if (notification != null)
         'notification': notification?.toJsonForProtocol(),
@@ -144,8 +164,10 @@ class _Undefined {}
 class _UserNotificationImpl extends UserNotification {
   _UserNotificationImpl({
     _i1.UuidValue? id,
+    required _i1.UuidValue userId,
+    _i2.AuthUser? user,
     required _i1.UuidValue notificationId,
-    _i2.Notification? notification,
+    _i3.Notification? notification,
     bool? isRead,
     bool? isSeen,
     DateTime? readAt,
@@ -153,6 +175,8 @@ class _UserNotificationImpl extends UserNotification {
     DateTime? updatedAt,
   }) : super._(
          id: id,
+         userId: userId,
+         user: user,
          notificationId: notificationId,
          notification: notification,
          isRead: isRead,
@@ -168,6 +192,8 @@ class _UserNotificationImpl extends UserNotification {
   @override
   UserNotification copyWith({
     _i1.UuidValue? id,
+    _i1.UuidValue? userId,
+    Object? user = _Undefined,
     _i1.UuidValue? notificationId,
     Object? notification = _Undefined,
     bool? isRead,
@@ -178,8 +204,10 @@ class _UserNotificationImpl extends UserNotification {
   }) {
     return UserNotification(
       id: id ?? this.id,
+      userId: userId ?? this.userId,
+      user: user is _i2.AuthUser? ? user : this.user?.copyWith(),
       notificationId: notificationId ?? this.notificationId,
-      notification: notification is _i2.Notification?
+      notification: notification is _i3.Notification?
           ? notification
           : this.notification?.copyWith(),
       isRead: isRead ?? this.isRead,

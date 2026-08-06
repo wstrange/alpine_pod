@@ -15,6 +15,7 @@ Future<void> main(List<String> arguments) async {
       help: 'Serverpod run mode to use for config and database settings.',
     )
     ..addOption('server-id', defaultsTo: 'default', help: 'Serverpod server id.')
+    ..addOption('generate-sample-data', defaultsTo: 'false', help: 'Generate sample data.')
     ..addFlag('help', abbr: 'h', negatable: false, help: 'Print this usage information.');
 
   late ArgResults results;
@@ -43,6 +44,7 @@ Future<void> main(List<String> arguments) async {
   final mode = results['mode'] as String;
   final serverId = results['server-id'] as String;
   final pod = Serverpod(['--mode', mode, '--server-id', serverId, '--apply-migrations'], Protocol(), Endpoints());
+  final generateSamples = results['generate-sample-data'] as bool;
 
   final session = await pod.createSession();
   try {
@@ -66,6 +68,17 @@ Future<void> main(List<String> arguments) async {
       stdout.writeln(
         '  mail templates: ${result.notificationTemplatesInserted} inserted, '
         '${result.notificationTemplatesUpdated} updated',
+      );
+    }
+
+    if (generateSamples) {
+      final result = await loader.loadSampleData(session);
+      totalInserted += result.totalInserted;
+      totalUpdated += result.totalUpdated;
+      stdout.writeln('Loaded sample data');
+      stdout.writeln(
+        '  events: ${result.eventsInserted} inserted, '
+        '${result.eventsUpdated} updated',
       );
     }
 
