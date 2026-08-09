@@ -1,9 +1,9 @@
 import 'dart:io';
 
-import 'package:args/args.dart';
 import 'package:alpine_pod_server/src/generated/endpoints.dart';
 import 'package:alpine_pod_server/src/generated/protocol.dart';
 import 'package:alpine_pod_server/src/tools/data_loader.dart';
+import 'package:args/args.dart';
 import 'package:serverpod/serverpod.dart';
 
 Future<void> main(List<String> arguments) async {
@@ -14,9 +14,32 @@ Future<void> main(List<String> arguments) async {
       defaultsTo: 'development',
       help: 'Serverpod run mode to use for config and database settings.',
     )
-    ..addOption('server-id', defaultsTo: 'default', help: 'Serverpod server id.')
-    ..addOption('generate-sample-data', defaultsTo: 'false', help: 'Generate sample data.')
-    ..addFlag('help', abbr: 'h', negatable: false, help: 'Print this usage information.');
+    ..addOption(
+      'server-id',
+      defaultsTo: 'default',
+      help: 'Serverpod server id.',
+    )
+    ..addFlag(
+      'generate-sample-data',
+      defaultsTo: false,
+      help: 'Generate sample data.',
+    )
+    ..addOption(
+      'sample-users',
+      defaultsTo: '20',
+      help: 'Number of sample users to generate.',
+    )
+    ..addOption(
+      'sample-events',
+      defaultsTo: '50',
+      help: 'Number of sample events to generate.',
+    )
+    ..addFlag(
+      'help',
+      abbr: 'h',
+      negatable: false,
+      help: 'Print this usage information.',
+    );
 
   late ArgResults results;
   try {
@@ -34,8 +57,12 @@ Future<void> main(List<String> arguments) async {
   }
 
   final files = results.rest;
-  if (files.isEmpty) {
-    stderr.writeln('Provide at least one .json, .yaml, or .yml data file.');
+  final generateSamples = results['generate-sample-data'] as bool;
+
+  if (files.isEmpty && !generateSamples) {
+    stderr.writeln(
+      'Provide at least one .json, .yaml, or .yml data file or specify --generate-sample-data.',
+    );
     _printUsage(parser);
     exitCode = 64;
     return;
@@ -43,8 +70,14 @@ Future<void> main(List<String> arguments) async {
 
   final mode = results['mode'] as String;
   final serverId = results['server-id'] as String;
-  final pod = Serverpod(['--mode', mode, '--server-id', serverId, '--apply-migrations'], Protocol(), Endpoints());
-  final generateSamples = results['generate-sample-data'] as bool;
+  final sampleUsers = int.tryParse(results['sample-users'] as String) ?? 20;
+  final sampleEvents = int.tryParse(results['sample-events'] as String) ?? 50;
+
+  final pod = Serverpod(
+    ['--mode', mode, '--server-id', serverId, '--apply-migrations'],
+    Protocol(),
+    Endpoints(),
+  );
 
   final session = await pod.createSession();
   try {
@@ -72,10 +105,15 @@ Future<void> main(List<String> arguments) async {
     }
 
     if (generateSamples) {
-      final result = await loader.loadSampleData(session);
+      final result = await loader.loadSampleData(
+        session,
+        sampleUsers: sampleUsers,
+        sampleEvents: sampleEvents,
+      );
       totalInserted += result.totalInserted;
       totalUpdated += result.totalUpdated;
       stdout.writeln('Loaded sample data');
+      stdout.writeln('  users: ${result.usersInserted} inserted');
       stdout.writeln(
         '  events: ${result.eventsInserted} inserted, '
         '${result.eventsUpdated} updated',

@@ -10,6 +10,7 @@ resolution: workspace
 
 dependencies:
   args: ^2.7.0
+  faker: ^2.1.0
   mailer: ^7.1.0
   mustache_template: ^2.0.4
   serverpod: 4.0.0-beta.1
@@ -22,4 +23,4 @@ dev_dependencies:
   test: '^1.24.2'
   serverpod_test: 4.0.0-beta.1
   # serverpod_mcp: ^0.1.1
-  faker: ^2.1.0
+

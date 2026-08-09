@@ -5,6 +5,7 @@ import 'package:serverpod/serverpod.dart';
 import 'package:yaml/yaml.dart';
 
 import '../generated/protocol.dart';
+import 'generate_samples.dart';
 
 class DataLoadResult {
   DataLoadResult();
@@ -15,10 +16,22 @@ class DataLoadResult {
   int eventTemplatesUpdated = 0;
   int notificationTemplatesInserted = 0;
   int notificationTemplatesUpdated = 0;
+  int usersInserted = 0;
+  int eventsInserted = 0;
+  int eventsUpdated = 0;
 
-  int get totalInserted => sectionsInserted + eventTemplatesInserted + notificationTemplatesInserted;
+  int get totalInserted =>
+      sectionsInserted +
+      eventTemplatesInserted +
+      notificationTemplatesInserted +
+      usersInserted +
+      eventsInserted;
 
-  int get totalUpdated => sectionsUpdated + eventTemplatesUpdated + notificationTemplatesUpdated;
+  int get totalUpdated =>
+      sectionsUpdated +
+      eventTemplatesUpdated +
+      notificationTemplatesUpdated +
+      eventsUpdated;
 }
 
 class ServerDataLoader {
@@ -36,10 +49,18 @@ class ServerDataLoader {
 
     final result = DataLoadResult();
     await _loadSections(session, _readList(data, 'sections'), result);
-    await _loadEventTemplates(session, _readList(data, 'eventTemplates', aliases: ['event_templates']), result);
+    await _loadEventTemplates(
+      session,
+      _readList(data, 'eventTemplates', aliases: ['event_templates']),
+      result,
+    );
     await _loadNotificationTemplates(
       session,
-      _readList(data, 'notificationTemplates', aliases: ['notification_templates', 'mailTemplates', 'mail_templates']),
+      _readList(
+        data,
+        'notificationTemplates',
+        aliases: ['notification_templates', 'mailTemplates', 'mail_templates'],
+      ),
       result,
     );
 
@@ -60,22 +81,37 @@ class ServerDataLoader {
     return switch (extension) {
       'json' => jsonDecode(content),
       'yaml' || 'yml' => loadYaml(content),
-      _ => throw DataLoaderException('Unsupported file type for ${file.path}. Use .json, .yaml, or .yml.'),
+      _ => throw DataLoaderException(
+        'Unsupported file type for ${file.path}. Use .json, .yaml, or .yml.',
+      ),
     };
   }
 
   Object? _normalize(Object? value) {
     return switch (value) {
-      YamlMap() => {for (final entry in value.entries) entry.key.toString(): _normalize(entry.value)},
+      YamlMap() => {
+        for (final entry in value.entries)
+          entry.key.toString(): _normalize(entry.value),
+      },
       YamlList() => value.map(_normalize).toList(),
       List() => value.map(_normalize).toList(),
-      Map() => {for (final entry in value.entries) entry.key.toString(): _normalize(entry.value)},
+      Map() => {
+        for (final entry in value.entries)
+          entry.key.toString(): _normalize(entry.value),
+      },
       _ => value,
     };
   }
 
-  List<Map<String, dynamic>> _readList(Map<String, dynamic> data, String key, {List<String> aliases = const []}) {
-    final value = [key, ...aliases].map((candidate) => data[candidate]).nonNulls.firstOrNull;
+  List<Map<String, dynamic>> _readList(
+    Map<String, dynamic> data,
+    String key, {
+    List<String> aliases = const [],
+  }) {
+    final value = [
+      key,
+      ...aliases,
+    ].map((candidate) => data[candidate]).nonNulls.firstOrNull;
 
     if (value == null) return [];
     if (value is! List) {
@@ -84,11 +120,18 @@ class ServerDataLoader {
 
     return [
       for (final row in value)
-        if (row is Map<String, dynamic>) row else throw DataLoaderException('Every "$key" entry must be an object.'),
+        if (row is Map<String, dynamic>)
+          row
+        else
+          throw DataLoaderException('Every "$key" entry must be an object.'),
     ];
   }
 
-  Future<void> _loadSections(Session session, List<Map<String, dynamic>> rows, DataLoadResult result) async {
+  Future<void> _loadSections(
+    Session session,
+    List<Map<String, dynamic>> rows,
+    DataLoadResult result,
+  ) async {
     for (final row in rows) {
       final name = _requiredString(row, 'name');
       final section = Section(
@@ -98,7 +141,10 @@ class ServerDataLoader {
         contactInfo: _optionalString(row, 'contactInfo'),
       );
 
-      final existing = await Section.db.findFirstRow(session, where: (t) => t.name.equals(name));
+      final existing = await Section.db.findFirstRow(
+        session,
+        where: (t) => t.name.equals(name),
+      );
 
       if (existing == null) {
         await Section.db.insertRow(session, section);
@@ -110,7 +156,11 @@ class ServerDataLoader {
     }
   }
 
-  Future<void> _loadEventTemplates(Session session, List<Map<String, dynamic>> rows, DataLoadResult result) async {
+  Future<void> _loadEventTemplates(
+    Session session,
+    List<Map<String, dynamic>> rows,
+    DataLoadResult result,
+  ) async {
     for (final row in rows) {
       final name = _requiredString(row, 'name');
       final language = _optionalString(row, 'language') ?? 'en';
@@ -130,7 +180,10 @@ class ServerDataLoader {
         await EventTemplate.db.insertRow(session, template);
         result.eventTemplatesInserted++;
       } else {
-        await EventTemplate.db.updateRow(session, template.copyWith(id: existing.id));
+        await EventTemplate.db.updateRow(
+          session,
+          template.copyWith(id: existing.id),
+        );
         result.eventTemplatesUpdated++;
       }
     }
@@ -144,8 +197,12 @@ class ServerDataLoader {
     for (final row in rows) {
       final name = _requiredString(row, 'name');
       final now = DateTime.now().toUtc();
-      final existing = await NotificationTemplate.db.findFirstRow(session, where: (t) => t.name.equals(name));
-      final createdAt = _optionalDateTime(row, 'createdAt') ?? existing?.createdAt ?? now;
+      final existing = await NotificationTemplate.db.findFirstRow(
+        session,
+        where: (t) => t.name.equals(name),
+      );
+      final createdAt =
+          _optionalDateTime(row, 'createdAt') ?? existing?.createdAt ?? now;
       final template = NotificationTemplate(
         name: name,
         titleTemplate: _requiredString(row, 'titleTemplate'),
@@ -159,7 +216,10 @@ class ServerDataLoader {
         await NotificationTemplate.db.insertRow(session, template);
         result.notificationTemplatesInserted++;
       } else {
-        await NotificationTemplate.db.updateRow(session, template.copyWith(id: existing.id));
+        await NotificationTemplate.db.updateRow(
+          session,
+          template.copyWith(id: existing.id),
+        );
         result.notificationTemplatesUpdated++;
       }
     }
@@ -186,8 +246,19 @@ class ServerDataLoader {
     throw DataLoaderException('Optional field "$key" must be a DateTime.');
   }
 
-  Future<void> loadSampleData(InternalSession session) async {
-
+  Future<DataLoadResult> loadSampleData(
+    Session session, {
+    int sampleUsers = 20,
+    int sampleEvents = 50,
+  }) async {
+    final result = DataLoadResult();
+    final generator = GenerateSampleData(session);
+    final sampleResult = await generator.generate(
+      SampleDataOptions(sampleUsers: sampleUsers, sampleEvents: sampleEvents),
+    );
+    result.usersInserted = sampleResult.usersInserted;
+    result.eventsInserted = sampleResult.eventsInserted;
+    return result;
   }
 }
 
