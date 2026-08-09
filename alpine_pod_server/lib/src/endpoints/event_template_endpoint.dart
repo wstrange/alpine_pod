@@ -5,14 +5,14 @@ import '../member_cache.dart';
 class EventTemplateEndpoint extends Endpoint {
   /// Fetches all event templates from the database.
   Future<List<EventTemplate>> listTemplates(Session session) async {
-    return await EventTemplate.db.find(
-      session,
-      orderBy: (t) => t.name,
-    );
+    return await EventTemplate.db.find(session, orderBy: (t) => t.name);
   }
 
   /// Creates a new event template. Requires Admin scope.
-  Future<EventTemplate> createTemplate(Session session, EventTemplate template) async {
+  Future<EventTemplate> createTemplate(
+    Session session,
+    EventTemplate template,
+  ) async {
     if (!session.isGlobalAdmin()) {
       throw Exception('Only admins can create templates');
     }
@@ -20,7 +20,10 @@ class EventTemplateEndpoint extends Endpoint {
   }
 
   /// Updates an existing event template. Requires Admin scope.
-  Future<EventTemplate> updateTemplate(Session session, EventTemplate template) async {
+  Future<EventTemplate> updateTemplate(
+    Session session,
+    EventTemplate template,
+  ) async {
     if (!session.isGlobalAdmin()) {
       throw Exception('Only admins can update templates');
     }

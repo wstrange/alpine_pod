@@ -18,8 +18,8 @@ import 'router.dart';
 import 'services/connectivity_service.dart';
 import 'services/sync_service.dart';
 
-final host = 'Warrens-MacBook-Air.local';
-// final host = 'localhost';
+// final host = 'Warrens-MacBook-Air.local';
+final host = 'localhost';
 // final host = 'warren.home';
 
 void main() async {
@@ -36,7 +36,9 @@ void main() async {
   // enableFlutterDriverExtension();
 
   const serverUrlFromEnv = String.fromEnvironment('SERVER_URL');
-  final serverUrl = serverUrlFromEnv.isEmpty ? 'http://$host:8080/' : serverUrlFromEnv;
+  final serverUrl = serverUrlFromEnv.isEmpty
+      ? 'http://$host:8080/'
+      : serverUrlFromEnv;
 
   client = Client(serverUrl)
     ..connectivityMonitor = FlutterConnectivityMonitor()
@@ -50,7 +52,11 @@ void main() async {
     dbSession = await client.createSession(dbPath, isDebugMode: kDebugMode);
     syncService.initializePeriodicSync();
   } catch (e, stack) {
-    Logger.root.severe('Failed to initialize client database session', e, stack);
+    Logger.root.severe(
+      'Failed to initialize client database session',
+      e,
+      stack,
+    );
   }
 
   sessionManager = client.auth;

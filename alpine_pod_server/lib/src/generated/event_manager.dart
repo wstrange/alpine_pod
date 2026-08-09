@@ -131,10 +131,7 @@ abstract class EventManager
     _i2.EventInclude? event,
     _i3.MemberInclude? member,
   }) {
-    return EventManagerInclude._(
-      event: event,
-      member: member,
-    );
+    return EventManagerInclude._(event: event, member: member);
   }
 
   static EventManagerIncludeList includeList({
@@ -211,51 +208,26 @@ class EventManagerUpdateTable extends _i1.UpdateTable<EventManagerTable> {
   EventManagerUpdateTable(super.table);
 
   _i1.ColumnValue<_i1.UuidValue, _i1.UuidValue> eventId(_i1.UuidValue value) =>
-      _i1.ColumnValue(
-        table.eventId,
-        value,
-      );
+      _i1.ColumnValue(table.eventId, value);
 
   _i1.ColumnValue<_i1.UuidValue, _i1.UuidValue> memberId(_i1.UuidValue value) =>
-      _i1.ColumnValue(
-        table.memberId,
-        value,
-      );
+      _i1.ColumnValue(table.memberId, value);
 
   _i1.ColumnValue<DateTime, DateTime> assignedAt(DateTime? value) =>
-      _i1.ColumnValue(
-        table.assignedAt,
-        value,
-      );
+      _i1.ColumnValue(table.assignedAt, value);
 
   _i1.ColumnValue<DateTime, DateTime> updatedAt(DateTime value) =>
-      _i1.ColumnValue(
-        table.updatedAt,
-        value,
-      );
+      _i1.ColumnValue(table.updatedAt, value);
 }
 
 class EventManagerTable extends _i1.Table<_i1.UuidValue> {
   EventManagerTable({super.tableRelation})
     : super(tableName: 'event_managers') {
     updateTable = EventManagerUpdateTable(this);
-    eventId = _i1.ColumnUuid(
-      'eventId',
-      this,
-    );
-    memberId = _i1.ColumnUuid(
-      'memberId',
-      this,
-    );
-    assignedAt = _i1.ColumnDateTime(
-      'assignedAt',
-      this,
-    );
-    updatedAt = _i1.ColumnDateTime(
-      'updatedAt',
-      this,
-      hasDefault: true,
-    );
+    eventId = _i1.ColumnUuid('eventId', this);
+    memberId = _i1.ColumnUuid('memberId', this);
+    assignedAt = _i1.ColumnDateTime('assignedAt', this);
+    updatedAt = _i1.ColumnDateTime('updatedAt', this, hasDefault: true);
   }
 
   late final EventManagerUpdateTable updateTable;
@@ -320,10 +292,7 @@ class EventManagerTable extends _i1.Table<_i1.UuidValue> {
 }
 
 class EventManagerInclude extends _i1.IncludeObject {
-  EventManagerInclude._({
-    _i2.EventInclude? event,
-    _i3.MemberInclude? member,
-  }) {
+  EventManagerInclude._({_i2.EventInclude? event, _i3.MemberInclude? member}) {
     _event = event;
     _member = member;
   }
@@ -508,10 +477,7 @@ class EventManagerRepository {
     EventManager row, {
     _i1.Transaction? transaction,
   }) async {
-    return session.db.insertRow<EventManager>(
-      row,
-      transaction: transaction,
-    );
+    return session.db.insertRow<EventManager>(row, transaction: transaction);
   }
 
   /// Upserts all [EventManager]s in the list and returns the resulting rows.
@@ -701,10 +667,7 @@ class EventManagerRepository {
     EventManager row, {
     _i1.Transaction? transaction,
   }) async {
-    return session.db.deleteRow<EventManager>(
-      row,
-      transaction: transaction,
-    );
+    return session.db.deleteRow<EventManager>(row, transaction: transaction);
   }
 
   /// Deletes all rows matching the [where] expression.

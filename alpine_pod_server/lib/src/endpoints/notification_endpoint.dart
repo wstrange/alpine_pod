@@ -6,7 +6,11 @@ class NotificationEndpoint extends Endpoint {
   @override
   bool get requireLogin => true;
 
-  Future<List<UserNotification>> getMyFeed(Session session, {int limit = 20, int offset = 0}) async {
+  Future<List<UserNotification>> getMyFeed(
+    Session session, {
+    int limit = 20,
+    int offset = 0,
+  }) async {
     final authInfo = session.authenticated;
     final currentUserId = authInfo!.authUserId;
 
@@ -30,14 +34,20 @@ class NotificationEndpoint extends Endpoint {
     }
     final currentUserId = authInfo.authUserId;
 
-    await UserNotification.db.deleteWhere(session, where: (t) => t.id.equals(currentUserId));
+    await UserNotification.db.deleteWhere(
+      session,
+      where: (t) => t.id.equals(currentUserId),
+    );
   }
 
   Future<bool> markAsRead(Session session, UuidValue userNotificationId) async {
     final authInfo = session.authenticated;
     final currentUserId = authInfo!.authUserId;
 
-    final userNotif = await UserNotification.db.findById(session, userNotificationId);
+    final userNotif = await UserNotification.db.findById(
+      session,
+      userNotificationId,
+    );
     if (userNotif == null || userNotif.id != currentUserId) {
       return false;
     }
@@ -73,7 +83,10 @@ class NotificationEndpoint extends Endpoint {
     return u;
   }
 
-  Future<UserNotificationPreference> savePreference(Session session, UserNotificationPreference preference) async {
+  Future<UserNotificationPreference> savePreference(
+    Session session,
+    UserNotificationPreference preference,
+  ) async {
     final authInfo = session.authenticated;
     final currentUserId = authInfo!.authUserId;
 
@@ -90,22 +103,38 @@ class NotificationEndpoint extends Endpoint {
     return preference;
   }
 
-  Future<void> registerFcmToken(Session session, String token, {String? deviceId}) async {
+  Future<void> registerFcmToken(
+    Session session,
+    String token, {
+    String? deviceId,
+  }) async {
     final authInfo = session.authenticated;
     if (authInfo == null) {
       throw Exception('Not authenticated');
     }
     final id = authInfo.authUserId;
 
-    final existing = await FcmToken.db.findFirstRow(session, where: (t) => t.token.equals(token));
+    final existing = await FcmToken.db.findFirstRow(
+      session,
+      where: (t) => t.token.equals(token),
+    );
 
     if (existing != null) {
-      final updated = existing.copyWith(id: id, deviceId: deviceId ?? existing.deviceId, updatedAt: DateTime.now());
+      final updated = existing.copyWith(
+        id: id,
+        deviceId: deviceId ?? existing.deviceId,
+        updatedAt: DateTime.now(),
+      );
       await FcmToken.db.updateRow(session, updated);
     } else {
       await FcmToken.db.insertRow(
         session,
-        FcmToken(id: id, token: token, deviceId: deviceId, updatedAt: DateTime.now()),
+        FcmToken(
+          id: id,
+          token: token,
+          deviceId: deviceId,
+          updatedAt: DateTime.now(),
+        ),
       );
     }
   }

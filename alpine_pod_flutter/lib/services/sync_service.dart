@@ -14,7 +14,9 @@ class SyncService {
   Timer? _periodicSyncTimer;
 
   /// Initializes periodic syncing every 5 minutes when online.
-  void initializePeriodicSync({Duration interval = const Duration(minutes: 1)}) {
+  void initializePeriodicSync({
+    Duration interval = const Duration(minutes: 1),
+  }) {
     _periodicSyncTimer?.cancel();
 
     // quick sync to start
@@ -133,7 +135,10 @@ class SyncService {
         if (m.member != null) await _upsertMember(m.member!);
         if (m.section != null) await _upsertSection(m.section!);
       }
-      await SectionMembership.db.deleteWhere(dbSession, where: (t) => Constant.bool(true));
+      await SectionMembership.db.deleteWhere(
+        dbSession,
+        where: (t) => Constant.bool(true),
+      );
       for (final m in memberships) {
         await _upsertSectionMembership(m);
       }
@@ -143,14 +148,23 @@ class SyncService {
   }
 
   Future<void> syncMemberProfiles(UuidValue sectionId) async {
-    final members = await client.member.getSectionMembers(limit: 1000, offset: 0, sectionId: sectionId);
+    final members = await client.member.getSectionMembers(
+      limit: 1000,
+      offset: 0,
+      sectionId: sectionId,
+    );
     for (final member in members) {
       await _upsertMember(member);
     }
   }
 
   /// Syncs events, event managers, and registrations for a section and date window.
-  Future<List<Event>> syncEvents(UuidValue? sectionId, DateTime startTime, DateTime endTime, bool onlyMyEvents) async {
+  Future<List<Event>> syncEvents(
+    UuidValue? sectionId,
+    DateTime startTime,
+    DateTime endTime,
+    bool onlyMyEvents,
+  ) async {
     if (!isOnlineSignal.value) return [];
     try {
       final events = await client.event.listEvents(
@@ -175,8 +189,14 @@ class SyncService {
       );
 
       for (final e in existingEvents) {
-        await EventManager.db.deleteWhere(dbSession, where: (t) => t.eventId.equals(e.id));
-        await EventRegistration.db.deleteWhere(dbSession, where: (t) => t.eventId.equals(e.id));
+        await EventManager.db.deleteWhere(
+          dbSession,
+          where: (t) => t.eventId.equals(e.id),
+        );
+        await EventRegistration.db.deleteWhere(
+          dbSession,
+          where: (t) => t.eventId.equals(e.id),
+        );
       }
 
       // 2. Now safe to delete old cached events
@@ -190,19 +210,41 @@ class SyncService {
           return where;
         },
       );
-      _log.info('Cleaned existing cached events and child records for section $sectionId');
+      _log.info(
+        'Cleaned existing cached events and child records for section $sectionId',
+      );
 
       // 3. Insert/upsert new events and their referenced members & child records
       if (events.isNotEmpty) {
         for (var e in events) {
           // _log.info('sync event: ${e.title}, section ${e.sectionId}');
           if (sectionId != null && e.sectionId != sectionId) {
-            _log.warning('Event ${e.title} is not in current section $sectionId, skipping');
+            _log.warning(
+              'Event ${e.title} is not in current section $sectionId, skipping',
+            );
             continue;
           }
 
           if (e.section != null) {
             await _upsertSection(e.section!);
+          } else {
+            // Ensure section FK is satisfied in local DB before inserting event
+            final existingSection = await Section.db.findById(
+              dbSession,
+              e.sectionId,
+            );
+            if (existingSection == null) {
+              try {
+                final sec = await client.section.getSection(e.sectionId);
+                if (sec != null) {
+                  await _upsertSection(sec);
+                }
+              } catch (err) {
+                _log.warning(
+                  'Failed to fetch missing section ${e.sectionId} for event ${e.title}: $err',
+                );
+              }
+            }
           }
 
           await Event.db.insertRow(dbSession, e);
@@ -214,7 +256,15 @@ class SyncService {
               if (m.member != null) {
                 await _upsertMember(m.member!);
               }
-              await EventManager.db.insertRow(dbSession, m);
+              final memberExists =
+                  await Member.db.findById(dbSession, m.memberId) != null;
+              if (memberExists) {
+                await EventManager.db.insertRow(dbSession, m);
+              } else {
+                _log.warning(
+                  'Skipping EventManager insert: member ${m.memberId} not found in local DB',
+                );
+              }
             }
           }
 
@@ -225,7 +275,15 @@ class SyncService {
               if (r.member != null) {
                 await _upsertMember(r.member!);
               }
-              await EventRegistration.db.insertRow(dbSession, r);
+              final memberExists =
+                  await Member.db.findById(dbSession, r.memberId) != null;
+              if (memberExists) {
+                await EventRegistration.db.insertRow(dbSession, r);
+              } else {
+                _log.warning(
+                  'Skipping EventRegistration insert: member ${r.memberId} not found in local DB',
+                );
+              }
             }
           }
         }
@@ -243,7 +301,10 @@ class SyncService {
     if (!isOnlineSignal.value) return;
     try {
       final prefs = await client.notification.getMyPreferences();
-      await UserNotificationPreference.db.deleteWhere(dbSession, where: (t) => Constant.bool(true));
+      await UserNotificationPreference.db.deleteWhere(
+        dbSession,
+        where: (t) => Constant.bool(true),
+      );
       await UserNotificationPreference.db.insert(dbSession, [prefs]);
     } catch (e) {
       _log.warning('Failed to sync notification preferences: $e');

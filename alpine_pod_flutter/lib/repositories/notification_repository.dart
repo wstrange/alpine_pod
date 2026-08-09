@@ -10,10 +10,16 @@ final notificationRepository = NotificationRepository();
 
 class NotificationRepository {
   /// Gets notifications feed from server API.
-  Future<List<UserNotification>> getMyFeed({int limit = 30, int offset = 0}) async {
+  Future<List<UserNotification>> getMyFeed({
+    int limit = 30,
+    int offset = 0,
+  }) async {
     if (isOnlineSignal.value) {
       try {
-        return await client.notification.getMyFeed(limit: limit, offset: offset);
+        return await client.notification.getMyFeed(
+          limit: limit,
+          offset: offset,
+        );
       } catch (e) {
         _log.warning('Failed to load notifications from server: $e');
       }

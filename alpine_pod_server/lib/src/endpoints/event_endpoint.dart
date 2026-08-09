@@ -22,7 +22,8 @@ class EventEndpoint extends Endpoint {
     }
 
     // Validate registration settings
-    if (event.registrationDeadline != null && event.registrationDeadline!.isAfter(event.startTime)) {
+    if (event.registrationDeadline != null &&
+        event.registrationDeadline!.isAfter(event.startTime)) {
       throw Exception('Registration deadline must be before event start time');
     }
     if (event.maxParticipants != null && event.maxParticipants! <= 0) {
@@ -34,7 +35,9 @@ class EventEndpoint extends Endpoint {
     if (event.minimumParticipants != null &&
         event.maxParticipants != null &&
         event.minimumParticipants! > event.maxParticipants!) {
-      throw Exception('Minimum participants cannot be greater than maximum participants');
+      throw Exception(
+        'Minimum participants cannot be greater than maximum participants',
+      );
     }
   }
 
@@ -59,15 +62,22 @@ class EventEndpoint extends Endpoint {
     }
 
     // Permission check
-    if (!session.isGlobalAdmin() && !await cache.canCreateEvent(session, event.sectionId)) {
-      throw Exception('You do not have permission to create events in this section');
+    if (!session.isGlobalAdmin() &&
+        !await cache.canCreateEvent(session, event.sectionId)) {
+      throw Exception(
+        'You do not have permission to create events in this section',
+      );
     }
 
     // Validate event fields
     _validateEvent(event);
 
     final createdEvent = await session.db.transaction((transaction) async {
-      final createdEvent = await Event.db.insertRow(session, event, transaction: transaction);
+      final createdEvent = await Event.db.insertRow(
+        session,
+        event,
+        transaction: transaction,
+      );
 
       // Find the member for this user
       final member = await Member.db.findFirstRow(
@@ -83,7 +93,11 @@ class EventEndpoint extends Endpoint {
       // Assign as default manager
       await EventManager.db.insertRow(
         session,
-        EventManager(eventId: createdEvent.id!, memberId: member.id!, assignedAt: DateTime.now()),
+        EventManager(
+          eventId: createdEvent.id!,
+          memberId: member.id!,
+          assignedAt: DateTime.now(),
+        ),
         transaction: transaction,
       );
 
@@ -95,7 +109,11 @@ class EventEndpoint extends Endpoint {
 
           await EventManager.db.insertRow(
             session,
-            EventManager(eventId: createdEvent.id!, memberId: managerId, assignedAt: DateTime.now()),
+            EventManager(
+              eventId: createdEvent.id!,
+              memberId: managerId,
+              assignedAt: DateTime.now(),
+            ),
             transaction: transaction,
           );
         }
@@ -117,8 +135,12 @@ class EventEndpoint extends Endpoint {
       session,
       id,
       include: Event.include(
-        eventRegistrations: EventRegistration.includeList(include: EventRegistration.include(member: Member.include())),
-        eventManagers: EventManager.includeList(include: EventManager.include(member: Member.include())),
+        eventRegistrations: EventRegistration.includeList(
+          include: EventRegistration.include(member: Member.include()),
+        ),
+        eventManagers: EventManager.includeList(
+          include: EventManager.include(member: Member.include()),
+        ),
       ),
     );
 
@@ -144,9 +166,16 @@ class EventEndpoint extends Endpoint {
 
     // Don't allow changing section ID if the event has registrations
     if (existing.sectionId != event.sectionId) {
-      final hasRegistrations = await EventRegistration.db.count(session, where: (t) => t.eventId.equals(event.id!)) > 0;
+      final hasRegistrations =
+          await EventRegistration.db.count(
+            session,
+            where: (t) => t.eventId.equals(event.id!),
+          ) >
+          0;
       if (hasRegistrations) {
-        throw Exception('Cannot change section for an event with registrations');
+        throw Exception(
+          'Cannot change section for an event with registrations',
+        );
       }
     }
 
@@ -173,7 +202,12 @@ class EventEndpoint extends Endpoint {
     if (existing == null) return;
 
     // Check if event has registrations
-    final hasRegistrations = await EventRegistration.db.count(session, where: (t) => t.eventId.equals(id)) > 0;
+    final hasRegistrations =
+        await EventRegistration.db.count(
+          session,
+          where: (t) => t.eventId.equals(id),
+        ) >
+        0;
 
     if (hasRegistrations) {
       throw Exception('Cannot delete an event with existing registrations');
@@ -215,8 +249,12 @@ class EventEndpoint extends Endpoint {
           // or registrant (can only see published)
           where =
               where &
-              (t.eventManagers.any((m) => m.member.id.equals(authInfo.authUserId)) |
-                  (t.eventRegistrations.any((r) => r.member.id.equals(authInfo.authUserId)) &
+              (t.eventManagers.any(
+                    (m) => m.member.id.equals(authInfo.authUserId),
+                  ) |
+                  (t.eventRegistrations.any(
+                        (r) => r.member.id.equals(authInfo.authUserId),
+                      ) &
                       t.published.equals(true)));
         } else {
           where = where & t.published.equals(true);
@@ -226,18 +264,29 @@ class EventEndpoint extends Endpoint {
       },
       orderBy: (t) => t.startTime,
       include: Event.include(
-        eventManagers: EventManager.includeList(include: EventManager.include(member: Member.include())),
-        eventRegistrations: EventRegistration.includeList(include: EventRegistration.include(member: Member.include())),
+        section: Section.include(),
+        eventManagers: EventManager.includeList(
+          include: EventManager.include(member: Member.include()),
+        ),
+        eventRegistrations: EventRegistration.includeList(
+          include: EventRegistration.include(member: Member.include()),
+        ),
       ),
     );
   }
 
-  Future<EventRegistration> registerForEvent(Session session, UuidValue eventId) async {
+  Future<EventRegistration> registerForEvent(
+    Session session,
+    UuidValue eventId,
+  ) async {
     final authInfo = session.authenticated;
     if (authInfo == null) {
       throw Exception('User must be authenticated to register');
     }
-    final member = await Member.db.findFirstRow(session, where: (t) => t.id.equals(authInfo.authUserId));
+    final member = await Member.db.findFirstRow(
+      session,
+      where: (t) => t.id.equals(authInfo.authUserId),
+    );
 
     if (member == null) {
       throw Exception('Member profile not found');
@@ -247,7 +296,9 @@ class EventEndpoint extends Endpoint {
     final event = await Event.db.findById(
       session,
       eventId,
-      include: Event.include(eventRegistrations: EventRegistration.includeList()),
+      include: Event.include(
+        eventRegistrations: EventRegistration.includeList(),
+      ),
     );
 
     if (event == null) {
@@ -268,15 +319,21 @@ class EventEndpoint extends Endpoint {
 
       var eventRegistrations = event.eventRegistrations ?? [];
 
-      var numConfirmed = eventRegistrations.where((r) => r.registrationStatus == RegistrationStatus.confirmed).length;
-      var numWaitlisted = eventRegistrations.where((r) => r.registrationStatus == RegistrationStatus.waitlisted).length;
+      var numConfirmed = eventRegistrations
+          .where((r) => r.registrationStatus == RegistrationStatus.confirmed)
+          .length;
+      var numWaitlisted = eventRegistrations
+          .where((r) => r.registrationStatus == RegistrationStatus.waitlisted)
+          .length;
 
       // Check registration dates
       final now = DateTime.now();
-      if (event.registrationStartDate != null && now.isBefore(event.registrationStartDate!)) {
+      if (event.registrationStartDate != null &&
+          now.isBefore(event.registrationStartDate!)) {
         throw Exception('Registration has not started yet');
       }
-      if (event.registrationDeadline != null && now.isAfter(event.registrationDeadline!)) {
+      if (event.registrationDeadline != null &&
+          now.isAfter(event.registrationDeadline!)) {
         throw Exception('Registration deadline has passed');
       }
 
@@ -303,7 +360,11 @@ class EventEndpoint extends Endpoint {
         waiverAccepted: false, // Default
       );
 
-      final created = await EventRegistration.db.insertRow(session, registration, transaction: transaction);
+      final created = await EventRegistration.db.insertRow(
+        session,
+        registration,
+        transaction: transaction,
+      );
 
       return created;
     });
@@ -316,7 +377,10 @@ class EventEndpoint extends Endpoint {
         session: session,
         templateName: 'event-registered',
         recipientUserIds: [member.id],
-        templateData: {'title': event.title, 'event_url': '/events/${event.id}'},
+        templateData: {
+          'title': event.title,
+          'event_url': '/events/${event.id}',
+        },
         actionUrl: '/event-view/${event.id}',
       );
     }

@@ -60,7 +60,10 @@ class NotificationService {
       final allowPush = isAlwaysNotify || (pref?.allowPush ?? true);
       final allowSms = isAlwaysNotify || (pref?.allowSms ?? false);
       // get the users email
-      final member = await Member.db.findFirstRow(session, where: (member) => member.id.equals(id));
+      final member = await Member.db.findFirstRow(
+        session,
+        where: (member) => member.id.equals(id),
+      );
       // This is really for logging / debug purposes.
       final info = '${member?.email} ${member?.firstName} ${member?.lastName}';
       print('Info == $info');
@@ -164,13 +167,20 @@ class NotificationService {
     required Map<String, String> templateData,
     String? actionUrl,
   }) async {
-    final template = await NotificationTemplate.db.findFirstRow(session, where: (t) => t.name.equals(templateName));
+    final template = await NotificationTemplate.db.findFirstRow(
+      session,
+      where: (t) => t.name.equals(templateName),
+    );
     if (template == null) {
       throw Exception('Template "$templateName" not found.');
     }
 
-    final renderedTitle = Template(template.titleTemplate).renderString(templateData);
-    final renderedBody = Template(template.bodyTemplate).renderString(templateData);
+    final renderedTitle = Template(
+      template.titleTemplate,
+    ).renderString(templateData);
+    final renderedBody = Template(
+      template.bodyTemplate,
+    ).renderString(templateData);
     final renderedHtml = template.htmlTemplate != null
         ? Template(template.htmlTemplate!).renderString(templateData)
         : null;
@@ -179,7 +189,11 @@ class NotificationService {
       session,
       Notification(
         templateId: template.id!,
-        data: {...templateData, 'rendered_title': renderedTitle, 'rendered_body': renderedBody},
+        data: {
+          ...templateData,
+          'rendered_title': renderedTitle,
+          'rendered_body': renderedBody,
+        },
         actionUrl: actionUrl,
         renderedTitle: renderedTitle,
         renderedBody: renderedBody,
@@ -193,10 +207,15 @@ class NotificationService {
   // Convenience methods — unchanged signatures, same callers.
   // ---------------------------------------------------------------------------
 
-  Future<void> notifyRegistrationApproved(Session session, EventRegistration er) async {
+  Future<void> notifyRegistrationApproved(
+    Session session,
+    EventRegistration er,
+  ) async {
     final member = await Member.db.findById(session, er.memberId);
     if (member == null) {
-      session.log('Cant notify user of registration. Member not found ${er.memberId}');
+      session.log(
+        'Cant notify user of registration. Member not found ${er.memberId}',
+      );
       return;
     }
 
@@ -207,14 +226,22 @@ class NotificationService {
       session: session,
       templateName: 'registration-approved',
       recipientUserIds: [member.id],
-      templateData: {'title': title, 'body': 'Your registration for "$title" has been approved.'},
+      templateData: {
+        'title': title,
+        'body': 'Your registration for "$title" has been approved.',
+      },
     );
   }
 
-  Future<void> notifyRegistrationRemoved(Session session, EventRegistration er) async {
+  Future<void> notifyRegistrationRemoved(
+    Session session,
+    EventRegistration er,
+  ) async {
     final member = await Member.db.findById(session, er.memberId);
     if (member == null) {
-      session.log('Cant notify user of registration. Member not found ${er.memberId}');
+      session.log(
+        'Cant notify user of registration. Member not found ${er.memberId}',
+      );
       return;
     }
 
@@ -225,14 +252,22 @@ class NotificationService {
       session: session,
       templateName: 'registration-cancelled',
       recipientUserIds: [member.id],
-      templateData: {'title': title, 'body': 'Your registration for $title has been cancelled.'},
+      templateData: {
+        'title': title,
+        'body': 'Your registration for $title has been cancelled.',
+      },
     );
   }
 
-  Future<void> notifyRegistrationWaitlisted(Session session, EventRegistration er) async {
+  Future<void> notifyRegistrationWaitlisted(
+    Session session,
+    EventRegistration er,
+  ) async {
     final member = await Member.db.findById(session, er.memberId);
     if (member == null) {
-      session.log('Cant notify user of registration. Member not found ${er.memberId}');
+      session.log(
+        'Cant notify user of registration. Member not found ${er.memberId}',
+      );
       return;
     }
 
@@ -243,7 +278,10 @@ class NotificationService {
       session: session,
       templateName: 'add-to-waitlist',
       recipientUserIds: [member.id],
-      templateData: {'title': title, 'body': 'You have been added to the waitlist for $title.'},
+      templateData: {
+        'title': title,
+        'body': 'You have been added to the waitlist for $title.',
+      },
       actionUrl: '/event-view/${event?.id}',
     );
   }
@@ -254,14 +292,20 @@ class NotificationService {
       where: (er) => er.eventId.equals(event.id),
       include: EventRegistration.include(member: Member.include()),
     );
-    final recipientUserIds = registrations.map((r) => r.member?.id).nonNulls.toList();
+    final recipientUserIds = registrations
+        .map((r) => r.member?.id)
+        .nonNulls
+        .toList();
     if (recipientUserIds.isEmpty) return;
 
     await dispatchNotification(
       session: session,
       templateName: 'event-cancelled',
       recipientUserIds: recipientUserIds,
-      templateData: {'title': event.title, 'body': 'The event "${event.title}" has been cancelled.'},
+      templateData: {
+        'title': event.title,
+        'body': 'The event "${event.title}" has been cancelled.',
+      },
     );
   }
 
@@ -280,7 +324,10 @@ class NotificationService {
     );
   }
 
-  Future<void> notifyNewRegistration(Session session, EventRegistration er) async {
+  Future<void> notifyNewRegistration(
+    Session session,
+    EventRegistration er,
+  ) async {
     final member = await Member.db.findById(session, er.memberId);
     if (member == null) {
       session.log(' Member not found ${er.memberId}');
@@ -297,18 +344,27 @@ class NotificationService {
       include: EventManager.include(member: Member.include()),
     );
 
-    final recipientUserIds = managers.map((manager) => manager.member?.id).nonNulls.toList();
+    final recipientUserIds = managers
+        .map((manager) => manager.member?.id)
+        .nonNulls
+        .toList();
     if (recipientUserIds.isEmpty) return;
 
     await dispatchNotification(
       session: session,
       templateName: 'event-new-registration',
       recipientUserIds: recipientUserIds,
-      templateData: {'title': title, 'body': '${member.displayName} signed up for "$title".'},
+      templateData: {
+        'title': title,
+        'body': '${member.displayName} signed up for "$title".',
+      },
     );
   }
 
-  Future<void> notifyManagersRegistrationCancelled(Session session, EventRegistration er) async {
+  Future<void> notifyManagersRegistrationCancelled(
+    Session session,
+    EventRegistration er,
+  ) async {
     final member = await Member.db.findById(session, er.memberId);
     if (member == null) return;
     final event = er.event ?? await Event.db.findById(session, er.eventId);
@@ -318,18 +374,27 @@ class NotificationService {
       where: (em) => em.eventId.equals(er.eventId),
       include: EventManager.include(member: Member.include()),
     );
-    final recipientUserIds = managers.map((m) => m.member?.id).nonNulls.toList();
+    final recipientUserIds = managers
+        .map((m) => m.member?.id)
+        .nonNulls
+        .toList();
     if (recipientUserIds.isEmpty) return;
 
     await dispatchNotification(
       session: session,
       templateName: 'registration-cancelled-manager',
       recipientUserIds: recipientUserIds,
-      templateData: {'title': title, 'body': '${member.displayName} cancelled registration for "$title".'},
+      templateData: {
+        'title': title,
+        'body': '${member.displayName} cancelled registration for "$title".',
+      },
     );
   }
 
-  Future<void> notifyManagersRegistrationApproved(Session session, EventRegistration er) async {
+  Future<void> notifyManagersRegistrationApproved(
+    Session session,
+    EventRegistration er,
+  ) async {
     final member = await Member.db.findById(session, er.memberId);
     if (member == null) return;
     final event = er.event ?? await Event.db.findById(session, er.eventId);
@@ -339,14 +404,21 @@ class NotificationService {
       where: (em) => em.eventId.equals(er.eventId),
       include: EventManager.include(member: Member.include()),
     );
-    final recipientUserIds = managers.map((m) => m.member?.id).nonNulls.toList();
+    final recipientUserIds = managers
+        .map((m) => m.member?.id)
+        .nonNulls
+        .toList();
     if (recipientUserIds.isEmpty) return;
 
     await dispatchNotification(
       session: session,
       templateName: 'registration-approved-manager',
       recipientUserIds: recipientUserIds,
-      templateData: {'title': title, 'body': '${member.displayName}\'s registration for "$title" has been approved.'},
+      templateData: {
+        'title': title,
+        'body':
+            '${member.displayName}\'s registration for "$title" has been approved.',
+      },
     );
   }
 }

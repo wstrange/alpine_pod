@@ -178,59 +178,31 @@ class _EventTemplateImpl extends EventTemplate {
 class EventTemplateUpdateTable extends _i1.UpdateTable<EventTemplateTable> {
   EventTemplateUpdateTable(super.table);
 
-  _i1.ColumnValue<String, String> name(String value) => _i1.ColumnValue(
-    table.name,
-    value,
-  );
+  _i1.ColumnValue<String, String> name(String value) =>
+      _i1.ColumnValue(table.name, value);
 
-  _i1.ColumnValue<String, String> description(String value) => _i1.ColumnValue(
-    table.description,
-    value,
-  );
+  _i1.ColumnValue<String, String> description(String value) =>
+      _i1.ColumnValue(table.description, value);
 
-  _i1.ColumnValue<String, String> content(String value) => _i1.ColumnValue(
-    table.content,
-    value,
-  );
+  _i1.ColumnValue<String, String> content(String value) =>
+      _i1.ColumnValue(table.content, value);
 
-  _i1.ColumnValue<String, String> language(String value) => _i1.ColumnValue(
-    table.language,
-    value,
-  );
+  _i1.ColumnValue<String, String> language(String value) =>
+      _i1.ColumnValue(table.language, value);
 
   _i1.ColumnValue<DateTime, DateTime> updatedAt(DateTime value) =>
-      _i1.ColumnValue(
-        table.updatedAt,
-        value,
-      );
+      _i1.ColumnValue(table.updatedAt, value);
 }
 
 class EventTemplateTable extends _i1.Table<_i1.UuidValue?> {
   EventTemplateTable({super.tableRelation})
     : super(tableName: 'event_templates') {
     updateTable = EventTemplateUpdateTable(this);
-    name = _i1.ColumnString(
-      'name',
-      this,
-    );
-    description = _i1.ColumnString(
-      'description',
-      this,
-    );
-    content = _i1.ColumnString(
-      'content',
-      this,
-    );
-    language = _i1.ColumnString(
-      'language',
-      this,
-      hasDefault: true,
-    );
-    updatedAt = _i1.ColumnDateTime(
-      'updatedAt',
-      this,
-      hasDefault: true,
-    );
+    name = _i1.ColumnString('name', this);
+    description = _i1.ColumnString('description', this);
+    content = _i1.ColumnString('content', this);
+    language = _i1.ColumnString('language', this, hasDefault: true);
+    updatedAt = _i1.ColumnDateTime('updatedAt', this, hasDefault: true);
   }
 
   late final EventTemplateUpdateTable updateTable;
@@ -424,10 +396,7 @@ class EventTemplateRepository {
     EventTemplate row, {
     _i1.Transaction? transaction,
   }) async {
-    return session.db.insertRow<EventTemplate>(
-      row,
-      transaction: transaction,
-    );
+    return session.db.insertRow<EventTemplate>(row, transaction: transaction);
   }
 
   /// Upserts all [EventTemplate]s in the list and returns the resulting rows.
@@ -617,10 +586,7 @@ class EventTemplateRepository {
     EventTemplate row, {
     _i1.Transaction? transaction,
   }) async {
-    return session.db.deleteRow<EventTemplate>(
-      row,
-      transaction: transaction,
-    );
+    return session.db.deleteRow<EventTemplate>(row, transaction: transaction);
   }
 
   /// Deletes all rows matching the [where] expression.

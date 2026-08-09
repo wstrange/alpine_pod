@@ -165,10 +165,7 @@ abstract class UserNotification
     _i2.AuthUserInclude? user,
     _i3.NotificationInclude? notification,
   }) {
-    return UserNotificationInclude._(
-      user: user,
-      notification: notification,
-    );
+    return UserNotificationInclude._(user: user, notification: notification);
   }
 
   static UserNotificationIncludeList includeList({
@@ -260,82 +257,39 @@ class UserNotificationUpdateTable
   UserNotificationUpdateTable(super.table);
 
   _i1.ColumnValue<_i1.UuidValue, _i1.UuidValue> userId(_i1.UuidValue value) =>
-      _i1.ColumnValue(
-        table.userId,
-        value,
-      );
+      _i1.ColumnValue(table.userId, value);
 
   _i1.ColumnValue<_i1.UuidValue, _i1.UuidValue> notificationId(
     _i1.UuidValue value,
-  ) => _i1.ColumnValue(
-    table.notificationId,
-    value,
-  );
+  ) => _i1.ColumnValue(table.notificationId, value);
 
-  _i1.ColumnValue<bool, bool> isRead(bool value) => _i1.ColumnValue(
-    table.isRead,
-    value,
-  );
+  _i1.ColumnValue<bool, bool> isRead(bool value) =>
+      _i1.ColumnValue(table.isRead, value);
 
-  _i1.ColumnValue<bool, bool> isSeen(bool value) => _i1.ColumnValue(
-    table.isSeen,
-    value,
-  );
+  _i1.ColumnValue<bool, bool> isSeen(bool value) =>
+      _i1.ColumnValue(table.isSeen, value);
 
   _i1.ColumnValue<DateTime, DateTime> readAt(DateTime? value) =>
-      _i1.ColumnValue(
-        table.readAt,
-        value,
-      );
+      _i1.ColumnValue(table.readAt, value);
 
   _i1.ColumnValue<DateTime, DateTime> createdAt(DateTime value) =>
-      _i1.ColumnValue(
-        table.createdAt,
-        value,
-      );
+      _i1.ColumnValue(table.createdAt, value);
 
   _i1.ColumnValue<DateTime, DateTime> updatedAt(DateTime value) =>
-      _i1.ColumnValue(
-        table.updatedAt,
-        value,
-      );
+      _i1.ColumnValue(table.updatedAt, value);
 }
 
 class UserNotificationTable extends _i1.Table<_i1.UuidValue> {
   UserNotificationTable({super.tableRelation})
     : super(tableName: 'user_notification') {
     updateTable = UserNotificationUpdateTable(this);
-    userId = _i1.ColumnUuid(
-      'userId',
-      this,
-    );
-    notificationId = _i1.ColumnUuid(
-      'notificationId',
-      this,
-    );
-    isRead = _i1.ColumnBool(
-      'isRead',
-      this,
-      hasDefault: true,
-    );
-    isSeen = _i1.ColumnBool(
-      'isSeen',
-      this,
-      hasDefault: true,
-    );
-    readAt = _i1.ColumnDateTime(
-      'readAt',
-      this,
-    );
-    createdAt = _i1.ColumnDateTime(
-      'createdAt',
-      this,
-    );
-    updatedAt = _i1.ColumnDateTime(
-      'updatedAt',
-      this,
-      hasDefault: true,
-    );
+    userId = _i1.ColumnUuid('userId', this);
+    notificationId = _i1.ColumnUuid('notificationId', this);
+    isRead = _i1.ColumnBool('isRead', this, hasDefault: true);
+    isSeen = _i1.ColumnBool('isSeen', this, hasDefault: true);
+    readAt = _i1.ColumnDateTime('readAt', this);
+    createdAt = _i1.ColumnDateTime('createdAt', this);
+    updatedAt = _i1.ColumnDateTime('updatedAt', this, hasDefault: true);
   }
 
   late final UserNotificationUpdateTable updateTable;

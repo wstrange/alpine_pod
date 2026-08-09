@@ -1,12 +1,17 @@
 import 'package:alpine_pod_client/alpine_pod_client.dart';
 import 'package:signals_flutter/signals_flutter.dart';
 
-
 /// Reactive signal indicating whether the device is connected to the network.
-final isOnlineSignal = signal<bool>(true, options: SignalOptions(name: 'isOnlineSignal'));
+final isOnlineSignal = signal<bool>(
+  true,
+  options: SignalOptions(name: 'isOnlineSignal'),
+);
 
 /// Reactive signal holding the timestamp of the last successful data sync.
-final lastSyncedAtSignal = signal<DateTime?>(null, options: SignalOptions(name: 'lastSyncedAtSignal'));
+final lastSyncedAtSignal = signal<DateTime?>(
+  null,
+  options: SignalOptions(name: 'lastSyncedAtSignal'),
+);
 
 class ConnectivityService {
   static final ConnectivityService _instance = ConnectivityService._internal();

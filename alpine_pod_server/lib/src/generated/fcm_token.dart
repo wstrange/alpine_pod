@@ -125,12 +125,7 @@ class _FcmTokenImpl extends FcmToken {
     required String token,
     String? deviceId,
     DateTime? updatedAt,
-  }) : super._(
-         id: id,
-         token: token,
-         deviceId: deviceId,
-         updatedAt: updatedAt,
-       );
+  }) : super._(id: id, token: token, deviceId: deviceId, updatedAt: updatedAt);
 
   /// Returns a shallow copy of this [FcmToken]
   /// with some or all fields replaced by the given arguments.
@@ -154,39 +149,22 @@ class _FcmTokenImpl extends FcmToken {
 class FcmTokenUpdateTable extends _i1.UpdateTable<FcmTokenTable> {
   FcmTokenUpdateTable(super.table);
 
-  _i1.ColumnValue<String, String> token(String value) => _i1.ColumnValue(
-    table.token,
-    value,
-  );
+  _i1.ColumnValue<String, String> token(String value) =>
+      _i1.ColumnValue(table.token, value);
 
-  _i1.ColumnValue<String, String> deviceId(String? value) => _i1.ColumnValue(
-    table.deviceId,
-    value,
-  );
+  _i1.ColumnValue<String, String> deviceId(String? value) =>
+      _i1.ColumnValue(table.deviceId, value);
 
   _i1.ColumnValue<DateTime, DateTime> updatedAt(DateTime value) =>
-      _i1.ColumnValue(
-        table.updatedAt,
-        value,
-      );
+      _i1.ColumnValue(table.updatedAt, value);
 }
 
 class FcmTokenTable extends _i1.Table<_i1.UuidValue> {
   FcmTokenTable({super.tableRelation}) : super(tableName: 'fcm_tokens') {
     updateTable = FcmTokenUpdateTable(this);
-    token = _i1.ColumnString(
-      'token',
-      this,
-    );
-    deviceId = _i1.ColumnString(
-      'deviceId',
-      this,
-    );
-    updatedAt = _i1.ColumnDateTime(
-      'updatedAt',
-      this,
-      hasDefault: true,
-    );
+    token = _i1.ColumnString('token', this);
+    deviceId = _i1.ColumnString('deviceId', this);
+    updatedAt = _i1.ColumnDateTime('updatedAt', this, hasDefault: true);
   }
 
   late final FcmTokenUpdateTable updateTable;
@@ -198,12 +176,7 @@ class FcmTokenTable extends _i1.Table<_i1.UuidValue> {
   late final _i1.ColumnDateTime updatedAt;
 
   @override
-  List<_i1.Column> get columns => [
-    id,
-    token,
-    deviceId,
-    updatedAt,
-  ];
+  List<_i1.Column> get columns => [id, token, deviceId, updatedAt];
 }
 
 class FcmTokenInclude extends _i1.IncludeObject {
@@ -374,10 +347,7 @@ class FcmTokenRepository {
     FcmToken row, {
     _i1.Transaction? transaction,
   }) async {
-    return session.db.insertRow<FcmToken>(
-      row,
-      transaction: transaction,
-    );
+    return session.db.insertRow<FcmToken>(row, transaction: transaction);
   }
 
   /// Upserts all [FcmToken]s in the list and returns the resulting rows.
@@ -567,10 +537,7 @@ class FcmTokenRepository {
     FcmToken row, {
     _i1.Transaction? transaction,
   }) async {
-    return session.db.deleteRow<FcmToken>(
-      row,
-      transaction: transaction,
-    );
+    return session.db.deleteRow<FcmToken>(row, transaction: transaction);
   }
 
   /// Deletes all rows matching the [where] expression.

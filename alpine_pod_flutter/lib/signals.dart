@@ -13,7 +13,6 @@ late Client client;
 late FlutterAuthSessionManager sessionManager;
 late DatabaseSession dbSession;
 
-
 final log = Logger('signals');
 
 final userSignal = signal<AuthUser?>(null);

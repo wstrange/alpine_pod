@@ -9,7 +9,11 @@ class EmailService {
 
   // testing using mailpit
   // todo: Use environment variable to configure or get from serverpod config
-  static final _smtpServer = SmtpServer('warren.home', port: 1025, allowInsecure: true);
+  static final _smtpServer = SmtpServer(
+    'warren.home',
+    port: 1025,
+    allowInsecure: true,
+  );
 
   static Future<void> sendHtmlEmail({
     required Session session,

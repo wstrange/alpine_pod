@@ -11,7 +11,10 @@ class SectionRepository {
   /// Gets all sections from local SQLite cache, or syncs from server if online.
   Future<List<Section>> listSections() async {
     try {
-      final cachedSections = await Section.db.find(dbSession, orderBy: (t) => t.name);
+      final cachedSections = await Section.db.find(
+        dbSession,
+        orderBy: (t) => t.name,
+      );
       if (cachedSections.isNotEmpty || !isOnlineSignal.value) {
         return cachedSections;
       }
@@ -33,7 +36,8 @@ class SectionRepository {
       if (member != null) {
         final membership = await SectionMembership.db.findFirstRow(
           dbSession,
-          where: (t) => t.memberId.equals(member.id) & t.sectionId.equals(sectionId),
+          where: (t) =>
+              t.memberId.equals(member.id) & t.sectionId.equals(sectionId),
         );
         if (membership != null || !isOnlineSignal.value) {
           return membership;

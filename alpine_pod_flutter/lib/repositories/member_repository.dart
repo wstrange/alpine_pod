@@ -27,7 +27,10 @@ class MemberRepository {
   /// Gets all section memberships for the current user from local cache.
   Future<List<SectionMembership>> getAllMySectionMemberships() async {
     try {
-      final memberships = await SectionMembership.db.find(dbSession, where: (t) => Constant.bool(true));
+      final memberships = await SectionMembership.db.find(
+        dbSession,
+        where: (t) => Constant.bool(true),
+      );
       if (memberships.isNotEmpty || !isOnlineSignal.value) {
         return memberships;
       }
@@ -45,7 +48,9 @@ class MemberRepository {
   /// Updates member profile via server and syncs local cache.
   Future<Member> updateMember(Member member) async {
     if (!isOnlineSignal.value) {
-      throw Exception('You are currently offline. Profile updates require an internet connection.');
+      throw Exception(
+        'You are currently offline. Profile updates require an internet connection.',
+      );
     }
 
     final updated = await client.member.updateMember(member);
@@ -56,7 +61,9 @@ class MemberRepository {
   /// Signs waiver via server and syncs member profile cache.
   Future<Member> signWaiver() async {
     if (!isOnlineSignal.value) {
-      throw Exception('You are currently offline. Signing waiver requires an internet connection.');
+      throw Exception(
+        'You are currently offline. Signing waiver requires an internet connection.',
+      );
     }
 
     final member = await client.member.acceptWaiver();
@@ -65,7 +72,12 @@ class MemberRepository {
   }
 
   /// Gets section members for a specific section ID from local cache or server.
-  Future<List<Member>> getSectionMembers({UuidValue? sectionId, String? filter, int limit = 50, int offset = 0}) async {
+  Future<List<Member>> getSectionMembers({
+    UuidValue? sectionId,
+    String? filter,
+    int limit = 50,
+    int offset = 0,
+  }) async {
     try {
       if (sectionId != null) {
         final memberships = await SectionMembership.db.find(
@@ -84,7 +96,10 @@ class MemberRepository {
           include: SectionMembership.include(member: Member.include()),
         );
 
-        final members = memberships.map((m) => m.member).whereType<Member>().toList();
+        final members = memberships
+            .map((m) => m.member)
+            .whereType<Member>()
+            .toList();
 
         if (members.isNotEmpty || !isOnlineSignal.value) {
           return members;
@@ -94,7 +109,9 @@ class MemberRepository {
           dbSession,
           where: (t) {
             if (filter != null && filter.isNotEmpty) {
-              return t.firstName.ilike('%$filter%') | t.lastName.ilike('%$filter%') | t.email.ilike('%$filter%');
+              return t.firstName.ilike('%$filter%') |
+                  t.lastName.ilike('%$filter%') |
+                  t.email.ilike('%$filter%');
             }
             return Constant.bool(true);
           },
@@ -111,7 +128,12 @@ class MemberRepository {
     }
 
     if (isOnlineSignal.value) {
-      return await client.member.getSectionMembers(sectionId: sectionId, filter: filter, limit: limit, offset: offset);
+      return await client.member.getSectionMembers(
+        sectionId: sectionId,
+        filter: filter,
+        limit: limit,
+        offset: offset,
+      );
     }
     return [];
   }

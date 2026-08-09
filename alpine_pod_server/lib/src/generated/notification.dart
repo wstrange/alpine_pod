@@ -228,17 +228,7 @@ class _NotificationImpl extends Notification {
       template: template is _i2.NotificationTemplate?
           ? template
           : this.template?.copyWith(),
-      data:
-          data ??
-          this.data.map(
-            (
-              key0,
-              value0,
-            ) => MapEntry(
-              key0,
-              value0,
-            ),
-          ),
+      data: data ?? this.data.map((key0, value0) => MapEntry(key0, value0)),
       actionUrl: actionUrl is String? ? actionUrl : this.actionUrl,
       renderedTitle: renderedTitle ?? this.renderedTitle,
       renderedBody: renderedBody ?? this.renderedBody,
@@ -254,89 +244,42 @@ class NotificationUpdateTable extends _i1.UpdateTable<NotificationTable> {
 
   _i1.ColumnValue<_i1.UuidValue, _i1.UuidValue> templateId(
     _i1.UuidValue value,
-  ) => _i1.ColumnValue(
-    table.templateId,
-    value,
-  );
+  ) => _i1.ColumnValue(table.templateId, value);
 
   _i1.ColumnValue<Map<String, String>, Map<String, String>> data(
     Map<String, String> value,
-  ) => _i1.ColumnValue(
-    table.data,
-    value,
-  );
+  ) => _i1.ColumnValue(table.data, value);
 
-  _i1.ColumnValue<String, String> actionUrl(String? value) => _i1.ColumnValue(
-    table.actionUrl,
-    value,
-  );
+  _i1.ColumnValue<String, String> actionUrl(String? value) =>
+      _i1.ColumnValue(table.actionUrl, value);
 
   _i1.ColumnValue<String, String> renderedTitle(String value) =>
-      _i1.ColumnValue(
-        table.renderedTitle,
-        value,
-      );
+      _i1.ColumnValue(table.renderedTitle, value);
 
-  _i1.ColumnValue<String, String> renderedBody(String value) => _i1.ColumnValue(
-    table.renderedBody,
-    value,
-  );
+  _i1.ColumnValue<String, String> renderedBody(String value) =>
+      _i1.ColumnValue(table.renderedBody, value);
 
   _i1.ColumnValue<String, String> renderedHtml(String? value) =>
-      _i1.ColumnValue(
-        table.renderedHtml,
-        value,
-      );
+      _i1.ColumnValue(table.renderedHtml, value);
 
   _i1.ColumnValue<DateTime, DateTime> createdAt(DateTime value) =>
-      _i1.ColumnValue(
-        table.createdAt,
-        value,
-      );
+      _i1.ColumnValue(table.createdAt, value);
 
   _i1.ColumnValue<DateTime, DateTime> updatedAt(DateTime value) =>
-      _i1.ColumnValue(
-        table.updatedAt,
-        value,
-      );
+      _i1.ColumnValue(table.updatedAt, value);
 }
 
 class NotificationTable extends _i1.Table<_i1.UuidValue?> {
   NotificationTable({super.tableRelation}) : super(tableName: 'notification') {
     updateTable = NotificationUpdateTable(this);
-    templateId = _i1.ColumnUuid(
-      'templateId',
-      this,
-    );
-    data = _i1.ColumnSerializable<Map<String, String>>(
-      'data',
-      this,
-    );
-    actionUrl = _i1.ColumnString(
-      'actionUrl',
-      this,
-    );
-    renderedTitle = _i1.ColumnString(
-      'renderedTitle',
-      this,
-    );
-    renderedBody = _i1.ColumnString(
-      'renderedBody',
-      this,
-    );
-    renderedHtml = _i1.ColumnString(
-      'renderedHtml',
-      this,
-    );
-    createdAt = _i1.ColumnDateTime(
-      'createdAt',
-      this,
-    );
-    updatedAt = _i1.ColumnDateTime(
-      'updatedAt',
-      this,
-      hasDefault: true,
-    );
+    templateId = _i1.ColumnUuid('templateId', this);
+    data = _i1.ColumnSerializable<Map<String, String>>('data', this);
+    actionUrl = _i1.ColumnString('actionUrl', this);
+    renderedTitle = _i1.ColumnString('renderedTitle', this);
+    renderedBody = _i1.ColumnString('renderedBody', this);
+    renderedHtml = _i1.ColumnString('renderedHtml', this);
+    createdAt = _i1.ColumnDateTime('createdAt', this);
+    updatedAt = _i1.ColumnDateTime('updatedAt', this, hasDefault: true);
   }
 
   late final NotificationUpdateTable updateTable;
@@ -574,10 +517,7 @@ class NotificationRepository {
     Notification row, {
     _i1.Transaction? transaction,
   }) async {
-    return session.db.insertRow<Notification>(
-      row,
-      transaction: transaction,
-    );
+    return session.db.insertRow<Notification>(row, transaction: transaction);
   }
 
   /// Upserts all [Notification]s in the list and returns the resulting rows.
@@ -767,10 +707,7 @@ class NotificationRepository {
     Notification row, {
     _i1.Transaction? transaction,
   }) async {
-    return session.db.deleteRow<Notification>(
-      row,
-      transaction: transaction,
-    );
+    return session.db.deleteRow<Notification>(row, transaction: transaction);
   }
 
   /// Deletes all rows matching the [where] expression.

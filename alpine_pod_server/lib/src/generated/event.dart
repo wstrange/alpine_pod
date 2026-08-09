@@ -473,161 +473,79 @@ class _EventImpl extends Event {
 class EventUpdateTable extends _i1.UpdateTable<EventTable> {
   EventUpdateTable(super.table);
 
-  _i1.ColumnValue<String, String> title(String value) => _i1.ColumnValue(
-    table.title,
-    value,
-  );
+  _i1.ColumnValue<String, String> title(String value) =>
+      _i1.ColumnValue(table.title, value);
 
-  _i1.ColumnValue<String, String> description(String value) => _i1.ColumnValue(
-    table.description,
-    value,
-  );
+  _i1.ColumnValue<String, String> description(String value) =>
+      _i1.ColumnValue(table.description, value);
 
-  _i1.ColumnValue<String, String> type(String value) => _i1.ColumnValue(
-    table.type,
-    value,
-  );
+  _i1.ColumnValue<String, String> type(String value) =>
+      _i1.ColumnValue(table.type, value);
 
   _i1.ColumnValue<DateTime, DateTime> startTime(DateTime value) =>
-      _i1.ColumnValue(
-        table.startTime,
-        value,
-      );
+      _i1.ColumnValue(table.startTime, value);
 
   _i1.ColumnValue<DateTime, DateTime> endTime(DateTime value) =>
-      _i1.ColumnValue(
-        table.endTime,
-        value,
-      );
+      _i1.ColumnValue(table.endTime, value);
 
   _i1.ColumnValue<String, String> eventLocation(String? value) =>
-      _i1.ColumnValue(
-        table.eventLocation,
-        value,
-      );
+      _i1.ColumnValue(table.eventLocation, value);
 
   _i1.ColumnValue<String, String> carpoolLocation(String? value) =>
-      _i1.ColumnValue(
-        table.carpoolLocation,
-        value,
-      );
+      _i1.ColumnValue(table.carpoolLocation, value);
 
   _i1.ColumnValue<DateTime, DateTime> carpoolTime(DateTime? value) =>
-      _i1.ColumnValue(
-        table.carpoolTime,
-        value,
-      );
+      _i1.ColumnValue(table.carpoolTime, value);
 
   _i1.ColumnValue<DateTime, DateTime> registrationDeadline(DateTime? value) =>
-      _i1.ColumnValue(
-        table.registrationDeadline,
-        value,
-      );
+      _i1.ColumnValue(table.registrationDeadline, value);
 
   _i1.ColumnValue<DateTime, DateTime> registrationStartDate(DateTime? value) =>
-      _i1.ColumnValue(
-        table.registrationStartDate,
-        value,
-      );
+      _i1.ColumnValue(table.registrationStartDate, value);
 
   _i1.ColumnValue<double, double> registrationFee(double? value) =>
-      _i1.ColumnValue(
-        table.registrationFee,
-        value,
-      );
+      _i1.ColumnValue(table.registrationFee, value);
 
-  _i1.ColumnValue<bool, bool> requiresApproval(bool value) => _i1.ColumnValue(
-    table.requiresApproval,
-    value,
-  );
+  _i1.ColumnValue<bool, bool> requiresApproval(bool value) =>
+      _i1.ColumnValue(table.requiresApproval, value);
 
-  _i1.ColumnValue<int, int> minimumParticipants(int value) => _i1.ColumnValue(
-    table.minimumParticipants,
-    value,
-  );
+  _i1.ColumnValue<int, int> minimumParticipants(int value) =>
+      _i1.ColumnValue(table.minimumParticipants, value);
 
-  _i1.ColumnValue<int, int> maxParticipants(int value) => _i1.ColumnValue(
-    table.maxParticipants,
-    value,
-  );
+  _i1.ColumnValue<int, int> maxParticipants(int value) =>
+      _i1.ColumnValue(table.maxParticipants, value);
 
   _i1.ColumnValue<DateTime, DateTime> cancellationDeadline(DateTime? value) =>
-      _i1.ColumnValue(
-        table.cancellationDeadline,
-        value,
-      );
+      _i1.ColumnValue(table.cancellationDeadline, value);
 
-  _i1.ColumnValue<bool, bool> cancelled(bool value) => _i1.ColumnValue(
-    table.cancelled,
-    value,
-  );
+  _i1.ColumnValue<bool, bool> cancelled(bool value) =>
+      _i1.ColumnValue(table.cancelled, value);
 
   _i1.ColumnValue<_i1.UuidValue, _i1.UuidValue> sectionId(
     _i1.UuidValue value,
-  ) => _i1.ColumnValue(
-    table.sectionId,
-    value,
-  );
+  ) => _i1.ColumnValue(table.sectionId, value);
 
-  _i1.ColumnValue<bool, bool> published(bool value) => _i1.ColumnValue(
-    table.published,
-    value,
-  );
+  _i1.ColumnValue<bool, bool> published(bool value) =>
+      _i1.ColumnValue(table.published, value);
 
   _i1.ColumnValue<DateTime, DateTime> updatedAt(DateTime value) =>
-      _i1.ColumnValue(
-        table.updatedAt,
-        value,
-      );
+      _i1.ColumnValue(table.updatedAt, value);
 }
 
 class EventTable extends _i1.Table<_i1.UuidValue> {
   EventTable({super.tableRelation}) : super(tableName: 'events') {
     updateTable = EventUpdateTable(this);
-    title = _i1.ColumnString(
-      'title',
-      this,
-    );
-    description = _i1.ColumnString(
-      'description',
-      this,
-    );
-    type = _i1.ColumnString(
-      'type',
-      this,
-    );
-    startTime = _i1.ColumnDateTime(
-      'startTime',
-      this,
-    );
-    endTime = _i1.ColumnDateTime(
-      'endTime',
-      this,
-    );
-    eventLocation = _i1.ColumnString(
-      'eventLocation',
-      this,
-    );
-    carpoolLocation = _i1.ColumnString(
-      'carpoolLocation',
-      this,
-    );
-    carpoolTime = _i1.ColumnDateTime(
-      'carpoolTime',
-      this,
-    );
-    registrationDeadline = _i1.ColumnDateTime(
-      'registrationDeadline',
-      this,
-    );
-    registrationStartDate = _i1.ColumnDateTime(
-      'registrationStartDate',
-      this,
-    );
-    registrationFee = _i1.ColumnDouble(
-      'registrationFee',
-      this,
-    );
+    title = _i1.ColumnString('title', this);
+    description = _i1.ColumnString('description', this);
+    type = _i1.ColumnString('type', this);
+    startTime = _i1.ColumnDateTime('startTime', this);
+    endTime = _i1.ColumnDateTime('endTime', this);
+    eventLocation = _i1.ColumnString('eventLocation', this);
+    carpoolLocation = _i1.ColumnString('carpoolLocation', this);
+    carpoolTime = _i1.ColumnDateTime('carpoolTime', this);
+    registrationDeadline = _i1.ColumnDateTime('registrationDeadline', this);
+    registrationStartDate = _i1.ColumnDateTime('registrationStartDate', this);
+    registrationFee = _i1.ColumnDouble('registrationFee', this);
     requiresApproval = _i1.ColumnBool(
       'requiresApproval',
       this,
@@ -638,34 +556,12 @@ class EventTable extends _i1.Table<_i1.UuidValue> {
       this,
       hasDefault: true,
     );
-    maxParticipants = _i1.ColumnInt(
-      'maxParticipants',
-      this,
-      hasDefault: true,
-    );
-    cancellationDeadline = _i1.ColumnDateTime(
-      'cancellationDeadline',
-      this,
-    );
-    cancelled = _i1.ColumnBool(
-      'cancelled',
-      this,
-      hasDefault: true,
-    );
-    sectionId = _i1.ColumnUuid(
-      'sectionId',
-      this,
-    );
-    published = _i1.ColumnBool(
-      'published',
-      this,
-      hasDefault: true,
-    );
-    updatedAt = _i1.ColumnDateTime(
-      'updatedAt',
-      this,
-      hasDefault: true,
-    );
+    maxParticipants = _i1.ColumnInt('maxParticipants', this, hasDefault: true);
+    cancellationDeadline = _i1.ColumnDateTime('cancellationDeadline', this);
+    cancelled = _i1.ColumnBool('cancelled', this, hasDefault: true);
+    sectionId = _i1.ColumnUuid('sectionId', this);
+    published = _i1.ColumnBool('published', this, hasDefault: true);
+    updatedAt = _i1.ColumnDateTime('updatedAt', this, hasDefault: true);
   }
 
   late final EventUpdateTable updateTable;
@@ -1034,10 +930,7 @@ class EventRepository {
     Event row, {
     _i1.Transaction? transaction,
   }) async {
-    return session.db.insertRow<Event>(
-      row,
-      transaction: transaction,
-    );
+    return session.db.insertRow<Event>(row, transaction: transaction);
   }
 
   /// Upserts all [Event]s in the list and returns the resulting rows.
@@ -1227,10 +1120,7 @@ class EventRepository {
     Event row, {
     _i1.Transaction? transaction,
   }) async {
-    return session.db.deleteRow<Event>(
-      row,
-      transaction: transaction,
-    );
+    return session.db.deleteRow<Event>(row, transaction: transaction);
   }
 
   /// Deletes all rows matching the [where] expression.

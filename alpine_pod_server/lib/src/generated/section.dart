@@ -177,57 +177,30 @@ class _SectionImpl extends Section {
 class SectionUpdateTable extends _i1.UpdateTable<SectionTable> {
   SectionUpdateTable(super.table);
 
-  _i1.ColumnValue<String, String> name(String value) => _i1.ColumnValue(
-    table.name,
-    value,
-  );
+  _i1.ColumnValue<String, String> name(String value) =>
+      _i1.ColumnValue(table.name, value);
 
-  _i1.ColumnValue<String, String> description(String value) => _i1.ColumnValue(
-    table.description,
-    value,
-  );
+  _i1.ColumnValue<String, String> description(String value) =>
+      _i1.ColumnValue(table.description, value);
 
-  _i1.ColumnValue<String, String> location(String? value) => _i1.ColumnValue(
-    table.location,
-    value,
-  );
+  _i1.ColumnValue<String, String> location(String? value) =>
+      _i1.ColumnValue(table.location, value);
 
-  _i1.ColumnValue<String, String> contactInfo(String? value) => _i1.ColumnValue(
-    table.contactInfo,
-    value,
-  );
+  _i1.ColumnValue<String, String> contactInfo(String? value) =>
+      _i1.ColumnValue(table.contactInfo, value);
 
   _i1.ColumnValue<DateTime, DateTime> updatedAt(DateTime value) =>
-      _i1.ColumnValue(
-        table.updatedAt,
-        value,
-      );
+      _i1.ColumnValue(table.updatedAt, value);
 }
 
 class SectionTable extends _i1.Table<_i1.UuidValue?> {
   SectionTable({super.tableRelation}) : super(tableName: 'sections') {
     updateTable = SectionUpdateTable(this);
-    name = _i1.ColumnString(
-      'name',
-      this,
-    );
-    description = _i1.ColumnString(
-      'description',
-      this,
-    );
-    location = _i1.ColumnString(
-      'location',
-      this,
-    );
-    contactInfo = _i1.ColumnString(
-      'contactInfo',
-      this,
-    );
-    updatedAt = _i1.ColumnDateTime(
-      'updatedAt',
-      this,
-      hasDefault: true,
-    );
+    name = _i1.ColumnString('name', this);
+    description = _i1.ColumnString('description', this);
+    location = _i1.ColumnString('location', this);
+    contactInfo = _i1.ColumnString('contactInfo', this);
+    updatedAt = _i1.ColumnDateTime('updatedAt', this, hasDefault: true);
   }
 
   late final SectionUpdateTable updateTable;
@@ -421,10 +394,7 @@ class SectionRepository {
     Section row, {
     _i1.Transaction? transaction,
   }) async {
-    return session.db.insertRow<Section>(
-      row,
-      transaction: transaction,
-    );
+    return session.db.insertRow<Section>(row, transaction: transaction);
   }
 
   /// Upserts all [Section]s in the list and returns the resulting rows.
@@ -614,10 +584,7 @@ class SectionRepository {
     Section row, {
     _i1.Transaction? transaction,
   }) async {
-    return session.db.deleteRow<Section>(
-      row,
-      transaction: transaction,
-    );
+    return session.db.deleteRow<Section>(row, transaction: transaction);
   }
 
   /// Deletes all rows matching the [where] expression.

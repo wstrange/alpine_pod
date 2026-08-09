@@ -194,70 +194,35 @@ class NotificationTemplateUpdateTable
     extends _i1.UpdateTable<NotificationTemplateTable> {
   NotificationTemplateUpdateTable(super.table);
 
-  _i1.ColumnValue<String, String> name(String value) => _i1.ColumnValue(
-    table.name,
-    value,
-  );
+  _i1.ColumnValue<String, String> name(String value) =>
+      _i1.ColumnValue(table.name, value);
 
   _i1.ColumnValue<String, String> titleTemplate(String value) =>
-      _i1.ColumnValue(
-        table.titleTemplate,
-        value,
-      );
+      _i1.ColumnValue(table.titleTemplate, value);
 
-  _i1.ColumnValue<String, String> bodyTemplate(String value) => _i1.ColumnValue(
-    table.bodyTemplate,
-    value,
-  );
+  _i1.ColumnValue<String, String> bodyTemplate(String value) =>
+      _i1.ColumnValue(table.bodyTemplate, value);
 
   _i1.ColumnValue<String, String> htmlTemplate(String? value) =>
-      _i1.ColumnValue(
-        table.htmlTemplate,
-        value,
-      );
+      _i1.ColumnValue(table.htmlTemplate, value);
 
   _i1.ColumnValue<DateTime, DateTime> createdAt(DateTime value) =>
-      _i1.ColumnValue(
-        table.createdAt,
-        value,
-      );
+      _i1.ColumnValue(table.createdAt, value);
 
   _i1.ColumnValue<DateTime, DateTime> updatedAt(DateTime value) =>
-      _i1.ColumnValue(
-        table.updatedAt,
-        value,
-      );
+      _i1.ColumnValue(table.updatedAt, value);
 }
 
 class NotificationTemplateTable extends _i1.Table<_i1.UuidValue?> {
   NotificationTemplateTable({super.tableRelation})
     : super(tableName: 'notification_template') {
     updateTable = NotificationTemplateUpdateTable(this);
-    name = _i1.ColumnString(
-      'name',
-      this,
-    );
-    titleTemplate = _i1.ColumnString(
-      'titleTemplate',
-      this,
-    );
-    bodyTemplate = _i1.ColumnString(
-      'bodyTemplate',
-      this,
-    );
-    htmlTemplate = _i1.ColumnString(
-      'htmlTemplate',
-      this,
-    );
-    createdAt = _i1.ColumnDateTime(
-      'createdAt',
-      this,
-    );
-    updatedAt = _i1.ColumnDateTime(
-      'updatedAt',
-      this,
-      hasDefault: true,
-    );
+    name = _i1.ColumnString('name', this);
+    titleTemplate = _i1.ColumnString('titleTemplate', this);
+    bodyTemplate = _i1.ColumnString('bodyTemplate', this);
+    htmlTemplate = _i1.ColumnString('htmlTemplate', this);
+    createdAt = _i1.ColumnDateTime('createdAt', this);
+    updatedAt = _i1.ColumnDateTime('updatedAt', this, hasDefault: true);
   }
 
   late final NotificationTemplateUpdateTable updateTable;

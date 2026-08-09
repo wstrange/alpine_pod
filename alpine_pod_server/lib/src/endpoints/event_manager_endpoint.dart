@@ -84,7 +84,10 @@ class EventManagerEndpoint extends Endpoint {
   }
 
   /// Check if an event has any active registrations
-  Future<bool> _hasActiveRegistrations(Session session, UuidValue eventId) async {
+  Future<bool> _hasActiveRegistrations(
+    Session session,
+    UuidValue eventId,
+  ) async {
     final registrationCount = await EventRegistration.db.count(
       session,
       where: (t) =>

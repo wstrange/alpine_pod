@@ -19,12 +19,16 @@ class NotificationScheduler extends FutureCall {
       where: (t) => t.status.equals('pending'),
       orderBy: (t) => t.createdAt,
       limit: deliveryBatchSize,
-      include: NotificationDelivery.include(notification: Notification.include()),
+      include: NotificationDelivery.include(
+        notification: Notification.include(),
+      ),
     );
 
     if (pending.isEmpty) return;
 
-    session.log('NotificationScheduler: processing ${pending.length} deliveries');
+    session.log(
+      'NotificationScheduler: processing ${pending.length} deliveries',
+    );
 
     for (final delivery in pending) {
       try {
@@ -50,7 +54,10 @@ class NotificationScheduler extends FutureCall {
   /// Queries section members, checks each member's notification preference
   /// for the specific channel, and inserts individual delivery rows.
   /// The original bulk row is then marked as 'sent' (expansion complete).
-  Future<void> _expandBulkSectionDelivery(Session session, NotificationDelivery bulkDelivery) async {
+  Future<void> _expandBulkSectionDelivery(
+    Session session,
+    NotificationDelivery bulkDelivery,
+  ) async {
     final sectionId = bulkDelivery.sectionId!;
     final channel = bulkDelivery.channel;
 
@@ -60,7 +67,10 @@ class NotificationScheduler extends FutureCall {
       include: SectionMembership.include(member: Member.include()),
     );
 
-    final memberUserIds = memberships.map((sm) => sm.member?.id).nonNulls.toList();
+    final memberUserIds = memberships
+        .map((sm) => sm.member?.id)
+        .nonNulls
+        .toList();
     if (memberUserIds.isEmpty) {
       await _markSent(session, bulkDelivery);
       return;
@@ -76,7 +86,8 @@ class NotificationScheduler extends FutureCall {
     // For event-created notifications, also filter by the newEvents preference.
     final notification = bulkDelivery.notification;
     final isNewEventTemplate =
-        notification?.data['rendered_title'] != null && notification?.renderedTitle.contains('new event') == true;
+        notification?.data['rendered_title'] != null &&
+        notification?.renderedTitle.contains('new event') == true;
 
     final now = DateTime.now();
     final childDeliveries = <NotificationDelivery>[];
@@ -100,12 +111,16 @@ class NotificationScheduler extends FutureCall {
       if (!channelEnabled) continue;
 
       // For email, skip if no HTML template.
-      if (channel == NotificationChannel.email && notification?.renderedHtml == null) {
+      if (channel == NotificationChannel.email &&
+          notification?.renderedHtml == null) {
         continue;
       }
 
       // get debug info
-      final m = await Member.db.findFirstRow(session, where: (m) => m.id.equals(id));
+      final m = await Member.db.findFirstRow(
+        session,
+        where: (m) => m.id.equals(id),
+      );
       final info = '${m?.email} ${m?.firstName} ${m?.lastName}';
 
       childDeliveries.add(
@@ -128,7 +143,10 @@ class NotificationScheduler extends FutureCall {
   }
 
   /// Delivers a notification to a single recipient via the specified channel.
-  Future<void> _deliverToRecipient(Session session, NotificationDelivery delivery) async {
+  Future<void> _deliverToRecipient(
+    Session session,
+    NotificationDelivery delivery,
+  ) async {
     final notification = delivery.notification;
     if (notification == null) {
       await _markFailed(session, delivery, 'Notification data missing');
@@ -148,23 +166,38 @@ class NotificationScheduler extends FutureCall {
   }
 
   /// Creates a [UserNotification] row — this is what the Flutter client reads.
-  Future<void> _deliverInApp(Session session, NotificationDelivery delivery, Notification notification) async {
+  Future<void> _deliverInApp(
+    Session session,
+    NotificationDelivery delivery,
+    Notification notification,
+  ) async {
     await UserNotification.db.insertRow(
       session,
-      UserNotification(userId: delivery.recipientUserId!, notificationId: notification.id!, createdAt: DateTime.now()),
+      UserNotification(
+        userId: delivery.recipientUserId!,
+        notificationId: notification.id!,
+        createdAt: DateTime.now(),
+      ),
     );
     await _markSent(session, delivery);
   }
 
   /// Sends an email using the existing [EmailService].
-  Future<void> _deliverEmail(Session session, NotificationDelivery delivery, Notification notification) async {
+  Future<void> _deliverEmail(
+    Session session,
+    NotificationDelivery delivery,
+    Notification notification,
+  ) async {
     final html = notification.renderedHtml;
     if (html == null) {
       await _markSent(session, delivery); // Nothing to send.
       return;
     }
 
-    final member = await Member.db.findFirstRow(session, where: (m) => m.id.equals(delivery.recipientUserId!));
+    final member = await Member.db.findFirstRow(
+      session,
+      where: (m) => m.id.equals(delivery.recipientUserId!),
+    );
 
     if (member == null || member.email.isEmpty) {
       await _markFailed(session, delivery, 'Recipient has no email address');
@@ -185,8 +218,15 @@ class NotificationScheduler extends FutureCall {
   }
 
   /// Sends a push notification via FCM.
-  Future<void> _deliverPush(Session session, NotificationDelivery delivery, Notification notification) async {
-    final fcmTokens = await FcmToken.db.find(session, where: (t) => t.id.equals(delivery.recipientUserId!));
+  Future<void> _deliverPush(
+    Session session,
+    NotificationDelivery delivery,
+    Notification notification,
+  ) async {
+    final fcmTokens = await FcmToken.db.find(
+      session,
+      where: (t) => t.id.equals(delivery.recipientUserId!),
+    );
 
     if (fcmTokens.isEmpty) {
       // No device registered — nothing to send.
@@ -208,7 +248,11 @@ class NotificationScheduler extends FutureCall {
   }
 
   /// SMS delivery — stub for future implementation.
-  Future<void> _deliverSms(Session session, NotificationDelivery delivery, Notification notification) async {
+  Future<void> _deliverSms(
+    Session session,
+    NotificationDelivery delivery,
+    Notification notification,
+  ) async {
     // TODO: Integrate with Twilio / SMS provider.
     session.log(
       '[SMS] Stub — would send to user=${delivery.recipientUserId}: '
@@ -231,7 +275,11 @@ class NotificationScheduler extends FutureCall {
     // print("Marked as sent: $delivery");
   }
 
-  Future<void> _markFailed(Session session, NotificationDelivery delivery, String error) async {
+  Future<void> _markFailed(
+    Session session,
+    NotificationDelivery delivery,
+    String error,
+  ) async {
     delivery
       ..attempts = delivery.attempts + 1
       ..lastAttemptAt = DateTime.now()

@@ -13,18 +13,27 @@ class NotificationScreen extends HookWidget {
     return SignalBuilder(
       builder: (context) {
         final notificationsState = notificationsSignal.value;
-        bool hasNotifications = notificationsState.value != null && notificationsState.value!.isNotEmpty;
+        bool hasNotifications =
+            notificationsState.value != null &&
+            notificationsState.value!.isNotEmpty;
 
         return Scaffold(
           appBar: AppBar(
             title: const Text('Notifications'),
             actions: [
-              IconButton(icon: const Icon(Icons.home_outlined), tooltip: 'Home', onPressed: () => context.go('/')),
+              IconButton(
+                icon: const Icon(Icons.home_outlined),
+                tooltip: 'Home',
+                onPressed: () => context.go('/'),
+              ),
               IconButton(
                 icon: const Icon(Icons.settings_outlined),
                 tooltip: 'Preferences',
                 onPressed: () {
-                  showDialog(context: context, builder: (context) => const NotificationPreferencesDialog());
+                  showDialog(
+                    context: context,
+                    builder: (context) => const NotificationPreferencesDialog(),
+                  );
                 },
               ),
               IconButton(
@@ -37,7 +46,9 @@ class NotificationScreen extends HookWidget {
                   icon: const Icon(Icons.done_all),
                   tooltip: 'Mark all as read',
                   onPressed: () async {
-                    final unread = notificationsState.value!.where((n) => !n.isRead).toList();
+                    final unread = notificationsState.value!
+                        .where((n) => !n.isRead)
+                        .toList();
                     for (var n in unread) {
                       await client.notification.markAsRead(n.id);
                     }
@@ -53,9 +64,14 @@ class NotificationScreen extends HookWidget {
                       context: context,
                       builder: (context) => AlertDialog(
                         title: const Text('Delete all notifications'),
-                        content: const Text('Are you sure you want to delete all notifications?'),
+                        content: const Text(
+                          'Are you sure you want to delete all notifications?',
+                        ),
                         actions: [
-                          TextButton(onPressed: () => context.pop(), child: const Text('Cancel')),
+                          TextButton(
+                            onPressed: () => context.pop(),
+                            child: const Text('Cancel'),
+                          ),
                           TextButton(
                             onPressed: () async {
                               await client.notification.deleteAll();
@@ -78,9 +94,16 @@ class NotificationScreen extends HookWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.notifications_none, size: 64, color: Colors.grey),
+                      Icon(
+                        Icons.notifications_none,
+                        size: 64,
+                        color: Colors.grey,
+                      ),
                       SizedBox(height: 16),
-                      Text('No notifications yet', style: TextStyle(color: Colors.grey)),
+                      Text(
+                        'No notifications yet',
+                        style: TextStyle(color: Colors.grey),
+                      ),
                     ],
                   ),
                 );
@@ -90,7 +113,8 @@ class NotificationScreen extends HookWidget {
                 onRefresh: () async => notificationsSignal.refresh(),
                 child: ListView.separated(
                   itemCount: notifications.length,
-                  separatorBuilder: (context, index) => const Divider(height: 1),
+                  separatorBuilder: (context, index) =>
+                      const Divider(height: 1),
                   itemBuilder: (context, index) {
                     final un = notifications[index];
                     final url = un.notification?.actionUrl;
@@ -110,15 +134,23 @@ class NotificationScreen extends HookWidget {
                       },
                       child: ListTile(
                         leading: CircleAvatar(
-                          backgroundColor: un.isRead ? Colors.grey[200] : Colors.blue[100],
+                          backgroundColor: un.isRead
+                              ? Colors.grey[200]
+                              : Colors.blue[100],
                           child: Icon(
-                            un.isRead ? Icons.notifications_none : Icons.notifications_active,
+                            un.isRead
+                                ? Icons.notifications_none
+                                : Icons.notifications_active,
                             color: un.isRead ? Colors.grey : Colors.blue,
                           ),
                         ),
                         title: Text(
                           un.notification?.renderedTitle ?? 'No Title',
-                          style: TextStyle(fontWeight: un.isRead ? FontWeight.normal : FontWeight.bold),
+                          style: TextStyle(
+                            fontWeight: un.isRead
+                                ? FontWeight.normal
+                                : FontWeight.bold,
+                          ),
                         ),
                         subtitle: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -127,7 +159,10 @@ class NotificationScreen extends HookWidget {
                             const SizedBox(height: 4),
                             Text(
                               un.createdAt.toLocal().toString().split('.')[0],
-                              style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.grey[600],
+                              ),
                             ),
                           ],
                         ),

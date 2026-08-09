@@ -25,7 +25,7 @@ Working on:
 - sync service just needs to sync since last update time
 
 
-
+why is sync on the client not working
 
 
 
