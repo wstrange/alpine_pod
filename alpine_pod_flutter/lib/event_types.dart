@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Canonical list of event type strings used for the event type dropdown
 /// and any future filtering.

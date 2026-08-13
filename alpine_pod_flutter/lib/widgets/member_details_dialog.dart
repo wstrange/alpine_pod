@@ -1,5 +1,5 @@
 import 'package:alpine_pod_client/alpine_pod_client.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'member_avatar.dart';
 
 /// Shows a dialog with the member's details.

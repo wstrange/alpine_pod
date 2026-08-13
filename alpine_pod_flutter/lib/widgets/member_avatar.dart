@@ -1,5 +1,5 @@
 import 'package:alpine_pod_client/alpine_pod_client.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class MemberAvatar extends StatelessWidget {
   final Member member;

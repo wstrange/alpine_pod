@@ -1,5 +1,5 @@
 import 'package:alpine_pod_client/alpine_pod_client.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:go_router/go_router.dart';
 import 'location_widget.dart';
 import '../util.dart';
