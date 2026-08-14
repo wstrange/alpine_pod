@@ -9,7 +9,7 @@ final _log = Logger('EventRepository');
 final eventRepository = EventRepository();
 
 class EventRepository {
-  /// Reads events from the local SQLite cache.
+  /// Reads events from the local SQLite cache (or pure server fetch if cache is bypassed).
   /// If online and cache is empty, triggers a sync first.
   Future<List<Event>> listEvents({
     UuidValue? sectionId,
@@ -17,65 +17,80 @@ class EventRepository {
     DateTime? endTime,
     bool onlyMyEvents = false,
   }) async {
-    try {
-      final currentMember = currentMemberSignal.value;
-      final memberId = currentMember?.id;
+    if (useClientCacheSignal.value) {
+      try {
+        final currentMember = currentMemberSignal.value;
+        final memberId = currentMember?.id;
 
-      // Query local cache first matching server logic
-      final cachedEvents = await Event.db.find(
-        dbSession,
-        where: (t) {
-          Expression where = Constant.bool(true);
-          if (sectionId != null) {
-            where = where & t.sectionId.equals(sectionId);
-          }
-          if (startTime != null) {
-            where = where & (t.endTime >= startTime);
-          }
-          if (endTime != null) {
-            where = where & (t.startTime <= endTime);
-          }
+        // Query local cache first matching server logic
+        final cachedEvents = await Event.db.find(
+          dbSession,
+          where: (t) {
+            Expression where = Constant.bool(true);
+            if (sectionId != null) {
+              where = where & t.sectionId.equals(sectionId);
+            }
+            if (startTime != null) {
+              where = where & (t.endTime >= startTime);
+            }
+            if (endTime != null) {
+              where = where & (t.startTime <= endTime);
+            }
 
-          if (onlyMyEvents && memberId != null) {
-            where =
-                where &
-                (t.eventManagers.any((m) => m.memberId.equals(memberId)) |
-                    (t.eventRegistrations.any(
-                          (r) => r.memberId.equals(memberId),
-                        ) &
-                        t.published.equals(true)));
-          } else {
-            where = where & t.published.equals(true);
-          }
+            if (onlyMyEvents && memberId != null) {
+              where =
+                  where &
+                  (t.eventManagers.any((m) => m.memberId.equals(memberId)) |
+                      (t.eventRegistrations.any(
+                            (r) => r.memberId.equals(memberId),
+                          ) &
+                          t.published.equals(true)));
+            } else {
+              where = where & t.published.equals(true);
+            }
 
-          return where;
-        },
-        orderBy: (t) => t.startTime,
-        include: Event.include(
-          eventManagers: EventManager.includeList(
-            include: EventManager.include(member: Member.include()),
+            return where;
+          },
+          orderBy: (t) => t.startTime,
+          include: Event.include(
+            eventManagers: EventManager.includeList(
+              include: EventManager.include(member: Member.include()),
+            ),
+            eventRegistrations: EventRegistration.includeList(
+              include: EventRegistration.include(member: Member.include()),
+            ),
           ),
-          eventRegistrations: EventRegistration.includeList(
-            include: EventRegistration.include(member: Member.include()),
-          ),
-        ),
-      );
+        );
 
-      if (cachedEvents.isNotEmpty || !isOnlineSignal.value) {
-        return cachedEvents;
+        if (cachedEvents.isNotEmpty || !isOnlineSignal.value) {
+          return cachedEvents;
+        }
+      } catch (e) {
+        _log.warning(
+          'Failed to query local Event cache, falling back to server: $e',
+        );
       }
-    } catch (e) {
-      _log.warning(
-        'Failed to query local Event cache, falling back to server: $e',
-      );
-    }
 
-    // Fallback: sync from server and return
-    if (isOnlineSignal.value) {
-      final now = DateTime.now();
-      final start = startTime ?? DateTime(now.year, now.month - 1, 1);
-      final end = endTime ?? DateTime(now.year, now.month + 2, 0);
-      return await syncService.syncEvents(sectionId, start, end, onlyMyEvents);
+      // Fallback: sync from server and return
+      if (isOnlineSignal.value) {
+        final now = DateTime.now();
+        final start = startTime ?? DateTime(now.year, now.month - 1, 1);
+        final end = endTime ?? DateTime(now.year, now.month + 2, 0);
+        return await syncService.syncEvents(sectionId, start, end, onlyMyEvents);
+      }
+    } else {
+      if (isOnlineSignal.value) {
+        try {
+          return await client.event.listEvents(
+            sectionId: sectionId,
+            startTime: startTime,
+            endTime: endTime,
+            onlyMyEvents: onlyMyEvents,
+          );
+        } catch (e) {
+          _log.warning('Failed to fetch events directly from server: $e');
+        }
+      }
     }
 
     return [];
@@ -83,22 +98,24 @@ class EventRepository {
 
   /// Gets a single event by ID from cache or server.
   Future<Event?> getEvent(UuidValue id) async {
-    try {
-      final cached = await Event.db.findById(
-        dbSession,
-        id,
-        include: Event.include(
-          eventManagers: EventManager.includeList(
-            include: EventManager.include(member: Member.include()),
+    if (useClientCacheSignal.value) {
+      try {
+        final cached = await Event.db.findById(
+          dbSession,
+          id,
+          include: Event.include(
+            eventManagers: EventManager.includeList(
+              include: EventManager.include(member: Member.include()),
+            ),
+            eventRegistrations: EventRegistration.includeList(
+              include: EventRegistration.include(member: Member.include()),
+            ),
           ),
-          eventRegistrations: EventRegistration.includeList(
-            include: EventRegistration.include(member: Member.include()),
-          ),
-        ),
-      );
-      if (cached != null) return cached;
-    } catch (e) {
-      _log.warning('Local cache lookup failed for event $id: $e');
+        );
+        if (cached != null) return cached;
+      } catch (e) {
+        _log.warning('Local cache lookup failed for event $id: $e');
+      }
     }
 
     if (isOnlineSignal.value) {

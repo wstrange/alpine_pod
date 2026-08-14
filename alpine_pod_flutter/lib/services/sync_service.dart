@@ -34,6 +34,11 @@ class SyncService {
   /// Performs an eager sync of all user-accessible data from the server
   /// into the local SQLite database cache.
   Future<void> syncAll({UuidValue? currentSectionId}) async {
+    if (!useClientCacheSignal.value) {
+      _log.info('Client cache disabled (useClientCacheSignal is false): skipping syncAll');
+      return;
+    }
+
     if (!isOnlineSignal.value || currentSectionId == null) {
       _log.info('Offline: skipping syncAll');
       return;
@@ -73,11 +78,62 @@ class SyncService {
     }
   }
 
+  Future<void> _deleteMemberCascade(Member member) async {
+    await EventRegistration.db.deleteWhere(
+      dbSession,
+      where: (t) => t.memberId.equals(member.id),
+    );
+    await EventManager.db.deleteWhere(
+      dbSession,
+      where: (t) => t.memberId.equals(member.id),
+    );
+    await SectionMembership.db.deleteWhere(
+      dbSession,
+      where: (t) => t.memberId.equals(member.id),
+    );
+    await Member.db.deleteRow(dbSession, member);
+  }
+
+  Future<void> _deleteSectionCascade(Section section) async {
+    final id = section.id;
+    if (id == null) return;
+    final events = await Event.db.find(
+      dbSession,
+      where: (t) => t.sectionId.equals(id),
+    );
+    for (final e in events) {
+      await EventRegistration.db.deleteWhere(
+        dbSession,
+        where: (t) => t.eventId.equals(e.id),
+      );
+      await EventManager.db.deleteWhere(
+        dbSession,
+        where: (t) => t.eventId.equals(e.id),
+      );
+    }
+    await Event.db.deleteWhere(
+      dbSession,
+      where: (t) => t.sectionId.equals(id),
+    );
+    await SectionMembership.db.deleteWhere(
+      dbSession,
+      where: (t) => t.sectionId.equals(id),
+    );
+    await Section.db.deleteRow(dbSession, section);
+  }
+
   Future<void> _upsertMember(Member member) async {
     final existing = await Member.db.findById(dbSession, member.id);
     if (existing != null) {
       await Member.db.updateRow(dbSession, member);
     } else {
+      final existingByEmail = await Member.db.findFirstRow(
+        dbSession,
+        where: (t) => t.email.equals(member.email),
+      );
+      if (existingByEmail != null) {
+        await _deleteMemberCascade(existingByEmail);
+      }
       await Member.db.insertRow(dbSession, member);
     }
   }
@@ -89,6 +145,13 @@ class SyncService {
     if (existing != null) {
       await Section.db.updateRow(dbSession, section);
     } else {
+      final existingByName = await Section.db.findFirstRow(
+        dbSession,
+        where: (t) => t.name.equals(section.name),
+      );
+      if (existingByName != null) {
+        await _deleteSectionCascade(existingByName);
+      }
       await Section.db.insertRow(dbSession, section);
     }
   }
@@ -101,6 +164,15 @@ class SyncService {
         await SectionMembership.db.updateRow(dbSession, membership);
         return;
       }
+    }
+    final existingByKey = await SectionMembership.db.findFirstRow(
+      dbSession,
+      where: (t) =>
+          t.memberId.equals(membership.memberId) &
+          t.sectionId.equals(membership.sectionId),
+    );
+    if (existingByKey != null) {
+      await SectionMembership.db.deleteRow(dbSession, existingByKey);
     }
     await SectionMembership.db.insertRow(dbSession, membership);
   }

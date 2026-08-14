@@ -160,10 +160,7 @@ abstract class SectionMembership
     _i3.MemberInclude? member,
     _i4.SectionInclude? section,
   }) {
-    return SectionMembershipInclude._(
-      member: member,
-      section: section,
-    );
+    return SectionMembershipInclude._(member: member, section: section);
   }
 
   static SectionMembershipIncludeList includeList({
@@ -255,83 +252,39 @@ class SectionMembershipUpdateTable
   SectionMembershipUpdateTable(super.table);
 
   _i1.ColumnValue<_i2.UuidValue, _i2.UuidValue> memberId(_i2.UuidValue value) =>
-      _i1.ColumnValue(
-        table.memberId,
-        value,
-      );
+      _i1.ColumnValue(table.memberId, value);
 
   _i1.ColumnValue<_i2.UuidValue, _i2.UuidValue> sectionId(
     _i2.UuidValue value,
-  ) => _i1.ColumnValue(
-    table.sectionId,
-    value,
-  );
+  ) => _i1.ColumnValue(table.sectionId, value);
 
   _i1.ColumnValue<String, String> externalUserId(String? value) =>
-      _i1.ColumnValue(
-        table.externalUserId,
-        value,
-      );
+      _i1.ColumnValue(table.externalUserId, value);
 
   _i1.ColumnValue<DateTime, DateTime> syncedAt(DateTime value) =>
-      _i1.ColumnValue(
-        table.syncedAt,
-        value,
-      );
+      _i1.ColumnValue(table.syncedAt, value);
 
   _i1.ColumnValue<String, String> sourceSystem(String? value) =>
-      _i1.ColumnValue(
-        table.sourceSystem,
-        value,
-      );
+      _i1.ColumnValue(table.sourceSystem, value);
 
   _i1.ColumnValue<Set<String>, Set<String>> scopes(Set<String> value) =>
-      _i1.ColumnValue(
-        table.scopes,
-        value,
-      );
+      _i1.ColumnValue(table.scopes, value);
 
   _i1.ColumnValue<DateTime, DateTime> updatedAt(DateTime value) =>
-      _i1.ColumnValue(
-        table.updatedAt,
-        value,
-      );
+      _i1.ColumnValue(table.updatedAt, value);
 }
 
 class SectionMembershipTable extends _i1.Table<_i2.UuidValue?> {
   SectionMembershipTable({super.tableRelation})
     : super(tableName: 'section_memberships') {
     updateTable = SectionMembershipUpdateTable(this);
-    memberId = _i1.ColumnUuid(
-      'memberId',
-      this,
-    );
-    sectionId = _i1.ColumnUuid(
-      'sectionId',
-      this,
-    );
-    externalUserId = _i1.ColumnString(
-      'externalUserId',
-      this,
-    );
-    syncedAt = _i1.ColumnDateTime(
-      'syncedAt',
-      this,
-      hasDefault: true,
-    );
-    sourceSystem = _i1.ColumnString(
-      'sourceSystem',
-      this,
-    );
-    scopes = _i1.ColumnSerializable<Set<String>>(
-      'scopes',
-      this,
-    );
-    updatedAt = _i1.ColumnDateTime(
-      'updatedAt',
-      this,
-      hasDefault: true,
-    );
+    memberId = _i1.ColumnUuid('memberId', this);
+    sectionId = _i1.ColumnUuid('sectionId', this);
+    externalUserId = _i1.ColumnString('externalUserId', this);
+    syncedAt = _i1.ColumnDateTime('syncedAt', this, hasDefault: true);
+    sourceSystem = _i1.ColumnString('sourceSystem', this);
+    scopes = _i1.ColumnSerializable<Set<String>>('scopes', this);
+    updatedAt = _i1.ColumnDateTime('updatedAt', this, hasDefault: true);
   }
 
   late final SectionMembershipUpdateTable updateTable;

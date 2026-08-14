@@ -784,10 +784,6 @@ class EventRepository {
 
   final attachRow = const EventAttachRowRepository._();
 
-  final detach = const EventDetachRepository._();
-
-  final detachRow = const EventDetachRowRepository._();
-
   /// Returns a list of [Event]s matching the given query parameters.
   ///
   /// Use [where] to specify which items to include in the return value.
@@ -1299,106 +1295,6 @@ class EventAttachRowRepository {
     }
 
     var $eventManager = eventManager.copyWith(eventId: event.id);
-    await session.db.updateRow<_i4.EventManager>(
-      $eventManager,
-      columns: [_i4.EventManager.t.eventId],
-      transaction: transaction,
-    );
-  }
-}
-
-class EventDetachRepository {
-  const EventDetachRepository._();
-
-  /// Detaches the relation between this [Event] and the given [EventRegistration]
-  /// by setting the [EventRegistration]'s foreign key `eventId` to `null`.
-  ///
-  /// This removes the association between the two models without deleting
-  /// the related record.
-  Future<void> eventRegistrations(
-    _i1.DatabaseSession session,
-    List<_i3.EventRegistration> eventRegistration, {
-    _i1.Transaction? transaction,
-  }) async {
-    if (eventRegistration.any((e) => e.id == null)) {
-      throw ArgumentError.notNull('eventRegistration.id');
-    }
-
-    var $eventRegistration = eventRegistration
-        .map((e) => e.copyWith(eventId: null))
-        .toList();
-    await session.db.update<_i3.EventRegistration>(
-      $eventRegistration,
-      columns: [_i3.EventRegistration.t.eventId],
-      transaction: transaction,
-    );
-  }
-
-  /// Detaches the relation between this [Event] and the given [EventManager]
-  /// by setting the [EventManager]'s foreign key `eventId` to `null`.
-  ///
-  /// This removes the association between the two models without deleting
-  /// the related record.
-  Future<void> eventManagers(
-    _i1.DatabaseSession session,
-    List<_i4.EventManager> eventManager, {
-    _i1.Transaction? transaction,
-  }) async {
-    if (eventManager.any((e) => e.id == null)) {
-      throw ArgumentError.notNull('eventManager.id');
-    }
-
-    var $eventManager = eventManager
-        .map((e) => e.copyWith(eventId: null))
-        .toList();
-    await session.db.update<_i4.EventManager>(
-      $eventManager,
-      columns: [_i4.EventManager.t.eventId],
-      transaction: transaction,
-    );
-  }
-}
-
-class EventDetachRowRepository {
-  const EventDetachRowRepository._();
-
-  /// Detaches the relation between this [Event] and the given [EventRegistration]
-  /// by setting the [EventRegistration]'s foreign key `eventId` to `null`.
-  ///
-  /// This removes the association between the two models without deleting
-  /// the related record.
-  Future<void> eventRegistrations(
-    _i1.DatabaseSession session,
-    _i3.EventRegistration eventRegistration, {
-    _i1.Transaction? transaction,
-  }) async {
-    if (eventRegistration.id == null) {
-      throw ArgumentError.notNull('eventRegistration.id');
-    }
-
-    var $eventRegistration = eventRegistration.copyWith(eventId: null);
-    await session.db.updateRow<_i3.EventRegistration>(
-      $eventRegistration,
-      columns: [_i3.EventRegistration.t.eventId],
-      transaction: transaction,
-    );
-  }
-
-  /// Detaches the relation between this [Event] and the given [EventManager]
-  /// by setting the [EventManager]'s foreign key `eventId` to `null`.
-  ///
-  /// This removes the association between the two models without deleting
-  /// the related record.
-  Future<void> eventManagers(
-    _i1.DatabaseSession session,
-    _i4.EventManager eventManager, {
-    _i1.Transaction? transaction,
-  }) async {
-    if (eventManager.id == null) {
-      throw ArgumentError.notNull('eventManager.id');
-    }
-
-    var $eventManager = eventManager.copyWith(eventId: null);
     await session.db.updateRow<_i4.EventManager>(
       $eventManager,
       columns: [_i4.EventManager.t.eventId],

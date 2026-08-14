@@ -199,58 +199,22 @@ class _InternalTestEndpoints extends TestEndpoints
     _i2.SerializationManager serializationManager,
     _i2.EndpointDispatch endpoints,
   ) {
-    emailIdp = _EmailIdpEndpoint(
-      endpoints,
-      serializationManager,
-    );
+    emailIdp = _EmailIdpEndpoint(endpoints, serializationManager);
     refreshJwtTokens = _RefreshJwtTokensEndpoint(
       endpoints,
       serializationManager,
     );
-    googleIdp = _GoogleIdpEndpoint(
-      endpoints,
-      serializationManager,
-    );
-    facebookIdp = _FacebookIdpEndpoint(
-      endpoints,
-      serializationManager,
-    );
-    admin = _AdminEndpoint(
-      endpoints,
-      serializationManager,
-    );
-    event = _EventEndpoint(
-      endpoints,
-      serializationManager,
-    );
-    eventManager = _EventManagerEndpoint(
-      endpoints,
-      serializationManager,
-    );
-    eventTemplate = _EventTemplateEndpoint(
-      endpoints,
-      serializationManager,
-    );
-    member = _MemberEndpoint(
-      endpoints,
-      serializationManager,
-    );
-    notification = _NotificationEndpoint(
-      endpoints,
-      serializationManager,
-    );
-    registration = _RegistrationEndpoint(
-      endpoints,
-      serializationManager,
-    );
-    section = _SectionEndpoint(
-      endpoints,
-      serializationManager,
-    );
-    userProfile = _UserProfileEndpoint(
-      endpoints,
-      serializationManager,
-    );
+    googleIdp = _GoogleIdpEndpoint(endpoints, serializationManager);
+    facebookIdp = _FacebookIdpEndpoint(endpoints, serializationManager);
+    admin = _AdminEndpoint(endpoints, serializationManager);
+    event = _EventEndpoint(endpoints, serializationManager);
+    eventManager = _EventManagerEndpoint(endpoints, serializationManager);
+    eventTemplate = _EventTemplateEndpoint(endpoints, serializationManager);
+    member = _MemberEndpoint(endpoints, serializationManager);
+    notification = _NotificationEndpoint(endpoints, serializationManager);
+    registration = _RegistrationEndpoint(endpoints, serializationManager);
+    section = _SectionEndpoint(endpoints, serializationManager);
+    userProfile = _UserProfileEndpoint(endpoints, serializationManager);
   }
 }
 
@@ -259,10 +223,7 @@ class _FutureCalls {
 }
 
 class _EmailIdpEndpoint {
-  _EmailIdpEndpoint(
-    this._endpointDispatch,
-    this._serializationManager,
-  );
+  _EmailIdpEndpoint(this._endpointDispatch, this._serializationManager);
 
   final _i2.EndpointDispatch _endpointDispatch;
 
@@ -535,10 +496,7 @@ class _EmailIdpEndpoint {
 }
 
 class _RefreshJwtTokensEndpoint {
-  _RefreshJwtTokensEndpoint(
-    this._endpointDispatch,
-    this._serializationManager,
-  );
+  _RefreshJwtTokensEndpoint(this._endpointDispatch, this._serializationManager);
 
   final _i2.EndpointDispatch _endpointDispatch;
 
@@ -577,10 +535,7 @@ class _RefreshJwtTokensEndpoint {
 }
 
 class _GoogleIdpEndpoint {
-  _GoogleIdpEndpoint(
-    this._endpointDispatch,
-    this._serializationManager,
-  );
+  _GoogleIdpEndpoint(this._endpointDispatch, this._serializationManager);
 
   final _i2.EndpointDispatch _endpointDispatch;
 
@@ -688,10 +643,7 @@ class _GoogleIdpEndpoint {
 }
 
 class _FacebookIdpEndpoint {
-  _FacebookIdpEndpoint(
-    this._endpointDispatch,
-    this._serializationManager,
-  );
+  _FacebookIdpEndpoint(this._endpointDispatch, this._serializationManager);
 
   final _i2.EndpointDispatch _endpointDispatch;
 
@@ -758,10 +710,7 @@ class _FacebookIdpEndpoint {
 }
 
 class _AdminEndpoint {
-  _AdminEndpoint(
-    this._endpointDispatch,
-    this._serializationManager,
-  );
+  _AdminEndpoint(this._endpointDispatch, this._serializationManager);
 
   final _i2.EndpointDispatch _endpointDispatch;
 
@@ -1082,10 +1031,7 @@ class _AdminEndpoint {
 }
 
 class _EventEndpoint {
-  _EventEndpoint(
-    this._endpointDispatch,
-    this._serializationManager,
-  );
+  _EventEndpoint(this._endpointDispatch, this._serializationManager);
 
   final _i2.EndpointDispatch _endpointDispatch;
 
@@ -1295,10 +1241,7 @@ class _EventEndpoint {
 }
 
 class _EventManagerEndpoint {
-  _EventManagerEndpoint(
-    this._endpointDispatch,
-    this._serializationManager,
-  );
+  _EventManagerEndpoint(this._endpointDispatch, this._serializationManager);
 
   final _i2.EndpointDispatch _endpointDispatch;
 
@@ -1589,10 +1532,7 @@ class _EventManagerEndpoint {
 }
 
 class _EventTemplateEndpoint {
-  _EventTemplateEndpoint(
-    this._endpointDispatch,
-    this._serializationManager,
-  );
+  _EventTemplateEndpoint(this._endpointDispatch, this._serializationManager);
 
   final _i2.EndpointDispatch _endpointDispatch;
 
@@ -1723,10 +1663,7 @@ class _EventTemplateEndpoint {
 }
 
 class _MemberEndpoint {
-  _MemberEndpoint(
-    this._endpointDispatch,
-    this._serializationManager,
-  );
+  _MemberEndpoint(this._endpointDispatch, this._serializationManager);
 
   final _i2.EndpointDispatch _endpointDispatch;
 
@@ -2222,10 +2159,7 @@ class _MemberEndpoint {
 }
 
 class _NotificationEndpoint {
-  _NotificationEndpoint(
-    this._endpointDispatch,
-    this._serializationManager,
-  );
+  _NotificationEndpoint(this._endpointDispatch, this._serializationManager);
 
   final _i2.EndpointDispatch _endpointDispatch;
 
@@ -2247,10 +2181,7 @@ class _NotificationEndpoint {
           createSessionCallback: (_) => _localUniqueSession,
           endpointPath: 'notification',
           methodName: 'getMyFeed',
-          parameters: _i1.testObjectToJson({
-            'limit': limit,
-            'offset': offset,
-          }),
+          parameters: _i1.testObjectToJson({'limit': limit, 'offset': offset}),
           serializationManager: _serializationManager,
         );
         var _localReturnValue =
@@ -2425,10 +2356,7 @@ class _NotificationEndpoint {
 }
 
 class _RegistrationEndpoint {
-  _RegistrationEndpoint(
-    this._endpointDispatch,
-    this._serializationManager,
-  );
+  _RegistrationEndpoint(this._endpointDispatch, this._serializationManager);
 
   final _i2.EndpointDispatch _endpointDispatch;
 
@@ -2566,10 +2494,7 @@ class _RegistrationEndpoint {
 }
 
 class _SectionEndpoint {
-  _SectionEndpoint(
-    this._endpointDispatch,
-    this._serializationManager,
-  );
+  _SectionEndpoint(this._endpointDispatch, this._serializationManager);
 
   final _i2.EndpointDispatch _endpointDispatch;
 
@@ -2668,10 +2593,7 @@ class _SectionEndpoint {
 }
 
 class _UserProfileEndpoint {
-  _UserProfileEndpoint(
-    this._endpointDispatch,
-    this._serializationManager,
-  );
+  _UserProfileEndpoint(this._endpointDispatch, this._serializationManager);
 
   final _i2.EndpointDispatch _endpointDispatch;
 

@@ -198,17 +198,7 @@ class _NotificationImpl extends Notification {
       template: template is _i2.NotificationTemplate?
           ? template
           : this.template?.copyWith(),
-      data:
-          data ??
-          this.data.map(
-            (
-              key0,
-              value0,
-            ) => MapEntry(
-              key0,
-              value0,
-            ),
-          ),
+      data: data ?? this.data.map((key0, value0) => MapEntry(key0, value0)),
       actionUrl: actionUrl is String? ? actionUrl : this.actionUrl,
       renderedTitle: renderedTitle ?? this.renderedTitle,
       renderedBody: renderedBody ?? this.renderedBody,

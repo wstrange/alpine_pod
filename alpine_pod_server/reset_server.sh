@@ -28,24 +28,12 @@ serverpod create-migration --force
 # ---------------------------------------------------------------------------
 # 2. Apply migrations
 # ---------------------------------------------------------------------------
-echo ""
-echo "========================================="
-echo " Applying migrations"
-echo "========================================="
-dart run bin/main.dart --apply-migrations
+# echo ""
+# echo "========================================="
+# echo " Applying migrations"
+# echo "========================================="
+# dart run bin/main.dart --apply-migrations
 
+dart run bin/main.dart --role maintenance --apply-migrations
 echo "Seed data"
 "$SCRIPT_DIR/seed.sh"
-
-# Load data
-
-# ---------------------------------------------------------------------------
-# 3. Optionally start the server
-# ---------------------------------------------------------------------------
-if [[ "${1:-}" == "--start" ]]; then
-  echo ""
-  echo "========================================="
-  echo " Starting server"
-  echo "========================================="
-  dart run bin/main.dart
-fi

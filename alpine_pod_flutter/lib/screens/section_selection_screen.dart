@@ -17,13 +17,12 @@ class SectionSelectionScreen extends StatelessWidget {
             final membershipsValue = allMySectionMembershipsSignal.value;
             return switch (membershipsValue) {
               AsyncError(:final error) => Center(child: Text('Error $error')),
-              AsyncLoading() => const Center(
-                child: CircularProgressIndicator(),
-              ),
+              AsyncLoading() => const Center(child: CircularProgressIndicator()),
               AsyncData(value: final memberships) => ListView.builder(
                 itemCount: memberships.length,
                 itemBuilder: (context, index) {
-                  final section = memberships[index].section!;
+                  final section = memberships[index].section;
+                  if (section == null) return const SizedBox.shrink();
                   return ListTile(
                     title: Text(section.name),
                     trailing: const Icon(Icons.chevron_right),

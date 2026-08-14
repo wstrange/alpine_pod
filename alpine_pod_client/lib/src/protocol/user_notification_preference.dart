@@ -208,72 +208,35 @@ class UserNotificationPreferenceUpdateTable
     extends _i1.UpdateTable<UserNotificationPreferenceTable> {
   UserNotificationPreferenceUpdateTable(super.table);
 
-  _i1.ColumnValue<bool, bool> allowInApp(bool value) => _i1.ColumnValue(
-    table.allowInApp,
-    value,
-  );
+  _i1.ColumnValue<bool, bool> allowInApp(bool value) =>
+      _i1.ColumnValue(table.allowInApp, value);
 
-  _i1.ColumnValue<bool, bool> allowEmail(bool value) => _i1.ColumnValue(
-    table.allowEmail,
-    value,
-  );
+  _i1.ColumnValue<bool, bool> allowEmail(bool value) =>
+      _i1.ColumnValue(table.allowEmail, value);
 
-  _i1.ColumnValue<bool, bool> allowPush(bool value) => _i1.ColumnValue(
-    table.allowPush,
-    value,
-  );
+  _i1.ColumnValue<bool, bool> allowPush(bool value) =>
+      _i1.ColumnValue(table.allowPush, value);
 
-  _i1.ColumnValue<bool, bool> allowSms(bool value) => _i1.ColumnValue(
-    table.allowSms,
-    value,
-  );
+  _i1.ColumnValue<bool, bool> allowSms(bool value) =>
+      _i1.ColumnValue(table.allowSms, value);
 
-  _i1.ColumnValue<bool, bool> newEvents(bool value) => _i1.ColumnValue(
-    table.newEvents,
-    value,
-  );
+  _i1.ColumnValue<bool, bool> newEvents(bool value) =>
+      _i1.ColumnValue(table.newEvents, value);
 
   _i1.ColumnValue<DateTime, DateTime> updatedAt(DateTime value) =>
-      _i1.ColumnValue(
-        table.updatedAt,
-        value,
-      );
+      _i1.ColumnValue(table.updatedAt, value);
 }
 
 class UserNotificationPreferenceTable extends _i1.Table<_i2.UuidValue?> {
   UserNotificationPreferenceTable({super.tableRelation})
     : super(tableName: 'user_notification_preference') {
     updateTable = UserNotificationPreferenceUpdateTable(this);
-    allowInApp = _i1.ColumnBool(
-      'allowInApp',
-      this,
-      hasDefault: true,
-    );
-    allowEmail = _i1.ColumnBool(
-      'allowEmail',
-      this,
-      hasDefault: true,
-    );
-    allowPush = _i1.ColumnBool(
-      'allowPush',
-      this,
-      hasDefault: true,
-    );
-    allowSms = _i1.ColumnBool(
-      'allowSms',
-      this,
-      hasDefault: true,
-    );
-    newEvents = _i1.ColumnBool(
-      'newEvents',
-      this,
-      hasDefault: true,
-    );
-    updatedAt = _i1.ColumnDateTime(
-      'updatedAt',
-      this,
-      hasDefault: true,
-    );
+    allowInApp = _i1.ColumnBool('allowInApp', this, hasDefault: true);
+    allowEmail = _i1.ColumnBool('allowEmail', this, hasDefault: true);
+    allowPush = _i1.ColumnBool('allowPush', this, hasDefault: true);
+    allowSms = _i1.ColumnBool('allowSms', this, hasDefault: true);
+    newEvents = _i1.ColumnBool('newEvents', this, hasDefault: true);
+    updatedAt = _i1.ColumnDateTime('updatedAt', this, hasDefault: true);
   }
 
   late final UserNotificationPreferenceUpdateTable updateTable;

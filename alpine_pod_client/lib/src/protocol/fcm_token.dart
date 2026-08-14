@@ -96,12 +96,7 @@ class _FcmTokenImpl extends FcmToken {
     required String token,
     String? deviceId,
     DateTime? updatedAt,
-  }) : super._(
-         id: id,
-         token: token,
-         deviceId: deviceId,
-         updatedAt: updatedAt,
-       );
+  }) : super._(id: id, token: token, deviceId: deviceId, updatedAt: updatedAt);
 
   /// Returns a shallow copy of this [FcmToken]
   /// with some or all fields replaced by the given arguments.

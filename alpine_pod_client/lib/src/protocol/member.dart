@@ -371,158 +371,78 @@ class _MemberImpl extends Member {
 class MemberUpdateTable extends _i1.UpdateTable<MemberTable> {
   MemberUpdateTable(super.table);
 
-  _i1.ColumnValue<String, String> firstName(String value) => _i1.ColumnValue(
-    table.firstName,
-    value,
-  );
+  _i1.ColumnValue<String, String> firstName(String value) =>
+      _i1.ColumnValue(table.firstName, value);
 
-  _i1.ColumnValue<String, String> lastName(String value) => _i1.ColumnValue(
-    table.lastName,
-    value,
-  );
+  _i1.ColumnValue<String, String> lastName(String value) =>
+      _i1.ColumnValue(table.lastName, value);
 
-  _i1.ColumnValue<String, String> displayName(String? value) => _i1.ColumnValue(
-    table.displayName,
-    value,
-  );
+  _i1.ColumnValue<String, String> displayName(String? value) =>
+      _i1.ColumnValue(table.displayName, value);
 
-  _i1.ColumnValue<String, String> bio(String? value) => _i1.ColumnValue(
-    table.bio,
-    value,
-  );
+  _i1.ColumnValue<String, String> bio(String? value) =>
+      _i1.ColumnValue(table.bio, value);
 
-  _i1.ColumnValue<String, String> email(String value) => _i1.ColumnValue(
-    table.email,
-    value,
-  );
+  _i1.ColumnValue<String, String> email(String value) =>
+      _i1.ColumnValue(table.email, value);
 
-  _i1.ColumnValue<String, String> phoneNumber(String value) => _i1.ColumnValue(
-    table.phoneNumber,
-    value,
-  );
+  _i1.ColumnValue<String, String> phoneNumber(String value) =>
+      _i1.ColumnValue(table.phoneNumber, value);
 
   _i1.ColumnValue<String, String> membershipStatus(String value) =>
-      _i1.ColumnValue(
-        table.membershipStatus,
-        value,
-      );
+      _i1.ColumnValue(table.membershipStatus, value);
 
   _i1.ColumnValue<String, String> emergencyContactName(String value) =>
-      _i1.ColumnValue(
-        table.emergencyContactName,
-        value,
-      );
+      _i1.ColumnValue(table.emergencyContactName, value);
 
   _i1.ColumnValue<String, String> emergencyContactPhone(String value) =>
-      _i1.ColumnValue(
-        table.emergencyContactPhone,
-        value,
-      );
+      _i1.ColumnValue(table.emergencyContactPhone, value);
 
   _i1.ColumnValue<String, String> medicalConditions(String? value) =>
-      _i1.ColumnValue(
-        table.medicalConditions,
-        value,
-      );
+      _i1.ColumnValue(table.medicalConditions, value);
 
   _i1.ColumnValue<String, String> profileImageUrl(String? value) =>
-      _i1.ColumnValue(
-        table.profileImageUrl,
-        value,
-      );
+      _i1.ColumnValue(table.profileImageUrl, value);
 
   _i1.ColumnValue<DateTime, DateTime> waiverSignedDate(DateTime value) =>
-      _i1.ColumnValue(
-        table.waiverSignedDate,
-        value,
-      );
+      _i1.ColumnValue(table.waiverSignedDate, value);
 
   _i1.ColumnValue<String, String> certifications(String? value) =>
-      _i1.ColumnValue(
-        table.certifications,
-        value,
-      );
+      _i1.ColumnValue(table.certifications, value);
 
   _i1.ColumnValue<DateTime, DateTime> createdAt(DateTime value) =>
-      _i1.ColumnValue(
-        table.createdAt,
-        value,
-      );
+      _i1.ColumnValue(table.createdAt, value);
 
   _i1.ColumnValue<DateTime, DateTime> updatedAt(DateTime value) =>
-      _i1.ColumnValue(
-        table.updatedAt,
-        value,
-      );
+      _i1.ColumnValue(table.updatedAt, value);
 }
 
 class MemberTable extends _i1.Table<_i2.UuidValue> {
   MemberTable({super.tableRelation}) : super(tableName: 'members') {
     updateTable = MemberUpdateTable(this);
-    firstName = _i1.ColumnString(
-      'firstName',
-      this,
-    );
-    lastName = _i1.ColumnString(
-      'lastName',
-      this,
-    );
-    displayName = _i1.ColumnString(
-      'displayName',
-      this,
-    );
-    bio = _i1.ColumnString(
-      'bio',
-      this,
-    );
-    email = _i1.ColumnString(
-      'email',
-      this,
-    );
-    phoneNumber = _i1.ColumnString(
-      'phoneNumber',
-      this,
-    );
+    firstName = _i1.ColumnString('firstName', this);
+    lastName = _i1.ColumnString('lastName', this);
+    displayName = _i1.ColumnString('displayName', this);
+    bio = _i1.ColumnString('bio', this);
+    email = _i1.ColumnString('email', this);
+    phoneNumber = _i1.ColumnString('phoneNumber', this);
     membershipStatus = _i1.ColumnString(
       'membershipStatus',
       this,
       hasDefault: true,
     );
-    emergencyContactName = _i1.ColumnString(
-      'emergencyContactName',
-      this,
-    );
-    emergencyContactPhone = _i1.ColumnString(
-      'emergencyContactPhone',
-      this,
-    );
-    medicalConditions = _i1.ColumnString(
-      'medicalConditions',
-      this,
-    );
-    profileImageUrl = _i1.ColumnString(
-      'profileImageUrl',
-      this,
-    );
+    emergencyContactName = _i1.ColumnString('emergencyContactName', this);
+    emergencyContactPhone = _i1.ColumnString('emergencyContactPhone', this);
+    medicalConditions = _i1.ColumnString('medicalConditions', this);
+    profileImageUrl = _i1.ColumnString('profileImageUrl', this);
     waiverSignedDate = _i1.ColumnDateTime(
       'waiverSignedDate',
       this,
       hasDefault: true,
     );
-    certifications = _i1.ColumnString(
-      'certifications',
-      this,
-    );
-    createdAt = _i1.ColumnDateTime(
-      'createdAt',
-      this,
-      hasDefault: true,
-    );
-    updatedAt = _i1.ColumnDateTime(
-      'updatedAt',
-      this,
-      hasDefault: true,
-    );
+    certifications = _i1.ColumnString('certifications', this);
+    createdAt = _i1.ColumnDateTime('createdAt', this, hasDefault: true);
+    updatedAt = _i1.ColumnDateTime('updatedAt', this, hasDefault: true);
   }
 
   late final MemberUpdateTable updateTable;
@@ -852,10 +772,7 @@ class MemberRepository {
     Member row, {
     _i1.Transaction? transaction,
   }) async {
-    return session.db.insertRow<Member>(
-      row,
-      transaction: transaction,
-    );
+    return session.db.insertRow<Member>(row, transaction: transaction);
   }
 
   /// Upserts all [Member]s in the list and returns the resulting rows.
@@ -1045,10 +962,7 @@ class MemberRepository {
     Member row, {
     _i1.Transaction? transaction,
   }) async {
-    return session.db.deleteRow<Member>(
-      row,
-      transaction: transaction,
-    );
+    return session.db.deleteRow<Member>(row, transaction: transaction);
   }
 
   /// Deletes all rows matching the [where] expression.

@@ -47,14 +47,10 @@ class EndpointEmailIdp extends _i1.EndpointEmailIdpBase {
   _i3.Future<_i4.AuthSuccess> login({
     required String email,
     required String password,
-  }) => caller.callServerEndpoint<_i4.AuthSuccess>(
-    'emailIdp',
-    'login',
-    {
-      'email': email,
-      'password': password,
-    },
-  );
+  }) => caller.callServerEndpoint<_i4.AuthSuccess>('emailIdp', 'login', {
+    'email': email,
+    'password': password,
+  });
 
   /// Starts the registration for a new user account with an email-based login
   /// associated to it.
@@ -88,14 +84,11 @@ class EndpointEmailIdp extends _i1.EndpointEmailIdpBase {
   _i3.Future<String> verifyRegistrationCode({
     required _i2.UuidValue accountRequestId,
     required String verificationCode,
-  }) => caller.callServerEndpoint<String>(
-    'emailIdp',
-    'verifyRegistrationCode',
-    {
-      'accountRequestId': accountRequestId,
-      'verificationCode': verificationCode,
-    },
-  );
+  }) =>
+      caller.callServerEndpoint<String>('emailIdp', 'verifyRegistrationCode', {
+        'accountRequestId': accountRequestId,
+        'verificationCode': verificationCode,
+      });
 
   /// Completes a new account registration, creating a new auth user with a
   /// profile and attaching the given email account to it.
@@ -118,10 +111,7 @@ class EndpointEmailIdp extends _i1.EndpointEmailIdpBase {
   }) => caller.callServerEndpoint<_i4.AuthSuccess>(
     'emailIdp',
     'finishRegistration',
-    {
-      'registrationToken': registrationToken,
-      'password': password,
-    },
+    {'registrationToken': registrationToken, 'password': password},
   );
 
   /// Requests a password reset for [email].
@@ -163,14 +153,11 @@ class EndpointEmailIdp extends _i1.EndpointEmailIdpBase {
   _i3.Future<String> verifyPasswordResetCode({
     required _i2.UuidValue passwordResetRequestId,
     required String verificationCode,
-  }) => caller.callServerEndpoint<String>(
-    'emailIdp',
-    'verifyPasswordResetCode',
-    {
-      'passwordResetRequestId': passwordResetRequestId,
-      'verificationCode': verificationCode,
-    },
-  );
+  }) =>
+      caller.callServerEndpoint<String>('emailIdp', 'verifyPasswordResetCode', {
+        'passwordResetRequestId': passwordResetRequestId,
+        'verificationCode': verificationCode,
+      });
 
   /// Completes a password reset request by setting a new password.
   ///
@@ -190,21 +177,14 @@ class EndpointEmailIdp extends _i1.EndpointEmailIdpBase {
   _i3.Future<void> finishPasswordReset({
     required String finishPasswordResetToken,
     required String newPassword,
-  }) => caller.callServerEndpoint<void>(
-    'emailIdp',
-    'finishPasswordReset',
-    {
-      'finishPasswordResetToken': finishPasswordResetToken,
-      'newPassword': newPassword,
-    },
-  );
+  }) => caller.callServerEndpoint<void>('emailIdp', 'finishPasswordReset', {
+    'finishPasswordResetToken': finishPasswordResetToken,
+    'newPassword': newPassword,
+  });
 
   @override
-  _i3.Future<bool> hasAccount() => caller.callServerEndpoint<bool>(
-    'emailIdp',
-    'hasAccount',
-    {},
-  );
+  _i3.Future<bool> hasAccount() =>
+      caller.callServerEndpoint<bool>('emailIdp', 'hasAccount', {});
 }
 
 /// {@category Endpoint}
@@ -254,14 +234,10 @@ class EndpointGoogleIdp extends _i1.EndpointGoogleIdpBase {
   _i3.Future<_i4.AuthSuccess> login({
     required String idToken,
     required String? accessToken,
-  }) => caller.callServerEndpoint<_i4.AuthSuccess>(
-    'googleIdp',
-    'login',
-    {
-      'idToken': idToken,
-      'accessToken': accessToken,
-    },
-  );
+  }) => caller.callServerEndpoint<_i4.AuthSuccess>('googleIdp', 'login', {
+    'idToken': idToken,
+    'accessToken': accessToken,
+  });
 
   /// Validates a Google authorization code from the web OAuth2 PKCE flow and
   /// either logs in the associated user or creates a new account.
@@ -278,19 +254,12 @@ class EndpointGoogleIdp extends _i1.EndpointGoogleIdpBase {
   }) => caller.callServerEndpoint<_i4.AuthSuccess>(
     'googleIdp',
     'loginWithCode',
-    {
-      'code': code,
-      'codeVerifier': codeVerifier,
-      'redirectUri': redirectUri,
-    },
+    {'code': code, 'codeVerifier': codeVerifier, 'redirectUri': redirectUri},
   );
 
   @override
-  _i3.Future<bool> hasAccount() => caller.callServerEndpoint<bool>(
-    'googleIdp',
-    'hasAccount',
-    {},
-  );
+  _i3.Future<bool> hasAccount() =>
+      caller.callServerEndpoint<bool>('googleIdp', 'hasAccount', {});
 }
 
 /// {@category Endpoint}
@@ -307,18 +276,13 @@ class EndpointFacebookIdp extends _i1.EndpointFacebookIdpBase {
   /// [FacebookAccessTokenVerificationException] will be thrown.
   @override
   _i3.Future<_i4.AuthSuccess> login({required String accessToken}) =>
-      caller.callServerEndpoint<_i4.AuthSuccess>(
-        'facebookIdp',
-        'login',
-        {'accessToken': accessToken},
-      );
+      caller.callServerEndpoint<_i4.AuthSuccess>('facebookIdp', 'login', {
+        'accessToken': accessToken,
+      });
 
   @override
-  _i3.Future<bool> hasAccount() => caller.callServerEndpoint<bool>(
-    'facebookIdp',
-    'hasAccount',
-    {},
-  );
+  _i3.Future<bool> hasAccount() =>
+      caller.callServerEndpoint<bool>('facebookIdp', 'hasAccount', {});
 }
 
 /// {@category Endpoint}
@@ -330,53 +294,29 @@ class EndpointAdmin extends _i2.EndpointRef {
 
   /// Section Management
   _i3.Future<_i5.Section> createSection(_i5.Section section) =>
-      caller.callServerEndpoint<_i5.Section>(
-        'admin',
-        'createSection',
-        {'section': section},
-      );
+      caller.callServerEndpoint<_i5.Section>('admin', 'createSection', {
+        'section': section,
+      });
 
-  _i3.Future<_i5.Section?> getSection(_i2.UuidValue id) =>
-      caller.callServerEndpoint<_i5.Section?>(
-        'admin',
-        'getSection',
-        {'id': id},
-      );
+  _i3.Future<_i5.Section?> getSection(_i2.UuidValue id) => caller
+      .callServerEndpoint<_i5.Section?>('admin', 'getSection', {'id': id});
 
   _i3.Future<_i5.Section> updateSection(_i5.Section section) =>
-      caller.callServerEndpoint<_i5.Section>(
-        'admin',
-        'updateSection',
-        {'section': section},
-      );
+      caller.callServerEndpoint<_i5.Section>('admin', 'updateSection', {
+        'section': section,
+      });
 
   _i3.Future<void> deleteSection(_i2.UuidValue id) =>
-      caller.callServerEndpoint<void>(
-        'admin',
-        'deleteSection',
-        {'id': id},
-      );
+      caller.callServerEndpoint<void>('admin', 'deleteSection', {'id': id});
 
   _i3.Future<List<_i5.Section>> listSections() =>
-      caller.callServerEndpoint<List<_i5.Section>>(
-        'admin',
-        'listSections',
-        {},
-      );
+      caller.callServerEndpoint<List<_i5.Section>>('admin', 'listSections', {});
 
   _i3.Future<_i6.Member?> getMember(_i2.UuidValue id) =>
-      caller.callServerEndpoint<_i6.Member?>(
-        'admin',
-        'getMember',
-        {'id': id},
-      );
+      caller.callServerEndpoint<_i6.Member?>('admin', 'getMember', {'id': id});
 
-  _i3.Future<void> deleteUser(_i2.UuidValue memberId) =>
-      caller.callServerEndpoint<void>(
-        'admin',
-        'deleteUser',
-        {'memberId': memberId},
-      );
+  _i3.Future<void> deleteUser(_i2.UuidValue memberId) => caller
+      .callServerEndpoint<void>('admin', 'deleteUser', {'memberId': memberId});
 
   _i3.Future<List<_i7.NotificationDelivery>> getNotificationDeliveries({
     required int limit,
@@ -385,26 +325,14 @@ class EndpointAdmin extends _i2.EndpointRef {
   }) => caller.callServerEndpoint<List<_i7.NotificationDelivery>>(
     'admin',
     'getNotificationDeliveries',
-    {
-      'limit': limit,
-      'offset': offset,
-      'statusFilter': statusFilter,
-    },
+    {'limit': limit, 'offset': offset, 'statusFilter': statusFilter},
   );
 
-  _i3.Future<void> clearNotificationDeliveries() =>
-      caller.callServerEndpoint<void>(
-        'admin',
-        'clearNotificationDeliveries',
-        {},
-      );
+  _i3.Future<void> clearNotificationDeliveries() => caller
+      .callServerEndpoint<void>('admin', 'clearNotificationDeliveries', {});
 
   _i3.Future<void> retryFailedNotifications() =>
-      caller.callServerEndpoint<void>(
-        'admin',
-        'retryFailedNotifications',
-        {},
-      );
+      caller.callServerEndpoint<void>('admin', 'retryFailedNotifications', {});
 }
 
 /// {@category Endpoint}
@@ -425,36 +353,20 @@ class EndpointEvent extends _i2.EndpointRef {
     _i8.Event event, {
     List<_i2.UuidValue>? additionalManagerIds,
     required bool notifyNewEvent,
-  }) => caller.callServerEndpoint<_i8.Event>(
-    'event',
-    'createEvent',
-    {
-      'event': event,
-      'additionalManagerIds': additionalManagerIds,
-      'notifyNewEvent': notifyNewEvent,
-    },
-  );
+  }) => caller.callServerEndpoint<_i8.Event>('event', 'createEvent', {
+    'event': event,
+    'additionalManagerIds': additionalManagerIds,
+    'notifyNewEvent': notifyNewEvent,
+  });
 
   _i3.Future<_i8.Event> getEvent(_i2.UuidValue id) =>
-      caller.callServerEndpoint<_i8.Event>(
-        'event',
-        'getEvent',
-        {'id': id},
-      );
+      caller.callServerEndpoint<_i8.Event>('event', 'getEvent', {'id': id});
 
-  _i3.Future<_i8.Event> updateEvent(_i8.Event event) =>
-      caller.callServerEndpoint<_i8.Event>(
-        'event',
-        'updateEvent',
-        {'event': event},
-      );
+  _i3.Future<_i8.Event> updateEvent(_i8.Event event) => caller
+      .callServerEndpoint<_i8.Event>('event', 'updateEvent', {'event': event});
 
   _i3.Future<void> deleteEvent(_i2.UuidValue id) =>
-      caller.callServerEndpoint<void>(
-        'event',
-        'deleteEvent',
-        {'id': id},
-      );
+      caller.callServerEndpoint<void>('event', 'deleteEvent', {'id': id});
 
   _i3.Future<List<_i8.Event>> listEvents({
     _i2.UuidValue? sectionId,
@@ -462,17 +374,13 @@ class EndpointEvent extends _i2.EndpointRef {
     DateTime? endTime,
     required bool onlyMyEvents,
     DateTime? sinceLastUpdateTime,
-  }) => caller.callServerEndpoint<List<_i8.Event>>(
-    'event',
-    'listEvents',
-    {
-      'sectionId': sectionId,
-      'startTime': startTime,
-      'endTime': endTime,
-      'onlyMyEvents': onlyMyEvents,
-      'sinceLastUpdateTime': sinceLastUpdateTime,
-    },
-  );
+  }) => caller.callServerEndpoint<List<_i8.Event>>('event', 'listEvents', {
+    'sectionId': sectionId,
+    'startTime': startTime,
+    'endTime': endTime,
+    'onlyMyEvents': onlyMyEvents,
+    'sinceLastUpdateTime': sinceLastUpdateTime,
+  });
 
   _i3.Future<_i9.EventRegistration> registerForEvent(_i2.UuidValue eventId) =>
       caller.callServerEndpoint<_i9.EventRegistration>(
@@ -498,11 +406,9 @@ class EndpointEventManager extends _i2.EndpointRef {
   );
 
   _i3.Future<void> removeEventManager(_i10.EventManager eventManager) =>
-      caller.callServerEndpoint<void>(
-        'eventManager',
-        'removeEventManager',
-        {'eventManager': eventManager},
-      );
+      caller.callServerEndpoint<void>('eventManager', 'removeEventManager', {
+        'eventManager': eventManager,
+      });
 
   /// Add a member to an event on behalf of an event manager.
   /// The calling user must be an event manager for this event.
@@ -512,20 +418,15 @@ class EndpointEventManager extends _i2.EndpointRef {
   ) => caller.callServerEndpoint<_i9.EventRegistration>(
     'eventManager',
     'addMemberToEvent',
-    {
-      'eventId': eventId,
-      'memberId': memberId,
-    },
+    {'eventId': eventId, 'memberId': memberId},
   );
 
   /// Remove a member from an event on behalf of an event manager.
   /// The calling user must be an event manager for the related event.
   _i3.Future<void> removeMemberFromEvent(_i2.UuidValue registrationId) =>
-      caller.callServerEndpoint<void>(
-        'eventManager',
-        'removeMemberFromEvent',
-        {'registrationId': registrationId},
-      );
+      caller.callServerEndpoint<void>('eventManager', 'removeMemberFromEvent', {
+        'registrationId': registrationId,
+      });
 
   _i3.Future<List<_i10.EventManager>> listEventManagers(
     _i2.UuidValue eventId,
@@ -603,12 +504,8 @@ class EndpointEventTemplate extends _i2.EndpointRef {
       );
 
   /// Deletes an event template. Requires Admin scope.
-  _i3.Future<void> deleteTemplate(_i2.UuidValue id) =>
-      caller.callServerEndpoint<void>(
-        'eventTemplate',
-        'deleteTemplate',
-        {'id': id},
-      );
+  _i3.Future<void> deleteTemplate(_i2.UuidValue id) => caller
+      .callServerEndpoint<void>('eventTemplate', 'deleteTemplate', {'id': id});
 }
 
 /// {@category Endpoint}
@@ -619,11 +516,7 @@ class EndpointMember extends _i2.EndpointRef {
   String get name => 'member';
 
   _i3.Future<_i6.Member?> getCurrentMember() =>
-      caller.callServerEndpoint<_i6.Member?>(
-        'member',
-        'getCurrentMember',
-        {},
-      );
+      caller.callServerEndpoint<_i6.Member?>('member', 'getCurrentMember', {});
 
   /// Create a new member.
   ///
@@ -631,11 +524,9 @@ class EndpointMember extends _i2.EndpointRef {
   /// - Sets `createdAt` to now.
   /// - Inserts the member row and invalidates the member cache.
   _i3.Future<_i6.Member> createMember(_i6.Member member) =>
-      caller.callServerEndpoint<_i6.Member>(
-        'member',
-        'createMember',
-        {'member': member},
-      );
+      caller.callServerEndpoint<_i6.Member>('member', 'createMember', {
+        'member': member,
+      });
 
   _i3.Future<_i12.SectionMembership> addMemberToSection(
     _i12.SectionMembership membership,
@@ -646,18 +537,12 @@ class EndpointMember extends _i2.EndpointRef {
   );
 
   _i3.Future<void> removeMemberFromSection(_i12.SectionMembership membership) =>
-      caller.callServerEndpoint<void>(
-        'member',
-        'removeMemberFromSection',
-        {'membership': membership},
-      );
+      caller.callServerEndpoint<void>('member', 'removeMemberFromSection', {
+        'membership': membership,
+      });
 
   _i3.Future<_i6.Member?> getMember(_i2.UuidValue id) =>
-      caller.callServerEndpoint<_i6.Member?>(
-        'member',
-        'getMember',
-        {'id': id},
-      );
+      caller.callServerEndpoint<_i6.Member?>('member', 'getMember', {'id': id});
 
   /// Return a list of all sections the member belongs to.
   _i3.Future<List<_i12.SectionMembership>> getMemberSectionMemberships(
@@ -669,19 +554,13 @@ class EndpointMember extends _i2.EndpointRef {
   );
 
   _i3.Future<_i6.Member> updateMember(_i6.Member member) =>
-      caller.callServerEndpoint<_i6.Member>(
-        'member',
-        'updateMember',
-        {'member': member},
-      );
+      caller.callServerEndpoint<_i6.Member>('member', 'updateMember', {
+        'member': member,
+      });
 
   /// Mark the current member's waiver as signed today.
   _i3.Future<_i6.Member> acceptWaiver() =>
-      caller.callServerEndpoint<_i6.Member>(
-        'member',
-        'acceptWaiver',
-        {},
-      );
+      caller.callServerEndpoint<_i6.Member>('member', 'acceptWaiver', {});
 
   /// Returns members for a section, or all members the caller has access to
   /// if [sectionId] is null.
@@ -755,32 +634,22 @@ class EndpointMember extends _i2.EndpointRef {
   ) => caller.callServerEndpoint<_i12.SectionMembership>(
     'member',
     'updateMemberScopes',
-    {
-      'memberId': memberId,
-      'sectionId': sectionId,
-      'newScopes': newScopes,
-    },
+    {'memberId': memberId, 'sectionId': sectionId, 'newScopes': newScopes},
   );
 
   /// Atomic registration: creates a Member profile and multiple Section memberships.
   _i3.Future<_i6.Member> registerMember(
     _i6.Member member,
     List<_i2.UuidValue> sectionIds,
-  ) => caller.callServerEndpoint<_i6.Member>(
-    'member',
-    'registerMember',
-    {
-      'member': member,
-      'sectionIds': sectionIds,
-    },
-  );
+  ) => caller.callServerEndpoint<_i6.Member>('member', 'registerMember', {
+    'member': member,
+    'sectionIds': sectionIds,
+  });
 
   _i3.Future<void> setMemberProfileUrl(String imageUrl) =>
-      caller.callServerEndpoint<void>(
-        'member',
-        'setMemberProfileUrl',
-        {'imageUrl': imageUrl},
-      );
+      caller.callServerEndpoint<void>('member', 'setMemberProfileUrl', {
+        'imageUrl': imageUrl,
+      });
 }
 
 /// {@category Endpoint}
@@ -796,25 +665,17 @@ class EndpointNotification extends _i2.EndpointRef {
   }) => caller.callServerEndpoint<List<_i13.UserNotification>>(
     'notification',
     'getMyFeed',
-    {
-      'limit': limit,
-      'offset': offset,
-    },
+    {'limit': limit, 'offset': offset},
   );
 
   /// Delete all the notifications for the current user
-  _i3.Future<void> deleteAll() => caller.callServerEndpoint<void>(
-    'notification',
-    'deleteAll',
-    {},
-  );
+  _i3.Future<void> deleteAll() =>
+      caller.callServerEndpoint<void>('notification', 'deleteAll', {});
 
   _i3.Future<bool> markAsRead(_i2.UuidValue userNotificationId) =>
-      caller.callServerEndpoint<bool>(
-        'notification',
-        'markAsRead',
-        {'userNotificationId': userNotificationId},
-      );
+      caller.callServerEndpoint<bool>('notification', 'markAsRead', {
+        'userNotificationId': userNotificationId,
+      });
 
   _i3.Future<_i14.UserNotificationPreference> getMyPreferences() =>
       caller.callServerEndpoint<_i14.UserNotificationPreference>(
@@ -831,17 +692,11 @@ class EndpointNotification extends _i2.EndpointRef {
     {'preference': preference},
   );
 
-  _i3.Future<void> registerFcmToken(
-    String token, {
-    String? deviceId,
-  }) => caller.callServerEndpoint<void>(
-    'notification',
-    'registerFcmToken',
-    {
-      'token': token,
-      'deviceId': deviceId,
-    },
-  );
+  _i3.Future<void> registerFcmToken(String token, {String? deviceId}) =>
+      caller.callServerEndpoint<void>('notification', 'registerFcmToken', {
+        'token': token,
+        'deviceId': deviceId,
+      });
 }
 
 /// {@category Endpoint}
@@ -859,11 +714,7 @@ class EndpointRegistration extends _i2.EndpointRef {
   }) => caller.callServerEndpoint<_i9.EventRegistration>(
     'registration',
     'updateRegistrationStatus',
-    {
-      'registrationId': registrationId,
-      'newStatus': newStatus,
-      'notes': notes,
-    },
+    {'registrationId': registrationId, 'newStatus': newStatus, 'notes': notes},
   );
 
   _i3.Future<_i9.EventRegistration> registerForEvent(
@@ -875,11 +726,9 @@ class EndpointRegistration extends _i2.EndpointRef {
   );
 
   _i3.Future<void> cancelRegistration(_i2.UuidValue registrationId) =>
-      caller.callServerEndpoint<void>(
-        'registration',
-        'cancelRegistration',
-        {'registrationId': registrationId},
-      );
+      caller.callServerEndpoint<void>('registration', 'cancelRegistration', {
+        'registrationId': registrationId,
+      });
 
   _i3.Future<List<_i9.EventRegistration>> getRegistrationsForEvent(
     _i2.UuidValue eventId,
@@ -897,19 +746,11 @@ class EndpointSection extends _i2.EndpointRef {
   @override
   String get name => 'section';
 
-  _i3.Future<_i5.Section?> getSection(_i2.UuidValue id) =>
-      caller.callServerEndpoint<_i5.Section?>(
-        'section',
-        'getSection',
-        {'id': id},
-      );
+  _i3.Future<_i5.Section?> getSection(_i2.UuidValue id) => caller
+      .callServerEndpoint<_i5.Section?>('section', 'getSection', {'id': id});
 
-  _i3.Future<List<_i5.Section>> listSections() =>
-      caller.callServerEndpoint<List<_i5.Section>>(
-        'section',
-        'listSections',
-        {},
-      );
+  _i3.Future<List<_i5.Section>> listSections() => caller
+      .callServerEndpoint<List<_i5.Section>>('section', 'listSections', {});
 
   _i3.Future<List<_i5.Section>> getSectionsForCurrentUser() =>
       caller.callServerEndpoint<List<_i5.Section>>(
@@ -967,11 +808,7 @@ class EndpointUserProfile extends _i4.EndpointUserProfileEditBase {
   /// Returns the user profile of the current user.
   @override
   _i3.Future<_i4.UserProfileModel> get() =>
-      caller.callServerEndpoint<_i4.UserProfileModel>(
-        'userProfile',
-        'get',
-        {},
-      );
+      caller.callServerEndpoint<_i4.UserProfileModel>('userProfile', 'get', {});
 }
 
 class Modules {
@@ -989,18 +826,9 @@ class Client extends _i2.ServerpodClientShared {
   Client(
     String host, {
     dynamic securityContext,
-    @Deprecated(
-      'Use authKeyProvider instead. This will be removed in future releases.',
-    )
-    super.authenticationKeyManager,
     Duration? streamingConnectionTimeout,
     Duration? connectionTimeout,
-    Function(
-      _i2.MethodCallContext,
-      Object,
-      StackTrace,
-    )?
-    onFailedCall,
+    Function(_i2.MethodCallContext, Object, StackTrace)? onFailedCall,
     Function(_i2.MethodCallContext)? onSucceededCall,
     bool? disconnectStreamsOnLostInternetConnection,
     _i17.Client? httpClientOverride,

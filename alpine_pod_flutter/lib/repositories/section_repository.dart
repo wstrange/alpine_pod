@@ -8,43 +8,56 @@ final _log = Logger('SectionRepository');
 final sectionRepository = SectionRepository();
 
 class SectionRepository {
-  /// Gets all sections from local SQLite cache, or syncs from server if online.
+  /// Gets all sections from local SQLite cache, or fetches from server if cache is bypassed.
   Future<List<Section>> listSections() async {
-    try {
-      final cachedSections = await Section.db.find(
-        dbSession,
-        orderBy: (t) => t.name,
-      );
-      if (cachedSections.isNotEmpty || !isOnlineSignal.value) {
-        return cachedSections;
+    if (useClientCacheSignal.value) {
+      try {
+        final cachedSections = await Section.db.find(
+          dbSession,
+          orderBy: (t) => t.name,
+        );
+        if (cachedSections.isNotEmpty || !isOnlineSignal.value) {
+          return cachedSections;
+        }
+      } catch (e) {
+        _log.warning('Failed to load sections from local cache: $e');
       }
-    } catch (e) {
-      _log.warning('Failed to load sections from local cache: $e');
-    }
 
-    if (isOnlineSignal.value) {
-      await syncService.syncSectionsAndMemberships();
-      return await Section.db.find(dbSession, orderBy: (t) => t.name);
+      if (isOnlineSignal.value) {
+        await syncService.syncSectionsAndMemberships();
+        return await Section.db.find(dbSession, orderBy: (t) => t.name);
+      }
+    } else {
+      if (isOnlineSignal.value) {
+        try {
+          return await client.section.listSections();
+        } catch (e) {
+          _log.warning('Failed to fetch sections directly from server: $e');
+        }
+      }
     }
     return [];
   }
 
   /// Gets section membership for a specific section ID from local cache or server.
   Future<SectionMembership?> getMySectionMembership(UuidValue sectionId) async {
-    try {
-      final member = currentMemberSignal.value;
-      if (member != null) {
-        final membership = await SectionMembership.db.findFirstRow(
-          dbSession,
-          where: (t) =>
-              t.memberId.equals(member.id) & t.sectionId.equals(sectionId),
-        );
-        if (membership != null || !isOnlineSignal.value) {
-          return membership;
+    if (useClientCacheSignal.value) {
+      try {
+        final member = currentMemberSignal.value;
+        if (member != null) {
+          final membership = await SectionMembership.db.findFirstRow(
+            dbSession,
+            where: (t) =>
+                t.memberId.equals(member.id) & t.sectionId.equals(sectionId),
+            include: SectionMembership.include(section: Section.include()),
+          );
+          if (membership != null || !isOnlineSignal.value) {
+            return membership;
+          }
         }
+      } catch (e) {
+        _log.warning('Failed to load my section membership from cache: $e');
       }
-    } catch (e) {
-      _log.warning('Failed to load my section membership from cache: $e');
     }
 
     if (isOnlineSignal.value) {

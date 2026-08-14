@@ -236,10 +236,7 @@ abstract class EventRegistration
     _i3.MemberInclude? member,
     _i4.EventInclude? event,
   }) {
-    return EventRegistrationInclude._(
-      member: member,
-      event: event,
-    );
+    return EventRegistrationInclude._(member: member, event: event);
   }
 
   static EventRegistrationIncludeList includeList({
@@ -369,162 +366,79 @@ class EventRegistrationUpdateTable
   EventRegistrationUpdateTable(super.table);
 
   _i1.ColumnValue<_i2.UuidValue, _i2.UuidValue> memberId(_i2.UuidValue value) =>
-      _i1.ColumnValue(
-        table.memberId,
-        value,
-      );
+      _i1.ColumnValue(table.memberId, value);
 
   _i1.ColumnValue<_i2.UuidValue, _i2.UuidValue> eventId(_i2.UuidValue value) =>
-      _i1.ColumnValue(
-        table.eventId,
-        value,
-      );
+      _i1.ColumnValue(table.eventId, value);
 
   _i1.ColumnValue<_i5.RegistrationStatus, _i5.RegistrationStatus>
-  registrationStatus(_i5.RegistrationStatus value) => _i1.ColumnValue(
-    table.registrationStatus,
-    value,
-  );
+  registrationStatus(_i5.RegistrationStatus value) =>
+      _i1.ColumnValue(table.registrationStatus, value);
 
   _i1.ColumnValue<DateTime, DateTime> registrationDate(DateTime value) =>
-      _i1.ColumnValue(
-        table.registrationDate,
-        value,
-      );
+      _i1.ColumnValue(table.registrationDate, value);
 
   _i1.ColumnValue<String, String> carPoolPreference(String? value) =>
-      _i1.ColumnValue(
-        table.carPoolPreference,
-        value,
-      );
+      _i1.ColumnValue(table.carPoolPreference, value);
 
-  _i1.ColumnValue<int, int> additionalGuests(int value) => _i1.ColumnValue(
-    table.additionalGuests,
-    value,
-  );
+  _i1.ColumnValue<int, int> additionalGuests(int value) =>
+      _i1.ColumnValue(table.additionalGuests, value);
 
-  _i1.ColumnValue<bool, bool> waiverAccepted(bool value) => _i1.ColumnValue(
-    table.waiverAccepted,
-    value,
-  );
+  _i1.ColumnValue<bool, bool> waiverAccepted(bool value) =>
+      _i1.ColumnValue(table.waiverAccepted, value);
 
   _i1.ColumnValue<String, String> participantNotes(String? value) =>
-      _i1.ColumnValue(
-        table.participantNotes,
-        value,
-      );
+      _i1.ColumnValue(table.participantNotes, value);
 
-  _i1.ColumnValue<int, int> waitlistPosition(int? value) => _i1.ColumnValue(
-    table.waitlistPosition,
-    value,
-  );
+  _i1.ColumnValue<int, int> waitlistPosition(int? value) =>
+      _i1.ColumnValue(table.waitlistPosition, value);
 
   _i1.ColumnValue<DateTime, DateTime> waitlistedAt(DateTime? value) =>
-      _i1.ColumnValue(
-        table.waitlistedAt,
-        value,
-      );
+      _i1.ColumnValue(table.waitlistedAt, value);
 
   _i1.ColumnValue<String, String> paymentStatus(String value) =>
-      _i1.ColumnValue(
-        table.paymentStatus,
-        value,
-      );
+      _i1.ColumnValue(table.paymentStatus, value);
 
   _i1.ColumnValue<double, double> paymentAmount(double value) =>
-      _i1.ColumnValue(
-        table.paymentAmount,
-        value,
-      );
+      _i1.ColumnValue(table.paymentAmount, value);
 
   _i1.ColumnValue<DateTime, DateTime> modifiedAt(DateTime value) =>
-      _i1.ColumnValue(
-        table.modifiedAt,
-        value,
-      );
+      _i1.ColumnValue(table.modifiedAt, value);
 
   _i1.ColumnValue<DateTime, DateTime> updatedAt(DateTime value) =>
-      _i1.ColumnValue(
-        table.updatedAt,
-        value,
-      );
+      _i1.ColumnValue(table.updatedAt, value);
 
-  _i1.ColumnValue<bool, bool> noShow(bool value) => _i1.ColumnValue(
-    table.noShow,
-    value,
-  );
+  _i1.ColumnValue<bool, bool> noShow(bool value) =>
+      _i1.ColumnValue(table.noShow, value);
 }
 
 class EventRegistrationTable extends _i1.Table<_i2.UuidValue?> {
   EventRegistrationTable({super.tableRelation})
     : super(tableName: 'event_registrations') {
     updateTable = EventRegistrationUpdateTable(this);
-    memberId = _i1.ColumnUuid(
-      'memberId',
-      this,
-    );
-    eventId = _i1.ColumnUuid(
-      'eventId',
-      this,
-    );
+    memberId = _i1.ColumnUuid('memberId', this);
+    eventId = _i1.ColumnUuid('eventId', this);
     registrationStatus = _i1.ColumnEnum(
       'registrationStatus',
       this,
       _i1.EnumSerialization.byName,
     );
-    registrationDate = _i1.ColumnDateTime(
-      'registrationDate',
-      this,
-    );
-    carPoolPreference = _i1.ColumnString(
-      'carPoolPreference',
-      this,
-    );
+    registrationDate = _i1.ColumnDateTime('registrationDate', this);
+    carPoolPreference = _i1.ColumnString('carPoolPreference', this);
     additionalGuests = _i1.ColumnInt(
       'additionalGuests',
       this,
       hasDefault: true,
     );
-    waiverAccepted = _i1.ColumnBool(
-      'waiverAccepted',
-      this,
-    );
-    participantNotes = _i1.ColumnString(
-      'participantNotes',
-      this,
-    );
-    waitlistPosition = _i1.ColumnInt(
-      'waitlistPosition',
-      this,
-    );
-    waitlistedAt = _i1.ColumnDateTime(
-      'waitlistedAt',
-      this,
-    );
-    paymentStatus = _i1.ColumnString(
-      'paymentStatus',
-      this,
-      hasDefault: true,
-    );
-    paymentAmount = _i1.ColumnDouble(
-      'paymentAmount',
-      this,
-      hasDefault: true,
-    );
-    modifiedAt = _i1.ColumnDateTime(
-      'modifiedAt',
-      this,
-    );
-    updatedAt = _i1.ColumnDateTime(
-      'updatedAt',
-      this,
-      hasDefault: true,
-    );
-    noShow = _i1.ColumnBool(
-      'noShow',
-      this,
-      hasDefault: true,
-    );
+    waiverAccepted = _i1.ColumnBool('waiverAccepted', this);
+    participantNotes = _i1.ColumnString('participantNotes', this);
+    waitlistPosition = _i1.ColumnInt('waitlistPosition', this);
+    waitlistedAt = _i1.ColumnDateTime('waitlistedAt', this);
+    paymentStatus = _i1.ColumnString('paymentStatus', this, hasDefault: true);
+    paymentAmount = _i1.ColumnDouble('paymentAmount', this, hasDefault: true);
+    modifiedAt = _i1.ColumnDateTime('modifiedAt', this);
+    updatedAt = _i1.ColumnDateTime('updatedAt', this, hasDefault: true);
+    noShow = _i1.ColumnBool('noShow', this, hasDefault: true);
   }
 
   late final EventRegistrationUpdateTable updateTable;

@@ -66,7 +66,7 @@ class Protocol extends _i1.DatabaseSerializationManager {
 
   static final Protocol _instance = Protocol._().._registerHostProtocols();
 
-  static final List<_i1.TableDefinition> targetTableDefinitions = [
+  static List<_i1.TableDefinition> get targetTableDefinitions => [
     _i1.TableDefinition(
       name: 'event_managers',
       dartName: 'EventManager',
@@ -888,10 +888,7 @@ class Protocol extends _i1.DatabaseSerializationManager {
   }
 
   @override
-  T deserialize<T>(
-    dynamic data, [
-    Type? t,
-  ]) {
+  T deserialize<T>(dynamic data, [Type? t]) {
     t ??= T;
 
     final dataClassName = getClassNameFromObjectJson(data);
