@@ -4,9 +4,7 @@ import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:alpine_pod_client/alpine_pod_client.dart';
 import '../signals.dart';
 
-class TemplateBrowserDialog extends HookWidget {
-  const TemplateBrowserDialog({super.key});
-
+class const TemplateBrowserDialog({super.key}) extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final templatesFuture = useMemoized(

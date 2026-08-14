@@ -1,19 +1,14 @@
 import 'package:alpine_pod_client/alpine_pod_client.dart';
 import 'package:material_ui/material_ui.dart';
+
 import 'member_avatar.dart';
 import 'member_details_dialog.dart';
 
-class UserListWidget extends StatelessWidget {
+class const UserListWidget({super.key, required this.members, this.shrinkWrap = false, this.physics})
+    extends StatelessWidget {
   final List<Member> members;
   final bool shrinkWrap;
   final ScrollPhysics? physics;
-
-  const UserListWidget({
-    super.key,
-    required this.members,
-    this.shrinkWrap = false,
-    this.physics,
-  });
 
   @override
   Widget build(BuildContext context) {
@@ -28,8 +23,7 @@ class UserListWidget extends StatelessWidget {
       separatorBuilder: (context, index) => const SizedBox(height: 8),
       itemBuilder: (context, index) {
         final member = members[index];
-        final name =
-            member.displayName ?? '${member.firstName} ${member.lastName}';
+        final name = member.displayName ?? '${member.firstName} ${member.lastName}';
 
         return ListTile(
           leading: MemberAvatar(member: member),

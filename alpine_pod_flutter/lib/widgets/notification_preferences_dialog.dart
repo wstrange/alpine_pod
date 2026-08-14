@@ -3,9 +3,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import '../signals.dart';
 
-class NotificationPreferencesDialog extends HookWidget {
-  const NotificationPreferencesDialog({super.key});
-
+class const NotificationPreferencesDialog({super.key}) extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final snapshot = useFuture(

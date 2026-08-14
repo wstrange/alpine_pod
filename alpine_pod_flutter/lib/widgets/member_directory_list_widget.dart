@@ -1,11 +1,21 @@
 import 'package:alpine_pod_client/alpine_pod_client.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:signals_flutter/signals_flutter.dart';
+
 import '../signals.dart';
 import 'member_avatar.dart';
 import 'member_details_dialog.dart';
 
-class MemberDirectoryListWidget extends StatelessWidget {
+class const MemberDirectoryListWidget({
+  super.key,
+  required this.memberships,
+  this.shrinkWrap = false,
+  this.physics,
+  this.scrollController,
+  this.hasMore = false,
+  this.isLoadingMore = false,
+  this.onScopesUpdated,
+}) extends StatelessWidget {
   final List<SectionMembership> memberships;
   final bool shrinkWrap;
   final ScrollPhysics? physics;
@@ -13,17 +23,6 @@ class MemberDirectoryListWidget extends StatelessWidget {
   final bool hasMore;
   final bool isLoadingMore;
   final Function(UuidValue memberId, Set<String> newScopes)? onScopesUpdated;
-
-  const MemberDirectoryListWidget({
-    super.key,
-    required this.memberships,
-    this.shrinkWrap = false,
-    this.physics,
-    this.scrollController,
-    this.hasMore = false,
-    this.isLoadingMore = false,
-    this.onScopesUpdated,
-  });
 
   @override
   Widget build(BuildContext context) {
@@ -55,8 +54,7 @@ class MemberDirectoryListWidget extends StatelessWidget {
             final member = membership.member;
             if (member == null) return const SizedBox();
 
-            final name =
-                member.displayName ?? '${member.firstName} ${member.lastName}';
+            final name = member.displayName ?? '${member.firstName} ${member.lastName}';
 
             // Prettify scopes for subtitle
             final scopeStr = membership.scopes.join(', ');
@@ -98,10 +96,7 @@ class MemberDirectoryListWidget extends StatelessWidget {
     return isGlobalAdminSignal.value || isSectionManagerSignal.value;
   }
 
-  void _showEditScopesDialog(
-    BuildContext context,
-    SectionMembership membership,
-  ) {
+  void _showEditScopesDialog(BuildContext context, SectionMembership membership) {
     final member = membership.member;
     if (member == null) return;
 
@@ -161,10 +156,7 @@ class MemberDirectoryListWidget extends StatelessWidget {
                 ],
               ),
               actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: const Text('Cancel'),
-                ),
+                TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Cancel')),
                 TextButton(
                   onPressed: () {
                     Navigator.of(context).pop();

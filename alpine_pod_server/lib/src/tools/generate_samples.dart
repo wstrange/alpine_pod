@@ -19,10 +19,8 @@ class SampleDataResult {
   int eventsInserted = 0;
 }
 
-class GenerateSampleData {
-  GenerateSampleData(this.session, {Faker? faker, Random? random})
-    : faker = faker ?? Faker(),
-      _rnd = random ?? Random();
+class GenerateSampleData(this.session, {Faker? faker, Random? random}) {
+  this : faker = faker ?? Faker(), _rnd = random ?? Random();
 
   final Session session;
   final Faker faker;
@@ -37,17 +35,11 @@ class GenerateSampleData {
     } catch (_) {
       Serverpod.instance.initializeAuthServices(
         identityProviderBuilders: [
-          EmailIdpConfig(
-            secretHashPepper:
-                Serverpod.instance.getPassword('emailSecretHashPepper') ??
-                'pepper',
-          ),
+          EmailIdpConfig(secretHashPepper: Serverpod.instance.getPassword('emailSecretHashPepper') ?? 'pepper'),
         ],
         tokenManagerBuilders: [
           JwtConfig(
-            refreshTokenHashPepper:
-                Serverpod.instance.getPassword('jwtRefreshTokenHashPepper') ??
-                'pepper',
+            refreshTokenHashPepper: Serverpod.instance.getPassword('jwtRefreshTokenHashPepper') ?? 'pepper',
             algorithm: JwtAlgorithm.hmacSha512(
               SecretKey(
                 Serverpod.instance.getPassword('jwtHmacSha512PrivateKey') ??
@@ -65,21 +57,12 @@ class GenerateSampleData {
     // 2. Fetch sections
     final sections = await Section.db.find(session);
     if (sections.isEmpty) {
-      throw Exception(
-        'No sections found. Load static data first before generating sample data.',
-      );
+      throw Exception('No sections found. Load static data first before generating sample data.');
     }
 
-    final nationalSection = sections.firstWhere(
-      (s) => s.name == 'National',
-      orElse: () => sections.first,
-    );
-    final nonNationalSections = sections
-        .where((s) => s.name != 'National')
-        .toList();
-    final targetSections = nonNationalSections.isNotEmpty
-        ? nonNationalSections
-        : sections;
+    final nationalSection = sections.firstWhere((s) => s.name == 'National', orElse: () => sections.first);
+    final nonNationalSections = sections.where((s) => s.name != 'National').toList();
+    final targetSections = nonNationalSections.isNotEmpty ? nonNationalSections : sections;
 
     // 3. Create Sample Users
     final createdUserIds = <UuidValue>[];
@@ -89,29 +72,18 @@ class GenerateSampleData {
       final email = 'test$i@acc.ca';
 
       // Check if user already exists
-      final existingMember = await Member.db.findFirstRow(
-        session,
-        where: (t) => t.email.equals(email),
-      );
+      final existingMember = await Member.db.findFirstRow(session, where: (t) => t.email.equals(email));
       if (existingMember != null) {
         createdUserIds.add(existingMember.id);
         createdMembers.add(existingMember);
         continue;
       }
 
-      final au = await AuthServices.instance.authUsers.create(
-        session,
-        scopes: {},
-      );
+      final au = await AuthServices.instance.authUsers.create(session, scopes: {});
       createdUserIds.add(au.id);
 
       final emailIdp = AuthServices.instance.emailIdp;
-      await emailIdp.admin.createEmailAuthentication(
-        session,
-        authUserId: au.id,
-        email: email,
-        password: 'Passw0rd',
-      );
+      await emailIdp.admin.createEmailAuthentication(session, authUserId: au.id, email: email, password: 'Passw0rd');
 
       final fn = faker.person.firstName();
       final ln = faker.person.lastName();
@@ -136,16 +108,14 @@ class GenerateSampleData {
       result.usersInserted++;
 
       // Assign to National section + random regular section
-      final assignedSection =
-          targetSections[_rnd.nextInt(targetSections.length)];
+      final assignedSection = targetSections[_rnd.nextInt(targetSections.length)];
       for (final sec in [nationalSection, assignedSection]) {
         final secId = sec.id;
         if (secId == null) continue;
 
         final existingSm = await SectionMembership.db.findFirstRow(
           session,
-          where: (t) =>
-              t.memberId.equals(member.id) & t.sectionId.equals(secId),
+          where: (t) => t.memberId.equals(member.id) & t.sectionId.equals(secId),
         );
         if (existingSm == null) {
           await SectionMembership.db.insertRow(
@@ -153,10 +123,7 @@ class GenerateSampleData {
             SectionMembership(
               memberId: member.id,
               sectionId: secId,
-              scopes: {
-                CustomScope.sectionManager.name!,
-                CustomScope.member.name!,
-              },
+              scopes: {CustomScope.sectionManager.name!, CustomScope.member.name!},
               syncedAt: DateTime.now(),
             ),
           );
@@ -171,9 +138,7 @@ class GenerateSampleData {
 
     // 4. Create Sample Events
     final eventTypes = ['Ski', 'Hike', 'Climb', 'Social'];
-    final sampleAuthors = createdMembers.isNotEmpty
-        ? createdMembers
-        : await Member.db.find(session);
+    final sampleAuthors = createdMembers.isNotEmpty ? createdMembers : await Member.db.find(session);
 
     for (var i = 0; i < options.sampleEvents; i++) {
       final section = targetSections[_rnd.nextInt(targetSections.length)];
@@ -181,9 +146,7 @@ class GenerateSampleData {
       if (sectionId == null) continue;
 
       final directRegistration = _rnd.nextBool();
-      final author = sampleAuthors.isNotEmpty
-          ? sampleAuthors[_rnd.nextInt(sampleAuthors.length)]
-          : null;
+      final author = sampleAuthors.isNotEmpty ? sampleAuthors[_rnd.nextInt(sampleAuthors.length)] : null;
 
       final start = DateTime.now().add(Duration(days: i + 1));
       final startTime = start.copyWith(hour: 8, minute: 0, second: 0);
@@ -192,8 +155,7 @@ class GenerateSampleData {
 
       final event = Event(
         title: 'Sample Event #${i + 1} (${section.name})',
-        description:
-            'Sample $eventType event generated for testing and demonstration.',
+        description: 'Sample $eventType event generated for testing and demonstration.',
         type: eventType,
         startTime: startTime,
         endTime: endTime,
@@ -213,11 +175,7 @@ class GenerateSampleData {
       if (author != null) {
         await EventManager.db.insertRow(
           session,
-          EventManager(
-            eventId: createdEvent.id,
-            memberId: author.id,
-            assignedAt: DateTime.now(),
-          ),
+          EventManager(eventId: createdEvent.id, memberId: author.id, assignedAt: DateTime.now()),
         );
       }
     }
@@ -227,26 +185,15 @@ class GenerateSampleData {
 
   Future<void> _createAdminUser() async {
     const adminEmail = 'admin@acc.ca';
-    final existingMember = await Member.db.findFirstRow(
-      session,
-      where: (t) => t.email.equals(adminEmail),
-    );
+    final existingMember = await Member.db.findFirstRow(session, where: (t) => t.email.equals(adminEmail));
     if (existingMember != null) return;
 
     final emailIdp = AuthServices.instance.emailIdp;
     final admin = emailIdp.admin;
 
-    final auModel = await AuthServices.instance.authUsers.create(
-      session,
-      scopes: {Scope.admin, CustomScope.admin},
-    );
+    final auModel = await AuthServices.instance.authUsers.create(session, scopes: {Scope.admin, CustomScope.admin});
 
-    await admin.createEmailAuthentication(
-      session,
-      authUserId: auModel.id,
-      email: adminEmail,
-      password: 'Passw0rd',
-    );
+    await admin.createEmailAuthentication(session, authUserId: auModel.id, email: adminEmail, password: 'Passw0rd');
 
     final adminMember = await Member.db.insertRow(
       session,
@@ -266,10 +213,7 @@ class GenerateSampleData {
     );
 
     final sections = await Section.db.find(session);
-    final national = sections.firstWhere(
-      (s) => s.name == 'National',
-      orElse: () => sections.first,
-    );
+    final national = sections.firstWhere((s) => s.name == 'National', orElse: () => sections.first);
 
     if (national.id != null) {
       await SectionMembership.db.insertRow(
@@ -286,14 +230,8 @@ class GenerateSampleData {
     await _enableAllNotificationsForUser(session, auModel.id);
   }
 
-  Future<void> _enableAllNotificationsForUser(
-    Session session,
-    UuidValue userId,
-  ) async {
-    final existing = await UserNotificationPreference.db.findFirstRow(
-      session,
-      where: (t) => t.id.equals(userId),
-    );
+  Future<void> _enableAllNotificationsForUser(Session session, UuidValue userId) async {
+    final existing = await UserNotificationPreference.db.findFirstRow(session, where: (t) => t.id.equals(userId));
     final preference = UserNotificationPreference(
       id: userId,
       newEvents: true,
