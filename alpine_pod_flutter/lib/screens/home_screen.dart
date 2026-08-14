@@ -5,8 +5,7 @@ import 'package:signals_flutter/signals_flutter.dart';
 import '../signals.dart';
 import '../widgets/calendar_view.dart';
 
-class HomeScreen extends SignalWidget {
-  const HomeScreen({super.key});
+class const HomeScreen({super.key}) extends SignalWidget {
 
   @override
   Widget build(BuildContext context) {

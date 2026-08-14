@@ -2,11 +2,8 @@ import 'package:alpine_pod_client/alpine_pod_client.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:serverpod_auth_idp_flutter/serverpod_auth_idp_flutter.dart';
 
-class SignInScreen extends StatelessWidget {
-  final Client client;
-
-  const SignInScreen({required this.client, super.key});
-
+class const SignInScreen({required final Client client, super.key})
+    extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,8 +45,7 @@ class SignInScreen extends StatelessWidget {
                     client: client,
                     startScreen: EmailFlowScreen.login,
                   ),
-                  // googleSignInWidget: GoogleSignInWidget(
-                  //   client: client,
+                  // googleSignInWidget: GoogleSignInWidget(\n  //   client: client,
                   // ),
                 ),
               ],

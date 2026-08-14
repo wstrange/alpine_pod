@@ -5,8 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../router.dart' show resetRouterBootstrap;
 import '../signals.dart';
 
-class WaiverScreen extends StatefulWidget {
-  const WaiverScreen({super.key});
+class const WaiverScreen({super.key}) extends StatefulWidget {
 
   @override
   State<WaiverScreen> createState() => _WaiverScreenState();

@@ -6,8 +6,7 @@ import 'package:signals_hooks/signals_hooks.dart';
 import '../signals.dart';
 
 /// The main admin dashboard. Only accessible to users with the 'admin' scope.
-class AdminHomeScreen extends HookWidget {
-  const AdminHomeScreen({super.key});
+class const AdminHomeScreen({super.key}) extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
@@ -74,8 +73,7 @@ class AdminHomeScreen extends HookWidget {
 // Sections Tab
 // ---------------------------------------------------------------------------
 
-class _SectionsTab extends HookWidget {
-  const _SectionsTab();
+class const _SectionsTab() extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
@@ -150,12 +148,11 @@ class _SectionsTab extends HookWidget {
   }
 }
 
-class _SectionCard extends StatelessWidget {
-  const _SectionCard({required this.section, required this.onEdit, required this.onDelete});
-
-  final Section section;
-  final VoidCallback onEdit;
-  final VoidCallback onDelete;
+class const _SectionCard({
+  required final Section section,
+  required final VoidCallback onEdit,
+  required final VoidCallback onDelete,
+}) extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
@@ -211,11 +208,10 @@ class _SectionCard extends StatelessWidget {
 }
 
 /// Create / Edit section dialog — pure HookWidget, no StatefulWidget needed.
-class _SectionDialog extends HookWidget {
-  const _SectionDialog({this.section, required this.onSaved});
-
-  final Section? section;
-  final VoidCallback onSaved;
+class const _SectionDialog({
+  final Section? section,
+  required final VoidCallback onSaved,
+}) extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
@@ -346,8 +342,7 @@ class _SectionDialog extends HookWidget {
 // Members Tab
 // ---------------------------------------------------------------------------
 
-class _MembersTab extends HookWidget {
-  const _MembersTab();
+class const _MembersTab() extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
@@ -516,11 +511,10 @@ class _MembersTab extends HookWidget {
   }
 }
 
-class _MemberCard extends StatelessWidget {
-  const _MemberCard({required this.member, required this.onDelete});
-
-  final Member member;
-  final VoidCallback onDelete;
+class const _MemberCard({
+  required final Member member,
+  required final VoidCallback onDelete,
+}) extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
@@ -577,8 +571,7 @@ class _MemberCard extends StatelessWidget {
 // Notifications Tab
 // ---------------------------------------------------------------------------
 
-class _NotificationsTab extends HookWidget {
-  const _NotificationsTab();
+class const _NotificationsTab() extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
@@ -694,12 +687,11 @@ class _NotificationsTab extends HookWidget {
   }
 }
 
-class _StatusFilterChip extends StatelessWidget {
-  const _StatusFilterChip({required this.label, required this.selected, required this.onSelected});
-
-  final String label;
-  final bool selected;
-  final VoidCallback onSelected;
+class const _StatusFilterChip({
+  required final String label,
+  required final bool selected,
+  required final VoidCallback onSelected,
+}) extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
@@ -716,10 +708,9 @@ class _StatusFilterChip extends StatelessWidget {
   }
 }
 
-class _NotificationDeliveryCard extends StatelessWidget {
-  const _NotificationDeliveryCard({required this.delivery});
-
-  final NotificationDelivery delivery;
+class const _NotificationDeliveryCard({
+  required final NotificationDelivery delivery,
+}) extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
@@ -798,10 +789,7 @@ class _NotificationDeliveryCard extends StatelessWidget {
   }
 }
 
-class _DeliveryStatusBadge extends StatelessWidget {
-  const _DeliveryStatusBadge({required this.status});
-
-  final String status;
+class const _DeliveryStatusBadge({required final String status}) extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
@@ -827,11 +815,10 @@ class _DeliveryStatusBadge extends StatelessWidget {
   }
 }
 
-class _DeliveryMetaChip extends StatelessWidget {
-  const _DeliveryMetaChip({required this.icon, required this.label});
-
-  final IconData icon;
-  final String label;
+class const _DeliveryMetaChip({
+  required final IconData icon,
+  required final String label,
+}) extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
@@ -895,8 +882,7 @@ Future<bool> _showConfirmDialog(BuildContext context, {required String title, re
 // Templates Tab
 // ---------------------------------------------------------------------------
 
-class _TemplatesTab extends HookWidget {
-  const _TemplatesTab();
+class const _TemplatesTab() extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
@@ -970,12 +956,11 @@ class _TemplatesTab extends HookWidget {
   }
 }
 
-class _TemplateCard extends StatelessWidget {
-  const _TemplateCard({required this.template, required this.onEdit, required this.onDelete});
-
-  final EventTemplate template;
-  final VoidCallback onEdit;
-  final VoidCallback onDelete;
+class const _TemplateCard({
+  required final EventTemplate template,
+  required final VoidCallback onEdit,
+  required final VoidCallback onDelete,
+}) extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
@@ -1047,11 +1032,10 @@ class _TemplateCard extends StatelessWidget {
   }
 }
 
-class _TemplateDialog extends HookWidget {
-  const _TemplateDialog({this.template, required this.onSaved});
-
-  final EventTemplate? template;
-  final VoidCallback onSaved;
+class const _TemplateDialog({
+  final EventTemplate? template,
+  required final VoidCallback onSaved,
+}) extends HookWidget {
 
   @override
   Widget build(BuildContext context) {

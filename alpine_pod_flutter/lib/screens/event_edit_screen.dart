@@ -7,17 +7,19 @@ import 'package:signals_flutter/signals_flutter.dart';
 import '../event_types.dart';
 import '../signals.dart';
 import '../util.dart';
+
 import 'package:flutter_hooks/flutter_hooks.dart';
+
 import '../widgets/event_managers_manager.dart';
 import '../widgets/template_browser_dialog.dart';
 
 final log = Logger('EventEditScreen');
 
 class EventEditScreen extends HookWidget {
-  const EventEditScreen({this.eventId, this.event, super.key});
-
   final UuidValue? eventId;
   final Event? event;
+
+  const EventEditScreen({super.key, this.eventId, this.event});
 
   @override
   Widget build(BuildContext context) {
@@ -30,9 +32,7 @@ class EventEditScreen extends HookWidget {
     final maxParticipantsController = useTextEditingController();
 
     final startTime = useState<DateTime>(event?.startTime ?? DateTime.now());
-    final endTime = useState<DateTime>(
-      event?.endTime ?? DateTime.now().add(const Duration(hours: 8)),
-    );
+    final endTime = useState<DateTime>(event?.endTime ?? DateTime.now().add(const Duration(hours: 8)));
     final carpoolTime = useState<DateTime?>(event?.carpoolTime);
     final selectedType = useState<String>(event?.type ?? eventTypes.first);
     final requiresApproval = useState<bool>(event?.requiresApproval ?? true);
@@ -48,10 +48,7 @@ class EventEditScreen extends HookWidget {
     useEffect(() {
       final memberState = currentMemberSignal.value;
       final currentMember = memberState is AsyncData ? memberState : null;
-      if (eventId == null &&
-          event == null &&
-          currentMember != null &&
-          managers.value.isEmpty) {
+      if (eventId == null && event == null && currentMember != null && managers.value.isEmpty) {
         managers.value = [currentMember];
       }
       return null;
@@ -97,10 +94,7 @@ class EventEditScreen extends HookWidget {
 
         // Load managers from the event if they are included
         if (e.eventManagers != null) {
-          managers.value = e.eventManagers!
-              .where((m) => m.member != null)
-              .map((m) => m.member!)
-              .toList();
+          managers.value = e.eventManagers!.where((m) => m.member != null).map((m) => m.member!).toList();
         }
       }
       return null;
@@ -113,8 +107,7 @@ class EventEditScreen extends HookWidget {
       locationController.text = e?.eventLocation ?? '';
       carpoolLocationController.text = e?.carpoolLocation ?? '';
       startTime.value = e?.startTime ?? DateTime.now();
-      endTime.value =
-          e?.endTime ?? DateTime.now().add(const Duration(hours: 8));
+      endTime.value = e?.endTime ?? DateTime.now().add(const Duration(hours: 8));
       carpoolTime.value = e?.carpoolTime;
       minParticipantsController.text = (e?.minimumParticipants ?? 1).toString();
       maxParticipantsController.text = (e?.maxParticipants ?? 8).toString();
@@ -138,9 +131,7 @@ class EventEditScreen extends HookWidget {
         return;
       }
 
-      final locText = locationController.text.trim().isEmpty
-          ? null
-          : locationController.text.trim();
+      final locText = locationController.text.trim().isEmpty ? null : locationController.text.trim();
       final carpoolLocText = carpoolLocationController.text.trim().isEmpty
           ? null
           : carpoolLocationController.text.trim();
@@ -184,16 +175,11 @@ class EventEditScreen extends HookWidget {
         final Event savedEvent;
         if (isCreating) {
           // Pass additional manager IDs (excluding creator who is added by default)
-          final additionalManagerIds = managers.value
-              .where((m) => m.id != currentMember?.id)
-              .map((m) => m.id)
-              .toList();
+          final additionalManagerIds = managers.value.where((m) => m.id != currentMember?.id).map((m) => m.id).toList();
 
           savedEvent = await client.event.createEvent(
             eventToSave,
-            additionalManagerIds: additionalManagerIds.isEmpty
-                ? null
-                : additionalManagerIds,
+            additionalManagerIds: additionalManagerIds.isEmpty ? null : additionalManagerIds,
             notifyNewEvent: true,
           );
         } else {
@@ -201,20 +187,13 @@ class EventEditScreen extends HookWidget {
         }
         currentEventsSignal.refresh();
         if (context.mounted) {
-          final msg = savedEvent.published
-              ? "Published live to site"
-              : "DRAFT: Not visible to other members.";
+          final msg = savedEvent.published ? "Published live to site" : "DRAFT: Not visible to other members.";
           await showDialog(
             context: context,
             builder: (context) => AlertDialog(
               title: const Text('Success'),
               content: Text('Event saved successfully. Event Status: $msg'),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: const Text('OK'),
-                ),
-              ],
+              actions: [TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('OK'))],
             ),
           );
           if (context.mounted) {
@@ -228,12 +207,7 @@ class EventEditScreen extends HookWidget {
             builder: (context) => AlertDialog(
               title: const Text('Error'),
               content: Text('Error saving event: $e'),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: const Text('OK'),
-                ),
-              ],
+              actions: [TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('OK'))],
             ),
           );
         }
@@ -293,10 +267,7 @@ class EventEditScreen extends HookWidget {
                     padding: EdgeInsets.only(left: 4.0),
                     child: Text(
                       'Description',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white70,
-                      ),
+                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white70),
                     ),
                   ),
                   TextButton.icon(
@@ -309,24 +280,13 @@ class EventEditScreen extends HookWidget {
                         final currentText = descriptionController.text;
                         final selection = descriptionController.selection;
                         if (selection.baseOffset < 0) {
-                          descriptionController.text =
-                              currentText +
-                              (currentText.isEmpty ? '' : '\n\n') +
-                              template;
+                          descriptionController.text = currentText + (currentText.isEmpty ? '' : '\n\n') + template;
                         } else {
-                          final newText = currentText.replaceRange(
-                            selection.start,
-                            selection.end,
-                            template,
+                          final newText = currentText.replaceRange(selection.start, selection.end, template);
+                          descriptionController.value = descriptionController.value.copyWith(
+                            text: newText,
+                            selection: TextSelection.collapsed(offset: selection.start + template.length),
                           );
-                          descriptionController.value = descriptionController
-                              .value
-                              .copyWith(
-                                text: newText,
-                                selection: TextSelection.collapsed(
-                                  offset: selection.start + template.length,
-                                ),
-                              );
                         }
                       }
                     },
@@ -337,9 +297,7 @@ class EventEditScreen extends HookWidget {
               ),
               TextFormField(
                 controller: descriptionController,
-                decoration: const InputDecoration(
-                  hintText: 'Enter event description (supports markdown)',
-                ),
+                decoration: const InputDecoration(hintText: 'Enter event description (supports markdown)'),
                 maxLines: 30,
                 minLines: 5,
                 validator: (value) {
@@ -363,10 +321,7 @@ class EventEditScreen extends HookWidget {
                 alignment: Alignment.centerLeft,
                 child: Padding(
                   padding: EdgeInsets.symmetric(vertical: 4),
-                  child: Text(
-                    'Carpool',
-                    style: TextStyle(fontWeight: FontWeight.w600),
-                  ),
+                  child: Text('Carpool', style: TextStyle(fontWeight: FontWeight.w600)),
                 ),
               ),
               TextFormField(
@@ -381,11 +336,7 @@ class EventEditScreen extends HookWidget {
                 contentPadding: EdgeInsets.zero,
                 leading: const Icon(Icons.access_time),
                 title: const Text('Carpool Meet Time'),
-                subtitle: Text(
-                  carpoolTime.value != null
-                      ? eventDateFormat(carpoolTime.value!)
-                      : 'Not set',
-                ),
+                subtitle: Text(carpoolTime.value != null ? eventDateFormat(carpoolTime.value!) : 'Not set'),
                 trailing: carpoolTime.value != null
                     ? IconButton(
                         icon: const Icon(Icons.clear),
@@ -403,18 +354,10 @@ class EventEditScreen extends HookWidget {
                   if (date != null && context.mounted) {
                     final time = await showTimePicker(
                       context: context,
-                      initialTime: TimeOfDay.fromDateTime(
-                        carpoolTime.value ?? startTime.value,
-                      ),
+                      initialTime: TimeOfDay.fromDateTime(carpoolTime.value ?? startTime.value),
                     );
                     if (time != null) {
-                      carpoolTime.value = DateTime(
-                        date.year,
-                        date.month,
-                        date.day,
-                        time.hour,
-                        time.minute,
-                      );
+                      carpoolTime.value = DateTime(date.year, date.month, date.day, time.hour, time.minute);
                     }
                   }
                 },
@@ -423,9 +366,7 @@ class EventEditScreen extends HookWidget {
               DropdownButtonFormField<String>(
                 initialValue: selectedType.value,
                 decoration: const InputDecoration(labelText: 'Event Type'),
-                items: eventTypes
-                    .map((t) => DropdownMenuItem(value: t, child: Text(t)))
-                    .toList(),
+                items: eventTypes.map((t) => DropdownMenuItem(value: t, child: Text(t))).toList(),
                 onChanged: (value) {
                   if (value != null) {
                     selectedType.value = value;
@@ -472,9 +413,7 @@ class EventEditScreen extends HookWidget {
                         if (min == null || min < 1) {
                           return 'Must be at least 1';
                         }
-                        final max = int.tryParse(
-                          maxParticipantsController.text,
-                        );
+                        final max = int.tryParse(maxParticipantsController.text);
                         if (max != null && min > max) {
                           return 'Must be ≤ max';
                         }
@@ -496,9 +435,7 @@ class EventEditScreen extends HookWidget {
                         if (max == null || max < 1) {
                           return 'Must be at least 1';
                         }
-                        final min = int.tryParse(
-                          minParticipantsController.text,
-                        );
+                        final min = int.tryParse(minParticipantsController.text);
                         if (min != null && max < min) {
                           return 'Must be ≥ min';
                         }
@@ -525,16 +462,8 @@ class EventEditScreen extends HookWidget {
                       initialTime: TimeOfDay.fromDateTime(startTime.value),
                     );
                     if (time != null) {
-                      startTime.value = DateTime(
-                        date.year,
-                        date.month,
-                        date.day,
-                        time.hour,
-                        time.minute,
-                      );
-                      endTime.value = startTime.value.add(
-                        const Duration(hours: 8),
-                      );
+                      startTime.value = DateTime(date.year, date.month, date.day, time.hour, time.minute);
+                      endTime.value = startTime.value.add(const Duration(hours: 8));
                     }
                   }
                 },
@@ -555,13 +484,7 @@ class EventEditScreen extends HookWidget {
                       initialTime: TimeOfDay.fromDateTime(endTime.value),
                     );
                     if (time != null) {
-                      endTime.value = DateTime(
-                        date.year,
-                        date.month,
-                        date.day,
-                        time.hour,
-                        time.minute,
-                      );
+                      endTime.value = DateTime(date.year, date.month, date.day, time.hour, time.minute);
                     }
                   }
                 },
@@ -582,16 +505,8 @@ class EventEditScreen extends HookWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            ElevatedButton.icon(
-              onPressed: reset,
-              icon: const Icon(Icons.refresh),
-              label: const Text('Reset'),
-            ),
-            ElevatedButton.icon(
-              onPressed: save,
-              icon: const Icon(Icons.save),
-              label: const Text('Save'),
-            ),
+            ElevatedButton.icon(onPressed: reset, icon: const Icon(Icons.refresh), label: const Text('Reset')),
+            ElevatedButton.icon(onPressed: save, icon: const Icon(Icons.save), label: const Text('Save')),
           ],
         ),
       ],

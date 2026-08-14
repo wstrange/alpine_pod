@@ -8,9 +8,8 @@ import '../services/image.dart' as image_service;
 import '../widgets/member_avatar.dart';
 import '../widgets/user_role_editor.dart';
 
-class MemberEditScreen extends HookWidget {
-  final UuidValue memberId;
-  const MemberEditScreen({super.key, required this.memberId});
+class const MemberEditScreen({super.key, required final UuidValue memberId})
+    extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
@@ -49,13 +48,10 @@ class MemberEditScreen extends HookWidget {
   }
 }
 
-class _MemberEditForm extends HookWidget {
-  final Member member;
-  final VoidCallback onProfileImageChanged;
-  const _MemberEditForm({
-    required this.member,
-    required this.onProfileImageChanged,
-  });
+class const _MemberEditForm({
+  required final Member member,
+  required final VoidCallback onProfileImageChanged,
+}) extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
@@ -380,16 +376,11 @@ class _MemberEditForm extends HookWidget {
   }
 }
 
-class _ProfileImageEditor extends StatelessWidget {
-  final Member member;
-  final bool canEdit;
-  final VoidCallback onImageChanged;
-
-  const _ProfileImageEditor({
-    required this.member,
-    required this.canEdit,
-    required this.onImageChanged,
-  });
+class const _ProfileImageEditor({
+  required final Member member,
+  required final bool canEdit,
+  required final VoidCallback onImageChanged,
+}) extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
@@ -434,10 +425,8 @@ class _ProfileImageEditor extends StatelessWidget {
   }
 }
 
-class _ProfileImageDialog extends StatefulWidget {
-  final Member member;
-
-  const _ProfileImageDialog({required this.member});
+class const _ProfileImageDialog({required final Member member})
+    extends StatefulWidget {
 
   @override
   State<_ProfileImageDialog> createState() => _ProfileImageDialogState();

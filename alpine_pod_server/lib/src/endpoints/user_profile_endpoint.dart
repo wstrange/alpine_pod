@@ -7,8 +7,8 @@ import '../generated/protocol.dart';
 class UserProfileEndpoint extends UserProfileEditBaseEndpoint {
   @override
   Future<UserProfileModel> setUserImage(
-    final Session session,
-    final ByteData image,
+    Session session,
+    ByteData image,
   ) async {
     final authUserId = session.authenticated?.authUserId;
     if (authUserId == null) {

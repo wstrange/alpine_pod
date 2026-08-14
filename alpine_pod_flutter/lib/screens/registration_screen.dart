@@ -6,8 +6,7 @@ import 'package:signals_hooks/signals_hooks.dart';
 import '../router.dart' show resetRouterBootstrap;
 import '../signals.dart';
 
-class RegistrationScreen extends HookWidget {
-  const RegistrationScreen({super.key});
+class const RegistrationScreen({super.key}) extends HookWidget {
 
   @override
   Widget build(BuildContext context) {

@@ -3,8 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:signals_flutter/signals_flutter.dart';
 import '../signals.dart';
 
-class SectionSelectionScreen extends StatelessWidget {
-  const SectionSelectionScreen({super.key});
+class const SectionSelectionScreen({super.key}) extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {

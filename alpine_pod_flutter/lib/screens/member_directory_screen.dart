@@ -9,8 +9,7 @@ import '../widgets/member_directory_list_widget.dart';
 
 // todo: SectionId is never going to change. Rethink how this is loaded.
 
-class MemberDirectoryScreen extends HookWidget {
-  const MemberDirectoryScreen({super.key});
+class const MemberDirectoryScreen({super.key}) extends HookWidget {
 
   @override
   Widget build(BuildContext context) {

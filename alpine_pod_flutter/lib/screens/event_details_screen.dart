@@ -9,10 +9,8 @@ import 'package:signals_flutter/signals_flutter.dart';
 import '../signals.dart';
 import '../widgets/event_view.dart';
 
-class EventDetailsScreen extends HookWidget {
-  const EventDetailsScreen({required this.eventId, super.key});
-
-  final UuidValue eventId;
+class const EventDetailsScreen({required final UuidValue eventId, super.key})
+    extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
