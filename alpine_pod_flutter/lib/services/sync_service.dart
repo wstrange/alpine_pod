@@ -156,6 +156,90 @@ class SyncService {
     }
   }
 
+  Future<void> _upsertEvent(Event event) async {
+    final existing = await Event.db.findById(dbSession, event.id);
+    if (existing != null) {
+      await Event.db.updateRow(dbSession, event);
+    } else {
+      await Event.db.insertRow(dbSession, event);
+    }
+  }
+
+  Future<void> _cleanEventChildRecords(UuidValue eventId) async {
+    await EventManager.db.deleteWhere(
+      dbSession,
+      where: (t) => t.eventId.equals(eventId),
+    );
+    await EventRegistration.db.deleteWhere(
+      dbSession,
+      where: (t) => t.eventId.equals(eventId),
+    );
+  }
+
+  Future<void> _ensureSectionExists(Event e) async {
+    if (e.section != null) {
+      await _upsertSection(e.section!);
+    } else {
+      // Ensure section FK is satisfied in local DB before inserting event
+      final existingSection = await Section.db.findById(
+        dbSession,
+        e.sectionId,
+      );
+      if (existingSection == null) {
+        try {
+          final sec = await client.section.getSection(e.sectionId);
+          if (sec != null) {
+            await _upsertSection(sec);
+          }
+        } catch (err) {
+          _log.warning(
+            'Failed to fetch missing section ${e.sectionId} for event ${e.title}: $err',
+          );
+        }
+      }
+    }
+  }
+
+  Future<void> _saveEventChildren(Event e) async {
+    // Extract and cache embedded event managers
+    final managers = e.eventManagers;
+    if (managers != null && managers.isNotEmpty) {
+      for (final m in managers) {
+        if (m.member != null) {
+          await _upsertMember(m.member!);
+        }
+        final memberExists =
+            await Member.db.findById(dbSession, m.memberId) != null;
+        if (memberExists) {
+          await EventManager.db.insertRow(dbSession, m);
+        } else {
+          _log.warning(
+            'Skipping EventManager insert: member ${m.memberId} not found in local DB',
+          );
+        }
+      }
+    }
+
+    // Extract and cache embedded event registrations
+    final registrations = e.eventRegistrations;
+    if (registrations != null && registrations.isNotEmpty) {
+      for (final r in registrations) {
+        if (r.member != null) {
+          await _upsertMember(r.member!);
+        }
+        final memberExists =
+            await Member.db.findById(dbSession, r.memberId) != null;
+        if (memberExists) {
+          await EventRegistration.db.insertRow(dbSession, r);
+        } else {
+          _log.warning(
+            'Skipping EventRegistration insert: member ${r.memberId} not found in local DB',
+          );
+        }
+      }
+    }
+  }
+
   Future<void> _upsertSectionMembership(SectionMembership membership) async {
     final id = membership.id;
     if (id != null) {
@@ -231,135 +315,101 @@ class SyncService {
   }
 
   /// Syncs events, event managers, and registrations for a section and date window.
+  /// If [sinceLastUpdateTime] is specified or [syncOnlyUpdatedEventsSignal] is true (and a previous sync timestamp exists),
+  /// only events updated on the server after that timestamp are fetched and incrementally updated in the local cache.
   Future<List<Event>> syncEvents(
     UuidValue? sectionId,
     DateTime startTime,
     DateTime endTime,
-    bool onlyMyEvents,
-  ) async {
+    bool onlyMyEvents, {
+    DateTime? sinceLastUpdateTime,
+  }) async {
     if (!isOnlineSignal.value) return [];
     try {
+      final effectiveSince = sinceLastUpdateTime ??
+          (syncOnlyUpdatedEventsSignal.value ? lastSyncedAtSignal.value?.toUtc() : null);
+
       final events = await client.event.listEvents(
         sectionId: sectionId,
         startTime: startTime,
         endTime: endTime,
         onlyMyEvents: onlyMyEvents,
+        sinceLastUpdateTime: effectiveSince,
       );
 
-      _log.info('Got ${events.length} events from server');
-
-      // 1. Clean child records (event_managers & event_registrations) for existing events in scope first
-      final existingEvents = await Event.db.find(
-        dbSession,
-        where: (t) {
-          Expression where = Constant.bool(true);
-          if (sectionId != null) {
-            where = where & t.sectionId.equals(sectionId);
-          }
-          return where;
-        },
-      );
-
-      for (final e in existingEvents) {
-        await EventManager.db.deleteWhere(
-          dbSession,
-          where: (t) => t.eventId.equals(e.id),
-        );
-        await EventRegistration.db.deleteWhere(
-          dbSession,
-          where: (t) => t.eventId.equals(e.id),
-        );
-      }
-
-      // 2. Now safe to delete old cached events
-      await Event.db.deleteWhere(
-        dbSession,
-        where: (t) {
-          Expression where = Constant.bool(true);
-          if (sectionId != null) {
-            where = where & t.sectionId.equals(sectionId);
-          }
-          return where;
-        },
-      );
       _log.info(
-        'Cleaned existing cached events and child records for section $sectionId',
+        'Got ${events.length} events from server (since: ${effectiveSince?.toIso8601String() ?? "all"})',
       );
 
-      // 3. Insert/upsert new events and their referenced members & child records
-      if (events.isNotEmpty) {
-        for (var e in events) {
-          // _log.info('sync event: ${e.title}, section ${e.sectionId}');
-          if (sectionId != null && e.sectionId != sectionId) {
-            _log.warning(
-              'Event ${e.title} is not in current section $sectionId, skipping',
-            );
-            continue;
-          }
-
-          if (e.section != null) {
-            await _upsertSection(e.section!);
-          } else {
-            // Ensure section FK is satisfied in local DB before inserting event
-            final existingSection = await Section.db.findById(
-              dbSession,
-              e.sectionId,
-            );
-            if (existingSection == null) {
-              try {
-                final sec = await client.section.getSection(e.sectionId);
-                if (sec != null) {
-                  await _upsertSection(sec);
-                }
-              } catch (err) {
-                _log.warning(
-                  'Failed to fetch missing section ${e.sectionId} for event ${e.title}: $err',
-                );
-              }
+      if (effectiveSince == null) {
+        // Full sync: Clean child records (event_managers & event_registrations) for existing events in scope first
+        final existingEvents = await Event.db.find(
+          dbSession,
+          where: (t) {
+            Expression where = Constant.bool(true);
+            if (sectionId != null) {
+              where = where & t.sectionId.equals(sectionId);
             }
-          }
+            return where;
+          },
+        );
 
-          await Event.db.insertRow(dbSession, e);
+        for (final e in existingEvents) {
+          await _cleanEventChildRecords(e.id);
+        }
 
-          // Extract and cache embedded event managers
-          final managers = e.eventManagers;
-          if (managers != null && managers.isNotEmpty) {
-            for (final m in managers) {
-              if (m.member != null) {
-                await _upsertMember(m.member!);
-              }
-              final memberExists =
-                  await Member.db.findById(dbSession, m.memberId) != null;
-              if (memberExists) {
-                await EventManager.db.insertRow(dbSession, m);
-              } else {
-                _log.warning(
-                  'Skipping EventManager insert: member ${m.memberId} not found in local DB',
-                );
-              }
+        // Now safe to delete old cached events
+        await Event.db.deleteWhere(
+          dbSession,
+          where: (t) {
+            Expression where = Constant.bool(true);
+            if (sectionId != null) {
+              where = where & t.sectionId.equals(sectionId);
             }
-          }
+            return where;
+          },
+        );
+        _log.info(
+          'Cleaned existing cached events and child records for section $sectionId',
+        );
 
-          // Extract and cache embedded event registrations
-          final registrations = e.eventRegistrations;
-          if (registrations != null && registrations.isNotEmpty) {
-            for (final r in registrations) {
-              if (r.member != null) {
-                await _upsertMember(r.member!);
-              }
-              final memberExists =
-                  await Member.db.findById(dbSession, r.memberId) != null;
-              if (memberExists) {
-                await EventRegistration.db.insertRow(dbSession, r);
-              } else {
-                _log.warning(
-                  'Skipping EventRegistration insert: member ${r.memberId} not found in local DB',
-                );
-              }
+        // Insert new events and their referenced members & child records
+        if (events.isNotEmpty) {
+          for (var e in events) {
+            if (sectionId != null && e.sectionId != sectionId) {
+              _log.warning(
+                'Event ${e.title} is not in current section $sectionId, skipping',
+              );
+              continue;
             }
+
+            await _ensureSectionExists(e);
+            await Event.db.insertRow(dbSession, e);
+            await _saveEventChildren(e);
           }
         }
+      } else {
+        // Incremental sync: upsert modified/new events and update their child records
+        if (events.isNotEmpty) {
+          for (var e in events) {
+            if (sectionId != null && e.sectionId != sectionId) {
+              _log.warning(
+                'Event ${e.title} is not in current section $sectionId, skipping',
+              );
+              continue;
+            }
+
+            await _ensureSectionExists(e);
+            await _cleanEventChildRecords(e.id);
+            await _upsertEvent(e);
+            await _saveEventChildren(e);
+          }
+        }
+        _log.info('Incrementally updated ${events.length} events in local cache');
       }
+
+      final syncTime = DateTime.now();
+      connectivityService.updateLastSynced(syncTime);
 
       return events;
     } catch (e) {

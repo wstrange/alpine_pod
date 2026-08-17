@@ -9,6 +9,55 @@ final _log = Logger('EventRepository');
 final eventRepository = EventRepository();
 
 class EventRepository {
+  Future<List<Event>> _queryCachedEvents({
+    UuidValue? sectionId,
+    DateTime? startTime,
+    DateTime? endTime,
+    bool onlyMyEvents = false,
+  }) async {
+    final currentMember = currentMemberSignal.value;
+    final memberId = currentMember?.id;
+
+    return await Event.db.find(
+      dbSession,
+      where: (t) {
+        Expression where = Constant.bool(true);
+        if (sectionId != null) {
+          where = where & t.sectionId.equals(sectionId);
+        }
+        if (startTime != null) {
+          where = where & (t.endTime >= startTime);
+        }
+        if (endTime != null) {
+          where = where & (t.startTime <= endTime);
+        }
+
+        if (onlyMyEvents && memberId != null) {
+          where =
+              where &
+              (t.eventManagers.any((m) => m.memberId.equals(memberId)) |
+                  (t.eventRegistrations.any(
+                        (r) => r.memberId.equals(memberId),
+                      ) &
+                      t.published.equals(true)));
+        } else {
+          where = where & t.published.equals(true);
+        }
+
+        return where;
+      },
+      orderBy: (t) => t.startTime,
+      include: Event.include(
+        eventManagers: EventManager.includeList(
+          include: EventManager.include(member: Member.include()),
+        ),
+        eventRegistrations: EventRegistration.includeList(
+          include: EventRegistration.include(member: Member.include()),
+        ),
+      ),
+    );
+  }
+
   /// Reads events from the local SQLite cache (or pure server fetch if cache is bypassed).
   /// If online and cache is empty, triggers a sync first.
   Future<List<Event>> listEvents({
@@ -19,47 +68,11 @@ class EventRepository {
   }) async {
     if (useClientCacheSignal.value) {
       try {
-        final currentMember = currentMemberSignal.value;
-        final memberId = currentMember?.id;
-
-        // Query local cache first matching server logic
-        final cachedEvents = await Event.db.find(
-          dbSession,
-          where: (t) {
-            Expression where = Constant.bool(true);
-            if (sectionId != null) {
-              where = where & t.sectionId.equals(sectionId);
-            }
-            if (startTime != null) {
-              where = where & (t.endTime >= startTime);
-            }
-            if (endTime != null) {
-              where = where & (t.startTime <= endTime);
-            }
-
-            if (onlyMyEvents && memberId != null) {
-              where =
-                  where &
-                  (t.eventManagers.any((m) => m.memberId.equals(memberId)) |
-                      (t.eventRegistrations.any(
-                            (r) => r.memberId.equals(memberId),
-                          ) &
-                          t.published.equals(true)));
-            } else {
-              where = where & t.published.equals(true);
-            }
-
-            return where;
-          },
-          orderBy: (t) => t.startTime,
-          include: Event.include(
-            eventManagers: EventManager.includeList(
-              include: EventManager.include(member: Member.include()),
-            ),
-            eventRegistrations: EventRegistration.includeList(
-              include: EventRegistration.include(member: Member.include()),
-            ),
-          ),
+        final cachedEvents = await _queryCachedEvents(
+          sectionId: sectionId,
+          startTime: startTime,
+          endTime: endTime,
+          onlyMyEvents: onlyMyEvents,
         );
 
         if (cachedEvents.isNotEmpty || !isOnlineSignal.value) {
@@ -71,12 +84,22 @@ class EventRepository {
         );
       }
 
-      // Fallback: sync from server and return
+      // Fallback: sync from server and return from local cache
       if (isOnlineSignal.value) {
         final now = DateTime.now();
         final start = startTime ?? DateTime(now.year, now.month - 1, 1);
         final end = endTime ?? DateTime(now.year, now.month + 2, 0);
-        return await syncService.syncEvents(sectionId, start, end, onlyMyEvents);
+        await syncService.syncEvents(sectionId, start, end, onlyMyEvents);
+        try {
+          return await _queryCachedEvents(
+            sectionId: sectionId,
+            startTime: startTime,
+            endTime: endTime,
+            onlyMyEvents: onlyMyEvents,
+          );
+        } catch (_) {
+          return [];
+        }
       }
     } else {
       if (isOnlineSignal.value) {

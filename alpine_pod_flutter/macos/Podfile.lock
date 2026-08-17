@@ -1,34 +1,28 @@
 PODS:
-  - desktop_webview_window (0.0.1):
+  - facebook_auth_desktop (0.0.3):
     - FlutterMacOS
   - FlutterMacOS (1.0.0)
   - sign_in_with_apple (0.0.1):
     - FlutterMacOS
-  - window_to_front (0.0.1):
-    - FlutterMacOS
 
 DEPENDENCIES:
-  - desktop_webview_window (from `Flutter/ephemeral/.symlinks/plugins/desktop_webview_window/macos`)
+  - facebook_auth_desktop (from `Flutter/ephemeral/.symlinks/plugins/facebook_auth_desktop/macos`)
   - FlutterMacOS (from `Flutter/ephemeral`)
   - sign_in_with_apple (from `Flutter/ephemeral/.symlinks/plugins/sign_in_with_apple/macos`)
-  - window_to_front (from `Flutter/ephemeral/.symlinks/plugins/window_to_front/macos`)
 
 EXTERNAL SOURCES:
-  desktop_webview_window:
-    :path: Flutter/ephemeral/.symlinks/plugins/desktop_webview_window/macos
+  facebook_auth_desktop:
+    :path: Flutter/ephemeral/.symlinks/plugins/facebook_auth_desktop/macos
   FlutterMacOS:
     :path: Flutter/ephemeral
   sign_in_with_apple:
     :path: Flutter/ephemeral/.symlinks/plugins/sign_in_with_apple/macos
-  window_to_front:
-    :path: Flutter/ephemeral/.symlinks/plugins/window_to_front/macos
 
 SPEC CHECKSUMS:
-  desktop_webview_window: 7e37af677d6d19294cb433d9b1d878ef78dffa4d
-  FlutterMacOS: d0db08ddef1a9af05a5ec4b724367152bb0500b1
+  facebook_auth_desktop: bf89ccf460c903de45e86fa0c7878b8b62db65fb
+  FlutterMacOS: c232990155153907050900a2e175c7773903ba4e
   sign_in_with_apple: 6673c03c9e3643f6c8d33601943fbfa9ae99f94e
-  window_to_front: 9e76fd432e36700a197dac86a0011e49c89abe0a
 
-PODFILE CHECKSUM: 54d867c82ac51cbd61b565781b9fada492027009
+PODFILE CHECKSUM: 1e95c36afbfd1cb6423ceca4de7a8e1b256fb6ac
 
 COCOAPODS: 1.16.2

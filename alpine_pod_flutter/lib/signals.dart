@@ -35,6 +35,13 @@ final useClientCacheSignal = signal<bool>(
   options: SignalOptions(name: 'useClientCacheSignal'),
 );
 
+/// Global option to only fetch events that have been updated since the last sync when syncing cache.
+/// Can be configured via --dart-define=SYNC_ONLY_UPDATED_EVENTS=true or toggled at runtime.
+final syncOnlyUpdatedEventsSignal = signal<bool>(
+  const bool.fromEnvironment('SYNC_ONLY_UPDATED_EVENTS', defaultValue: false),
+  options: SignalOptions(name: 'syncOnlyUpdatedEventsSignal'),
+);
+
 // Get a list of all sections in the database from SectionRepository (cache-first or pure server fetch)
 final allSectionsSignal = futureSignal(() async {
   return await sectionRepository.listSections();
@@ -116,7 +123,7 @@ final currentEventsSignal = futureSignal<List<Event>>(
     );
   },
   options: AsyncSignalOptions(
-    dependencies: [sectionSignal, selectedDateSignal, showMyEventsOnlySignal, useClientCacheSignal],
+    dependencies: [sectionSignal, selectedDateSignal, showMyEventsOnlySignal, useClientCacheSignal, syncOnlyUpdatedEventsSignal],
     name: 'currentEventsSignal',
   ),
 );
