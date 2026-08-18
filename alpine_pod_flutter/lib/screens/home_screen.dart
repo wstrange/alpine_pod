@@ -117,9 +117,9 @@ class HomeScreen extends SignalWidget {
                 secondary: const Icon(Icons.history),
                 title: const Text('Sync Changes Only'),
                 subtitle: const Text('Only fetch events updated since last sync'),
-                value: syncOnlyUpdatedEventsSignal.value,
+                value: syncOnlyUpdatedDataSignal.value,
                 onChanged: (val) {
-                  syncOnlyUpdatedEventsSignal.value = val;
+                  syncOnlyUpdatedDataSignal.value = val;
                 },
               ),
             const Divider(),

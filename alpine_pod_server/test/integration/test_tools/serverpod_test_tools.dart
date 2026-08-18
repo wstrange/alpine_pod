@@ -1921,6 +1921,7 @@ class _MemberEndpoint {
     String? filter,
     required int limit,
     required int offset,
+    DateTime? sinceLastUpdate,
   }) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -1938,6 +1939,7 @@ class _MemberEndpoint {
             'filter': filter,
             'limit': limit,
             'offset': offset,
+            'sinceLastUpdate': sinceLastUpdate,
           }),
           serializationManager: _serializationManager,
         );

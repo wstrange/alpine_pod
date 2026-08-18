@@ -575,16 +575,15 @@ class EndpointMember extends _i2.EndpointRef {
     String? filter,
     required int limit,
     required int offset,
-  }) => caller.callServerEndpoint<List<_i6.Member>>(
-    'member',
-    'getSectionMembers',
-    {
-      'sectionId': sectionId,
-      'filter': filter,
-      'limit': limit,
-      'offset': offset,
-    },
-  );
+    DateTime? sinceLastUpdate,
+  }) => caller
+      .callServerEndpoint<List<_i6.Member>>('member', 'getSectionMembers', {
+        'sectionId': sectionId,
+        'filter': filter,
+        'limit': limit,
+        'offset': offset,
+        'sinceLastUpdate': sinceLastUpdate,
+      });
 
   /// Return a list of section memberships for the given section id
   ///

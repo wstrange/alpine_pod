@@ -3,6 +3,7 @@ import 'package:logging/logging.dart';
 import 'package:serverpod_auth_idp_flutter/serverpod_auth_idp_flutter.dart';
 import 'package:serverpod_database/serverpod_database.dart';
 import 'package:signals_flutter/signals_flutter.dart';
+
 import 'repositories/event_repository.dart';
 import 'repositories/member_repository.dart';
 import 'repositories/notification_repository.dart';
@@ -35,11 +36,11 @@ final useClientCacheSignal = signal<bool>(
   options: SignalOptions(name: 'useClientCacheSignal'),
 );
 
-/// Global option to only fetch events that have been updated since the last sync when syncing cache.
-/// Can be configured via --dart-define=SYNC_ONLY_UPDATED_EVENTS=true or toggled at runtime.
-final syncOnlyUpdatedEventsSignal = signal<bool>(
-  const bool.fromEnvironment('SYNC_ONLY_UPDATED_EVENTS', defaultValue: false),
-  options: SignalOptions(name: 'syncOnlyUpdatedEventsSignal'),
+/// Global option to only fetch records that have been updated since the last sync when syncing cache.
+/// Can be configured via --dart-define=SYNC_ONLY_UPDATED_DATA=true or toggled at runtime.
+final syncOnlyUpdatedDataSignal = signal<bool>(
+  const bool.fromEnvironment('SYNC_ONLY_UPDATED_DATA', defaultValue: false),
+  options: SignalOptions(name: 'syncOnlyUpdatedData'),
 );
 
 // Get a list of all sections in the database from SectionRepository (cache-first or pure server fetch)
@@ -123,7 +124,13 @@ final currentEventsSignal = futureSignal<List<Event>>(
     );
   },
   options: AsyncSignalOptions(
-    dependencies: [sectionSignal, selectedDateSignal, showMyEventsOnlySignal, useClientCacheSignal, syncOnlyUpdatedEventsSignal],
+    dependencies: [
+      sectionSignal,
+      selectedDateSignal,
+      showMyEventsOnlySignal,
+      useClientCacheSignal,
+      syncOnlyUpdatedDataSignal,
+    ],
     name: 'currentEventsSignal',
   ),
 );

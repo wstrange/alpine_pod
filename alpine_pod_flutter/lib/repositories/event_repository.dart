@@ -1,6 +1,7 @@
 import 'package:alpine_pod_client/alpine_pod_client.dart';
 import 'package:logging/logging.dart';
 import 'package:serverpod_database/serverpod_database.dart';
+
 import '../services/connectivity_service.dart';
 import '../services/sync_service.dart';
 import '../signals.dart';
@@ -36,10 +37,7 @@ class EventRepository {
           where =
               where &
               (t.eventManagers.any((m) => m.memberId.equals(memberId)) |
-                  (t.eventRegistrations.any(
-                        (r) => r.memberId.equals(memberId),
-                      ) &
-                      t.published.equals(true)));
+                  (t.eventRegistrations.any((r) => r.memberId.equals(memberId)) & t.published.equals(true)));
         } else {
           where = where & t.published.equals(true);
         }
@@ -48,12 +46,8 @@ class EventRepository {
       },
       orderBy: (t) => t.startTime,
       include: Event.include(
-        eventManagers: EventManager.includeList(
-          include: EventManager.include(member: Member.include()),
-        ),
-        eventRegistrations: EventRegistration.includeList(
-          include: EventRegistration.include(member: Member.include()),
-        ),
+        eventManagers: EventManager.includeList(include: EventManager.include(member: Member.include())),
+        eventRegistrations: EventRegistration.includeList(include: EventRegistration.include(member: Member.include())),
       ),
     );
   }
@@ -79,9 +73,7 @@ class EventRepository {
           return cachedEvents;
         }
       } catch (e) {
-        _log.warning(
-          'Failed to query local Event cache, falling back to server: $e',
-        );
+        _log.warning('Failed to query local Event cache, falling back to server: $e');
       }
 
       // Fallback: sync from server and return from local cache
@@ -89,7 +81,7 @@ class EventRepository {
         final now = DateTime.now();
         final start = startTime ?? DateTime(now.year, now.month - 1, 1);
         final end = endTime ?? DateTime(now.year, now.month + 2, 0);
-        await syncService.syncEvents(sectionId, start, end, onlyMyEvents);
+        await syncService.syncEvents(sectionId, start, end);
         try {
           return await _queryCachedEvents(
             sectionId: sectionId,
@@ -127,9 +119,7 @@ class EventRepository {
           dbSession,
           id,
           include: Event.include(
-            eventManagers: EventManager.includeList(
-              include: EventManager.include(member: Member.include()),
-            ),
+            eventManagers: EventManager.includeList(include: EventManager.include(member: Member.include())),
             eventRegistrations: EventRegistration.includeList(
               include: EventRegistration.include(member: Member.include()),
             ),
@@ -148,15 +138,9 @@ class EventRepository {
   }
 
   /// Creates a new event via the server API, then syncs to update local cache.
-  Future<Event> createEvent(
-    Event event, {
-    List<UuidValue>? additionalManagerIds,
-    bool notifyNewEvent = true,
-  }) async {
+  Future<Event> createEvent(Event event, {List<UuidValue>? additionalManagerIds, bool notifyNewEvent = true}) async {
     if (!isOnlineSignal.value) {
-      throw Exception(
-        'You are currently offline. Event creation requires an internet connection.',
-      );
+      throw Exception('You are currently offline. Event creation requires an internet connection.');
     }
 
     final created = await client.event.createEvent(
@@ -169,7 +153,7 @@ class EventRepository {
     final now = created.startTime;
     final start = DateTime(now.year, now.month - 1, 1);
     final end = DateTime(now.year, now.month + 2, 0);
-    await syncService.syncEvents(created.sectionId, start, end, false);
+    await syncService.syncEvents(created.sectionId, start, end);
 
     return created;
   }
@@ -177,9 +161,7 @@ class EventRepository {
   /// Updates an event via server API and syncs local cache.
   Future<Event> updateEvent(Event event) async {
     if (!isOnlineSignal.value) {
-      throw Exception(
-        'You are currently offline. Updating events requires an internet connection.',
-      );
+      throw Exception('You are currently offline. Updating events requires an internet connection.');
     }
 
     final updated = await client.event.updateEvent(event);
@@ -187,7 +169,7 @@ class EventRepository {
     final now = updated.startTime;
     final start = DateTime(now.year, now.month - 1, 1);
     final end = DateTime(now.year, now.month + 2, 0);
-    await syncService.syncEvents(updated.sectionId, start, end, false);
+    await syncService.syncEvents(updated.sectionId, start, end);
 
     return updated;
   }
@@ -195,9 +177,7 @@ class EventRepository {
   /// Deletes an event via server API and syncs local cache.
   Future<void> deleteEvent(UuidValue id, UuidValue? sectionId) async {
     if (!isOnlineSignal.value) {
-      throw Exception(
-        'You are currently offline. Deleting events requires an internet connection.',
-      );
+      throw Exception('You are currently offline. Deleting events requires an internet connection.');
     }
 
     await client.event.deleteEvent(id);
@@ -207,14 +187,9 @@ class EventRepository {
   }
 
   /// Registers for an event via server API and syncs local cache.
-  Future<EventRegistration> registerForEvent(
-    UuidValue eventId,
-    UuidValue? sectionId,
-  ) async {
+  Future<EventRegistration> registerForEvent(UuidValue eventId, UuidValue? sectionId) async {
     if (!isOnlineSignal.value) {
-      throw Exception(
-        'You are currently offline. Registration requires an internet connection.',
-      );
+      throw Exception('You are currently offline. Registration requires an internet connection.');
     }
 
     final registration = await client.event.registerForEvent(eventId);
@@ -231,34 +206,23 @@ class EventRepository {
       final now = DateTime.now();
       final start = DateTime(now.year, now.month - 1, 1);
       final end = DateTime(now.year, now.month + 2, 0);
-      await syncService.syncEvents(sectionId, start, end, false);
+      await syncService.syncEvents(sectionId, start, end);
     }
   }
 
-  Future<void> cancelRegistration(
-    UuidValue registrationId,
-    UuidValue memberId,
-  ) async {
+  Future<void> cancelRegistration(UuidValue registrationId, UuidValue memberId) async {
     await client.registration.cancelRegistration(registrationId);
 
-    await EventRegistration.db.deleteWhere(
-      dbSession,
-      where: (t) => t.id.equals(registrationId),
-    );
+    await EventRegistration.db.deleteWhere(dbSession, where: (t) => t.id.equals(registrationId));
 
     await syncService.syncAll(currentSectionId: sectionSignal.value?.id);
     currentEventsSignal.refresh();
   }
 
   /// Removes a member registration from an event via server API and refreshes cache.
-  Future<void> removeMemberFromEvent(
-    UuidValue registrationId, {
-    UuidValue? sectionId,
-  }) async {
+  Future<void> removeMemberFromEvent(UuidValue registrationId, {UuidValue? sectionId}) async {
     if (!isOnlineSignal.value) {
-      throw Exception(
-        'You are currently offline. Participant updates require an internet connection.',
-      );
+      throw Exception('You are currently offline. Participant updates require an internet connection.');
     }
 
     await client.eventManager.removeMemberFromEvent(registrationId);
@@ -267,14 +231,9 @@ class EventRepository {
   }
 
   /// Approves a member registration for an event via server API and refreshes cache.
-  Future<void> approveRegistration(
-    UuidValue registrationId, {
-    UuidValue? sectionId,
-  }) async {
+  Future<void> approveRegistration(UuidValue registrationId, {UuidValue? sectionId}) async {
     if (!isOnlineSignal.value) {
-      throw Exception(
-        'You are currently offline. Approving registration requires an internet connection.',
-      );
+      throw Exception('You are currently offline. Approving registration requires an internet connection.');
     }
 
     await client.eventManager.approveRegistration(registrationId);
@@ -283,21 +242,12 @@ class EventRepository {
   }
 
   /// Adds a member to an event as a participant via server API and refreshes cache.
-  Future<EventRegistration> addMemberToEvent(
-    UuidValue eventId,
-    UuidValue memberId, {
-    UuidValue? sectionId,
-  }) async {
+  Future<EventRegistration> addMemberToEvent(UuidValue eventId, UuidValue memberId, {UuidValue? sectionId}) async {
     if (!isOnlineSignal.value) {
-      throw Exception(
-        'You are currently offline. Adding participant requires an internet connection.',
-      );
+      throw Exception('You are currently offline. Adding participant requires an internet connection.');
     }
 
-    final registration = await client.eventManager.addMemberToEvent(
-      eventId,
-      memberId,
-    );
+    final registration = await client.eventManager.addMemberToEvent(eventId, memberId);
     await syncEvents(sectionId ?? sectionSignal.value?.id);
     currentEventsSignal.refresh();
     return registration;
