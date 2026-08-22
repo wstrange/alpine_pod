@@ -32,7 +32,7 @@ final authUserSignal = computed<AuthSuccess?>(() {
 /// Global flag to switch between pure server-side data fetching and client-side SQLite caching.
 /// Set to false (or pass --dart-define=USE_CLIENT_CACHE=false) to debug cache issues by bypassing the client cache.
 final useClientCacheSignal = signal<bool>(
-  const bool.fromEnvironment('USE_CLIENT_CACHE', defaultValue: false),
+  const bool.fromEnvironment('USE_CLIENT_CACHE', defaultValue: true),
   options: SignalOptions(name: 'useClientCacheSignal'),
 );
 

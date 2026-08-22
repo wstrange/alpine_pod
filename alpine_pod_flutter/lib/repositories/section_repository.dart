@@ -24,15 +24,30 @@ class SectionRepository {
       }
 
       if (isOnlineSignal.value) {
-        await syncService.syncSectionsAndMemberships();
-        return await Section.db.find(dbSession, orderBy: (t) => t.name);
+        try {
+          await syncService.syncSectionsAndMemberships();
+          connectivityService.markServerReachable();
+          return await Section.db.find(dbSession, orderBy: (t) => t.name);
+        } catch (e) {
+          _log.warning('Failed to sync sections: $e');
+          connectivityService.markServerUnreachable();
+          try {
+            return await Section.db.find(dbSession, orderBy: (t) => t.name);
+          } catch (_) {}
+        }
       }
     } else {
       if (isOnlineSignal.value) {
         try {
-          return await client.section.listSections();
+          final sections = await client.section.listSections();
+          connectivityService.markServerReachable();
+          return sections;
         } catch (e) {
           _log.warning('Failed to fetch sections directly from server: $e');
+          connectivityService.markServerUnreachable();
+          try {
+            return await Section.db.find(dbSession, orderBy: (t) => t.name);
+          } catch (_) {}
         }
       }
     }
@@ -61,7 +76,25 @@ class SectionRepository {
     }
 
     if (isOnlineSignal.value) {
-      return await client.member.getMySectionMembership(sectionId);
+      try {
+        final membership = await client.member.getMySectionMembership(sectionId);
+        connectivityService.markServerReachable();
+        return membership;
+      } catch (e) {
+        _log.warning('Failed to fetch my section membership from server: $e');
+        connectivityService.markServerUnreachable();
+        try {
+          final member = currentMemberSignal.value;
+          if (member != null) {
+            return await SectionMembership.db.findFirstRow(
+              dbSession,
+              where: (t) =>
+                  t.memberId.equals(member.id) & t.sectionId.equals(sectionId),
+              include: SectionMembership.include(section: Section.include()),
+            );
+          }
+        } catch (_) {}
+      }
     }
     return null;
   }

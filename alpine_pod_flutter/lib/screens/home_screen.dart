@@ -2,6 +2,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:signals_flutter/signals_flutter.dart';
 
+import '../services/connectivity_service.dart';
 import '../signals.dart';
 import '../widgets/calendar_view.dart';
 
@@ -14,10 +15,51 @@ class HomeScreen extends SignalWidget {
     var sectionName = section?.name;
     var unreadCount = unreadNotificationsCountSignal.value;
     final useCache = useClientCacheSignal.value;
+    final isOnline = isOnlineSignal.value;
+    final isNetwork = isNetworkConnectedSignal.value;
+    final isServerReachable = isServerReachableSignal.value;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('$sectionName Section', style: const TextStyle(fontSize: 16)),
+        title: Row(
+          children: [
+            Text('$sectionName Section', style: const TextStyle(fontSize: 16)),
+            if (!isOnline) ...[
+              const SizedBox(width: 8),
+              Tooltip(
+                message: !isNetwork
+                    ? 'Offline (No internet)'
+                    : (!isServerReachable ? 'Server unreachable (Offline mode)' : 'Offline'),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: Colors.amber.shade800,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        !isNetwork ? Icons.wifi_off : Icons.cloud_off,
+                        size: 12,
+                        color: Colors.white,
+                      ),
+                      const SizedBox(width: 4),
+                      const Text(
+                        'OFFLINE',
+                        style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ],
+        ),
         actions: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4.0),

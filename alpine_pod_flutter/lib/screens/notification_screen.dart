@@ -5,7 +5,8 @@ import 'package:signals_flutter/signals_flutter.dart';
 import '../signals.dart';
 import '../widgets/notification_preferences_dialog.dart';
 
-class const NotificationScreen({super.key}) extends HookWidget {
+class NotificationScreen extends HookWidget {
+  const NotificationScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

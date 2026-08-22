@@ -20,14 +20,28 @@ class MemberRepository {
       }
 
       if (isOnlineSignal.value) {
-        return await syncService.syncCurrentMember();
+        try {
+          final member = await syncService.syncCurrentMember();
+          if (member != null) connectivityService.markServerReachable();
+          return member;
+        } catch (e) {
+          _log.warning('Failed to sync current member: $e');
+          connectivityService.markServerUnreachable();
+        }
       }
     } else {
       if (isOnlineSignal.value) {
         try {
-          return await client.member.getCurrentMember();
+          final member = await client.member.getCurrentMember();
+          connectivityService.markServerReachable();
+          return member;
         } catch (e) {
           _log.warning('Failed to fetch current member directly from server: $e');
+          connectivityService.markServerUnreachable();
+          try {
+            final members = await Member.db.find(dbSession, limit: 1);
+            if (members.isNotEmpty) return members.first;
+          } catch (_) {}
         }
       }
     }
@@ -51,20 +65,41 @@ class MemberRepository {
       }
 
       if (isOnlineSignal.value) {
-        await syncService.syncSectionsAndMemberships();
-        return await SectionMembership.db.find(
-          dbSession,
-          include: SectionMembership.include(section: Section.include()),
-        );
+        try {
+          await syncService.syncSectionsAndMemberships();
+          connectivityService.markServerReachable();
+          return await SectionMembership.db.find(
+            dbSession,
+            include: SectionMembership.include(section: Section.include()),
+          );
+        } catch (e) {
+          _log.warning('Failed to sync section memberships: $e');
+          connectivityService.markServerUnreachable();
+          try {
+            return await SectionMembership.db.find(
+              dbSession,
+              include: SectionMembership.include(section: Section.include()),
+            );
+          } catch (_) {}
+        }
       }
     } else {
       if (isOnlineSignal.value) {
         try {
-          return await client.member.getAllMySectionMemberships();
+          final memberships = await client.member.getAllMySectionMemberships();
+          connectivityService.markServerReachable();
+          return memberships;
         } catch (e) {
           _log.warning(
             'Failed to fetch section memberships directly from server: $e',
           );
+          connectivityService.markServerUnreachable();
+          try {
+            return await SectionMembership.db.find(
+              dbSession,
+              include: SectionMembership.include(section: Section.include()),
+            );
+          } catch (_) {}
         }
       }
     }
@@ -160,12 +195,19 @@ class MemberRepository {
     }
 
     if (isOnlineSignal.value) {
-      return await client.member.getSectionMembers(
-        sectionId: sectionId,
-        filter: filter,
-        limit: limit,
-        offset: offset,
-      );
+      try {
+        final members = await client.member.getSectionMembers(
+          sectionId: sectionId,
+          filter: filter,
+          limit: limit,
+          offset: offset,
+        );
+        connectivityService.markServerReachable();
+        return members;
+      } catch (e) {
+        _log.warning('Failed to fetch section members from server: $e');
+        connectivityService.markServerUnreachable();
+      }
     }
     return [];
   }

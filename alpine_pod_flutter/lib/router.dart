@@ -1,6 +1,7 @@
 import 'package:alpine_pod_client/alpine_pod_client.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:go_router/go_router.dart';
+import 'repositories/member_repository.dart';
 import 'signals.dart';
 import 'screens/event_details_screen.dart';
 import 'screens/event_edit_screen.dart';
@@ -160,11 +161,8 @@ final router = GoRouter(
 Future<String?> _performBootstrap() async {
   try {
     debugPrint('Router: Starting post-login bootstrap...');
-    final member = await client.member.getCurrentMember();
-    final sections = await client.member.getAllMySectionMemberships();
-
-    // todo: Can we deprecate this server method?
-    // final sections = await client.section.getSectionsForCurrentUser();
+    final member = await memberRepository.getCurrentMember();
+    final sections = await memberRepository.getAllMySectionMemberships();
 
     currentMemberSignal.value = member;
 

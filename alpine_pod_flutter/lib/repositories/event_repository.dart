@@ -78,32 +78,56 @@ class EventRepository {
 
       // Fallback: sync from server and return from local cache
       if (isOnlineSignal.value) {
-        final now = DateTime.now();
-        final start = startTime ?? DateTime(now.year, now.month - 1, 1);
-        final end = endTime ?? DateTime(now.year, now.month + 2, 0);
-        await syncService.syncEvents(sectionId, start, end);
         try {
+          final now = DateTime.now();
+          final start = startTime ?? DateTime(now.year, now.month - 1, 1);
+          final end = endTime ?? DateTime(now.year, now.month + 2, 0);
+          await syncService.syncEvents(sectionId, start, end);
+          connectivityService.markServerReachable();
           return await _queryCachedEvents(
             sectionId: sectionId,
             startTime: startTime,
             endTime: endTime,
             onlyMyEvents: onlyMyEvents,
           );
-        } catch (_) {
-          return [];
+        } catch (e) {
+          _log.warning('Sync events failed, falling back to local cache: $e');
+          connectivityService.markServerUnreachable();
+          try {
+            return await _queryCachedEvents(
+              sectionId: sectionId,
+              startTime: startTime,
+              endTime: endTime,
+              onlyMyEvents: onlyMyEvents,
+            );
+          } catch (_) {
+            return [];
+          }
         }
       }
     } else {
       if (isOnlineSignal.value) {
         try {
-          return await client.event.listEvents(
+          final events = await client.event.listEvents(
             sectionId: sectionId,
             startTime: startTime,
             endTime: endTime,
             onlyMyEvents: onlyMyEvents,
           );
+          connectivityService.markServerReachable();
+          return events;
         } catch (e) {
           _log.warning('Failed to fetch events directly from server: $e');
+          connectivityService.markServerUnreachable();
+          // Fallback to local cache even if cache toggle was off
+          try {
+            return await _queryCachedEvents(
+              sectionId: sectionId,
+              startTime: startTime,
+              endTime: endTime,
+              onlyMyEvents: onlyMyEvents,
+            );
+          } catch (_) {}
         }
       }
     }
@@ -132,7 +156,26 @@ class EventRepository {
     }
 
     if (isOnlineSignal.value) {
-      return await client.event.getEvent(id);
+      try {
+        final event = await client.event.getEvent(id);
+        connectivityService.markServerReachable();
+        return event;
+      } catch (e) {
+        _log.warning('Failed to fetch event $id from server: $e');
+        connectivityService.markServerUnreachable();
+        try {
+          return await Event.db.findById(
+            dbSession,
+            id,
+            include: Event.include(
+              eventManagers: EventManager.includeList(include: EventManager.include(member: Member.include())),
+              eventRegistrations: EventRegistration.includeList(
+                include: EventRegistration.include(member: Member.include()),
+              ),
+            ),
+          );
+        } catch (_) {}
+      }
     }
     return null;
   }
