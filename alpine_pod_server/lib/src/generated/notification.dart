@@ -11,12 +11,12 @@
 // ignore_for_file: dead_code, unnecessary_null_comparison
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
-import 'notification_template.dart' as _i2;
-import 'package:alpine_pod_server/src/generated/protocol.dart' as _i3;
+import 'package:alpine_pod_server/src/generated/protocol.dart' as _i1rm9ghy;
+import 'package:serverpod/serverpod.dart' as _is;
+import 'notification_template.dart' as _ikosvoxr;
 
 abstract class Notification
-    implements _i1.TableRow<_i1.UuidValue?>, _i1.ProtocolSerialization {
+    implements _is.TableRow<_is.UuidValue?>, _is.ProtocolSerialization {
   Notification._({
     this.id,
     required this.templateId,
@@ -31,9 +31,9 @@ abstract class Notification
   }) : updatedAt = updatedAt ?? DateTime.now();
 
   factory Notification({
-    _i1.UuidValue? id,
-    required _i1.UuidValue templateId,
-    _i2.NotificationTemplate? template,
+    _is.UuidValue? id,
+    required _is.UuidValue templateId,
+    _ikosvoxr.NotificationTemplate? template,
     required Map<String, String> data,
     String? actionUrl,
     required String renderedTitle,
@@ -47,28 +47,28 @@ abstract class Notification
     return Notification(
       id: jsonSerialization['id'] == null
           ? null
-          : _i1.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
-      templateId: _i1.UuidValueJsonExtension.fromJson(
+          : _is.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
+      templateId: _is.UuidValueJsonExtension.fromJson(
         jsonSerialization['templateId'],
       ),
       template: jsonSerialization['template'] == null
           ? null
-          : _i3.Protocol().deserialize<_i2.NotificationTemplate>(
+          : _i1rm9ghy.Protocol().deserialize<_ikosvoxr.NotificationTemplate>(
               jsonSerialization['template'],
             ),
-      data: _i3.Protocol().deserialize<Map<String, String>>(
+      data: _i1rm9ghy.Protocol().deserialize<Map<String, String>>(
         jsonSerialization['data'],
       ),
       actionUrl: jsonSerialization['actionUrl'] as String?,
       renderedTitle: jsonSerialization['renderedTitle'] as String,
       renderedBody: jsonSerialization['renderedBody'] as String,
       renderedHtml: jsonSerialization['renderedHtml'] as String?,
-      createdAt: _i1.DateTimeJsonExtension.fromJson(
+      createdAt: _is.DateTimeJsonExtension.fromJson(
         jsonSerialization['createdAt'],
       ),
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
     );
   }
 
@@ -77,11 +77,11 @@ abstract class Notification
   static const db = NotificationRepository._();
 
   @override
-  _i1.UuidValue? id;
+  _is.UuidValue? id;
 
-  _i1.UuidValue templateId;
+  _is.UuidValue templateId;
 
-  _i2.NotificationTemplate? template;
+  _ikosvoxr.NotificationTemplate? template;
 
   Map<String, String> data;
 
@@ -98,15 +98,15 @@ abstract class Notification
   DateTime updatedAt;
 
   @override
-  _i1.Table<_i1.UuidValue?> get table => t;
+  _is.Table<_is.UuidValue?> get table => t;
 
   /// Returns a shallow copy of this [Notification]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   Notification copyWith({
-    _i1.UuidValue? id,
-    _i1.UuidValue? templateId,
-    _i2.NotificationTemplate? template,
+    _is.UuidValue? id,
+    _is.UuidValue? templateId,
+    _ikosvoxr.NotificationTemplate? template,
     Map<String, String>? data,
     String? actionUrl,
     String? renderedTitle,
@@ -150,17 +150,17 @@ abstract class Notification
   }
 
   static NotificationInclude include({
-    _i2.NotificationTemplateInclude? template,
+    _ikosvoxr.NotificationTemplateInclude? template,
   }) {
     return NotificationInclude._(template: template);
   }
 
   static NotificationIncludeList includeList({
-    _i1.WhereExpressionBuilder<NotificationTable>? where,
+    _is.WhereExpressionBuilder<NotificationTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<NotificationTable>? orderBy,
-    _i1.OrderByListBuilder<NotificationTable>? orderByList,
+    _is.OrderByBuilder<NotificationTable>? orderBy,
+    _is.OrderByListBuilder<NotificationTable>? orderByList,
     NotificationInclude? include,
   }) {
     return NotificationIncludeList._(
@@ -175,7 +175,7 @@ abstract class Notification
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -183,9 +183,9 @@ class _Undefined {}
 
 class _NotificationImpl extends Notification {
   _NotificationImpl({
-    _i1.UuidValue? id,
-    required _i1.UuidValue templateId,
-    _i2.NotificationTemplate? template,
+    _is.UuidValue? id,
+    required _is.UuidValue templateId,
+    _ikosvoxr.NotificationTemplate? template,
     required Map<String, String> data,
     String? actionUrl,
     required String renderedTitle,
@@ -208,11 +208,11 @@ class _NotificationImpl extends Notification {
 
   /// Returns a shallow copy of this [Notification]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   Notification copyWith({
     Object? id = _Undefined,
-    _i1.UuidValue? templateId,
+    _is.UuidValue? templateId,
     Object? template = _Undefined,
     Map<String, String>? data,
     Object? actionUrl = _Undefined,
@@ -223,9 +223,9 @@ class _NotificationImpl extends Notification {
     DateTime? updatedAt,
   }) {
     return Notification(
-      id: id is _i1.UuidValue? ? id : this.id,
+      id: id is _is.UuidValue? ? id : this.id,
       templateId: templateId ?? this.templateId,
-      template: template is _i2.NotificationTemplate?
+      template: template is _ikosvoxr.NotificationTemplate?
           ? template
           : this.template?.copyWith(),
       data: data ?? this.data.map((key0, value0) => MapEntry(key0, value0)),
@@ -239,84 +239,86 @@ class _NotificationImpl extends Notification {
   }
 }
 
-class NotificationUpdateTable extends _i1.UpdateTable<NotificationTable> {
+class NotificationUpdateTable extends _is.UpdateTable<NotificationTable> {
   NotificationUpdateTable(super.table);
 
-  _i1.ColumnValue<_i1.UuidValue, _i1.UuidValue> templateId(
-    _i1.UuidValue value,
-  ) => _i1.ColumnValue(table.templateId, value);
+  _is.ColumnValue<_is.UuidValue, _is.UuidValue> templateId(
+    _is.UuidValue value,
+  ) => _is.ColumnValue(table.templateId, value);
 
-  _i1.ColumnValue<Map<String, String>, Map<String, String>> data(
+  _is.ColumnValue<Map<String, String>, Map<String, String>> data(
     Map<String, String> value,
-  ) => _i1.ColumnValue(table.data, value);
+  ) => _is.ColumnValue(table.data, value);
 
-  _i1.ColumnValue<String, String> actionUrl(String? value) =>
-      _i1.ColumnValue(table.actionUrl, value);
+  _is.ColumnValue<String, String> actionUrl(String? value) =>
+      _is.ColumnValue(table.actionUrl, value);
 
-  _i1.ColumnValue<String, String> renderedTitle(String value) =>
-      _i1.ColumnValue(table.renderedTitle, value);
+  _is.ColumnValue<String, String> renderedTitle(String value) =>
+      _is.ColumnValue(table.renderedTitle, value);
 
-  _i1.ColumnValue<String, String> renderedBody(String value) =>
-      _i1.ColumnValue(table.renderedBody, value);
+  _is.ColumnValue<String, String> renderedBody(String value) =>
+      _is.ColumnValue(table.renderedBody, value);
 
-  _i1.ColumnValue<String, String> renderedHtml(String? value) =>
-      _i1.ColumnValue(table.renderedHtml, value);
+  _is.ColumnValue<String, String> renderedHtml(String? value) =>
+      _is.ColumnValue(table.renderedHtml, value);
 
-  _i1.ColumnValue<DateTime, DateTime> createdAt(DateTime value) =>
-      _i1.ColumnValue(table.createdAt, value);
+  _is.ColumnValue<DateTime, DateTime> createdAt(DateTime value) =>
+      _is.ColumnValue(table.createdAt, value);
 
-  _i1.ColumnValue<DateTime, DateTime> updatedAt(DateTime value) =>
-      _i1.ColumnValue(table.updatedAt, value);
+  _is.ColumnValue<DateTime, DateTime> updatedAt(DateTime value) =>
+      _is.ColumnValue(table.updatedAt, value);
 }
 
-class NotificationTable extends _i1.Table<_i1.UuidValue?> {
+class NotificationTable extends _is.Table<_is.UuidValue?> {
   NotificationTable({super.tableRelation}) : super(tableName: 'notification') {
     updateTable = NotificationUpdateTable(this);
-    templateId = _i1.ColumnUuid('templateId', this);
-    data = _i1.ColumnSerializable<Map<String, String>>('data', this);
-    actionUrl = _i1.ColumnString('actionUrl', this);
-    renderedTitle = _i1.ColumnString('renderedTitle', this);
-    renderedBody = _i1.ColumnString('renderedBody', this);
-    renderedHtml = _i1.ColumnString('renderedHtml', this);
-    createdAt = _i1.ColumnDateTime('createdAt', this);
-    updatedAt = _i1.ColumnDateTime('updatedAt', this, hasDefault: true);
+    templateId = _is.ColumnUuid('templateId', this);
+    data = _is.ColumnSerializable<Map<String, String>>('data', this);
+    actionUrl = _is.ColumnString('actionUrl', this);
+    renderedTitle = _is.ColumnString('renderedTitle', this);
+    renderedBody = _is.ColumnString('renderedBody', this);
+    renderedHtml = _is.ColumnString('renderedHtml', this);
+    createdAt = _is.ColumnDateTime('createdAt', this);
+    updatedAt = _is.ColumnDateTime('updatedAt', this, hasDefault: true);
   }
 
   late final NotificationUpdateTable updateTable;
 
-  late final _i1.ColumnUuid templateId;
+  late final _is.ColumnUuid templateId;
 
-  _i2.NotificationTemplateTable? _template;
+  _ikosvoxr.NotificationTemplateTable? _template;
 
-  late final _i1.ColumnSerializable<Map<String, String>> data;
+  late final _is.ColumnSerializable<Map<String, String>> data;
 
-  late final _i1.ColumnString actionUrl;
+  late final _is.ColumnString actionUrl;
 
-  late final _i1.ColumnString renderedTitle;
+  late final _is.ColumnString renderedTitle;
 
-  late final _i1.ColumnString renderedBody;
+  late final _is.ColumnString renderedBody;
 
-  late final _i1.ColumnString renderedHtml;
+  late final _is.ColumnString renderedHtml;
 
-  late final _i1.ColumnDateTime createdAt;
+  late final _is.ColumnDateTime createdAt;
 
-  late final _i1.ColumnDateTime updatedAt;
+  late final _is.ColumnDateTime updatedAt;
 
-  _i2.NotificationTemplateTable get template {
+  _ikosvoxr.NotificationTemplateTable get template {
     if (_template != null) return _template!;
-    _template = _i1.createRelationTable(
+    _template = _is.createRelationTable(
       relationFieldName: 'template',
       field: Notification.t.templateId,
-      foreignField: _i2.NotificationTemplate.t.id,
+      foreignField: _ikosvoxr.NotificationTemplate.t.id,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i2.NotificationTemplateTable(tableRelation: foreignTableRelation),
+          _ikosvoxr.NotificationTemplateTable(
+            tableRelation: foreignTableRelation,
+          ),
     );
     return _template!;
   }
 
   @override
-  List<_i1.Column> get columns => [
+  List<_is.Column> get columns => [
     id,
     templateId,
     data,
@@ -329,7 +331,7 @@ class NotificationTable extends _i1.Table<_i1.UuidValue?> {
   ];
 
   @override
-  _i1.Table? getRelationTable(String relationField) {
+  _is.Table? getRelationTable(String relationField) {
     if (relationField == 'template') {
       return template;
     }
@@ -337,23 +339,23 @@ class NotificationTable extends _i1.Table<_i1.UuidValue?> {
   }
 }
 
-class NotificationInclude extends _i1.IncludeObject {
-  NotificationInclude._({_i2.NotificationTemplateInclude? template}) {
+class NotificationInclude extends _is.IncludeObject {
+  NotificationInclude._({_ikosvoxr.NotificationTemplateInclude? template}) {
     _template = template;
   }
 
-  _i2.NotificationTemplateInclude? _template;
+  _ikosvoxr.NotificationTemplateInclude? _template;
 
   @override
-  Map<String, _i1.Include?> get includes => {'template': _template};
+  Map<String, _is.Include?> get includes => {'template': _template};
 
   @override
-  _i1.Table<_i1.UuidValue?> get table => Notification.t;
+  _is.Table<_is.UuidValue?> get table => Notification.t;
 }
 
-class NotificationIncludeList extends _i1.IncludeList {
+class NotificationIncludeList extends _is.IncludeList {
   NotificationIncludeList._({
-    _i1.WhereExpressionBuilder<NotificationTable>? where,
+    _is.WhereExpressionBuilder<NotificationTable>? where,
     super.limit,
     super.offset,
     super.orderBy,
@@ -364,10 +366,10 @@ class NotificationIncludeList extends _i1.IncludeList {
   }
 
   @override
-  Map<String, _i1.Include?> get includes => include?.includes ?? {};
+  Map<String, _is.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<_i1.UuidValue?> get table => Notification.t;
+  _is.Table<_is.UuidValue?> get table => Notification.t;
 }
 
 class NotificationRepository {
@@ -398,16 +400,16 @@ class NotificationRepository {
   /// );
   /// ```
   Future<List<Notification>> find(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<NotificationTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<NotificationTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<NotificationTable>? orderBy,
-    _i1.OrderByListBuilder<NotificationTable>? orderByList,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<NotificationTable>? orderBy,
+    _is.OrderByListBuilder<NotificationTable>? orderByList,
+    _is.Transaction? transaction,
     NotificationInclude? include,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<Notification>(
       where: where?.call(Notification.t),
@@ -440,15 +442,15 @@ class NotificationRepository {
   /// );
   /// ```
   Future<Notification?> findFirstRow(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<NotificationTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<NotificationTable>? where,
     int? offset,
-    _i1.OrderByBuilder<NotificationTable>? orderBy,
-    _i1.OrderByListBuilder<NotificationTable>? orderByList,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<NotificationTable>? orderBy,
+    _is.OrderByListBuilder<NotificationTable>? orderByList,
+    _is.Transaction? transaction,
     NotificationInclude? include,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<Notification>(
       where: where?.call(Notification.t),
@@ -464,12 +466,12 @@ class NotificationRepository {
 
   /// Finds a single [Notification] by its [id] or null if no such row exists.
   Future<Notification?> findById(
-    _i1.DatabaseSession session,
-    _i1.UuidValue id, {
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session,
+    _is.UuidValue id, {
+    _is.Transaction? transaction,
     NotificationInclude? include,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<Notification>(
       id,
@@ -495,9 +497,9 @@ class NotificationRepository {
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<Notification>> insert(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<Notification> rows, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
     bool ignoreConflicts = false,
     bool noReturn = false,
   }) async {
@@ -513,9 +515,9 @@ class NotificationRepository {
   ///
   /// The returned [Notification] will have its `id` field set.
   Future<Notification> insertRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     Notification row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.insertRow<Notification>(row, transaction: transaction);
   }
@@ -541,12 +543,12 @@ class NotificationRepository {
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<Notification>> upsert(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<Notification> rows, {
-    required _i1.ColumnSelections<NotificationTable> conflictColumns,
-    _i1.ColumnSelections<NotificationTable>? updateColumns,
-    _i1.WhereExpressionBuilder<NotificationTable>? updateWhere,
-    _i1.Transaction? transaction,
+    required _is.ColumnSelections<NotificationTable> conflictColumns,
+    _is.ColumnSelections<NotificationTable>? updateColumns,
+    _is.WhereExpressionBuilder<NotificationTable>? updateWhere,
+    _is.Transaction? transaction,
     bool noReturn = false,
   }) async {
     return session.db.upsert<Notification>(
@@ -573,12 +575,12 @@ class NotificationRepository {
   ///
   /// The returned [Notification] will have its `id` field set.
   Future<Notification?> upsertRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     Notification row, {
-    required _i1.ColumnSelections<NotificationTable> conflictColumns,
-    _i1.ColumnSelections<NotificationTable>? updateColumns,
-    _i1.WhereExpressionBuilder<NotificationTable>? updateWhere,
-    _i1.Transaction? transaction,
+    required _is.ColumnSelections<NotificationTable> conflictColumns,
+    _is.ColumnSelections<NotificationTable>? updateColumns,
+    _is.WhereExpressionBuilder<NotificationTable>? updateWhere,
+    _is.Transaction? transaction,
   }) async {
     return session.db.upsertRow<Notification>(
       row,
@@ -599,10 +601,10 @@ class NotificationRepository {
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<Notification>> update(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<Notification> rows, {
-    _i1.ColumnSelections<NotificationTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<NotificationTable>? columns,
+    _is.Transaction? transaction,
     bool noReturn = false,
   }) async {
     return session.db.update<Notification>(
@@ -617,10 +619,10 @@ class NotificationRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<Notification> updateRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     Notification row, {
-    _i1.ColumnSelections<NotificationTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<NotificationTable>? columns,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateRow<Notification>(
       row,
@@ -632,10 +634,10 @@ class NotificationRepository {
   /// Updates a single [Notification] by its [id] with the specified [columnValues].
   /// Returns the updated row or null if no row with the given id exists.
   Future<Notification?> updateById(
-    _i1.DatabaseSession session,
-    _i1.UuidValue id, {
-    required _i1.ColumnValueListBuilder<NotificationUpdateTable> columnValues,
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session,
+    _is.UuidValue id, {
+    required _is.ColumnValueListBuilder<NotificationUpdateTable> columnValues,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateById<Notification>(
       id,
@@ -651,14 +653,14 @@ class NotificationRepository {
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<Notification>> updateWhere(
-    _i1.DatabaseSession session, {
-    required _i1.ColumnValueListBuilder<NotificationUpdateTable> columnValues,
-    required _i1.WhereExpressionBuilder<NotificationTable> where,
+    _is.DatabaseSession session, {
+    required _is.ColumnValueListBuilder<NotificationUpdateTable> columnValues,
+    required _is.WhereExpressionBuilder<NotificationTable> where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<NotificationTable>? orderBy,
-    _i1.OrderByListBuilder<NotificationTable>? orderByList,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<NotificationTable>? orderBy,
+    _is.OrderByListBuilder<NotificationTable>? orderByList,
+    _is.Transaction? transaction,
     bool noReturn = false,
   }) async {
     return session.db.updateWhere<Notification>(
@@ -685,11 +687,11 @@ class NotificationRepository {
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<Notification>> delete(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<Notification> rows, {
-    _i1.OrderByBuilder<NotificationTable>? orderBy,
-    _i1.OrderByListBuilder<NotificationTable>? orderByList,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<NotificationTable>? orderBy,
+    _is.OrderByListBuilder<NotificationTable>? orderByList,
+    _is.Transaction? transaction,
     bool noReturn = false,
   }) async {
     return session.db.delete<Notification>(
@@ -703,9 +705,9 @@ class NotificationRepository {
 
   /// Deletes a single [Notification].
   Future<Notification> deleteRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     Notification row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.deleteRow<Notification>(row, transaction: transaction);
   }
@@ -719,11 +721,11 @@ class NotificationRepository {
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<Notification>> deleteWhere(
-    _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<NotificationTable> where,
-    _i1.OrderByBuilder<NotificationTable>? orderBy,
-    _i1.OrderByListBuilder<NotificationTable>? orderByList,
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<NotificationTable> where,
+    _is.OrderByBuilder<NotificationTable>? orderBy,
+    _is.OrderByListBuilder<NotificationTable>? orderByList,
+    _is.Transaction? transaction,
     bool noReturn = false,
   }) async {
     return session.db.deleteWhere<Notification>(
@@ -738,10 +740,10 @@ class NotificationRepository {
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<NotificationTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<NotificationTable>? where,
     int? limit,
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.count<Notification>(
       where: where?.call(Notification.t),
@@ -752,11 +754,11 @@ class NotificationRepository {
 
   /// Acquires row-level locks on [Notification] rows matching the [where] expression.
   Future<void> lockRows(
-    _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<NotificationTable> where,
-    required _i1.LockMode lockMode,
-    required _i1.Transaction transaction,
-    _i1.LockBehavior lockBehavior = _i1.LockBehavior.wait,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<NotificationTable> where,
+    required _is.LockMode lockMode,
+    required _is.Transaction transaction,
+    _is.LockBehavior lockBehavior = _is.LockBehavior.wait,
   }) async {
     return session.db.lockRows<Notification>(
       where: where(Notification.t),
@@ -773,10 +775,10 @@ class NotificationAttachRowRepository {
   /// Creates a relation between the given [Notification] and [NotificationTemplate]
   /// by setting the [Notification]'s foreign key `templateId` to refer to the [NotificationTemplate].
   Future<void> template(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     Notification notification,
-    _i2.NotificationTemplate template, {
-    _i1.Transaction? transaction,
+    _ikosvoxr.NotificationTemplate template, {
+    _is.Transaction? transaction,
   }) async {
     if (notification.id == null) {
       throw ArgumentError.notNull('notification.id');

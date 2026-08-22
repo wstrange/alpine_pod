@@ -11,31 +11,31 @@
 // ignore_for_file: dead_code, unnecessary_null_comparison
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_database/serverpod_database.dart' as _i1;
-import 'package:serverpod_client/serverpod_client.dart' as _i2;
-import 'event.dart' as _i3;
-import 'member.dart' as _i4;
-import 'package:alpine_pod_client/src/protocol/protocol.dart' as _i5;
+import 'package:alpine_pod_client/src/protocol/protocol.dart' as _iib3gdw5;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
+import 'package:serverpod_database/serverpod_database.dart' as _isd;
+import 'event.dart' as _iu57571s;
+import 'member.dart' as _i7zhj6lg;
 
 abstract class EventManager
-    implements _i1.TableRow<_i2.UuidValue>, _i2.ProtocolSerialization {
+    implements _isd.TableRow<_isc.UuidValue>, _isc.ProtocolSerialization {
   EventManager._({
-    _i2.UuidValue? id,
+    _isc.UuidValue? id,
     required this.eventId,
     this.event,
     required this.memberId,
     this.member,
     this.assignedAt,
     DateTime? updatedAt,
-  }) : id = id ?? const _i2.Uuid().v7obj(),
+  }) : id = id ?? const _isc.Uuid().v7obj(),
        updatedAt = updatedAt ?? DateTime.now();
 
   factory EventManager({
-    _i2.UuidValue? id,
-    required _i2.UuidValue eventId,
-    _i3.Event? event,
-    required _i2.UuidValue memberId,
-    _i4.Member? member,
+    _isc.UuidValue? id,
+    required _isc.UuidValue eventId,
+    _iu57571s.Event? event,
+    required _isc.UuidValue memberId,
+    _i7zhj6lg.Member? member,
     DateTime? assignedAt,
     DateTime? updatedAt,
   }) = _EventManagerImpl;
@@ -44,25 +44,31 @@ abstract class EventManager
     return EventManager(
       id: jsonSerialization['id'] == null
           ? null
-          : _i2.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
-      eventId: _i2.UuidValueJsonExtension.fromJson(
+          : _isc.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
+      eventId: _isc.UuidValueJsonExtension.fromJson(
         jsonSerialization['eventId'],
       ),
       event: jsonSerialization['event'] == null
           ? null
-          : _i5.Protocol().deserialize<_i3.Event>(jsonSerialization['event']),
-      memberId: _i2.UuidValueJsonExtension.fromJson(
+          : _iib3gdw5.Protocol().deserialize<_iu57571s.Event>(
+              jsonSerialization['event'],
+            ),
+      memberId: _isc.UuidValueJsonExtension.fromJson(
         jsonSerialization['memberId'],
       ),
       member: jsonSerialization['member'] == null
           ? null
-          : _i5.Protocol().deserialize<_i4.Member>(jsonSerialization['member']),
+          : _iib3gdw5.Protocol().deserialize<_i7zhj6lg.Member>(
+              jsonSerialization['member'],
+            ),
       assignedAt: jsonSerialization['assignedAt'] == null
           ? null
-          : _i2.DateTimeJsonExtension.fromJson(jsonSerialization['assignedAt']),
+          : _isc.DateTimeJsonExtension.fromJson(
+              jsonSerialization['assignedAt'],
+            ),
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
-          : _i2.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
     );
   }
 
@@ -71,32 +77,32 @@ abstract class EventManager
   static const db = EventManagerRepository._();
 
   @override
-  _i2.UuidValue id;
+  _isc.UuidValue id;
 
-  _i2.UuidValue eventId;
+  _isc.UuidValue eventId;
 
-  _i3.Event? event;
+  _iu57571s.Event? event;
 
-  _i2.UuidValue memberId;
+  _isc.UuidValue memberId;
 
-  _i4.Member? member;
+  _i7zhj6lg.Member? member;
 
   DateTime? assignedAt;
 
   DateTime updatedAt;
 
   @override
-  _i1.Table<_i2.UuidValue> get table => t;
+  _isd.Table<_isc.UuidValue> get table => t;
 
   /// Returns a shallow copy of this [EventManager]
   /// with some or all fields replaced by the given arguments.
-  @_i2.useResult
+  @_isc.useResult
   EventManager copyWith({
-    _i2.UuidValue? id,
-    _i2.UuidValue? eventId,
-    _i3.Event? event,
-    _i2.UuidValue? memberId,
-    _i4.Member? member,
+    _isc.UuidValue? id,
+    _isc.UuidValue? eventId,
+    _iu57571s.Event? event,
+    _isc.UuidValue? memberId,
+    _i7zhj6lg.Member? member,
     DateTime? assignedAt,
     DateTime? updatedAt,
   });
@@ -129,18 +135,18 @@ abstract class EventManager
   }
 
   static EventManagerInclude include({
-    _i3.EventInclude? event,
-    _i4.MemberInclude? member,
+    _iu57571s.EventInclude? event,
+    _i7zhj6lg.MemberInclude? member,
   }) {
     return EventManagerInclude._(event: event, member: member);
   }
 
   static EventManagerIncludeList includeList({
-    _i1.WhereExpressionBuilder<EventManagerTable>? where,
+    _isd.WhereExpressionBuilder<EventManagerTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<EventManagerTable>? orderBy,
-    _i1.OrderByListBuilder<EventManagerTable>? orderByList,
+    _isd.OrderByBuilder<EventManagerTable>? orderBy,
+    _isd.OrderByListBuilder<EventManagerTable>? orderByList,
     EventManagerInclude? include,
   }) {
     return EventManagerIncludeList._(
@@ -155,7 +161,7 @@ abstract class EventManager
 
   @override
   String toString() {
-    return _i2.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -163,11 +169,11 @@ class _Undefined {}
 
 class _EventManagerImpl extends EventManager {
   _EventManagerImpl({
-    _i2.UuidValue? id,
-    required _i2.UuidValue eventId,
-    _i3.Event? event,
-    required _i2.UuidValue memberId,
-    _i4.Member? member,
+    _isc.UuidValue? id,
+    required _isc.UuidValue eventId,
+    _iu57571s.Event? event,
+    required _isc.UuidValue memberId,
+    _i7zhj6lg.Member? member,
     DateTime? assignedAt,
     DateTime? updatedAt,
   }) : super._(
@@ -182,13 +188,13 @@ class _EventManagerImpl extends EventManager {
 
   /// Returns a shallow copy of this [EventManager]
   /// with some or all fields replaced by the given arguments.
-  @_i2.useResult
+  @_isc.useResult
   @override
   EventManager copyWith({
-    _i2.UuidValue? id,
-    _i2.UuidValue? eventId,
+    _isc.UuidValue? id,
+    _isc.UuidValue? eventId,
     Object? event = _Undefined,
-    _i2.UuidValue? memberId,
+    _isc.UuidValue? memberId,
     Object? member = _Undefined,
     Object? assignedAt = _Undefined,
     DateTime? updatedAt,
@@ -196,83 +202,85 @@ class _EventManagerImpl extends EventManager {
     return EventManager(
       id: id ?? this.id,
       eventId: eventId ?? this.eventId,
-      event: event is _i3.Event? ? event : this.event?.copyWith(),
+      event: event is _iu57571s.Event? ? event : this.event?.copyWith(),
       memberId: memberId ?? this.memberId,
-      member: member is _i4.Member? ? member : this.member?.copyWith(),
+      member: member is _i7zhj6lg.Member? ? member : this.member?.copyWith(),
       assignedAt: assignedAt is DateTime? ? assignedAt : this.assignedAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 }
 
-class EventManagerUpdateTable extends _i1.UpdateTable<EventManagerTable> {
+class EventManagerUpdateTable extends _isd.UpdateTable<EventManagerTable> {
   EventManagerUpdateTable(super.table);
 
-  _i1.ColumnValue<_i2.UuidValue, _i2.UuidValue> eventId(_i2.UuidValue value) =>
-      _i1.ColumnValue(table.eventId, value);
+  _isd.ColumnValue<_isc.UuidValue, _isc.UuidValue> eventId(
+    _isc.UuidValue value,
+  ) => _isd.ColumnValue(table.eventId, value);
 
-  _i1.ColumnValue<_i2.UuidValue, _i2.UuidValue> memberId(_i2.UuidValue value) =>
-      _i1.ColumnValue(table.memberId, value);
+  _isd.ColumnValue<_isc.UuidValue, _isc.UuidValue> memberId(
+    _isc.UuidValue value,
+  ) => _isd.ColumnValue(table.memberId, value);
 
-  _i1.ColumnValue<DateTime, DateTime> assignedAt(DateTime? value) =>
-      _i1.ColumnValue(table.assignedAt, value);
+  _isd.ColumnValue<DateTime, DateTime> assignedAt(DateTime? value) =>
+      _isd.ColumnValue(table.assignedAt, value);
 
-  _i1.ColumnValue<DateTime, DateTime> updatedAt(DateTime value) =>
-      _i1.ColumnValue(table.updatedAt, value);
+  _isd.ColumnValue<DateTime, DateTime> updatedAt(DateTime value) =>
+      _isd.ColumnValue(table.updatedAt, value);
 }
 
-class EventManagerTable extends _i1.Table<_i2.UuidValue> {
+class EventManagerTable extends _isd.Table<_isc.UuidValue> {
   EventManagerTable({super.tableRelation})
     : super(tableName: 'event_managers') {
     updateTable = EventManagerUpdateTable(this);
-    eventId = _i1.ColumnUuid('eventId', this);
-    memberId = _i1.ColumnUuid('memberId', this);
-    assignedAt = _i1.ColumnDateTime('assignedAt', this);
-    updatedAt = _i1.ColumnDateTime('updatedAt', this, hasDefault: true);
+    eventId = _isd.ColumnUuid('eventId', this);
+    memberId = _isd.ColumnUuid('memberId', this);
+    assignedAt = _isd.ColumnDateTime('assignedAt', this);
+    updatedAt = _isd.ColumnDateTime('updatedAt', this, hasDefault: true);
   }
 
   late final EventManagerUpdateTable updateTable;
 
-  late final _i1.ColumnUuid eventId;
+  late final _isd.ColumnUuid eventId;
 
-  _i3.EventTable? _event;
+  _iu57571s.EventTable? _event;
 
-  late final _i1.ColumnUuid memberId;
+  late final _isd.ColumnUuid memberId;
 
-  _i4.MemberTable? _member;
+  _i7zhj6lg.MemberTable? _member;
 
-  late final _i1.ColumnDateTime assignedAt;
+  late final _isd.ColumnDateTime assignedAt;
 
-  late final _i1.ColumnDateTime updatedAt;
+  late final _isd.ColumnDateTime updatedAt;
 
-  _i3.EventTable get event {
+  _iu57571s.EventTable get event {
     if (_event != null) return _event!;
-    _event = _i1.createRelationTable(
+    _event = _isd.createRelationTable(
       relationFieldName: 'event',
       field: EventManager.t.eventId,
-      foreignField: _i3.Event.t.id,
+      foreignField: _iu57571s.Event.t.id,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i3.EventTable(tableRelation: foreignTableRelation),
+          _iu57571s.EventTable(tableRelation: foreignTableRelation),
     );
     return _event!;
   }
 
-  _i4.MemberTable get member {
+  _i7zhj6lg.MemberTable get member {
     if (_member != null) return _member!;
-    _member = _i1.createRelationTable(
+    _member = _isd.createRelationTable(
       relationFieldName: 'member',
       field: EventManager.t.memberId,
-      foreignField: _i4.Member.t.id,
+      foreignField: _i7zhj6lg.Member.t.id,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i4.MemberTable(tableRelation: foreignTableRelation),
+          _i7zhj6lg.MemberTable(tableRelation: foreignTableRelation),
     );
     return _member!;
   }
 
   @override
-  List<_i1.Column> get columns => [
+  List<_isd.Column> get columns => [
     id,
     eventId,
     memberId,
@@ -281,7 +289,7 @@ class EventManagerTable extends _i1.Table<_i2.UuidValue> {
   ];
 
   @override
-  _i1.Table? getRelationTable(String relationField) {
+  _isd.Table? getRelationTable(String relationField) {
     if (relationField == 'event') {
       return event;
     }
@@ -292,29 +300,32 @@ class EventManagerTable extends _i1.Table<_i2.UuidValue> {
   }
 }
 
-class EventManagerInclude extends _i1.IncludeObject {
-  EventManagerInclude._({_i3.EventInclude? event, _i4.MemberInclude? member}) {
+class EventManagerInclude extends _isd.IncludeObject {
+  EventManagerInclude._({
+    _iu57571s.EventInclude? event,
+    _i7zhj6lg.MemberInclude? member,
+  }) {
     _event = event;
     _member = member;
   }
 
-  _i3.EventInclude? _event;
+  _iu57571s.EventInclude? _event;
 
-  _i4.MemberInclude? _member;
+  _i7zhj6lg.MemberInclude? _member;
 
   @override
-  Map<String, _i1.Include?> get includes => {
+  Map<String, _isd.Include?> get includes => {
     'event': _event,
     'member': _member,
   };
 
   @override
-  _i1.Table<_i2.UuidValue> get table => EventManager.t;
+  _isd.Table<_isc.UuidValue> get table => EventManager.t;
 }
 
-class EventManagerIncludeList extends _i1.IncludeList {
+class EventManagerIncludeList extends _isd.IncludeList {
   EventManagerIncludeList._({
-    _i1.WhereExpressionBuilder<EventManagerTable>? where,
+    _isd.WhereExpressionBuilder<EventManagerTable>? where,
     super.limit,
     super.offset,
     super.orderBy,
@@ -325,10 +336,10 @@ class EventManagerIncludeList extends _i1.IncludeList {
   }
 
   @override
-  Map<String, _i1.Include?> get includes => include?.includes ?? {};
+  Map<String, _isd.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<_i2.UuidValue> get table => EventManager.t;
+  _isd.Table<_isc.UuidValue> get table => EventManager.t;
 }
 
 class EventManagerRepository {
@@ -359,16 +370,16 @@ class EventManagerRepository {
   /// );
   /// ```
   Future<List<EventManager>> find(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<EventManagerTable>? where,
+    _isd.DatabaseSession session, {
+    _isd.WhereExpressionBuilder<EventManagerTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<EventManagerTable>? orderBy,
-    _i1.OrderByListBuilder<EventManagerTable>? orderByList,
-    _i1.Transaction? transaction,
+    _isd.OrderByBuilder<EventManagerTable>? orderBy,
+    _isd.OrderByListBuilder<EventManagerTable>? orderByList,
+    _isd.Transaction? transaction,
     EventManagerInclude? include,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _isd.LockMode? lockMode,
+    _isd.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<EventManager>(
       where: where?.call(EventManager.t),
@@ -401,15 +412,15 @@ class EventManagerRepository {
   /// );
   /// ```
   Future<EventManager?> findFirstRow(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<EventManagerTable>? where,
+    _isd.DatabaseSession session, {
+    _isd.WhereExpressionBuilder<EventManagerTable>? where,
     int? offset,
-    _i1.OrderByBuilder<EventManagerTable>? orderBy,
-    _i1.OrderByListBuilder<EventManagerTable>? orderByList,
-    _i1.Transaction? transaction,
+    _isd.OrderByBuilder<EventManagerTable>? orderBy,
+    _isd.OrderByListBuilder<EventManagerTable>? orderByList,
+    _isd.Transaction? transaction,
     EventManagerInclude? include,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _isd.LockMode? lockMode,
+    _isd.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<EventManager>(
       where: where?.call(EventManager.t),
@@ -425,12 +436,12 @@ class EventManagerRepository {
 
   /// Finds a single [EventManager] by its [id] or null if no such row exists.
   Future<EventManager?> findById(
-    _i1.DatabaseSession session,
-    _i2.UuidValue id, {
-    _i1.Transaction? transaction,
+    _isd.DatabaseSession session,
+    _isc.UuidValue id, {
+    _isd.Transaction? transaction,
     EventManagerInclude? include,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _isd.LockMode? lockMode,
+    _isd.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<EventManager>(
       id,
@@ -456,9 +467,9 @@ class EventManagerRepository {
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<EventManager>> insert(
-    _i1.DatabaseSession session,
+    _isd.DatabaseSession session,
     List<EventManager> rows, {
-    _i1.Transaction? transaction,
+    _isd.Transaction? transaction,
     bool ignoreConflicts = false,
     bool noReturn = false,
   }) async {
@@ -474,9 +485,9 @@ class EventManagerRepository {
   ///
   /// The returned [EventManager] will have its `id` field set.
   Future<EventManager> insertRow(
-    _i1.DatabaseSession session,
+    _isd.DatabaseSession session,
     EventManager row, {
-    _i1.Transaction? transaction,
+    _isd.Transaction? transaction,
   }) async {
     return session.db.insertRow<EventManager>(row, transaction: transaction);
   }
@@ -502,12 +513,12 @@ class EventManagerRepository {
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<EventManager>> upsert(
-    _i1.DatabaseSession session,
+    _isd.DatabaseSession session,
     List<EventManager> rows, {
-    required _i1.ColumnSelections<EventManagerTable> conflictColumns,
-    _i1.ColumnSelections<EventManagerTable>? updateColumns,
-    _i1.WhereExpressionBuilder<EventManagerTable>? updateWhere,
-    _i1.Transaction? transaction,
+    required _isd.ColumnSelections<EventManagerTable> conflictColumns,
+    _isd.ColumnSelections<EventManagerTable>? updateColumns,
+    _isd.WhereExpressionBuilder<EventManagerTable>? updateWhere,
+    _isd.Transaction? transaction,
     bool noReturn = false,
   }) async {
     return session.db.upsert<EventManager>(
@@ -534,12 +545,12 @@ class EventManagerRepository {
   ///
   /// The returned [EventManager] will have its `id` field set.
   Future<EventManager?> upsertRow(
-    _i1.DatabaseSession session,
+    _isd.DatabaseSession session,
     EventManager row, {
-    required _i1.ColumnSelections<EventManagerTable> conflictColumns,
-    _i1.ColumnSelections<EventManagerTable>? updateColumns,
-    _i1.WhereExpressionBuilder<EventManagerTable>? updateWhere,
-    _i1.Transaction? transaction,
+    required _isd.ColumnSelections<EventManagerTable> conflictColumns,
+    _isd.ColumnSelections<EventManagerTable>? updateColumns,
+    _isd.WhereExpressionBuilder<EventManagerTable>? updateWhere,
+    _isd.Transaction? transaction,
   }) async {
     return session.db.upsertRow<EventManager>(
       row,
@@ -560,10 +571,10 @@ class EventManagerRepository {
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<EventManager>> update(
-    _i1.DatabaseSession session,
+    _isd.DatabaseSession session,
     List<EventManager> rows, {
-    _i1.ColumnSelections<EventManagerTable>? columns,
-    _i1.Transaction? transaction,
+    _isd.ColumnSelections<EventManagerTable>? columns,
+    _isd.Transaction? transaction,
     bool noReturn = false,
   }) async {
     return session.db.update<EventManager>(
@@ -578,10 +589,10 @@ class EventManagerRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<EventManager> updateRow(
-    _i1.DatabaseSession session,
+    _isd.DatabaseSession session,
     EventManager row, {
-    _i1.ColumnSelections<EventManagerTable>? columns,
-    _i1.Transaction? transaction,
+    _isd.ColumnSelections<EventManagerTable>? columns,
+    _isd.Transaction? transaction,
   }) async {
     return session.db.updateRow<EventManager>(
       row,
@@ -593,10 +604,10 @@ class EventManagerRepository {
   /// Updates a single [EventManager] by its [id] with the specified [columnValues].
   /// Returns the updated row or null if no row with the given id exists.
   Future<EventManager?> updateById(
-    _i1.DatabaseSession session,
-    _i2.UuidValue id, {
-    required _i1.ColumnValueListBuilder<EventManagerUpdateTable> columnValues,
-    _i1.Transaction? transaction,
+    _isd.DatabaseSession session,
+    _isc.UuidValue id, {
+    required _isd.ColumnValueListBuilder<EventManagerUpdateTable> columnValues,
+    _isd.Transaction? transaction,
   }) async {
     return session.db.updateById<EventManager>(
       id,
@@ -612,14 +623,14 @@ class EventManagerRepository {
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<EventManager>> updateWhere(
-    _i1.DatabaseSession session, {
-    required _i1.ColumnValueListBuilder<EventManagerUpdateTable> columnValues,
-    required _i1.WhereExpressionBuilder<EventManagerTable> where,
+    _isd.DatabaseSession session, {
+    required _isd.ColumnValueListBuilder<EventManagerUpdateTable> columnValues,
+    required _isd.WhereExpressionBuilder<EventManagerTable> where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<EventManagerTable>? orderBy,
-    _i1.OrderByListBuilder<EventManagerTable>? orderByList,
-    _i1.Transaction? transaction,
+    _isd.OrderByBuilder<EventManagerTable>? orderBy,
+    _isd.OrderByListBuilder<EventManagerTable>? orderByList,
+    _isd.Transaction? transaction,
     bool noReturn = false,
   }) async {
     return session.db.updateWhere<EventManager>(
@@ -646,11 +657,11 @@ class EventManagerRepository {
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<EventManager>> delete(
-    _i1.DatabaseSession session,
+    _isd.DatabaseSession session,
     List<EventManager> rows, {
-    _i1.OrderByBuilder<EventManagerTable>? orderBy,
-    _i1.OrderByListBuilder<EventManagerTable>? orderByList,
-    _i1.Transaction? transaction,
+    _isd.OrderByBuilder<EventManagerTable>? orderBy,
+    _isd.OrderByListBuilder<EventManagerTable>? orderByList,
+    _isd.Transaction? transaction,
     bool noReturn = false,
   }) async {
     return session.db.delete<EventManager>(
@@ -664,9 +675,9 @@ class EventManagerRepository {
 
   /// Deletes a single [EventManager].
   Future<EventManager> deleteRow(
-    _i1.DatabaseSession session,
+    _isd.DatabaseSession session,
     EventManager row, {
-    _i1.Transaction? transaction,
+    _isd.Transaction? transaction,
   }) async {
     return session.db.deleteRow<EventManager>(row, transaction: transaction);
   }
@@ -680,11 +691,11 @@ class EventManagerRepository {
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<EventManager>> deleteWhere(
-    _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<EventManagerTable> where,
-    _i1.OrderByBuilder<EventManagerTable>? orderBy,
-    _i1.OrderByListBuilder<EventManagerTable>? orderByList,
-    _i1.Transaction? transaction,
+    _isd.DatabaseSession session, {
+    required _isd.WhereExpressionBuilder<EventManagerTable> where,
+    _isd.OrderByBuilder<EventManagerTable>? orderBy,
+    _isd.OrderByListBuilder<EventManagerTable>? orderByList,
+    _isd.Transaction? transaction,
     bool noReturn = false,
   }) async {
     return session.db.deleteWhere<EventManager>(
@@ -699,10 +710,10 @@ class EventManagerRepository {
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<EventManagerTable>? where,
+    _isd.DatabaseSession session, {
+    _isd.WhereExpressionBuilder<EventManagerTable>? where,
     int? limit,
-    _i1.Transaction? transaction,
+    _isd.Transaction? transaction,
   }) async {
     return session.db.count<EventManager>(
       where: where?.call(EventManager.t),
@@ -713,11 +724,11 @@ class EventManagerRepository {
 
   /// Acquires row-level locks on [EventManager] rows matching the [where] expression.
   Future<void> lockRows(
-    _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<EventManagerTable> where,
-    required _i1.LockMode lockMode,
-    required _i1.Transaction transaction,
-    _i1.LockBehavior lockBehavior = _i1.LockBehavior.wait,
+    _isd.DatabaseSession session, {
+    required _isd.WhereExpressionBuilder<EventManagerTable> where,
+    required _isd.LockMode lockMode,
+    required _isd.Transaction transaction,
+    _isd.LockBehavior lockBehavior = _isd.LockBehavior.wait,
   }) async {
     return session.db.lockRows<EventManager>(
       where: where(EventManager.t),
@@ -734,10 +745,10 @@ class EventManagerAttachRowRepository {
   /// Creates a relation between the given [EventManager] and [Event]
   /// by setting the [EventManager]'s foreign key `eventId` to refer to the [Event].
   Future<void> event(
-    _i1.DatabaseSession session,
+    _isd.DatabaseSession session,
     EventManager eventManager,
-    _i3.Event event, {
-    _i1.Transaction? transaction,
+    _iu57571s.Event event, {
+    _isd.Transaction? transaction,
   }) async {
     if (eventManager.id == null) {
       throw ArgumentError.notNull('eventManager.id');
@@ -757,10 +768,10 @@ class EventManagerAttachRowRepository {
   /// Creates a relation between the given [EventManager] and [Member]
   /// by setting the [EventManager]'s foreign key `memberId` to refer to the [Member].
   Future<void> member(
-    _i1.DatabaseSession session,
+    _isd.DatabaseSession session,
     EventManager eventManager,
-    _i4.Member member, {
-    _i1.Transaction? transaction,
+    _i7zhj6lg.Member member, {
+    _isd.Transaction? transaction,
   }) async {
     if (eventManager.id == null) {
       throw ArgumentError.notNull('eventManager.id');

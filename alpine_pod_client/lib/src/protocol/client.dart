@@ -10,44 +10,48 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_auth_idp_client/serverpod_auth_idp_client.dart'
-    as _i1;
-import 'package:serverpod_client/serverpod_client.dart' as _i2;
-import 'dart:async' as _i3;
-import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart'
-    as _i4;
-import 'package:alpine_pod_client/src/protocol/section.dart' as _i5;
-import 'package:alpine_pod_client/src/protocol/member.dart' as _i6;
+import 'dart:async' as _ida;
+import 'dart:typed_data' as _idt;
+import 'package:alpine_pod_client/src/protocol/event.dart' as _ix4abnwg;
+import 'package:alpine_pod_client/src/protocol/event_manager.dart' as _iygn3jma;
+import 'package:alpine_pod_client/src/protocol/event_registration.dart'
+    as _isud34nx;
+import 'package:alpine_pod_client/src/protocol/event_template.dart'
+    as _imjavx7o;
+import 'package:alpine_pod_client/src/protocol/member.dart' as _ixkkgnmw;
 import 'package:alpine_pod_client/src/protocol/notification_delivery.dart'
-    as _i7;
-import 'package:alpine_pod_client/src/protocol/event.dart' as _i8;
-import 'package:alpine_pod_client/src/protocol/event_registration.dart' as _i9;
-import 'package:alpine_pod_client/src/protocol/event_manager.dart' as _i10;
-import 'package:alpine_pod_client/src/protocol/event_template.dart' as _i11;
-import 'package:alpine_pod_client/src/protocol/section_membership.dart' as _i12;
-import 'package:alpine_pod_client/src/protocol/user_notification.dart' as _i13;
-import 'package:alpine_pod_client/src/protocol/user_notification_preference.dart'
-    as _i14;
+    as _ionzmxtq;
 import 'package:alpine_pod_client/src/protocol/registration_status.dart'
-    as _i15;
-import 'dart:typed_data' as _i16;
-import 'package:http/http.dart' as _i17;
-import 'protocol.dart' as _i18;
-import 'package:serverpod_database/serverpod_database.dart' as _i19;
+    as _i6udvzgc;
+import 'package:alpine_pod_client/src/protocol/section.dart' as _i7dvc5iw;
+import 'package:alpine_pod_client/src/protocol/section_membership.dart'
+    as _ikapn372;
+import 'package:alpine_pod_client/src/protocol/user_notification.dart'
+    as _i9cwoz9c;
+import 'package:alpine_pod_client/src/protocol/user_notification_preference.dart'
+    as _i3sx7kqh;
+import 'package:http/http.dart' as _i85jenna;
+import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart'
+    as _iacc;
+import 'package:serverpod_auth_idp_client/serverpod_auth_idp_client.dart'
+    as _iaic;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
+import 'package:serverpod_database/serverpod_database.dart' as _isd;
+import 'protocol.dart' as _il2as5qe;
 import 'package:alpine_pod_client/migrations/migration_registry.dart';
 
 /// {@category Endpoint}
-class EndpointEmailIdp extends _i1.EndpointEmailIdpBase {
-  EndpointEmailIdp(_i2.EndpointCaller caller) : super(caller);
+class EndpointEmailIdp extends _iaic.EndpointEmailIdpBase {
+  EndpointEmailIdp(_isc.EndpointCaller caller) : super(caller);
 
   @override
   String get name => 'emailIdp';
 
   @override
-  _i3.Future<_i4.AuthSuccess> login({
+  _ida.Future<_iacc.AuthSuccess> login({
     required String email,
     required String password,
-  }) => caller.callServerEndpoint<_i4.AuthSuccess>('emailIdp', 'login', {
+  }) => caller.callServerEndpoint<_iacc.AuthSuccess>('emailIdp', 'login', {
     'email': email,
     'password': password,
   });
@@ -63,8 +67,8 @@ class EndpointEmailIdp extends _i1.EndpointEmailIdpBase {
   /// registration. If the email is already registered, the returned ID will not
   /// be valid.
   @override
-  _i3.Future<_i2.UuidValue> startRegistration({required String email}) =>
-      caller.callServerEndpoint<_i2.UuidValue>(
+  _ida.Future<_isc.UuidValue> startRegistration({required String email}) =>
+      caller.callServerEndpoint<_isc.UuidValue>(
         'emailIdp',
         'startRegistration',
         {'email': email},
@@ -81,8 +85,8 @@ class EndpointEmailIdp extends _i1.EndpointEmailIdpBase {
   /// - [EmailAccountRequestExceptionReason.invalid] if no request exists
   ///   for the given [accountRequestId] or [verificationCode] is invalid.
   @override
-  _i3.Future<String> verifyRegistrationCode({
-    required _i2.UuidValue accountRequestId,
+  _ida.Future<String> verifyRegistrationCode({
+    required _isc.UuidValue accountRequestId,
     required String verificationCode,
   }) =>
       caller.callServerEndpoint<String>('emailIdp', 'verifyRegistrationCode', {
@@ -105,10 +109,10 @@ class EndpointEmailIdp extends _i1.EndpointEmailIdpBase {
   ///
   /// Returns a session for the newly created user.
   @override
-  _i3.Future<_i4.AuthSuccess> finishRegistration({
+  _ida.Future<_iacc.AuthSuccess> finishRegistration({
     required String registrationToken,
     required String password,
-  }) => caller.callServerEndpoint<_i4.AuthSuccess>(
+  }) => caller.callServerEndpoint<_iacc.AuthSuccess>(
     'emailIdp',
     'finishRegistration',
     {'registrationToken': registrationToken, 'password': password},
@@ -128,8 +132,8 @@ class EndpointEmailIdp extends _i1.EndpointEmailIdpBase {
   ///   made too many attempts trying to request a password reset.
   ///
   @override
-  _i3.Future<_i2.UuidValue> startPasswordReset({required String email}) =>
-      caller.callServerEndpoint<_i2.UuidValue>(
+  _ida.Future<_isc.UuidValue> startPasswordReset({required String email}) =>
+      caller.callServerEndpoint<_isc.UuidValue>(
         'emailIdp',
         'startPasswordReset',
         {'email': email},
@@ -150,8 +154,8 @@ class EndpointEmailIdp extends _i1.EndpointEmailIdpBase {
   /// should be overridden to return credentials for the next step instead
   /// of the credentials for setting the password.
   @override
-  _i3.Future<String> verifyPasswordResetCode({
-    required _i2.UuidValue passwordResetRequestId,
+  _ida.Future<String> verifyPasswordResetCode({
+    required _isc.UuidValue passwordResetRequestId,
     required String verificationCode,
   }) =>
       caller.callServerEndpoint<String>('emailIdp', 'verifyPasswordResetCode', {
@@ -174,7 +178,7 @@ class EndpointEmailIdp extends _i1.EndpointEmailIdpBase {
   ///
   /// Throws an [AuthUserBlockedException] if the auth user is blocked.
   @override
-  _i3.Future<void> finishPasswordReset({
+  _ida.Future<void> finishPasswordReset({
     required String finishPasswordResetToken,
     required String newPassword,
   }) => caller.callServerEndpoint<void>('emailIdp', 'finishPasswordReset', {
@@ -183,18 +187,23 @@ class EndpointEmailIdp extends _i1.EndpointEmailIdpBase {
   });
 
   @override
-  _i3.Future<bool> hasAccount() =>
+  _ida.Future<bool> hasAccount() =>
       caller.callServerEndpoint<bool>('emailIdp', 'hasAccount', {});
 }
 
 /// {@category Endpoint}
-class EndpointRefreshJwtTokens extends _i4.EndpointRefreshJwtTokens {
-  EndpointRefreshJwtTokens(_i2.EndpointCaller caller) : super(caller);
+class EndpointRefreshJwtTokens extends _iacc.EndpointRefreshJwtTokens {
+  EndpointRefreshJwtTokens(_isc.EndpointCaller caller) : super(caller);
 
   @override
   String get name => 'refreshJwtTokens';
 
   /// Creates a new token pair for the given [refreshToken].
+  ///
+  /// If [refreshToken] is omitted, cookie-mode web clients fall back to the
+  /// configured HttpOnly refresh cookie. When neither source is present this
+  /// throws [RefreshTokenNotFoundException], the same public "no usable refresh
+  /// credential" exception used for unknown refresh tokens.
   ///
   /// Can throw the following exceptions:
   /// -[RefreshTokenMalformedException]: refresh token is malformed and could
@@ -213,28 +222,27 @@ class EndpointRefreshJwtTokens extends _i4.EndpointRefreshJwtTokens {
   /// This endpoint is unauthenticated, meaning the client won't include any
   /// authentication information with the call.
   @override
-  _i3.Future<_i4.AuthSuccess> refreshAccessToken({
-    required String refreshToken,
-  }) => caller.callServerEndpoint<_i4.AuthSuccess>(
-    'refreshJwtTokens',
-    'refreshAccessToken',
-    {'refreshToken': refreshToken},
-    authenticated: false,
-  );
+  _ida.Future<_iacc.AuthSuccess> refreshAccessToken({String? refreshToken}) =>
+      caller.callServerEndpoint<_iacc.AuthSuccess>(
+        'refreshJwtTokens',
+        'refreshAccessToken',
+        {'refreshToken': refreshToken},
+        authenticated: false,
+      );
 }
 
 /// {@category Endpoint}
-class EndpointGoogleIdp extends _i1.EndpointGoogleIdpBase {
-  EndpointGoogleIdp(_i2.EndpointCaller caller) : super(caller);
+class EndpointGoogleIdp extends _iaic.EndpointGoogleIdpBase {
+  EndpointGoogleIdp(_isc.EndpointCaller caller) : super(caller);
 
   @override
   String get name => 'googleIdp';
 
   @override
-  _i3.Future<_i4.AuthSuccess> login({
+  _ida.Future<_iacc.AuthSuccess> login({
     required String idToken,
     required String? accessToken,
-  }) => caller.callServerEndpoint<_i4.AuthSuccess>('googleIdp', 'login', {
+  }) => caller.callServerEndpoint<_iacc.AuthSuccess>('googleIdp', 'login', {
     'idToken': idToken,
     'accessToken': accessToken,
   });
@@ -247,24 +255,24 @@ class EndpointGoogleIdp extends _i1.EndpointGoogleIdpBase {
   ///
   /// If a new user is created an associated [UserProfile] is also created.
   @override
-  _i3.Future<_i4.AuthSuccess> loginWithCode({
+  _ida.Future<_iacc.AuthSuccess> loginWithCode({
     required String code,
     required String codeVerifier,
     required String redirectUri,
-  }) => caller.callServerEndpoint<_i4.AuthSuccess>(
+  }) => caller.callServerEndpoint<_iacc.AuthSuccess>(
     'googleIdp',
     'loginWithCode',
     {'code': code, 'codeVerifier': codeVerifier, 'redirectUri': redirectUri},
   );
 
   @override
-  _i3.Future<bool> hasAccount() =>
+  _ida.Future<bool> hasAccount() =>
       caller.callServerEndpoint<bool>('googleIdp', 'hasAccount', {});
 }
 
 /// {@category Endpoint}
-class EndpointFacebookIdp extends _i1.EndpointFacebookIdpBase {
-  EndpointFacebookIdp(_i2.EndpointCaller caller) : super(caller);
+class EndpointFacebookIdp extends _iaic.EndpointFacebookIdpBase {
+  EndpointFacebookIdp(_isc.EndpointCaller caller) : super(caller);
 
   @override
   String get name => 'facebookIdp';
@@ -275,69 +283,71 @@ class EndpointFacebookIdp extends _i1.EndpointFacebookIdpBase {
   /// If the access token is invalid or expired, the
   /// [FacebookAccessTokenVerificationException] will be thrown.
   @override
-  _i3.Future<_i4.AuthSuccess> login({required String accessToken}) =>
-      caller.callServerEndpoint<_i4.AuthSuccess>('facebookIdp', 'login', {
+  _ida.Future<_iacc.AuthSuccess> login({required String accessToken}) =>
+      caller.callServerEndpoint<_iacc.AuthSuccess>('facebookIdp', 'login', {
         'accessToken': accessToken,
       });
 
   @override
-  _i3.Future<bool> hasAccount() =>
+  _ida.Future<bool> hasAccount() =>
       caller.callServerEndpoint<bool>('facebookIdp', 'hasAccount', {});
 }
 
 /// {@category Endpoint}
-class EndpointAdmin extends _i2.EndpointRef {
-  EndpointAdmin(_i2.EndpointCaller caller) : super(caller);
+class EndpointAdmin extends _isc.EndpointRef {
+  EndpointAdmin(_isc.EndpointCaller caller) : super(caller);
 
   @override
   String get name => 'admin';
 
   /// Section Management
-  _i3.Future<_i5.Section> createSection(_i5.Section section) =>
-      caller.callServerEndpoint<_i5.Section>('admin', 'createSection', {
+  _ida.Future<_i7dvc5iw.Section> createSection(_i7dvc5iw.Section section) =>
+      caller.callServerEndpoint<_i7dvc5iw.Section>('admin', 'createSection', {
         'section': section,
       });
 
-  _i3.Future<_i5.Section?> getSection(_i2.UuidValue id) => caller
-      .callServerEndpoint<_i5.Section?>('admin', 'getSection', {'id': id});
+  _ida.Future<_i7dvc5iw.Section?> getSection(_isc.UuidValue id) =>
+      caller.callServerEndpoint<_i7dvc5iw.Section?>('admin', 'getSection', {
+        'id': id,
+      });
 
-  _i3.Future<_i5.Section> updateSection(_i5.Section section) =>
-      caller.callServerEndpoint<_i5.Section>('admin', 'updateSection', {
+  _ida.Future<_i7dvc5iw.Section> updateSection(_i7dvc5iw.Section section) =>
+      caller.callServerEndpoint<_i7dvc5iw.Section>('admin', 'updateSection', {
         'section': section,
       });
 
-  _i3.Future<void> deleteSection(_i2.UuidValue id) =>
+  _ida.Future<void> deleteSection(_isc.UuidValue id) =>
       caller.callServerEndpoint<void>('admin', 'deleteSection', {'id': id});
 
-  _i3.Future<List<_i5.Section>> listSections() =>
-      caller.callServerEndpoint<List<_i5.Section>>('admin', 'listSections', {});
+  _ida.Future<List<_i7dvc5iw.Section>> listSections() => caller
+      .callServerEndpoint<List<_i7dvc5iw.Section>>('admin', 'listSections', {});
 
-  _i3.Future<_i6.Member?> getMember(_i2.UuidValue id) =>
-      caller.callServerEndpoint<_i6.Member?>('admin', 'getMember', {'id': id});
+  _ida.Future<_ixkkgnmw.Member?> getMember(_isc.UuidValue id) => caller
+      .callServerEndpoint<_ixkkgnmw.Member?>('admin', 'getMember', {'id': id});
 
-  _i3.Future<void> deleteUser(_i2.UuidValue memberId) => caller
+  _ida.Future<void> deleteUser(_isc.UuidValue memberId) => caller
       .callServerEndpoint<void>('admin', 'deleteUser', {'memberId': memberId});
 
-  _i3.Future<List<_i7.NotificationDelivery>> getNotificationDeliveries({
+  _ida.Future<List<_ionzmxtq.NotificationDelivery>> getNotificationDeliveries({
     required int limit,
     required int offset,
     String? statusFilter,
-  }) => caller.callServerEndpoint<List<_i7.NotificationDelivery>>(
+  }) => caller.callServerEndpoint<List<_ionzmxtq.NotificationDelivery>>(
     'admin',
     'getNotificationDeliveries',
     {'limit': limit, 'offset': offset, 'statusFilter': statusFilter},
   );
 
-  _i3.Future<void> clearNotificationDeliveries() => caller
+  _ida.Future<void> clearNotificationDeliveries() => caller
       .callServerEndpoint<void>('admin', 'clearNotificationDeliveries', {});
 
-  _i3.Future<void> retryFailedNotifications() =>
+  _ida.Future<void> retryFailedNotifications() =>
       caller.callServerEndpoint<void>('admin', 'retryFailedNotifications', {});
 }
 
 /// {@category Endpoint}
-class EndpointEvent extends _i2.EndpointRef {
-  EndpointEvent(_i2.EndpointCaller caller) : super(caller);
+class EndpointEvent extends _isc.EndpointRef {
+  EndpointEvent(_isc.EndpointCaller caller) : super(caller);
 
   @override
   String get name => 'event';
@@ -349,73 +359,77 @@ class EndpointEvent extends _i2.EndpointRef {
   /// [additionalManagerIds] - Optional list of additional member IDs to assign as managers.
   ///
   /// todo: Do we want to explicitly set the default manager?
-  _i3.Future<_i8.Event> createEvent(
-    _i8.Event event, {
-    List<_i2.UuidValue>? additionalManagerIds,
+  _ida.Future<_ix4abnwg.Event> createEvent(
+    _ix4abnwg.Event event, {
+    List<_isc.UuidValue>? additionalManagerIds,
     required bool notifyNewEvent,
-  }) => caller.callServerEndpoint<_i8.Event>('event', 'createEvent', {
+  }) => caller.callServerEndpoint<_ix4abnwg.Event>('event', 'createEvent', {
     'event': event,
     'additionalManagerIds': additionalManagerIds,
     'notifyNewEvent': notifyNewEvent,
   });
 
-  _i3.Future<_i8.Event> getEvent(_i2.UuidValue id) =>
-      caller.callServerEndpoint<_i8.Event>('event', 'getEvent', {'id': id});
+  _ida.Future<_ix4abnwg.Event> getEvent(_isc.UuidValue id) => caller
+      .callServerEndpoint<_ix4abnwg.Event>('event', 'getEvent', {'id': id});
 
-  _i3.Future<_i8.Event> updateEvent(_i8.Event event) => caller
-      .callServerEndpoint<_i8.Event>('event', 'updateEvent', {'event': event});
+  _ida.Future<_ix4abnwg.Event> updateEvent(_ix4abnwg.Event event) =>
+      caller.callServerEndpoint<_ix4abnwg.Event>('event', 'updateEvent', {
+        'event': event,
+      });
 
-  _i3.Future<void> deleteEvent(_i2.UuidValue id) =>
+  _ida.Future<void> deleteEvent(_isc.UuidValue id) =>
       caller.callServerEndpoint<void>('event', 'deleteEvent', {'id': id});
 
-  _i3.Future<List<_i8.Event>> listEvents({
-    _i2.UuidValue? sectionId,
+  _ida.Future<List<_ix4abnwg.Event>> listEvents({
+    _isc.UuidValue? sectionId,
     DateTime? startTime,
     DateTime? endTime,
     required bool onlyMyEvents,
     DateTime? sinceLastUpdateTime,
-  }) => caller.callServerEndpoint<List<_i8.Event>>('event', 'listEvents', {
-    'sectionId': sectionId,
-    'startTime': startTime,
-    'endTime': endTime,
-    'onlyMyEvents': onlyMyEvents,
-    'sinceLastUpdateTime': sinceLastUpdateTime,
-  });
+  }) =>
+      caller.callServerEndpoint<List<_ix4abnwg.Event>>('event', 'listEvents', {
+        'sectionId': sectionId,
+        'startTime': startTime,
+        'endTime': endTime,
+        'onlyMyEvents': onlyMyEvents,
+        'sinceLastUpdateTime': sinceLastUpdateTime,
+      });
 
-  _i3.Future<_i9.EventRegistration> registerForEvent(_i2.UuidValue eventId) =>
-      caller.callServerEndpoint<_i9.EventRegistration>(
-        'event',
-        'registerForEvent',
-        {'eventId': eventId},
-      );
+  _ida.Future<_isud34nx.EventRegistration> registerForEvent(
+    _isc.UuidValue eventId,
+  ) => caller.callServerEndpoint<_isud34nx.EventRegistration>(
+    'event',
+    'registerForEvent',
+    {'eventId': eventId},
+  );
 }
 
 /// {@category Endpoint}
-class EndpointEventManager extends _i2.EndpointRef {
-  EndpointEventManager(_i2.EndpointCaller caller) : super(caller);
+class EndpointEventManager extends _isc.EndpointRef {
+  EndpointEventManager(_isc.EndpointCaller caller) : super(caller);
 
   @override
   String get name => 'eventManager';
 
-  _i3.Future<_i10.EventManager> assignEventManager(
-    _i10.EventManager eventManager,
-  ) => caller.callServerEndpoint<_i10.EventManager>(
+  _ida.Future<_iygn3jma.EventManager> assignEventManager(
+    _iygn3jma.EventManager eventManager,
+  ) => caller.callServerEndpoint<_iygn3jma.EventManager>(
     'eventManager',
     'assignEventManager',
     {'eventManager': eventManager},
   );
 
-  _i3.Future<void> removeEventManager(_i10.EventManager eventManager) =>
+  _ida.Future<void> removeEventManager(_iygn3jma.EventManager eventManager) =>
       caller.callServerEndpoint<void>('eventManager', 'removeEventManager', {
         'eventManager': eventManager,
       });
 
   /// Add a member to an event on behalf of an event manager.
   /// The calling user must be an event manager for this event.
-  _i3.Future<_i9.EventRegistration> addMemberToEvent(
-    _i2.UuidValue eventId,
-    _i2.UuidValue memberId,
-  ) => caller.callServerEndpoint<_i9.EventRegistration>(
+  _ida.Future<_isud34nx.EventRegistration> addMemberToEvent(
+    _isc.UuidValue eventId,
+    _isc.UuidValue memberId,
+  ) => caller.callServerEndpoint<_isud34nx.EventRegistration>(
     'eventManager',
     'addMemberToEvent',
     {'eventId': eventId, 'memberId': memberId},
@@ -423,39 +437,40 @@ class EndpointEventManager extends _i2.EndpointRef {
 
   /// Remove a member from an event on behalf of an event manager.
   /// The calling user must be an event manager for the related event.
-  _i3.Future<void> removeMemberFromEvent(_i2.UuidValue registrationId) =>
+  _ida.Future<void> removeMemberFromEvent(_isc.UuidValue registrationId) =>
       caller.callServerEndpoint<void>('eventManager', 'removeMemberFromEvent', {
         'registrationId': registrationId,
       });
 
-  _i3.Future<List<_i10.EventManager>> listEventManagers(
-    _i2.UuidValue eventId,
-  ) => caller.callServerEndpoint<List<_i10.EventManager>>(
+  _ida.Future<List<_iygn3jma.EventManager>> listEventManagers(
+    _isc.UuidValue eventId,
+  ) => caller.callServerEndpoint<List<_iygn3jma.EventManager>>(
     'eventManager',
     'listEventManagers',
     {'eventId': eventId},
   );
 
-  _i3.Future<List<_i8.Event>> listEventManagerEvents(_i2.UuidValue memberId) =>
-      caller.callServerEndpoint<List<_i8.Event>>(
-        'eventManager',
-        'listEventManagerEvents',
-        {'memberId': memberId},
-      );
+  _ida.Future<List<_ix4abnwg.Event>> listEventManagerEvents(
+    _isc.UuidValue memberId,
+  ) => caller.callServerEndpoint<List<_ix4abnwg.Event>>(
+    'eventManager',
+    'listEventManagerEvents',
+    {'memberId': memberId},
+  );
 
   /// List events in a section that have no event managers assigned
-  _i3.Future<List<_i8.Event>> listEventsWithoutEventManager(
-    _i2.UuidValue sectionId,
-  ) => caller.callServerEndpoint<List<_i8.Event>>(
+  _ida.Future<List<_ix4abnwg.Event>> listEventsWithoutEventManager(
+    _isc.UuidValue sectionId,
+  ) => caller.callServerEndpoint<List<_ix4abnwg.Event>>(
     'eventManager',
     'listEventsWithoutEventManager',
     {'sectionId': sectionId},
   );
 
   /// List all event managers for events in a section
-  _i3.Future<List<_i10.EventManager>> listSectionEventManagers(
-    _i2.UuidValue sectionId,
-  ) => caller.callServerEndpoint<List<_i10.EventManager>>(
+  _ida.Future<List<_iygn3jma.EventManager>> listSectionEventManagers(
+    _isc.UuidValue sectionId,
+  ) => caller.callServerEndpoint<List<_iygn3jma.EventManager>>(
     'eventManager',
     'listSectionEventManagers',
     {'sectionId': sectionId},
@@ -463,9 +478,9 @@ class EndpointEventManager extends _i2.EndpointRef {
 
   /// Approve a waitlisted registration, moving it to confirmed.
   /// The calling user must be an event manager for the event.
-  _i3.Future<_i9.EventRegistration> approveRegistration(
-    _i2.UuidValue registrationId,
-  ) => caller.callServerEndpoint<_i9.EventRegistration>(
+  _ida.Future<_isud34nx.EventRegistration> approveRegistration(
+    _isc.UuidValue registrationId,
+  ) => caller.callServerEndpoint<_isud34nx.EventRegistration>(
     'eventManager',
     'approveRegistration',
     {'registrationId': registrationId},
@@ -473,94 +488,97 @@ class EndpointEventManager extends _i2.EndpointRef {
 }
 
 /// {@category Endpoint}
-class EndpointEventTemplate extends _i2.EndpointRef {
-  EndpointEventTemplate(_i2.EndpointCaller caller) : super(caller);
+class EndpointEventTemplate extends _isc.EndpointRef {
+  EndpointEventTemplate(_isc.EndpointCaller caller) : super(caller);
 
   @override
   String get name => 'eventTemplate';
 
   /// Fetches all event templates from the database.
-  _i3.Future<List<_i11.EventTemplate>> listTemplates() =>
-      caller.callServerEndpoint<List<_i11.EventTemplate>>(
+  _ida.Future<List<_imjavx7o.EventTemplate>> listTemplates() =>
+      caller.callServerEndpoint<List<_imjavx7o.EventTemplate>>(
         'eventTemplate',
         'listTemplates',
         {},
       );
 
   /// Creates a new event template. Requires Admin scope.
-  _i3.Future<_i11.EventTemplate> createTemplate(_i11.EventTemplate template) =>
-      caller.callServerEndpoint<_i11.EventTemplate>(
-        'eventTemplate',
-        'createTemplate',
-        {'template': template},
-      );
+  _ida.Future<_imjavx7o.EventTemplate> createTemplate(
+    _imjavx7o.EventTemplate template,
+  ) => caller.callServerEndpoint<_imjavx7o.EventTemplate>(
+    'eventTemplate',
+    'createTemplate',
+    {'template': template},
+  );
 
   /// Updates an existing event template. Requires Admin scope.
-  _i3.Future<_i11.EventTemplate> updateTemplate(_i11.EventTemplate template) =>
-      caller.callServerEndpoint<_i11.EventTemplate>(
-        'eventTemplate',
-        'updateTemplate',
-        {'template': template},
-      );
+  _ida.Future<_imjavx7o.EventTemplate> updateTemplate(
+    _imjavx7o.EventTemplate template,
+  ) => caller.callServerEndpoint<_imjavx7o.EventTemplate>(
+    'eventTemplate',
+    'updateTemplate',
+    {'template': template},
+  );
 
   /// Deletes an event template. Requires Admin scope.
-  _i3.Future<void> deleteTemplate(_i2.UuidValue id) => caller
+  _ida.Future<void> deleteTemplate(_isc.UuidValue id) => caller
       .callServerEndpoint<void>('eventTemplate', 'deleteTemplate', {'id': id});
 }
 
 /// {@category Endpoint}
-class EndpointMember extends _i2.EndpointRef {
-  EndpointMember(_i2.EndpointCaller caller) : super(caller);
+class EndpointMember extends _isc.EndpointRef {
+  EndpointMember(_isc.EndpointCaller caller) : super(caller);
 
   @override
   String get name => 'member';
 
-  _i3.Future<_i6.Member?> getCurrentMember() =>
-      caller.callServerEndpoint<_i6.Member?>('member', 'getCurrentMember', {});
+  _ida.Future<_ixkkgnmw.Member?> getCurrentMember() => caller
+      .callServerEndpoint<_ixkkgnmw.Member?>('member', 'getCurrentMember', {});
 
   /// Create a new member.
   ///
   /// - Validates that the email is not already in use.
   /// - Sets `createdAt` to now.
   /// - Inserts the member row and invalidates the member cache.
-  _i3.Future<_i6.Member> createMember(_i6.Member member) =>
-      caller.callServerEndpoint<_i6.Member>('member', 'createMember', {
+  _ida.Future<_ixkkgnmw.Member> createMember(_ixkkgnmw.Member member) =>
+      caller.callServerEndpoint<_ixkkgnmw.Member>('member', 'createMember', {
         'member': member,
       });
 
-  _i3.Future<_i12.SectionMembership> addMemberToSection(
-    _i12.SectionMembership membership,
-  ) => caller.callServerEndpoint<_i12.SectionMembership>(
+  _ida.Future<_ikapn372.SectionMembership> addMemberToSection(
+    _ikapn372.SectionMembership membership,
+  ) => caller.callServerEndpoint<_ikapn372.SectionMembership>(
     'member',
     'addMemberToSection',
     {'membership': membership},
   );
 
-  _i3.Future<void> removeMemberFromSection(_i12.SectionMembership membership) =>
-      caller.callServerEndpoint<void>('member', 'removeMemberFromSection', {
-        'membership': membership,
-      });
+  _ida.Future<void> removeMemberFromSection(
+    _ikapn372.SectionMembership membership,
+  ) => caller.callServerEndpoint<void>('member', 'removeMemberFromSection', {
+    'membership': membership,
+  });
 
-  _i3.Future<_i6.Member?> getMember(_i2.UuidValue id) =>
-      caller.callServerEndpoint<_i6.Member?>('member', 'getMember', {'id': id});
+  _ida.Future<_ixkkgnmw.Member?> getMember(_isc.UuidValue id) => caller
+      .callServerEndpoint<_ixkkgnmw.Member?>('member', 'getMember', {'id': id});
 
   /// Return a list of all sections the member belongs to.
-  _i3.Future<List<_i12.SectionMembership>> getMemberSectionMemberships(
-    _i2.UuidValue memberId,
-  ) => caller.callServerEndpoint<List<_i12.SectionMembership>>(
+  _ida.Future<List<_ikapn372.SectionMembership>> getMemberSectionMemberships(
+    _isc.UuidValue memberId,
+  ) => caller.callServerEndpoint<List<_ikapn372.SectionMembership>>(
     'member',
     'getMemberSectionMemberships',
     {'memberId': memberId},
   );
 
-  _i3.Future<_i6.Member> updateMember(_i6.Member member) =>
-      caller.callServerEndpoint<_i6.Member>('member', 'updateMember', {
+  _ida.Future<_ixkkgnmw.Member> updateMember(_ixkkgnmw.Member member) =>
+      caller.callServerEndpoint<_ixkkgnmw.Member>('member', 'updateMember', {
         'member': member,
       });
 
   /// Mark the current member's waiver as signed today.
-  _i3.Future<_i6.Member> acceptWaiver() =>
-      caller.callServerEndpoint<_i6.Member>('member', 'acceptWaiver', {});
+  _ida.Future<_ixkkgnmw.Member> acceptWaiver() =>
+      caller.callServerEndpoint<_ixkkgnmw.Member>('member', 'acceptWaiver', {});
 
   /// Returns members for a section, or all members the caller has access to
   /// if [sectionId] is null.
@@ -570,20 +588,23 @@ class EndpointMember extends _i2.EndpointRef {
   /// - Regular users see members across all their sections (deduplicated).
   ///
   /// Use [offset] for pagination — pass `offset: page * limit` to load successive pages.
-  _i3.Future<List<_i6.Member>> getSectionMembers({
-    _i2.UuidValue? sectionId,
+  _ida.Future<List<_ixkkgnmw.Member>> getSectionMembers({
+    _isc.UuidValue? sectionId,
     String? filter,
     required int limit,
     required int offset,
     DateTime? sinceLastUpdate,
-  }) => caller
-      .callServerEndpoint<List<_i6.Member>>('member', 'getSectionMembers', {
-        'sectionId': sectionId,
-        'filter': filter,
-        'limit': limit,
-        'offset': offset,
-        'sinceLastUpdate': sinceLastUpdate,
-      });
+  }) => caller.callServerEndpoint<List<_ixkkgnmw.Member>>(
+    'member',
+    'getSectionMembers',
+    {
+      'sectionId': sectionId,
+      'filter': filter,
+      'limit': limit,
+      'offset': offset,
+      'sinceLastUpdate': sinceLastUpdate,
+    },
+  );
 
   /// Return a list of section memberships for the given section id
   ///
@@ -591,12 +612,12 @@ class EndpointMember extends _i2.EndpointRef {
   /// which include the user's scopes for the section.
   ///
   /// Use [offset] for pagination — pass `offset: page * limit` to load successive pages.
-  _i3.Future<List<_i12.SectionMembership>> getSectionMemberships(
-    _i2.UuidValue sectionId, {
+  _ida.Future<List<_ikapn372.SectionMembership>> getSectionMemberships(
+    _isc.UuidValue sectionId, {
     String? filter,
     required int limit,
     required int offset,
-  }) => caller.callServerEndpoint<List<_i12.SectionMembership>>(
+  }) => caller.callServerEndpoint<List<_ikapn372.SectionMembership>>(
     'member',
     'getSectionMemberships',
     {
@@ -608,17 +629,17 @@ class EndpointMember extends _i2.EndpointRef {
   );
 
   /// Get the active user's membership details (and scopes) for a specific section.
-  _i3.Future<_i12.SectionMembership?> getMySectionMembership(
-    _i2.UuidValue sectionId,
-  ) => caller.callServerEndpoint<_i12.SectionMembership?>(
+  _ida.Future<_ikapn372.SectionMembership?> getMySectionMembership(
+    _isc.UuidValue sectionId,
+  ) => caller.callServerEndpoint<_ikapn372.SectionMembership?>(
     'member',
     'getMySectionMembership',
     {'sectionId': sectionId},
   );
 
   /// Get all the active user's membership details across all sections.
-  _i3.Future<List<_i12.SectionMembership>> getAllMySectionMemberships() =>
-      caller.callServerEndpoint<List<_i12.SectionMembership>>(
+  _ida.Future<List<_ikapn372.SectionMembership>> getAllMySectionMemberships() =>
+      caller.callServerEndpoint<List<_ikapn372.SectionMembership>>(
         'member',
         'getAllMySectionMemberships',
         {},
@@ -626,72 +647,72 @@ class EndpointMember extends _i2.EndpointRef {
 
   /// Update a member's scopes for a specific section.
   /// Requires the caller to be a global admin or a section manager for the section.
-  _i3.Future<_i12.SectionMembership> updateMemberScopes(
-    _i2.UuidValue memberId,
-    _i2.UuidValue sectionId,
+  _ida.Future<_ikapn372.SectionMembership> updateMemberScopes(
+    _isc.UuidValue memberId,
+    _isc.UuidValue sectionId,
     Set<String> newScopes,
-  ) => caller.callServerEndpoint<_i12.SectionMembership>(
+  ) => caller.callServerEndpoint<_ikapn372.SectionMembership>(
     'member',
     'updateMemberScopes',
     {'memberId': memberId, 'sectionId': sectionId, 'newScopes': newScopes},
   );
 
   /// Atomic registration: creates a Member profile and multiple Section memberships.
-  _i3.Future<_i6.Member> registerMember(
-    _i6.Member member,
-    List<_i2.UuidValue> sectionIds,
-  ) => caller.callServerEndpoint<_i6.Member>('member', 'registerMember', {
+  _ida.Future<_ixkkgnmw.Member> registerMember(
+    _ixkkgnmw.Member member,
+    List<_isc.UuidValue> sectionIds,
+  ) => caller.callServerEndpoint<_ixkkgnmw.Member>('member', 'registerMember', {
     'member': member,
     'sectionIds': sectionIds,
   });
 
-  _i3.Future<void> setMemberProfileUrl(String imageUrl) =>
+  _ida.Future<void> setMemberProfileUrl(String imageUrl) =>
       caller.callServerEndpoint<void>('member', 'setMemberProfileUrl', {
         'imageUrl': imageUrl,
       });
 }
 
 /// {@category Endpoint}
-class EndpointNotification extends _i2.EndpointRef {
-  EndpointNotification(_i2.EndpointCaller caller) : super(caller);
+class EndpointNotification extends _isc.EndpointRef {
+  EndpointNotification(_isc.EndpointCaller caller) : super(caller);
 
   @override
   String get name => 'notification';
 
-  _i3.Future<List<_i13.UserNotification>> getMyFeed({
+  _ida.Future<List<_i9cwoz9c.UserNotification>> getMyFeed({
     required int limit,
     required int offset,
-  }) => caller.callServerEndpoint<List<_i13.UserNotification>>(
+  }) => caller.callServerEndpoint<List<_i9cwoz9c.UserNotification>>(
     'notification',
     'getMyFeed',
     {'limit': limit, 'offset': offset},
   );
 
   /// Delete all the notifications for the current user
-  _i3.Future<void> deleteAll() =>
+  _ida.Future<void> deleteAll() =>
       caller.callServerEndpoint<void>('notification', 'deleteAll', {});
 
-  _i3.Future<bool> markAsRead(_i2.UuidValue userNotificationId) =>
+  _ida.Future<bool> markAsRead(_isc.UuidValue userNotificationId) =>
       caller.callServerEndpoint<bool>('notification', 'markAsRead', {
         'userNotificationId': userNotificationId,
       });
 
-  _i3.Future<_i14.UserNotificationPreference> getMyPreferences() =>
-      caller.callServerEndpoint<_i14.UserNotificationPreference>(
+  _ida.Future<_i3sx7kqh.UserNotificationPreference> getMyPreferences() =>
+      caller.callServerEndpoint<_i3sx7kqh.UserNotificationPreference>(
         'notification',
         'getMyPreferences',
         {},
       );
 
-  _i3.Future<_i14.UserNotificationPreference> savePreference(
-    _i14.UserNotificationPreference preference,
-  ) => caller.callServerEndpoint<_i14.UserNotificationPreference>(
+  _ida.Future<_i3sx7kqh.UserNotificationPreference> savePreference(
+    _i3sx7kqh.UserNotificationPreference preference,
+  ) => caller.callServerEndpoint<_i3sx7kqh.UserNotificationPreference>(
     'notification',
     'savePreference',
     {'preference': preference},
   );
 
-  _i3.Future<void> registerFcmToken(String token, {String? deviceId}) =>
+  _ida.Future<void> registerFcmToken(String token, {String? deviceId}) =>
       caller.callServerEndpoint<void>('notification', 'registerFcmToken', {
         'token': token,
         'deviceId': deviceId,
@@ -699,39 +720,39 @@ class EndpointNotification extends _i2.EndpointRef {
 }
 
 /// {@category Endpoint}
-class EndpointRegistration extends _i2.EndpointRef {
-  EndpointRegistration(_i2.EndpointCaller caller) : super(caller);
+class EndpointRegistration extends _isc.EndpointRef {
+  EndpointRegistration(_isc.EndpointCaller caller) : super(caller);
 
   @override
   String get name => 'registration';
 
   /// Approve or reject a registration
-  _i3.Future<_i9.EventRegistration> updateRegistrationStatus(
-    _i2.UuidValue registrationId,
-    _i15.RegistrationStatus newStatus, {
+  _ida.Future<_isud34nx.EventRegistration> updateRegistrationStatus(
+    _isc.UuidValue registrationId,
+    _i6udvzgc.RegistrationStatus newStatus, {
     String? notes,
-  }) => caller.callServerEndpoint<_i9.EventRegistration>(
+  }) => caller.callServerEndpoint<_isud34nx.EventRegistration>(
     'registration',
     'updateRegistrationStatus',
     {'registrationId': registrationId, 'newStatus': newStatus, 'notes': notes},
   );
 
-  _i3.Future<_i9.EventRegistration> registerForEvent(
-    _i9.EventRegistration registration,
-  ) => caller.callServerEndpoint<_i9.EventRegistration>(
+  _ida.Future<_isud34nx.EventRegistration> registerForEvent(
+    _isud34nx.EventRegistration registration,
+  ) => caller.callServerEndpoint<_isud34nx.EventRegistration>(
     'registration',
     'registerForEvent',
     {'registration': registration},
   );
 
-  _i3.Future<void> cancelRegistration(_i2.UuidValue registrationId) =>
+  _ida.Future<void> cancelRegistration(_isc.UuidValue registrationId) =>
       caller.callServerEndpoint<void>('registration', 'cancelRegistration', {
         'registrationId': registrationId,
       });
 
-  _i3.Future<List<_i9.EventRegistration>> getRegistrationsForEvent(
-    _i2.UuidValue eventId,
-  ) => caller.callServerEndpoint<List<_i9.EventRegistration>>(
+  _ida.Future<List<_isud34nx.EventRegistration>> getRegistrationsForEvent(
+    _isc.UuidValue eventId,
+  ) => caller.callServerEndpoint<List<_isud34nx.EventRegistration>>(
     'registration',
     'getRegistrationsForEvent',
     {'eventId': eventId},
@@ -739,20 +760,26 @@ class EndpointRegistration extends _i2.EndpointRef {
 }
 
 /// {@category Endpoint}
-class EndpointSection extends _i2.EndpointRef {
-  EndpointSection(_i2.EndpointCaller caller) : super(caller);
+class EndpointSection extends _isc.EndpointRef {
+  EndpointSection(_isc.EndpointCaller caller) : super(caller);
 
   @override
   String get name => 'section';
 
-  _i3.Future<_i5.Section?> getSection(_i2.UuidValue id) => caller
-      .callServerEndpoint<_i5.Section?>('section', 'getSection', {'id': id});
+  _ida.Future<_i7dvc5iw.Section?> getSection(_isc.UuidValue id) =>
+      caller.callServerEndpoint<_i7dvc5iw.Section?>('section', 'getSection', {
+        'id': id,
+      });
 
-  _i3.Future<List<_i5.Section>> listSections() => caller
-      .callServerEndpoint<List<_i5.Section>>('section', 'listSections', {});
+  _ida.Future<List<_i7dvc5iw.Section>> listSections() =>
+      caller.callServerEndpoint<List<_i7dvc5iw.Section>>(
+        'section',
+        'listSections',
+        {},
+      );
 
-  _i3.Future<List<_i5.Section>> getSectionsForCurrentUser() =>
-      caller.callServerEndpoint<List<_i5.Section>>(
+  _ida.Future<List<_i7dvc5iw.Section>> getSectionsForCurrentUser() =>
+      caller.callServerEndpoint<List<_i7dvc5iw.Section>>(
         'section',
         'getSectionsForCurrentUser',
         {},
@@ -761,15 +788,15 @@ class EndpointSection extends _i2.EndpointRef {
 
 /// Endpoint to view and edit the signed-in user's profile.
 /// {@category Endpoint}
-class EndpointUserProfile extends _i4.EndpointUserProfileEditBase {
-  EndpointUserProfile(_i2.EndpointCaller caller) : super(caller);
+class EndpointUserProfile extends _iacc.EndpointUserProfileEditBase {
+  EndpointUserProfile(_isc.EndpointCaller caller) : super(caller);
 
   @override
   String get name => 'userProfile';
 
   @override
-  _i3.Future<_i4.UserProfileModel> setUserImage(_i16.ByteData image) =>
-      caller.callServerEndpoint<_i4.UserProfileModel>(
+  _ida.Future<_iacc.UserProfileModel> setUserImage(_idt.ByteData image) =>
+      caller.callServerEndpoint<_iacc.UserProfileModel>(
         'userProfile',
         'setUserImage',
         {'image': image},
@@ -779,8 +806,8 @@ class EndpointUserProfile extends _i4.EndpointUserProfileEditBase {
   ///
   /// The client should handle displaying a placeholder for users without images.
   @override
-  _i3.Future<_i4.UserProfileModel> removeUserImage() =>
-      caller.callServerEndpoint<_i4.UserProfileModel>(
+  _ida.Future<_iacc.UserProfileModel> removeUserImage() =>
+      caller.callServerEndpoint<_iacc.UserProfileModel>(
         'userProfile',
         'removeUserImage',
         {},
@@ -788,8 +815,8 @@ class EndpointUserProfile extends _i4.EndpointUserProfileEditBase {
 
   /// Changes the name of a user.
   @override
-  _i3.Future<_i4.UserProfileModel> changeUserName(String? userName) =>
-      caller.callServerEndpoint<_i4.UserProfileModel>(
+  _ida.Future<_iacc.UserProfileModel> changeUserName(String? userName) =>
+      caller.callServerEndpoint<_iacc.UserProfileModel>(
         'userProfile',
         'changeUserName',
         {'userName': userName},
@@ -797,8 +824,8 @@ class EndpointUserProfile extends _i4.EndpointUserProfileEditBase {
 
   /// Changes the full name of a user.
   @override
-  _i3.Future<_i4.UserProfileModel> changeFullName(String? fullName) =>
-      caller.callServerEndpoint<_i4.UserProfileModel>(
+  _ida.Future<_iacc.UserProfileModel> changeFullName(String? fullName) =>
+      caller.callServerEndpoint<_iacc.UserProfileModel>(
         'userProfile',
         'changeFullName',
         {'fullName': fullName},
@@ -806,34 +833,34 @@ class EndpointUserProfile extends _i4.EndpointUserProfileEditBase {
 
   /// Returns the user profile of the current user.
   @override
-  _i3.Future<_i4.UserProfileModel> get() =>
-      caller.callServerEndpoint<_i4.UserProfileModel>('userProfile', 'get', {});
+  _ida.Future<_iacc.UserProfileModel> get() => caller
+      .callServerEndpoint<_iacc.UserProfileModel>('userProfile', 'get', {});
 }
 
 class Modules {
   Modules(Client client) {
-    serverpod_auth_idp = _i1.Caller(client);
-    serverpod_auth_core = _i4.Caller(client);
+    serverpod_auth_idp = _iaic.Caller(client);
+    serverpod_auth_core = _iacc.Caller(client);
   }
 
-  late final _i1.Caller serverpod_auth_idp;
+  late final _iaic.Caller serverpod_auth_idp;
 
-  late final _i4.Caller serverpod_auth_core;
+  late final _iacc.Caller serverpod_auth_core;
 }
 
-class Client extends _i2.ServerpodClientShared {
+class Client extends _isc.ServerpodClientShared {
   Client(
     String host, {
     dynamic securityContext,
     Duration? streamingConnectionTimeout,
     Duration? connectionTimeout,
-    Function(_i2.MethodCallContext, Object, StackTrace)? onFailedCall,
-    Function(_i2.MethodCallContext)? onSucceededCall,
+    Function(_isc.MethodCallContext, Object, StackTrace)? onFailedCall,
+    Function(_isc.MethodCallContext)? onSucceededCall,
     bool? disconnectStreamsOnLostInternetConnection,
-    _i17.Client? httpClientOverride,
+    _i85jenna.Client? httpClientOverride,
   }) : super(
          host,
-         _i18.Protocol(),
+         _il2as5qe.Protocol(),
          securityContext: securityContext,
          streamingConnectionTimeout: streamingConnectionTimeout,
          connectionTimeout: connectionTimeout,
@@ -888,7 +915,7 @@ class Client extends _i2.ServerpodClientShared {
   late final Modules modules;
 
   @override
-  Map<String, _i2.EndpointRef> get endpointRefLookup => {
+  Map<String, _isc.EndpointRef> get endpointRefLookup => {
     'emailIdp': emailIdp,
     'refreshJwtTokens': refreshJwtTokens,
     'googleIdp': googleIdp,
@@ -905,7 +932,7 @@ class Client extends _i2.ServerpodClientShared {
   };
 
   @override
-  Map<String, _i2.ModuleEndpointCaller> get moduleLookup => {
+  Map<String, _isc.ModuleEndpointCaller> get moduleLookup => {
     'serverpod_auth_idp': modules.serverpod_auth_idp,
     'serverpod_auth_core': modules.serverpod_auth_core,
   };
@@ -923,14 +950,14 @@ class Client extends _i2.ServerpodClientShared {
   /// If [isDebugMode] is true, the database integrity will be verified after
   /// the migrations are applied to provide feedback of possible issues. On a
   /// Flutter application, this should be set to [kDebugMode].
-  _i3.Future<_i19.ClientDatabaseSession> createSession(
+  _ida.Future<_isd.ClientDatabaseSession> createSession(
     String path, {
     bool runMigrations = true,
     bool isDebugMode = false,
   }) async {
-    return await _i19.ClientDatabaseSession.open(
+    return await _isd.ClientDatabaseSession.open(
       path,
-      _i18.Protocol(),
+      _il2as5qe.Protocol(),
       clientMigrations: MigrationRegistry.migrations,
       runMigrations: runMigrations,
       isDebugMode: isDebugMode,

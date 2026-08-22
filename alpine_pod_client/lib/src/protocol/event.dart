@@ -11,17 +11,17 @@
 // ignore_for_file: dead_code, unnecessary_null_comparison
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_database/serverpod_database.dart' as _i1;
-import 'package:serverpod_client/serverpod_client.dart' as _i2;
-import 'section.dart' as _i3;
-import 'event_registration.dart' as _i4;
-import 'event_manager.dart' as _i5;
-import 'package:alpine_pod_client/src/protocol/protocol.dart' as _i6;
+import 'package:alpine_pod_client/src/protocol/protocol.dart' as _iib3gdw5;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
+import 'package:serverpod_database/serverpod_database.dart' as _isd;
+import 'event_manager.dart' as _ich6ygep;
+import 'event_registration.dart' as _i27uzliw;
+import 'section.dart' as _ibhmj7lb;
 
 abstract class Event
-    implements _i1.TableRow<_i2.UuidValue>, _i2.ProtocolSerialization {
+    implements _isd.TableRow<_isc.UuidValue>, _isc.ProtocolSerialization {
   Event._({
-    _i2.UuidValue? id,
+    _isc.UuidValue? id,
     required this.title,
     required this.description,
     required this.type,
@@ -44,7 +44,7 @@ abstract class Event
     this.eventRegistrations,
     this.eventManagers,
     DateTime? updatedAt,
-  }) : id = id ?? const _i2.Uuid().v7obj(),
+  }) : id = id ?? const _isc.Uuid().v7obj(),
        requiresApproval = requiresApproval ?? true,
        minimumParticipants = minimumParticipants ?? 0,
        maxParticipants = maxParticipants ?? 8,
@@ -53,7 +53,7 @@ abstract class Event
        updatedAt = updatedAt ?? DateTime.now();
 
   factory Event({
-    _i2.UuidValue? id,
+    _isc.UuidValue? id,
     required String title,
     required String description,
     required String type,
@@ -70,11 +70,11 @@ abstract class Event
     int? maxParticipants,
     DateTime? cancellationDeadline,
     bool? cancelled,
-    required _i2.UuidValue sectionId,
-    _i3.Section? section,
+    required _isc.UuidValue sectionId,
+    _ibhmj7lb.Section? section,
     bool? published,
-    List<_i4.EventRegistration>? eventRegistrations,
-    List<_i5.EventManager>? eventManagers,
+    List<_i27uzliw.EventRegistration>? eventRegistrations,
+    List<_ich6ygep.EventManager>? eventManagers,
     DateTime? updatedAt,
   }) = _EventImpl;
 
@@ -82,72 +82,74 @@ abstract class Event
     return Event(
       id: jsonSerialization['id'] == null
           ? null
-          : _i2.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
+          : _isc.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
       title: jsonSerialization['title'] as String,
       description: jsonSerialization['description'] as String,
       type: jsonSerialization['type'] as String,
-      startTime: _i2.DateTimeJsonExtension.fromJson(
+      startTime: _isc.DateTimeJsonExtension.fromJson(
         jsonSerialization['startTime'],
       ),
-      endTime: _i2.DateTimeJsonExtension.fromJson(jsonSerialization['endTime']),
+      endTime: _isc.DateTimeJsonExtension.fromJson(
+        jsonSerialization['endTime'],
+      ),
       eventLocation: jsonSerialization['eventLocation'] as String?,
       carpoolLocation: jsonSerialization['carpoolLocation'] as String?,
       carpoolTime: jsonSerialization['carpoolTime'] == null
           ? null
-          : _i2.DateTimeJsonExtension.fromJson(
+          : _isc.DateTimeJsonExtension.fromJson(
               jsonSerialization['carpoolTime'],
             ),
       registrationDeadline: jsonSerialization['registrationDeadline'] == null
           ? null
-          : _i2.DateTimeJsonExtension.fromJson(
+          : _isc.DateTimeJsonExtension.fromJson(
               jsonSerialization['registrationDeadline'],
             ),
       registrationStartDate: jsonSerialization['registrationStartDate'] == null
           ? null
-          : _i2.DateTimeJsonExtension.fromJson(
+          : _isc.DateTimeJsonExtension.fromJson(
               jsonSerialization['registrationStartDate'],
             ),
       registrationFee: (jsonSerialization['registrationFee'] as num?)
           ?.toDouble(),
       requiresApproval: jsonSerialization['requiresApproval'] == null
           ? null
-          : _i2.BoolJsonExtension.fromJson(
+          : _isc.BoolJsonExtension.fromJson(
               jsonSerialization['requiresApproval'],
             ),
       minimumParticipants: jsonSerialization['minimumParticipants'] as int?,
       maxParticipants: jsonSerialization['maxParticipants'] as int?,
       cancellationDeadline: jsonSerialization['cancellationDeadline'] == null
           ? null
-          : _i2.DateTimeJsonExtension.fromJson(
+          : _isc.DateTimeJsonExtension.fromJson(
               jsonSerialization['cancellationDeadline'],
             ),
       cancelled: jsonSerialization['cancelled'] == null
           ? null
-          : _i2.BoolJsonExtension.fromJson(jsonSerialization['cancelled']),
-      sectionId: _i2.UuidValueJsonExtension.fromJson(
+          : _isc.BoolJsonExtension.fromJson(jsonSerialization['cancelled']),
+      sectionId: _isc.UuidValueJsonExtension.fromJson(
         jsonSerialization['sectionId'],
       ),
       section: jsonSerialization['section'] == null
           ? null
-          : _i6.Protocol().deserialize<_i3.Section>(
+          : _iib3gdw5.Protocol().deserialize<_ibhmj7lb.Section>(
               jsonSerialization['section'],
             ),
       published: jsonSerialization['published'] == null
           ? null
-          : _i2.BoolJsonExtension.fromJson(jsonSerialization['published']),
+          : _isc.BoolJsonExtension.fromJson(jsonSerialization['published']),
       eventRegistrations: jsonSerialization['eventRegistrations'] == null
           ? null
-          : _i6.Protocol().deserialize<List<_i4.EventRegistration>>(
+          : _iib3gdw5.Protocol().deserialize<List<_i27uzliw.EventRegistration>>(
               jsonSerialization['eventRegistrations'],
             ),
       eventManagers: jsonSerialization['eventManagers'] == null
           ? null
-          : _i6.Protocol().deserialize<List<_i5.EventManager>>(
+          : _iib3gdw5.Protocol().deserialize<List<_ich6ygep.EventManager>>(
               jsonSerialization['eventManagers'],
             ),
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
-          : _i2.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
     );
   }
 
@@ -156,7 +158,7 @@ abstract class Event
   static const db = EventRepository._();
 
   @override
-  _i2.UuidValue id;
+  _isc.UuidValue id;
 
   String title;
 
@@ -190,26 +192,26 @@ abstract class Event
 
   bool cancelled;
 
-  _i2.UuidValue sectionId;
+  _isc.UuidValue sectionId;
 
-  _i3.Section? section;
+  _ibhmj7lb.Section? section;
 
   bool published;
 
-  List<_i4.EventRegistration>? eventRegistrations;
+  List<_i27uzliw.EventRegistration>? eventRegistrations;
 
-  List<_i5.EventManager>? eventManagers;
+  List<_ich6ygep.EventManager>? eventManagers;
 
   DateTime updatedAt;
 
   @override
-  _i1.Table<_i2.UuidValue> get table => t;
+  _isd.Table<_isc.UuidValue> get table => t;
 
   /// Returns a shallow copy of this [Event]
   /// with some or all fields replaced by the given arguments.
-  @_i2.useResult
+  @_isc.useResult
   Event copyWith({
-    _i2.UuidValue? id,
+    _isc.UuidValue? id,
     String? title,
     String? description,
     String? type,
@@ -226,11 +228,11 @@ abstract class Event
     int? maxParticipants,
     DateTime? cancellationDeadline,
     bool? cancelled,
-    _i2.UuidValue? sectionId,
-    _i3.Section? section,
+    _isc.UuidValue? sectionId,
+    _ibhmj7lb.Section? section,
     bool? published,
-    List<_i4.EventRegistration>? eventRegistrations,
-    List<_i5.EventManager>? eventManagers,
+    List<_i27uzliw.EventRegistration>? eventRegistrations,
+    List<_ich6ygep.EventManager>? eventManagers,
     DateTime? updatedAt,
   });
   @override
@@ -310,9 +312,9 @@ abstract class Event
   }
 
   static EventInclude include({
-    _i3.SectionInclude? section,
-    _i4.EventRegistrationIncludeList? eventRegistrations,
-    _i5.EventManagerIncludeList? eventManagers,
+    _ibhmj7lb.SectionInclude? section,
+    _i27uzliw.EventRegistrationIncludeList? eventRegistrations,
+    _ich6ygep.EventManagerIncludeList? eventManagers,
   }) {
     return EventInclude._(
       section: section,
@@ -322,11 +324,11 @@ abstract class Event
   }
 
   static EventIncludeList includeList({
-    _i1.WhereExpressionBuilder<EventTable>? where,
+    _isd.WhereExpressionBuilder<EventTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<EventTable>? orderBy,
-    _i1.OrderByListBuilder<EventTable>? orderByList,
+    _isd.OrderByBuilder<EventTable>? orderBy,
+    _isd.OrderByListBuilder<EventTable>? orderByList,
     EventInclude? include,
   }) {
     return EventIncludeList._(
@@ -341,7 +343,7 @@ abstract class Event
 
   @override
   String toString() {
-    return _i2.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -349,7 +351,7 @@ class _Undefined {}
 
 class _EventImpl extends Event {
   _EventImpl({
-    _i2.UuidValue? id,
+    _isc.UuidValue? id,
     required String title,
     required String description,
     required String type,
@@ -366,11 +368,11 @@ class _EventImpl extends Event {
     int? maxParticipants,
     DateTime? cancellationDeadline,
     bool? cancelled,
-    required _i2.UuidValue sectionId,
-    _i3.Section? section,
+    required _isc.UuidValue sectionId,
+    _ibhmj7lb.Section? section,
     bool? published,
-    List<_i4.EventRegistration>? eventRegistrations,
-    List<_i5.EventManager>? eventManagers,
+    List<_i27uzliw.EventRegistration>? eventRegistrations,
+    List<_ich6ygep.EventManager>? eventManagers,
     DateTime? updatedAt,
   }) : super._(
          id: id,
@@ -400,10 +402,10 @@ class _EventImpl extends Event {
 
   /// Returns a shallow copy of this [Event]
   /// with some or all fields replaced by the given arguments.
-  @_i2.useResult
+  @_isc.useResult
   @override
   Event copyWith({
-    _i2.UuidValue? id,
+    _isc.UuidValue? id,
     String? title,
     String? description,
     String? type,
@@ -420,7 +422,7 @@ class _EventImpl extends Event {
     int? maxParticipants,
     Object? cancellationDeadline = _Undefined,
     bool? cancelled,
-    _i2.UuidValue? sectionId,
+    _isc.UuidValue? sectionId,
     Object? section = _Undefined,
     bool? published,
     Object? eventRegistrations = _Undefined,
@@ -458,12 +460,15 @@ class _EventImpl extends Event {
           : this.cancellationDeadline,
       cancelled: cancelled ?? this.cancelled,
       sectionId: sectionId ?? this.sectionId,
-      section: section is _i3.Section? ? section : this.section?.copyWith(),
+      section: section is _ibhmj7lb.Section?
+          ? section
+          : this.section?.copyWith(),
       published: published ?? this.published,
-      eventRegistrations: eventRegistrations is List<_i4.EventRegistration>?
+      eventRegistrations:
+          eventRegistrations is List<_i27uzliw.EventRegistration>?
           ? eventRegistrations
           : this.eventRegistrations?.map((e0) => e0.copyWith()).toList(),
-      eventManagers: eventManagers is List<_i5.EventManager>?
+      eventManagers: eventManagers is List<_ich6ygep.EventManager>?
           ? eventManagers
           : this.eventManagers?.map((e0) => e0.copyWith()).toList(),
       updatedAt: updatedAt ?? this.updatedAt,
@@ -471,221 +476,221 @@ class _EventImpl extends Event {
   }
 }
 
-class EventUpdateTable extends _i1.UpdateTable<EventTable> {
+class EventUpdateTable extends _isd.UpdateTable<EventTable> {
   EventUpdateTable(super.table);
 
-  _i1.ColumnValue<String, String> title(String value) =>
-      _i1.ColumnValue(table.title, value);
+  _isd.ColumnValue<String, String> title(String value) =>
+      _isd.ColumnValue(table.title, value);
 
-  _i1.ColumnValue<String, String> description(String value) =>
-      _i1.ColumnValue(table.description, value);
+  _isd.ColumnValue<String, String> description(String value) =>
+      _isd.ColumnValue(table.description, value);
 
-  _i1.ColumnValue<String, String> type(String value) =>
-      _i1.ColumnValue(table.type, value);
+  _isd.ColumnValue<String, String> type(String value) =>
+      _isd.ColumnValue(table.type, value);
 
-  _i1.ColumnValue<DateTime, DateTime> startTime(DateTime value) =>
-      _i1.ColumnValue(table.startTime, value);
+  _isd.ColumnValue<DateTime, DateTime> startTime(DateTime value) =>
+      _isd.ColumnValue(table.startTime, value);
 
-  _i1.ColumnValue<DateTime, DateTime> endTime(DateTime value) =>
-      _i1.ColumnValue(table.endTime, value);
+  _isd.ColumnValue<DateTime, DateTime> endTime(DateTime value) =>
+      _isd.ColumnValue(table.endTime, value);
 
-  _i1.ColumnValue<String, String> eventLocation(String? value) =>
-      _i1.ColumnValue(table.eventLocation, value);
+  _isd.ColumnValue<String, String> eventLocation(String? value) =>
+      _isd.ColumnValue(table.eventLocation, value);
 
-  _i1.ColumnValue<String, String> carpoolLocation(String? value) =>
-      _i1.ColumnValue(table.carpoolLocation, value);
+  _isd.ColumnValue<String, String> carpoolLocation(String? value) =>
+      _isd.ColumnValue(table.carpoolLocation, value);
 
-  _i1.ColumnValue<DateTime, DateTime> carpoolTime(DateTime? value) =>
-      _i1.ColumnValue(table.carpoolTime, value);
+  _isd.ColumnValue<DateTime, DateTime> carpoolTime(DateTime? value) =>
+      _isd.ColumnValue(table.carpoolTime, value);
 
-  _i1.ColumnValue<DateTime, DateTime> registrationDeadline(DateTime? value) =>
-      _i1.ColumnValue(table.registrationDeadline, value);
+  _isd.ColumnValue<DateTime, DateTime> registrationDeadline(DateTime? value) =>
+      _isd.ColumnValue(table.registrationDeadline, value);
 
-  _i1.ColumnValue<DateTime, DateTime> registrationStartDate(DateTime? value) =>
-      _i1.ColumnValue(table.registrationStartDate, value);
+  _isd.ColumnValue<DateTime, DateTime> registrationStartDate(DateTime? value) =>
+      _isd.ColumnValue(table.registrationStartDate, value);
 
-  _i1.ColumnValue<double, double> registrationFee(double? value) =>
-      _i1.ColumnValue(table.registrationFee, value);
+  _isd.ColumnValue<double, double> registrationFee(double? value) =>
+      _isd.ColumnValue(table.registrationFee, value);
 
-  _i1.ColumnValue<bool, bool> requiresApproval(bool value) =>
-      _i1.ColumnValue(table.requiresApproval, value);
+  _isd.ColumnValue<bool, bool> requiresApproval(bool value) =>
+      _isd.ColumnValue(table.requiresApproval, value);
 
-  _i1.ColumnValue<int, int> minimumParticipants(int value) =>
-      _i1.ColumnValue(table.minimumParticipants, value);
+  _isd.ColumnValue<int, int> minimumParticipants(int value) =>
+      _isd.ColumnValue(table.minimumParticipants, value);
 
-  _i1.ColumnValue<int, int> maxParticipants(int value) =>
-      _i1.ColumnValue(table.maxParticipants, value);
+  _isd.ColumnValue<int, int> maxParticipants(int value) =>
+      _isd.ColumnValue(table.maxParticipants, value);
 
-  _i1.ColumnValue<DateTime, DateTime> cancellationDeadline(DateTime? value) =>
-      _i1.ColumnValue(table.cancellationDeadline, value);
+  _isd.ColumnValue<DateTime, DateTime> cancellationDeadline(DateTime? value) =>
+      _isd.ColumnValue(table.cancellationDeadline, value);
 
-  _i1.ColumnValue<bool, bool> cancelled(bool value) =>
-      _i1.ColumnValue(table.cancelled, value);
+  _isd.ColumnValue<bool, bool> cancelled(bool value) =>
+      _isd.ColumnValue(table.cancelled, value);
 
-  _i1.ColumnValue<_i2.UuidValue, _i2.UuidValue> sectionId(
-    _i2.UuidValue value,
-  ) => _i1.ColumnValue(table.sectionId, value);
+  _isd.ColumnValue<_isc.UuidValue, _isc.UuidValue> sectionId(
+    _isc.UuidValue value,
+  ) => _isd.ColumnValue(table.sectionId, value);
 
-  _i1.ColumnValue<bool, bool> published(bool value) =>
-      _i1.ColumnValue(table.published, value);
+  _isd.ColumnValue<bool, bool> published(bool value) =>
+      _isd.ColumnValue(table.published, value);
 
-  _i1.ColumnValue<DateTime, DateTime> updatedAt(DateTime value) =>
-      _i1.ColumnValue(table.updatedAt, value);
+  _isd.ColumnValue<DateTime, DateTime> updatedAt(DateTime value) =>
+      _isd.ColumnValue(table.updatedAt, value);
 }
 
-class EventTable extends _i1.Table<_i2.UuidValue> {
+class EventTable extends _isd.Table<_isc.UuidValue> {
   EventTable({super.tableRelation}) : super(tableName: 'events') {
     updateTable = EventUpdateTable(this);
-    title = _i1.ColumnString('title', this);
-    description = _i1.ColumnString('description', this);
-    type = _i1.ColumnString('type', this);
-    startTime = _i1.ColumnDateTime('startTime', this);
-    endTime = _i1.ColumnDateTime('endTime', this);
-    eventLocation = _i1.ColumnString('eventLocation', this);
-    carpoolLocation = _i1.ColumnString('carpoolLocation', this);
-    carpoolTime = _i1.ColumnDateTime('carpoolTime', this);
-    registrationDeadline = _i1.ColumnDateTime('registrationDeadline', this);
-    registrationStartDate = _i1.ColumnDateTime('registrationStartDate', this);
-    registrationFee = _i1.ColumnDouble('registrationFee', this);
-    requiresApproval = _i1.ColumnBool(
+    title = _isd.ColumnString('title', this);
+    description = _isd.ColumnString('description', this);
+    type = _isd.ColumnString('type', this);
+    startTime = _isd.ColumnDateTime('startTime', this);
+    endTime = _isd.ColumnDateTime('endTime', this);
+    eventLocation = _isd.ColumnString('eventLocation', this);
+    carpoolLocation = _isd.ColumnString('carpoolLocation', this);
+    carpoolTime = _isd.ColumnDateTime('carpoolTime', this);
+    registrationDeadline = _isd.ColumnDateTime('registrationDeadline', this);
+    registrationStartDate = _isd.ColumnDateTime('registrationStartDate', this);
+    registrationFee = _isd.ColumnDouble('registrationFee', this);
+    requiresApproval = _isd.ColumnBool(
       'requiresApproval',
       this,
       hasDefault: true,
     );
-    minimumParticipants = _i1.ColumnInt(
+    minimumParticipants = _isd.ColumnInt(
       'minimumParticipants',
       this,
       hasDefault: true,
     );
-    maxParticipants = _i1.ColumnInt('maxParticipants', this, hasDefault: true);
-    cancellationDeadline = _i1.ColumnDateTime('cancellationDeadline', this);
-    cancelled = _i1.ColumnBool('cancelled', this, hasDefault: true);
-    sectionId = _i1.ColumnUuid('sectionId', this);
-    published = _i1.ColumnBool('published', this, hasDefault: true);
-    updatedAt = _i1.ColumnDateTime('updatedAt', this, hasDefault: true);
+    maxParticipants = _isd.ColumnInt('maxParticipants', this, hasDefault: true);
+    cancellationDeadline = _isd.ColumnDateTime('cancellationDeadline', this);
+    cancelled = _isd.ColumnBool('cancelled', this, hasDefault: true);
+    sectionId = _isd.ColumnUuid('sectionId', this);
+    published = _isd.ColumnBool('published', this, hasDefault: true);
+    updatedAt = _isd.ColumnDateTime('updatedAt', this, hasDefault: true);
   }
 
   late final EventUpdateTable updateTable;
 
-  late final _i1.ColumnString title;
+  late final _isd.ColumnString title;
 
-  late final _i1.ColumnString description;
+  late final _isd.ColumnString description;
 
-  late final _i1.ColumnString type;
+  late final _isd.ColumnString type;
 
-  late final _i1.ColumnDateTime startTime;
+  late final _isd.ColumnDateTime startTime;
 
-  late final _i1.ColumnDateTime endTime;
+  late final _isd.ColumnDateTime endTime;
 
-  late final _i1.ColumnString eventLocation;
+  late final _isd.ColumnString eventLocation;
 
-  late final _i1.ColumnString carpoolLocation;
+  late final _isd.ColumnString carpoolLocation;
 
-  late final _i1.ColumnDateTime carpoolTime;
+  late final _isd.ColumnDateTime carpoolTime;
 
-  late final _i1.ColumnDateTime registrationDeadline;
+  late final _isd.ColumnDateTime registrationDeadline;
 
-  late final _i1.ColumnDateTime registrationStartDate;
+  late final _isd.ColumnDateTime registrationStartDate;
 
-  late final _i1.ColumnDouble registrationFee;
+  late final _isd.ColumnDouble registrationFee;
 
-  late final _i1.ColumnBool requiresApproval;
+  late final _isd.ColumnBool requiresApproval;
 
-  late final _i1.ColumnInt minimumParticipants;
+  late final _isd.ColumnInt minimumParticipants;
 
-  late final _i1.ColumnInt maxParticipants;
+  late final _isd.ColumnInt maxParticipants;
 
-  late final _i1.ColumnDateTime cancellationDeadline;
+  late final _isd.ColumnDateTime cancellationDeadline;
 
-  late final _i1.ColumnBool cancelled;
+  late final _isd.ColumnBool cancelled;
 
-  late final _i1.ColumnUuid sectionId;
+  late final _isd.ColumnUuid sectionId;
 
-  _i3.SectionTable? _section;
+  _ibhmj7lb.SectionTable? _section;
 
-  late final _i1.ColumnBool published;
+  late final _isd.ColumnBool published;
 
-  _i4.EventRegistrationTable? ___eventRegistrations;
+  _i27uzliw.EventRegistrationTable? ___eventRegistrations;
 
-  _i1.ManyRelation<_i4.EventRegistrationTable>? _eventRegistrations;
+  _isd.ManyRelation<_i27uzliw.EventRegistrationTable>? _eventRegistrations;
 
-  _i5.EventManagerTable? ___eventManagers;
+  _ich6ygep.EventManagerTable? ___eventManagers;
 
-  _i1.ManyRelation<_i5.EventManagerTable>? _eventManagers;
+  _isd.ManyRelation<_ich6ygep.EventManagerTable>? _eventManagers;
 
-  late final _i1.ColumnDateTime updatedAt;
+  late final _isd.ColumnDateTime updatedAt;
 
-  _i3.SectionTable get section {
+  _ibhmj7lb.SectionTable get section {
     if (_section != null) return _section!;
-    _section = _i1.createRelationTable(
+    _section = _isd.createRelationTable(
       relationFieldName: 'section',
       field: Event.t.sectionId,
-      foreignField: _i3.Section.t.id,
+      foreignField: _ibhmj7lb.Section.t.id,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i3.SectionTable(tableRelation: foreignTableRelation),
+          _ibhmj7lb.SectionTable(tableRelation: foreignTableRelation),
     );
     return _section!;
   }
 
-  _i4.EventRegistrationTable get __eventRegistrations {
+  _i27uzliw.EventRegistrationTable get __eventRegistrations {
     if (___eventRegistrations != null) return ___eventRegistrations!;
-    ___eventRegistrations = _i1.createRelationTable(
+    ___eventRegistrations = _isd.createRelationTable(
       relationFieldName: '__eventRegistrations',
       field: Event.t.id,
-      foreignField: _i4.EventRegistration.t.eventId,
+      foreignField: _i27uzliw.EventRegistration.t.eventId,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i4.EventRegistrationTable(tableRelation: foreignTableRelation),
+          _i27uzliw.EventRegistrationTable(tableRelation: foreignTableRelation),
     );
     return ___eventRegistrations!;
   }
 
-  _i5.EventManagerTable get __eventManagers {
+  _ich6ygep.EventManagerTable get __eventManagers {
     if (___eventManagers != null) return ___eventManagers!;
-    ___eventManagers = _i1.createRelationTable(
+    ___eventManagers = _isd.createRelationTable(
       relationFieldName: '__eventManagers',
       field: Event.t.id,
-      foreignField: _i5.EventManager.t.eventId,
+      foreignField: _ich6ygep.EventManager.t.eventId,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i5.EventManagerTable(tableRelation: foreignTableRelation),
+          _ich6ygep.EventManagerTable(tableRelation: foreignTableRelation),
     );
     return ___eventManagers!;
   }
 
-  _i1.ManyRelation<_i4.EventRegistrationTable> get eventRegistrations {
+  _isd.ManyRelation<_i27uzliw.EventRegistrationTable> get eventRegistrations {
     if (_eventRegistrations != null) return _eventRegistrations!;
-    var relationTable = _i1.createRelationTable(
+    var relationTable = _isd.createRelationTable(
       relationFieldName: 'eventRegistrations',
       field: Event.t.id,
-      foreignField: _i4.EventRegistration.t.eventId,
+      foreignField: _i27uzliw.EventRegistration.t.eventId,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i4.EventRegistrationTable(tableRelation: foreignTableRelation),
+          _i27uzliw.EventRegistrationTable(tableRelation: foreignTableRelation),
     );
-    _eventRegistrations = _i1.ManyRelation<_i4.EventRegistrationTable>(
+    _eventRegistrations = _isd.ManyRelation<_i27uzliw.EventRegistrationTable>(
       tableWithRelations: relationTable,
-      table: _i4.EventRegistrationTable(
+      table: _i27uzliw.EventRegistrationTable(
         tableRelation: relationTable.tableRelation!.lastRelation,
       ),
     );
     return _eventRegistrations!;
   }
 
-  _i1.ManyRelation<_i5.EventManagerTable> get eventManagers {
+  _isd.ManyRelation<_ich6ygep.EventManagerTable> get eventManagers {
     if (_eventManagers != null) return _eventManagers!;
-    var relationTable = _i1.createRelationTable(
+    var relationTable = _isd.createRelationTable(
       relationFieldName: 'eventManagers',
       field: Event.t.id,
-      foreignField: _i5.EventManager.t.eventId,
+      foreignField: _ich6ygep.EventManager.t.eventId,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i5.EventManagerTable(tableRelation: foreignTableRelation),
+          _ich6ygep.EventManagerTable(tableRelation: foreignTableRelation),
     );
-    _eventManagers = _i1.ManyRelation<_i5.EventManagerTable>(
+    _eventManagers = _isd.ManyRelation<_ich6ygep.EventManagerTable>(
       tableWithRelations: relationTable,
-      table: _i5.EventManagerTable(
+      table: _ich6ygep.EventManagerTable(
         tableRelation: relationTable.tableRelation!.lastRelation,
       ),
     );
@@ -693,7 +698,7 @@ class EventTable extends _i1.Table<_i2.UuidValue> {
   }
 
   @override
-  List<_i1.Column> get columns => [
+  List<_isd.Column> get columns => [
     id,
     title,
     description,
@@ -717,7 +722,7 @@ class EventTable extends _i1.Table<_i2.UuidValue> {
   ];
 
   @override
-  _i1.Table? getRelationTable(String relationField) {
+  _isd.Table? getRelationTable(String relationField) {
     if (relationField == 'section') {
       return section;
     }
@@ -731,37 +736,37 @@ class EventTable extends _i1.Table<_i2.UuidValue> {
   }
 }
 
-class EventInclude extends _i1.IncludeObject {
+class EventInclude extends _isd.IncludeObject {
   EventInclude._({
-    _i3.SectionInclude? section,
-    _i4.EventRegistrationIncludeList? eventRegistrations,
-    _i5.EventManagerIncludeList? eventManagers,
+    _ibhmj7lb.SectionInclude? section,
+    _i27uzliw.EventRegistrationIncludeList? eventRegistrations,
+    _ich6ygep.EventManagerIncludeList? eventManagers,
   }) {
     _section = section;
     _eventRegistrations = eventRegistrations;
     _eventManagers = eventManagers;
   }
 
-  _i3.SectionInclude? _section;
+  _ibhmj7lb.SectionInclude? _section;
 
-  _i4.EventRegistrationIncludeList? _eventRegistrations;
+  _i27uzliw.EventRegistrationIncludeList? _eventRegistrations;
 
-  _i5.EventManagerIncludeList? _eventManagers;
+  _ich6ygep.EventManagerIncludeList? _eventManagers;
 
   @override
-  Map<String, _i1.Include?> get includes => {
+  Map<String, _isd.Include?> get includes => {
     'section': _section,
     'eventRegistrations': _eventRegistrations,
     'eventManagers': _eventManagers,
   };
 
   @override
-  _i1.Table<_i2.UuidValue> get table => Event.t;
+  _isd.Table<_isc.UuidValue> get table => Event.t;
 }
 
-class EventIncludeList extends _i1.IncludeList {
+class EventIncludeList extends _isd.IncludeList {
   EventIncludeList._({
-    _i1.WhereExpressionBuilder<EventTable>? where,
+    _isd.WhereExpressionBuilder<EventTable>? where,
     super.limit,
     super.offset,
     super.orderBy,
@@ -772,10 +777,10 @@ class EventIncludeList extends _i1.IncludeList {
   }
 
   @override
-  Map<String, _i1.Include?> get includes => include?.includes ?? {};
+  Map<String, _isd.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<_i2.UuidValue> get table => Event.t;
+  _isd.Table<_isc.UuidValue> get table => Event.t;
 }
 
 class EventRepository {
@@ -808,16 +813,16 @@ class EventRepository {
   /// );
   /// ```
   Future<List<Event>> find(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<EventTable>? where,
+    _isd.DatabaseSession session, {
+    _isd.WhereExpressionBuilder<EventTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<EventTable>? orderBy,
-    _i1.OrderByListBuilder<EventTable>? orderByList,
-    _i1.Transaction? transaction,
+    _isd.OrderByBuilder<EventTable>? orderBy,
+    _isd.OrderByListBuilder<EventTable>? orderByList,
+    _isd.Transaction? transaction,
     EventInclude? include,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _isd.LockMode? lockMode,
+    _isd.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<Event>(
       where: where?.call(Event.t),
@@ -850,15 +855,15 @@ class EventRepository {
   /// );
   /// ```
   Future<Event?> findFirstRow(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<EventTable>? where,
+    _isd.DatabaseSession session, {
+    _isd.WhereExpressionBuilder<EventTable>? where,
     int? offset,
-    _i1.OrderByBuilder<EventTable>? orderBy,
-    _i1.OrderByListBuilder<EventTable>? orderByList,
-    _i1.Transaction? transaction,
+    _isd.OrderByBuilder<EventTable>? orderBy,
+    _isd.OrderByListBuilder<EventTable>? orderByList,
+    _isd.Transaction? transaction,
     EventInclude? include,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _isd.LockMode? lockMode,
+    _isd.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<Event>(
       where: where?.call(Event.t),
@@ -874,12 +879,12 @@ class EventRepository {
 
   /// Finds a single [Event] by its [id] or null if no such row exists.
   Future<Event?> findById(
-    _i1.DatabaseSession session,
-    _i2.UuidValue id, {
-    _i1.Transaction? transaction,
+    _isd.DatabaseSession session,
+    _isc.UuidValue id, {
+    _isd.Transaction? transaction,
     EventInclude? include,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _isd.LockMode? lockMode,
+    _isd.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<Event>(
       id,
@@ -905,9 +910,9 @@ class EventRepository {
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<Event>> insert(
-    _i1.DatabaseSession session,
+    _isd.DatabaseSession session,
     List<Event> rows, {
-    _i1.Transaction? transaction,
+    _isd.Transaction? transaction,
     bool ignoreConflicts = false,
     bool noReturn = false,
   }) async {
@@ -923,9 +928,9 @@ class EventRepository {
   ///
   /// The returned [Event] will have its `id` field set.
   Future<Event> insertRow(
-    _i1.DatabaseSession session,
+    _isd.DatabaseSession session,
     Event row, {
-    _i1.Transaction? transaction,
+    _isd.Transaction? transaction,
   }) async {
     return session.db.insertRow<Event>(row, transaction: transaction);
   }
@@ -951,12 +956,12 @@ class EventRepository {
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<Event>> upsert(
-    _i1.DatabaseSession session,
+    _isd.DatabaseSession session,
     List<Event> rows, {
-    required _i1.ColumnSelections<EventTable> conflictColumns,
-    _i1.ColumnSelections<EventTable>? updateColumns,
-    _i1.WhereExpressionBuilder<EventTable>? updateWhere,
-    _i1.Transaction? transaction,
+    required _isd.ColumnSelections<EventTable> conflictColumns,
+    _isd.ColumnSelections<EventTable>? updateColumns,
+    _isd.WhereExpressionBuilder<EventTable>? updateWhere,
+    _isd.Transaction? transaction,
     bool noReturn = false,
   }) async {
     return session.db.upsert<Event>(
@@ -983,12 +988,12 @@ class EventRepository {
   ///
   /// The returned [Event] will have its `id` field set.
   Future<Event?> upsertRow(
-    _i1.DatabaseSession session,
+    _isd.DatabaseSession session,
     Event row, {
-    required _i1.ColumnSelections<EventTable> conflictColumns,
-    _i1.ColumnSelections<EventTable>? updateColumns,
-    _i1.WhereExpressionBuilder<EventTable>? updateWhere,
-    _i1.Transaction? transaction,
+    required _isd.ColumnSelections<EventTable> conflictColumns,
+    _isd.ColumnSelections<EventTable>? updateColumns,
+    _isd.WhereExpressionBuilder<EventTable>? updateWhere,
+    _isd.Transaction? transaction,
   }) async {
     return session.db.upsertRow<Event>(
       row,
@@ -1009,10 +1014,10 @@ class EventRepository {
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<Event>> update(
-    _i1.DatabaseSession session,
+    _isd.DatabaseSession session,
     List<Event> rows, {
-    _i1.ColumnSelections<EventTable>? columns,
-    _i1.Transaction? transaction,
+    _isd.ColumnSelections<EventTable>? columns,
+    _isd.Transaction? transaction,
     bool noReturn = false,
   }) async {
     return session.db.update<Event>(
@@ -1027,10 +1032,10 @@ class EventRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<Event> updateRow(
-    _i1.DatabaseSession session,
+    _isd.DatabaseSession session,
     Event row, {
-    _i1.ColumnSelections<EventTable>? columns,
-    _i1.Transaction? transaction,
+    _isd.ColumnSelections<EventTable>? columns,
+    _isd.Transaction? transaction,
   }) async {
     return session.db.updateRow<Event>(
       row,
@@ -1042,10 +1047,10 @@ class EventRepository {
   /// Updates a single [Event] by its [id] with the specified [columnValues].
   /// Returns the updated row or null if no row with the given id exists.
   Future<Event?> updateById(
-    _i1.DatabaseSession session,
-    _i2.UuidValue id, {
-    required _i1.ColumnValueListBuilder<EventUpdateTable> columnValues,
-    _i1.Transaction? transaction,
+    _isd.DatabaseSession session,
+    _isc.UuidValue id, {
+    required _isd.ColumnValueListBuilder<EventUpdateTable> columnValues,
+    _isd.Transaction? transaction,
   }) async {
     return session.db.updateById<Event>(
       id,
@@ -1061,14 +1066,14 @@ class EventRepository {
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<Event>> updateWhere(
-    _i1.DatabaseSession session, {
-    required _i1.ColumnValueListBuilder<EventUpdateTable> columnValues,
-    required _i1.WhereExpressionBuilder<EventTable> where,
+    _isd.DatabaseSession session, {
+    required _isd.ColumnValueListBuilder<EventUpdateTable> columnValues,
+    required _isd.WhereExpressionBuilder<EventTable> where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<EventTable>? orderBy,
-    _i1.OrderByListBuilder<EventTable>? orderByList,
-    _i1.Transaction? transaction,
+    _isd.OrderByBuilder<EventTable>? orderBy,
+    _isd.OrderByListBuilder<EventTable>? orderByList,
+    _isd.Transaction? transaction,
     bool noReturn = false,
   }) async {
     return session.db.updateWhere<Event>(
@@ -1095,11 +1100,11 @@ class EventRepository {
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<Event>> delete(
-    _i1.DatabaseSession session,
+    _isd.DatabaseSession session,
     List<Event> rows, {
-    _i1.OrderByBuilder<EventTable>? orderBy,
-    _i1.OrderByListBuilder<EventTable>? orderByList,
-    _i1.Transaction? transaction,
+    _isd.OrderByBuilder<EventTable>? orderBy,
+    _isd.OrderByListBuilder<EventTable>? orderByList,
+    _isd.Transaction? transaction,
     bool noReturn = false,
   }) async {
     return session.db.delete<Event>(
@@ -1113,9 +1118,9 @@ class EventRepository {
 
   /// Deletes a single [Event].
   Future<Event> deleteRow(
-    _i1.DatabaseSession session,
+    _isd.DatabaseSession session,
     Event row, {
-    _i1.Transaction? transaction,
+    _isd.Transaction? transaction,
   }) async {
     return session.db.deleteRow<Event>(row, transaction: transaction);
   }
@@ -1129,11 +1134,11 @@ class EventRepository {
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<Event>> deleteWhere(
-    _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<EventTable> where,
-    _i1.OrderByBuilder<EventTable>? orderBy,
-    _i1.OrderByListBuilder<EventTable>? orderByList,
-    _i1.Transaction? transaction,
+    _isd.DatabaseSession session, {
+    required _isd.WhereExpressionBuilder<EventTable> where,
+    _isd.OrderByBuilder<EventTable>? orderBy,
+    _isd.OrderByListBuilder<EventTable>? orderByList,
+    _isd.Transaction? transaction,
     bool noReturn = false,
   }) async {
     return session.db.deleteWhere<Event>(
@@ -1148,10 +1153,10 @@ class EventRepository {
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<EventTable>? where,
+    _isd.DatabaseSession session, {
+    _isd.WhereExpressionBuilder<EventTable>? where,
     int? limit,
-    _i1.Transaction? transaction,
+    _isd.Transaction? transaction,
   }) async {
     return session.db.count<Event>(
       where: where?.call(Event.t),
@@ -1162,11 +1167,11 @@ class EventRepository {
 
   /// Acquires row-level locks on [Event] rows matching the [where] expression.
   Future<void> lockRows(
-    _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<EventTable> where,
-    required _i1.LockMode lockMode,
-    required _i1.Transaction transaction,
-    _i1.LockBehavior lockBehavior = _i1.LockBehavior.wait,
+    _isd.DatabaseSession session, {
+    required _isd.WhereExpressionBuilder<EventTable> where,
+    required _isd.LockMode lockMode,
+    required _isd.Transaction transaction,
+    _isd.LockBehavior lockBehavior = _isd.LockBehavior.wait,
   }) async {
     return session.db.lockRows<Event>(
       where: where(Event.t),
@@ -1183,10 +1188,10 @@ class EventAttachRepository {
   /// Creates a relation between this [Event] and the given [EventRegistration]s
   /// by setting each [EventRegistration]'s foreign key `eventId` to refer to this [Event].
   Future<void> eventRegistrations(
-    _i1.DatabaseSession session,
+    _isd.DatabaseSession session,
     Event event,
-    List<_i4.EventRegistration> eventRegistration, {
-    _i1.Transaction? transaction,
+    List<_i27uzliw.EventRegistration> eventRegistration, {
+    _isd.Transaction? transaction,
   }) async {
     if (eventRegistration.any((e) => e.id == null)) {
       throw ArgumentError.notNull('eventRegistration.id');
@@ -1198,9 +1203,9 @@ class EventAttachRepository {
     var $eventRegistration = eventRegistration
         .map((e) => e.copyWith(eventId: event.id))
         .toList();
-    await session.db.update<_i4.EventRegistration>(
+    await session.db.update<_i27uzliw.EventRegistration>(
       $eventRegistration,
-      columns: [_i4.EventRegistration.t.eventId],
+      columns: [_i27uzliw.EventRegistration.t.eventId],
       transaction: transaction,
     );
   }
@@ -1208,10 +1213,10 @@ class EventAttachRepository {
   /// Creates a relation between this [Event] and the given [EventManager]s
   /// by setting each [EventManager]'s foreign key `eventId` to refer to this [Event].
   Future<void> eventManagers(
-    _i1.DatabaseSession session,
+    _isd.DatabaseSession session,
     Event event,
-    List<_i5.EventManager> eventManager, {
-    _i1.Transaction? transaction,
+    List<_ich6ygep.EventManager> eventManager, {
+    _isd.Transaction? transaction,
   }) async {
     if (eventManager.any((e) => e.id == null)) {
       throw ArgumentError.notNull('eventManager.id');
@@ -1223,9 +1228,9 @@ class EventAttachRepository {
     var $eventManager = eventManager
         .map((e) => e.copyWith(eventId: event.id))
         .toList();
-    await session.db.update<_i5.EventManager>(
+    await session.db.update<_ich6ygep.EventManager>(
       $eventManager,
-      columns: [_i5.EventManager.t.eventId],
+      columns: [_ich6ygep.EventManager.t.eventId],
       transaction: transaction,
     );
   }
@@ -1237,10 +1242,10 @@ class EventAttachRowRepository {
   /// Creates a relation between the given [Event] and [Section]
   /// by setting the [Event]'s foreign key `sectionId` to refer to the [Section].
   Future<void> section(
-    _i1.DatabaseSession session,
+    _isd.DatabaseSession session,
     Event event,
-    _i3.Section section, {
-    _i1.Transaction? transaction,
+    _ibhmj7lb.Section section, {
+    _isd.Transaction? transaction,
   }) async {
     if (event.id == null) {
       throw ArgumentError.notNull('event.id');
@@ -1260,10 +1265,10 @@ class EventAttachRowRepository {
   /// Creates a relation between this [Event] and the given [EventRegistration]
   /// by setting the [EventRegistration]'s foreign key `eventId` to refer to this [Event].
   Future<void> eventRegistrations(
-    _i1.DatabaseSession session,
+    _isd.DatabaseSession session,
     Event event,
-    _i4.EventRegistration eventRegistration, {
-    _i1.Transaction? transaction,
+    _i27uzliw.EventRegistration eventRegistration, {
+    _isd.Transaction? transaction,
   }) async {
     if (eventRegistration.id == null) {
       throw ArgumentError.notNull('eventRegistration.id');
@@ -1273,9 +1278,9 @@ class EventAttachRowRepository {
     }
 
     var $eventRegistration = eventRegistration.copyWith(eventId: event.id);
-    await session.db.updateRow<_i4.EventRegistration>(
+    await session.db.updateRow<_i27uzliw.EventRegistration>(
       $eventRegistration,
-      columns: [_i4.EventRegistration.t.eventId],
+      columns: [_i27uzliw.EventRegistration.t.eventId],
       transaction: transaction,
     );
   }
@@ -1283,10 +1288,10 @@ class EventAttachRowRepository {
   /// Creates a relation between this [Event] and the given [EventManager]
   /// by setting the [EventManager]'s foreign key `eventId` to refer to this [Event].
   Future<void> eventManagers(
-    _i1.DatabaseSession session,
+    _isd.DatabaseSession session,
     Event event,
-    _i5.EventManager eventManager, {
-    _i1.Transaction? transaction,
+    _ich6ygep.EventManager eventManager, {
+    _isd.Transaction? transaction,
   }) async {
     if (eventManager.id == null) {
       throw ArgumentError.notNull('eventManager.id');
@@ -1296,9 +1301,9 @@ class EventAttachRowRepository {
     }
 
     var $eventManager = eventManager.copyWith(eventId: event.id);
-    await session.db.updateRow<_i5.EventManager>(
+    await session.db.updateRow<_ich6ygep.EventManager>(
       $eventManager,
-      columns: [_i5.EventManager.t.eventId],
+      columns: [_ich6ygep.EventManager.t.eventId],
       transaction: transaction,
     );
   }

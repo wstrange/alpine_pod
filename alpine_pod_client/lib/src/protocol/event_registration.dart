@@ -11,15 +11,15 @@
 // ignore_for_file: dead_code, unnecessary_null_comparison
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_database/serverpod_database.dart' as _i1;
-import 'package:serverpod_client/serverpod_client.dart' as _i2;
-import 'member.dart' as _i3;
-import 'event.dart' as _i4;
-import 'registration_status.dart' as _i5;
-import 'package:alpine_pod_client/src/protocol/protocol.dart' as _i6;
+import 'package:alpine_pod_client/src/protocol/protocol.dart' as _iib3gdw5;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
+import 'package:serverpod_database/serverpod_database.dart' as _isd;
+import 'event.dart' as _iu57571s;
+import 'member.dart' as _i7zhj6lg;
+import 'registration_status.dart' as _infnr7i7;
 
 abstract class EventRegistration
-    implements _i1.TableRow<_i2.UuidValue?>, _i2.ProtocolSerialization {
+    implements _isd.TableRow<_isc.UuidValue?>, _isc.ProtocolSerialization {
   EventRegistration._({
     this.id,
     required this.memberId,
@@ -46,12 +46,12 @@ abstract class EventRegistration
        noShow = noShow ?? false;
 
   factory EventRegistration({
-    _i2.UuidValue? id,
-    required _i2.UuidValue memberId,
-    _i3.Member? member,
-    required _i2.UuidValue eventId,
-    _i4.Event? event,
-    required _i5.RegistrationStatus registrationStatus,
+    _isc.UuidValue? id,
+    required _isc.UuidValue memberId,
+    _i7zhj6lg.Member? member,
+    required _isc.UuidValue eventId,
+    _iu57571s.Event? event,
+    required _infnr7i7.RegistrationStatus registrationStatus,
     required DateTime registrationDate,
     String? carPoolPreference,
     int? additionalGuests,
@@ -70,48 +70,52 @@ abstract class EventRegistration
     return EventRegistration(
       id: jsonSerialization['id'] == null
           ? null
-          : _i2.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
-      memberId: _i2.UuidValueJsonExtension.fromJson(
+          : _isc.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
+      memberId: _isc.UuidValueJsonExtension.fromJson(
         jsonSerialization['memberId'],
       ),
       member: jsonSerialization['member'] == null
           ? null
-          : _i6.Protocol().deserialize<_i3.Member>(jsonSerialization['member']),
-      eventId: _i2.UuidValueJsonExtension.fromJson(
+          : _iib3gdw5.Protocol().deserialize<_i7zhj6lg.Member>(
+              jsonSerialization['member'],
+            ),
+      eventId: _isc.UuidValueJsonExtension.fromJson(
         jsonSerialization['eventId'],
       ),
       event: jsonSerialization['event'] == null
           ? null
-          : _i6.Protocol().deserialize<_i4.Event>(jsonSerialization['event']),
-      registrationStatus: _i5.RegistrationStatus.fromJson(
+          : _iib3gdw5.Protocol().deserialize<_iu57571s.Event>(
+              jsonSerialization['event'],
+            ),
+      registrationStatus: _infnr7i7.RegistrationStatus.fromJson(
         (jsonSerialization['registrationStatus'] as String),
       ),
-      registrationDate: _i2.DateTimeJsonExtension.fromJson(
+      registrationDate: _isc.DateTimeJsonExtension.fromJson(
         jsonSerialization['registrationDate'],
       ),
       carPoolPreference: jsonSerialization['carPoolPreference'] as String?,
       additionalGuests: jsonSerialization['additionalGuests'] as int?,
-      waiverAccepted: _i2.BoolJsonExtension.fromJson(
+      waiverAccepted: _isc.BoolJsonExtension.fromJson(
         jsonSerialization['waiverAccepted'],
       ),
       participantNotes: jsonSerialization['participantNotes'] as String?,
       waitlistPosition: jsonSerialization['waitlistPosition'] as int?,
       waitlistedAt: jsonSerialization['waitlistedAt'] == null
           ? null
-          : _i2.DateTimeJsonExtension.fromJson(
+          : _isc.DateTimeJsonExtension.fromJson(
               jsonSerialization['waitlistedAt'],
             ),
       paymentStatus: jsonSerialization['paymentStatus'] as String?,
       paymentAmount: (jsonSerialization['paymentAmount'] as num?)?.toDouble(),
-      modifiedAt: _i2.DateTimeJsonExtension.fromJson(
+      modifiedAt: _isc.DateTimeJsonExtension.fromJson(
         jsonSerialization['modifiedAt'],
       ),
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
-          : _i2.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
       noShow: jsonSerialization['noShow'] == null
           ? null
-          : _i2.BoolJsonExtension.fromJson(jsonSerialization['noShow']),
+          : _isc.BoolJsonExtension.fromJson(jsonSerialization['noShow']),
     );
   }
 
@@ -120,17 +124,17 @@ abstract class EventRegistration
   static const db = EventRegistrationRepository._();
 
   @override
-  _i2.UuidValue? id;
+  _isc.UuidValue? id;
 
-  _i2.UuidValue memberId;
+  _isc.UuidValue memberId;
 
-  _i3.Member? member;
+  _i7zhj6lg.Member? member;
 
-  _i2.UuidValue eventId;
+  _isc.UuidValue eventId;
 
-  _i4.Event? event;
+  _iu57571s.Event? event;
 
-  _i5.RegistrationStatus registrationStatus;
+  _infnr7i7.RegistrationStatus registrationStatus;
 
   DateTime registrationDate;
 
@@ -157,18 +161,18 @@ abstract class EventRegistration
   bool noShow;
 
   @override
-  _i1.Table<_i2.UuidValue?> get table => t;
+  _isd.Table<_isc.UuidValue?> get table => t;
 
   /// Returns a shallow copy of this [EventRegistration]
   /// with some or all fields replaced by the given arguments.
-  @_i2.useResult
+  @_isc.useResult
   EventRegistration copyWith({
-    _i2.UuidValue? id,
-    _i2.UuidValue? memberId,
-    _i3.Member? member,
-    _i2.UuidValue? eventId,
-    _i4.Event? event,
-    _i5.RegistrationStatus? registrationStatus,
+    _isc.UuidValue? id,
+    _isc.UuidValue? memberId,
+    _i7zhj6lg.Member? member,
+    _isc.UuidValue? eventId,
+    _iu57571s.Event? event,
+    _infnr7i7.RegistrationStatus? registrationStatus,
     DateTime? registrationDate,
     String? carPoolPreference,
     int? additionalGuests,
@@ -233,18 +237,18 @@ abstract class EventRegistration
   }
 
   static EventRegistrationInclude include({
-    _i3.MemberInclude? member,
-    _i4.EventInclude? event,
+    _i7zhj6lg.MemberInclude? member,
+    _iu57571s.EventInclude? event,
   }) {
     return EventRegistrationInclude._(member: member, event: event);
   }
 
   static EventRegistrationIncludeList includeList({
-    _i1.WhereExpressionBuilder<EventRegistrationTable>? where,
+    _isd.WhereExpressionBuilder<EventRegistrationTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<EventRegistrationTable>? orderBy,
-    _i1.OrderByListBuilder<EventRegistrationTable>? orderByList,
+    _isd.OrderByBuilder<EventRegistrationTable>? orderBy,
+    _isd.OrderByListBuilder<EventRegistrationTable>? orderByList,
     EventRegistrationInclude? include,
   }) {
     return EventRegistrationIncludeList._(
@@ -259,7 +263,7 @@ abstract class EventRegistration
 
   @override
   String toString() {
-    return _i2.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -267,12 +271,12 @@ class _Undefined {}
 
 class _EventRegistrationImpl extends EventRegistration {
   _EventRegistrationImpl({
-    _i2.UuidValue? id,
-    required _i2.UuidValue memberId,
-    _i3.Member? member,
-    required _i2.UuidValue eventId,
-    _i4.Event? event,
-    required _i5.RegistrationStatus registrationStatus,
+    _isc.UuidValue? id,
+    required _isc.UuidValue memberId,
+    _i7zhj6lg.Member? member,
+    required _isc.UuidValue eventId,
+    _iu57571s.Event? event,
+    required _infnr7i7.RegistrationStatus registrationStatus,
     required DateTime registrationDate,
     String? carPoolPreference,
     int? additionalGuests,
@@ -308,15 +312,15 @@ class _EventRegistrationImpl extends EventRegistration {
 
   /// Returns a shallow copy of this [EventRegistration]
   /// with some or all fields replaced by the given arguments.
-  @_i2.useResult
+  @_isc.useResult
   @override
   EventRegistration copyWith({
     Object? id = _Undefined,
-    _i2.UuidValue? memberId,
+    _isc.UuidValue? memberId,
     Object? member = _Undefined,
-    _i2.UuidValue? eventId,
+    _isc.UuidValue? eventId,
     Object? event = _Undefined,
-    _i5.RegistrationStatus? registrationStatus,
+    _infnr7i7.RegistrationStatus? registrationStatus,
     DateTime? registrationDate,
     Object? carPoolPreference = _Undefined,
     int? additionalGuests,
@@ -331,11 +335,11 @@ class _EventRegistrationImpl extends EventRegistration {
     bool? noShow,
   }) {
     return EventRegistration(
-      id: id is _i2.UuidValue? ? id : this.id,
+      id: id is _isc.UuidValue? ? id : this.id,
       memberId: memberId ?? this.memberId,
-      member: member is _i3.Member? ? member : this.member?.copyWith(),
+      member: member is _i7zhj6lg.Member? ? member : this.member?.copyWith(),
       eventId: eventId ?? this.eventId,
-      event: event is _i4.Event? ? event : this.event?.copyWith(),
+      event: event is _iu57571s.Event? ? event : this.event?.copyWith(),
       registrationStatus: registrationStatus ?? this.registrationStatus,
       registrationDate: registrationDate ?? this.registrationDate,
       carPoolPreference: carPoolPreference is String?
@@ -362,149 +366,151 @@ class _EventRegistrationImpl extends EventRegistration {
 }
 
 class EventRegistrationUpdateTable
-    extends _i1.UpdateTable<EventRegistrationTable> {
+    extends _isd.UpdateTable<EventRegistrationTable> {
   EventRegistrationUpdateTable(super.table);
 
-  _i1.ColumnValue<_i2.UuidValue, _i2.UuidValue> memberId(_i2.UuidValue value) =>
-      _i1.ColumnValue(table.memberId, value);
+  _isd.ColumnValue<_isc.UuidValue, _isc.UuidValue> memberId(
+    _isc.UuidValue value,
+  ) => _isd.ColumnValue(table.memberId, value);
 
-  _i1.ColumnValue<_i2.UuidValue, _i2.UuidValue> eventId(_i2.UuidValue value) =>
-      _i1.ColumnValue(table.eventId, value);
+  _isd.ColumnValue<_isc.UuidValue, _isc.UuidValue> eventId(
+    _isc.UuidValue value,
+  ) => _isd.ColumnValue(table.eventId, value);
 
-  _i1.ColumnValue<_i5.RegistrationStatus, _i5.RegistrationStatus>
-  registrationStatus(_i5.RegistrationStatus value) =>
-      _i1.ColumnValue(table.registrationStatus, value);
+  _isd.ColumnValue<_infnr7i7.RegistrationStatus, _infnr7i7.RegistrationStatus>
+  registrationStatus(_infnr7i7.RegistrationStatus value) =>
+      _isd.ColumnValue(table.registrationStatus, value);
 
-  _i1.ColumnValue<DateTime, DateTime> registrationDate(DateTime value) =>
-      _i1.ColumnValue(table.registrationDate, value);
+  _isd.ColumnValue<DateTime, DateTime> registrationDate(DateTime value) =>
+      _isd.ColumnValue(table.registrationDate, value);
 
-  _i1.ColumnValue<String, String> carPoolPreference(String? value) =>
-      _i1.ColumnValue(table.carPoolPreference, value);
+  _isd.ColumnValue<String, String> carPoolPreference(String? value) =>
+      _isd.ColumnValue(table.carPoolPreference, value);
 
-  _i1.ColumnValue<int, int> additionalGuests(int value) =>
-      _i1.ColumnValue(table.additionalGuests, value);
+  _isd.ColumnValue<int, int> additionalGuests(int value) =>
+      _isd.ColumnValue(table.additionalGuests, value);
 
-  _i1.ColumnValue<bool, bool> waiverAccepted(bool value) =>
-      _i1.ColumnValue(table.waiverAccepted, value);
+  _isd.ColumnValue<bool, bool> waiverAccepted(bool value) =>
+      _isd.ColumnValue(table.waiverAccepted, value);
 
-  _i1.ColumnValue<String, String> participantNotes(String? value) =>
-      _i1.ColumnValue(table.participantNotes, value);
+  _isd.ColumnValue<String, String> participantNotes(String? value) =>
+      _isd.ColumnValue(table.participantNotes, value);
 
-  _i1.ColumnValue<int, int> waitlistPosition(int? value) =>
-      _i1.ColumnValue(table.waitlistPosition, value);
+  _isd.ColumnValue<int, int> waitlistPosition(int? value) =>
+      _isd.ColumnValue(table.waitlistPosition, value);
 
-  _i1.ColumnValue<DateTime, DateTime> waitlistedAt(DateTime? value) =>
-      _i1.ColumnValue(table.waitlistedAt, value);
+  _isd.ColumnValue<DateTime, DateTime> waitlistedAt(DateTime? value) =>
+      _isd.ColumnValue(table.waitlistedAt, value);
 
-  _i1.ColumnValue<String, String> paymentStatus(String value) =>
-      _i1.ColumnValue(table.paymentStatus, value);
+  _isd.ColumnValue<String, String> paymentStatus(String value) =>
+      _isd.ColumnValue(table.paymentStatus, value);
 
-  _i1.ColumnValue<double, double> paymentAmount(double value) =>
-      _i1.ColumnValue(table.paymentAmount, value);
+  _isd.ColumnValue<double, double> paymentAmount(double value) =>
+      _isd.ColumnValue(table.paymentAmount, value);
 
-  _i1.ColumnValue<DateTime, DateTime> modifiedAt(DateTime value) =>
-      _i1.ColumnValue(table.modifiedAt, value);
+  _isd.ColumnValue<DateTime, DateTime> modifiedAt(DateTime value) =>
+      _isd.ColumnValue(table.modifiedAt, value);
 
-  _i1.ColumnValue<DateTime, DateTime> updatedAt(DateTime value) =>
-      _i1.ColumnValue(table.updatedAt, value);
+  _isd.ColumnValue<DateTime, DateTime> updatedAt(DateTime value) =>
+      _isd.ColumnValue(table.updatedAt, value);
 
-  _i1.ColumnValue<bool, bool> noShow(bool value) =>
-      _i1.ColumnValue(table.noShow, value);
+  _isd.ColumnValue<bool, bool> noShow(bool value) =>
+      _isd.ColumnValue(table.noShow, value);
 }
 
-class EventRegistrationTable extends _i1.Table<_i2.UuidValue?> {
+class EventRegistrationTable extends _isd.Table<_isc.UuidValue?> {
   EventRegistrationTable({super.tableRelation})
     : super(tableName: 'event_registrations') {
     updateTable = EventRegistrationUpdateTable(this);
-    memberId = _i1.ColumnUuid('memberId', this);
-    eventId = _i1.ColumnUuid('eventId', this);
-    registrationStatus = _i1.ColumnEnum(
+    memberId = _isd.ColumnUuid('memberId', this);
+    eventId = _isd.ColumnUuid('eventId', this);
+    registrationStatus = _isd.ColumnEnum(
       'registrationStatus',
       this,
-      _i1.EnumSerialization.byName,
+      _isd.EnumSerialization.byName,
     );
-    registrationDate = _i1.ColumnDateTime('registrationDate', this);
-    carPoolPreference = _i1.ColumnString('carPoolPreference', this);
-    additionalGuests = _i1.ColumnInt(
+    registrationDate = _isd.ColumnDateTime('registrationDate', this);
+    carPoolPreference = _isd.ColumnString('carPoolPreference', this);
+    additionalGuests = _isd.ColumnInt(
       'additionalGuests',
       this,
       hasDefault: true,
     );
-    waiverAccepted = _i1.ColumnBool('waiverAccepted', this);
-    participantNotes = _i1.ColumnString('participantNotes', this);
-    waitlistPosition = _i1.ColumnInt('waitlistPosition', this);
-    waitlistedAt = _i1.ColumnDateTime('waitlistedAt', this);
-    paymentStatus = _i1.ColumnString('paymentStatus', this, hasDefault: true);
-    paymentAmount = _i1.ColumnDouble('paymentAmount', this, hasDefault: true);
-    modifiedAt = _i1.ColumnDateTime('modifiedAt', this);
-    updatedAt = _i1.ColumnDateTime('updatedAt', this, hasDefault: true);
-    noShow = _i1.ColumnBool('noShow', this, hasDefault: true);
+    waiverAccepted = _isd.ColumnBool('waiverAccepted', this);
+    participantNotes = _isd.ColumnString('participantNotes', this);
+    waitlistPosition = _isd.ColumnInt('waitlistPosition', this);
+    waitlistedAt = _isd.ColumnDateTime('waitlistedAt', this);
+    paymentStatus = _isd.ColumnString('paymentStatus', this, hasDefault: true);
+    paymentAmount = _isd.ColumnDouble('paymentAmount', this, hasDefault: true);
+    modifiedAt = _isd.ColumnDateTime('modifiedAt', this);
+    updatedAt = _isd.ColumnDateTime('updatedAt', this, hasDefault: true);
+    noShow = _isd.ColumnBool('noShow', this, hasDefault: true);
   }
 
   late final EventRegistrationUpdateTable updateTable;
 
-  late final _i1.ColumnUuid memberId;
+  late final _isd.ColumnUuid memberId;
 
-  _i3.MemberTable? _member;
+  _i7zhj6lg.MemberTable? _member;
 
-  late final _i1.ColumnUuid eventId;
+  late final _isd.ColumnUuid eventId;
 
-  _i4.EventTable? _event;
+  _iu57571s.EventTable? _event;
 
-  late final _i1.ColumnEnum<_i5.RegistrationStatus> registrationStatus;
+  late final _isd.ColumnEnum<_infnr7i7.RegistrationStatus> registrationStatus;
 
-  late final _i1.ColumnDateTime registrationDate;
+  late final _isd.ColumnDateTime registrationDate;
 
-  late final _i1.ColumnString carPoolPreference;
+  late final _isd.ColumnString carPoolPreference;
 
-  late final _i1.ColumnInt additionalGuests;
+  late final _isd.ColumnInt additionalGuests;
 
-  late final _i1.ColumnBool waiverAccepted;
+  late final _isd.ColumnBool waiverAccepted;
 
-  late final _i1.ColumnString participantNotes;
+  late final _isd.ColumnString participantNotes;
 
-  late final _i1.ColumnInt waitlistPosition;
+  late final _isd.ColumnInt waitlistPosition;
 
-  late final _i1.ColumnDateTime waitlistedAt;
+  late final _isd.ColumnDateTime waitlistedAt;
 
-  late final _i1.ColumnString paymentStatus;
+  late final _isd.ColumnString paymentStatus;
 
-  late final _i1.ColumnDouble paymentAmount;
+  late final _isd.ColumnDouble paymentAmount;
 
-  late final _i1.ColumnDateTime modifiedAt;
+  late final _isd.ColumnDateTime modifiedAt;
 
-  late final _i1.ColumnDateTime updatedAt;
+  late final _isd.ColumnDateTime updatedAt;
 
-  late final _i1.ColumnBool noShow;
+  late final _isd.ColumnBool noShow;
 
-  _i3.MemberTable get member {
+  _i7zhj6lg.MemberTable get member {
     if (_member != null) return _member!;
-    _member = _i1.createRelationTable(
+    _member = _isd.createRelationTable(
       relationFieldName: 'member',
       field: EventRegistration.t.memberId,
-      foreignField: _i3.Member.t.id,
+      foreignField: _i7zhj6lg.Member.t.id,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i3.MemberTable(tableRelation: foreignTableRelation),
+          _i7zhj6lg.MemberTable(tableRelation: foreignTableRelation),
     );
     return _member!;
   }
 
-  _i4.EventTable get event {
+  _iu57571s.EventTable get event {
     if (_event != null) return _event!;
-    _event = _i1.createRelationTable(
+    _event = _isd.createRelationTable(
       relationFieldName: 'event',
       field: EventRegistration.t.eventId,
-      foreignField: _i4.Event.t.id,
+      foreignField: _iu57571s.Event.t.id,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i4.EventTable(tableRelation: foreignTableRelation),
+          _iu57571s.EventTable(tableRelation: foreignTableRelation),
     );
     return _event!;
   }
 
   @override
-  List<_i1.Column> get columns => [
+  List<_isd.Column> get columns => [
     id,
     memberId,
     eventId,
@@ -524,7 +530,7 @@ class EventRegistrationTable extends _i1.Table<_i2.UuidValue?> {
   ];
 
   @override
-  _i1.Table? getRelationTable(String relationField) {
+  _isd.Table? getRelationTable(String relationField) {
     if (relationField == 'member') {
       return member;
     }
@@ -535,32 +541,32 @@ class EventRegistrationTable extends _i1.Table<_i2.UuidValue?> {
   }
 }
 
-class EventRegistrationInclude extends _i1.IncludeObject {
+class EventRegistrationInclude extends _isd.IncludeObject {
   EventRegistrationInclude._({
-    _i3.MemberInclude? member,
-    _i4.EventInclude? event,
+    _i7zhj6lg.MemberInclude? member,
+    _iu57571s.EventInclude? event,
   }) {
     _member = member;
     _event = event;
   }
 
-  _i3.MemberInclude? _member;
+  _i7zhj6lg.MemberInclude? _member;
 
-  _i4.EventInclude? _event;
+  _iu57571s.EventInclude? _event;
 
   @override
-  Map<String, _i1.Include?> get includes => {
+  Map<String, _isd.Include?> get includes => {
     'member': _member,
     'event': _event,
   };
 
   @override
-  _i1.Table<_i2.UuidValue?> get table => EventRegistration.t;
+  _isd.Table<_isc.UuidValue?> get table => EventRegistration.t;
 }
 
-class EventRegistrationIncludeList extends _i1.IncludeList {
+class EventRegistrationIncludeList extends _isd.IncludeList {
   EventRegistrationIncludeList._({
-    _i1.WhereExpressionBuilder<EventRegistrationTable>? where,
+    _isd.WhereExpressionBuilder<EventRegistrationTable>? where,
     super.limit,
     super.offset,
     super.orderBy,
@@ -571,10 +577,10 @@ class EventRegistrationIncludeList extends _i1.IncludeList {
   }
 
   @override
-  Map<String, _i1.Include?> get includes => include?.includes ?? {};
+  Map<String, _isd.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<_i2.UuidValue?> get table => EventRegistration.t;
+  _isd.Table<_isc.UuidValue?> get table => EventRegistration.t;
 }
 
 class EventRegistrationRepository {
@@ -605,16 +611,16 @@ class EventRegistrationRepository {
   /// );
   /// ```
   Future<List<EventRegistration>> find(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<EventRegistrationTable>? where,
+    _isd.DatabaseSession session, {
+    _isd.WhereExpressionBuilder<EventRegistrationTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<EventRegistrationTable>? orderBy,
-    _i1.OrderByListBuilder<EventRegistrationTable>? orderByList,
-    _i1.Transaction? transaction,
+    _isd.OrderByBuilder<EventRegistrationTable>? orderBy,
+    _isd.OrderByListBuilder<EventRegistrationTable>? orderByList,
+    _isd.Transaction? transaction,
     EventRegistrationInclude? include,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _isd.LockMode? lockMode,
+    _isd.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<EventRegistration>(
       where: where?.call(EventRegistration.t),
@@ -647,15 +653,15 @@ class EventRegistrationRepository {
   /// );
   /// ```
   Future<EventRegistration?> findFirstRow(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<EventRegistrationTable>? where,
+    _isd.DatabaseSession session, {
+    _isd.WhereExpressionBuilder<EventRegistrationTable>? where,
     int? offset,
-    _i1.OrderByBuilder<EventRegistrationTable>? orderBy,
-    _i1.OrderByListBuilder<EventRegistrationTable>? orderByList,
-    _i1.Transaction? transaction,
+    _isd.OrderByBuilder<EventRegistrationTable>? orderBy,
+    _isd.OrderByListBuilder<EventRegistrationTable>? orderByList,
+    _isd.Transaction? transaction,
     EventRegistrationInclude? include,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _isd.LockMode? lockMode,
+    _isd.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<EventRegistration>(
       where: where?.call(EventRegistration.t),
@@ -671,12 +677,12 @@ class EventRegistrationRepository {
 
   /// Finds a single [EventRegistration] by its [id] or null if no such row exists.
   Future<EventRegistration?> findById(
-    _i1.DatabaseSession session,
-    _i2.UuidValue id, {
-    _i1.Transaction? transaction,
+    _isd.DatabaseSession session,
+    _isc.UuidValue id, {
+    _isd.Transaction? transaction,
     EventRegistrationInclude? include,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _isd.LockMode? lockMode,
+    _isd.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<EventRegistration>(
       id,
@@ -702,9 +708,9 @@ class EventRegistrationRepository {
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<EventRegistration>> insert(
-    _i1.DatabaseSession session,
+    _isd.DatabaseSession session,
     List<EventRegistration> rows, {
-    _i1.Transaction? transaction,
+    _isd.Transaction? transaction,
     bool ignoreConflicts = false,
     bool noReturn = false,
   }) async {
@@ -720,9 +726,9 @@ class EventRegistrationRepository {
   ///
   /// The returned [EventRegistration] will have its `id` field set.
   Future<EventRegistration> insertRow(
-    _i1.DatabaseSession session,
+    _isd.DatabaseSession session,
     EventRegistration row, {
-    _i1.Transaction? transaction,
+    _isd.Transaction? transaction,
   }) async {
     return session.db.insertRow<EventRegistration>(
       row,
@@ -751,12 +757,12 @@ class EventRegistrationRepository {
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<EventRegistration>> upsert(
-    _i1.DatabaseSession session,
+    _isd.DatabaseSession session,
     List<EventRegistration> rows, {
-    required _i1.ColumnSelections<EventRegistrationTable> conflictColumns,
-    _i1.ColumnSelections<EventRegistrationTable>? updateColumns,
-    _i1.WhereExpressionBuilder<EventRegistrationTable>? updateWhere,
-    _i1.Transaction? transaction,
+    required _isd.ColumnSelections<EventRegistrationTable> conflictColumns,
+    _isd.ColumnSelections<EventRegistrationTable>? updateColumns,
+    _isd.WhereExpressionBuilder<EventRegistrationTable>? updateWhere,
+    _isd.Transaction? transaction,
     bool noReturn = false,
   }) async {
     return session.db.upsert<EventRegistration>(
@@ -783,12 +789,12 @@ class EventRegistrationRepository {
   ///
   /// The returned [EventRegistration] will have its `id` field set.
   Future<EventRegistration?> upsertRow(
-    _i1.DatabaseSession session,
+    _isd.DatabaseSession session,
     EventRegistration row, {
-    required _i1.ColumnSelections<EventRegistrationTable> conflictColumns,
-    _i1.ColumnSelections<EventRegistrationTable>? updateColumns,
-    _i1.WhereExpressionBuilder<EventRegistrationTable>? updateWhere,
-    _i1.Transaction? transaction,
+    required _isd.ColumnSelections<EventRegistrationTable> conflictColumns,
+    _isd.ColumnSelections<EventRegistrationTable>? updateColumns,
+    _isd.WhereExpressionBuilder<EventRegistrationTable>? updateWhere,
+    _isd.Transaction? transaction,
   }) async {
     return session.db.upsertRow<EventRegistration>(
       row,
@@ -809,10 +815,10 @@ class EventRegistrationRepository {
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<EventRegistration>> update(
-    _i1.DatabaseSession session,
+    _isd.DatabaseSession session,
     List<EventRegistration> rows, {
-    _i1.ColumnSelections<EventRegistrationTable>? columns,
-    _i1.Transaction? transaction,
+    _isd.ColumnSelections<EventRegistrationTable>? columns,
+    _isd.Transaction? transaction,
     bool noReturn = false,
   }) async {
     return session.db.update<EventRegistration>(
@@ -827,10 +833,10 @@ class EventRegistrationRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<EventRegistration> updateRow(
-    _i1.DatabaseSession session,
+    _isd.DatabaseSession session,
     EventRegistration row, {
-    _i1.ColumnSelections<EventRegistrationTable>? columns,
-    _i1.Transaction? transaction,
+    _isd.ColumnSelections<EventRegistrationTable>? columns,
+    _isd.Transaction? transaction,
   }) async {
     return session.db.updateRow<EventRegistration>(
       row,
@@ -842,11 +848,11 @@ class EventRegistrationRepository {
   /// Updates a single [EventRegistration] by its [id] with the specified [columnValues].
   /// Returns the updated row or null if no row with the given id exists.
   Future<EventRegistration?> updateById(
-    _i1.DatabaseSession session,
-    _i2.UuidValue id, {
-    required _i1.ColumnValueListBuilder<EventRegistrationUpdateTable>
+    _isd.DatabaseSession session,
+    _isc.UuidValue id, {
+    required _isd.ColumnValueListBuilder<EventRegistrationUpdateTable>
     columnValues,
-    _i1.Transaction? transaction,
+    _isd.Transaction? transaction,
   }) async {
     return session.db.updateById<EventRegistration>(
       id,
@@ -862,15 +868,15 @@ class EventRegistrationRepository {
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<EventRegistration>> updateWhere(
-    _i1.DatabaseSession session, {
-    required _i1.ColumnValueListBuilder<EventRegistrationUpdateTable>
+    _isd.DatabaseSession session, {
+    required _isd.ColumnValueListBuilder<EventRegistrationUpdateTable>
     columnValues,
-    required _i1.WhereExpressionBuilder<EventRegistrationTable> where,
+    required _isd.WhereExpressionBuilder<EventRegistrationTable> where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<EventRegistrationTable>? orderBy,
-    _i1.OrderByListBuilder<EventRegistrationTable>? orderByList,
-    _i1.Transaction? transaction,
+    _isd.OrderByBuilder<EventRegistrationTable>? orderBy,
+    _isd.OrderByListBuilder<EventRegistrationTable>? orderByList,
+    _isd.Transaction? transaction,
     bool noReturn = false,
   }) async {
     return session.db.updateWhere<EventRegistration>(
@@ -897,11 +903,11 @@ class EventRegistrationRepository {
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<EventRegistration>> delete(
-    _i1.DatabaseSession session,
+    _isd.DatabaseSession session,
     List<EventRegistration> rows, {
-    _i1.OrderByBuilder<EventRegistrationTable>? orderBy,
-    _i1.OrderByListBuilder<EventRegistrationTable>? orderByList,
-    _i1.Transaction? transaction,
+    _isd.OrderByBuilder<EventRegistrationTable>? orderBy,
+    _isd.OrderByListBuilder<EventRegistrationTable>? orderByList,
+    _isd.Transaction? transaction,
     bool noReturn = false,
   }) async {
     return session.db.delete<EventRegistration>(
@@ -915,9 +921,9 @@ class EventRegistrationRepository {
 
   /// Deletes a single [EventRegistration].
   Future<EventRegistration> deleteRow(
-    _i1.DatabaseSession session,
+    _isd.DatabaseSession session,
     EventRegistration row, {
-    _i1.Transaction? transaction,
+    _isd.Transaction? transaction,
   }) async {
     return session.db.deleteRow<EventRegistration>(
       row,
@@ -934,11 +940,11 @@ class EventRegistrationRepository {
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<EventRegistration>> deleteWhere(
-    _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<EventRegistrationTable> where,
-    _i1.OrderByBuilder<EventRegistrationTable>? orderBy,
-    _i1.OrderByListBuilder<EventRegistrationTable>? orderByList,
-    _i1.Transaction? transaction,
+    _isd.DatabaseSession session, {
+    required _isd.WhereExpressionBuilder<EventRegistrationTable> where,
+    _isd.OrderByBuilder<EventRegistrationTable>? orderBy,
+    _isd.OrderByListBuilder<EventRegistrationTable>? orderByList,
+    _isd.Transaction? transaction,
     bool noReturn = false,
   }) async {
     return session.db.deleteWhere<EventRegistration>(
@@ -953,10 +959,10 @@ class EventRegistrationRepository {
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<EventRegistrationTable>? where,
+    _isd.DatabaseSession session, {
+    _isd.WhereExpressionBuilder<EventRegistrationTable>? where,
     int? limit,
-    _i1.Transaction? transaction,
+    _isd.Transaction? transaction,
   }) async {
     return session.db.count<EventRegistration>(
       where: where?.call(EventRegistration.t),
@@ -967,11 +973,11 @@ class EventRegistrationRepository {
 
   /// Acquires row-level locks on [EventRegistration] rows matching the [where] expression.
   Future<void> lockRows(
-    _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<EventRegistrationTable> where,
-    required _i1.LockMode lockMode,
-    required _i1.Transaction transaction,
-    _i1.LockBehavior lockBehavior = _i1.LockBehavior.wait,
+    _isd.DatabaseSession session, {
+    required _isd.WhereExpressionBuilder<EventRegistrationTable> where,
+    required _isd.LockMode lockMode,
+    required _isd.Transaction transaction,
+    _isd.LockBehavior lockBehavior = _isd.LockBehavior.wait,
   }) async {
     return session.db.lockRows<EventRegistration>(
       where: where(EventRegistration.t),
@@ -988,10 +994,10 @@ class EventRegistrationAttachRowRepository {
   /// Creates a relation between the given [EventRegistration] and [Member]
   /// by setting the [EventRegistration]'s foreign key `memberId` to refer to the [Member].
   Future<void> member(
-    _i1.DatabaseSession session,
+    _isd.DatabaseSession session,
     EventRegistration eventRegistration,
-    _i3.Member member, {
-    _i1.Transaction? transaction,
+    _i7zhj6lg.Member member, {
+    _isd.Transaction? transaction,
   }) async {
     if (eventRegistration.id == null) {
       throw ArgumentError.notNull('eventRegistration.id');
@@ -1011,10 +1017,10 @@ class EventRegistrationAttachRowRepository {
   /// Creates a relation between the given [EventRegistration] and [Event]
   /// by setting the [EventRegistration]'s foreign key `eventId` to refer to the [Event].
   Future<void> event(
-    _i1.DatabaseSession session,
+    _isd.DatabaseSession session,
     EventRegistration eventRegistration,
-    _i4.Event event, {
-    _i1.Transaction? transaction,
+    _iu57571s.Event event, {
+    _isd.Transaction? transaction,
   }) async {
     if (eventRegistration.id == null) {
       throw ArgumentError.notNull('eventRegistration.id');

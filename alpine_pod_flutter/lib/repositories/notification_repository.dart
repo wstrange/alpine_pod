@@ -1,5 +1,6 @@
 import 'package:alpine_pod_client/alpine_pod_client.dart';
 import 'package:logging/logging.dart';
+
 import '../services/connectivity_service.dart';
 // import '../services/sync_service.dart';
 import '../signals.dart';
@@ -10,16 +11,12 @@ final notificationRepository = NotificationRepository();
 
 class NotificationRepository {
   /// Gets notifications feed from server API.
-  Future<List<UserNotification>> getMyFeed({
-    int limit = 30,
-    int offset = 0,
-  }) async {
+  Future<List<UserNotification>> getMyFeed({int limit = 30, int offset = 0}) async {
     if (isOnlineSignal.value) {
       try {
-        return await client.notification.getMyFeed(
-          limit: limit,
-          offset: offset,
-        );
+        final n = await client.notification.getMyFeed(limit: limit, offset: offset);
+        _log.info('Loaded notifications: ${n.length}');
+        return n;
       } catch (e) {
         _log.warning('Failed to load notifications from server: $e');
       }

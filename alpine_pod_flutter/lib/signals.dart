@@ -141,16 +141,6 @@ final notificationsSignal = futureSignal<List<UserNotification>>(() async {
   return await notificationRepository.getMyFeed(limit: 30, offset: 0);
 }, options: AsyncSignalOptions(dependencies: [], name: 'notificationsSignal', lazy: false));
 
-final notificationStreamSignal = streamSignal<List<UserNotification>>(() async* {
-  while (true) {
-    if (!sessionManager.isAuthenticated) yield <UserNotification>[];
-    final n = await notificationRepository.getMyFeed(limit: 30, offset: 0);
-    notificationsSignal.value = AsyncData(n);
-    yield n;
-    await Future.delayed(const Duration(seconds: 30));
-  }
-}, options: AsyncSignalOptions(name: 'notificationStreamSignal'));
-
 final unreadNotificationsCountSignal = computed(() {
   final state = notificationsSignal.value;
   if (state is AsyncData<List<UserNotification>>) {

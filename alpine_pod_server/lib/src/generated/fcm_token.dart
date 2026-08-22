@@ -10,20 +10,20 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
+import 'package:serverpod/serverpod.dart' as _is;
 
 abstract class FcmToken
-    implements _i1.TableRow<_i1.UuidValue>, _i1.ProtocolSerialization {
+    implements _is.TableRow<_is.UuidValue>, _is.ProtocolSerialization {
   FcmToken._({
-    _i1.UuidValue? id,
+    _is.UuidValue? id,
     required this.token,
     this.deviceId,
     DateTime? updatedAt,
-  }) : id = id ?? const _i1.Uuid().v7obj(),
+  }) : id = id ?? const _is.Uuid().v7obj(),
        updatedAt = updatedAt ?? DateTime.now();
 
   factory FcmToken({
-    _i1.UuidValue? id,
+    _is.UuidValue? id,
     required String token,
     String? deviceId,
     DateTime? updatedAt,
@@ -33,12 +33,12 @@ abstract class FcmToken
     return FcmToken(
       id: jsonSerialization['id'] == null
           ? null
-          : _i1.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
+          : _is.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
       token: jsonSerialization['token'] as String,
       deviceId: jsonSerialization['deviceId'] as String?,
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
     );
   }
 
@@ -47,7 +47,7 @@ abstract class FcmToken
   static const db = FcmTokenRepository._();
 
   @override
-  _i1.UuidValue id;
+  _is.UuidValue id;
 
   String token;
 
@@ -56,13 +56,13 @@ abstract class FcmToken
   DateTime updatedAt;
 
   @override
-  _i1.Table<_i1.UuidValue> get table => t;
+  _is.Table<_is.UuidValue> get table => t;
 
   /// Returns a shallow copy of this [FcmToken]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   FcmToken copyWith({
-    _i1.UuidValue? id,
+    _is.UuidValue? id,
     String? token,
     String? deviceId,
     DateTime? updatedAt,
@@ -94,11 +94,11 @@ abstract class FcmToken
   }
 
   static FcmTokenIncludeList includeList({
-    _i1.WhereExpressionBuilder<FcmTokenTable>? where,
+    _is.WhereExpressionBuilder<FcmTokenTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<FcmTokenTable>? orderBy,
-    _i1.OrderByListBuilder<FcmTokenTable>? orderByList,
+    _is.OrderByBuilder<FcmTokenTable>? orderBy,
+    _is.OrderByListBuilder<FcmTokenTable>? orderByList,
     FcmTokenInclude? include,
   }) {
     return FcmTokenIncludeList._(
@@ -113,7 +113,7 @@ abstract class FcmToken
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -121,7 +121,7 @@ class _Undefined {}
 
 class _FcmTokenImpl extends FcmToken {
   _FcmTokenImpl({
-    _i1.UuidValue? id,
+    _is.UuidValue? id,
     required String token,
     String? deviceId,
     DateTime? updatedAt,
@@ -129,10 +129,10 @@ class _FcmTokenImpl extends FcmToken {
 
   /// Returns a shallow copy of this [FcmToken]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   FcmToken copyWith({
-    _i1.UuidValue? id,
+    _is.UuidValue? id,
     String? token,
     Object? deviceId = _Undefined,
     DateTime? updatedAt,
@@ -146,52 +146,52 @@ class _FcmTokenImpl extends FcmToken {
   }
 }
 
-class FcmTokenUpdateTable extends _i1.UpdateTable<FcmTokenTable> {
+class FcmTokenUpdateTable extends _is.UpdateTable<FcmTokenTable> {
   FcmTokenUpdateTable(super.table);
 
-  _i1.ColumnValue<String, String> token(String value) =>
-      _i1.ColumnValue(table.token, value);
+  _is.ColumnValue<String, String> token(String value) =>
+      _is.ColumnValue(table.token, value);
 
-  _i1.ColumnValue<String, String> deviceId(String? value) =>
-      _i1.ColumnValue(table.deviceId, value);
+  _is.ColumnValue<String, String> deviceId(String? value) =>
+      _is.ColumnValue(table.deviceId, value);
 
-  _i1.ColumnValue<DateTime, DateTime> updatedAt(DateTime value) =>
-      _i1.ColumnValue(table.updatedAt, value);
+  _is.ColumnValue<DateTime, DateTime> updatedAt(DateTime value) =>
+      _is.ColumnValue(table.updatedAt, value);
 }
 
-class FcmTokenTable extends _i1.Table<_i1.UuidValue> {
+class FcmTokenTable extends _is.Table<_is.UuidValue> {
   FcmTokenTable({super.tableRelation}) : super(tableName: 'fcm_tokens') {
     updateTable = FcmTokenUpdateTable(this);
-    token = _i1.ColumnString('token', this);
-    deviceId = _i1.ColumnString('deviceId', this);
-    updatedAt = _i1.ColumnDateTime('updatedAt', this, hasDefault: true);
+    token = _is.ColumnString('token', this);
+    deviceId = _is.ColumnString('deviceId', this);
+    updatedAt = _is.ColumnDateTime('updatedAt', this, hasDefault: true);
   }
 
   late final FcmTokenUpdateTable updateTable;
 
-  late final _i1.ColumnString token;
+  late final _is.ColumnString token;
 
-  late final _i1.ColumnString deviceId;
+  late final _is.ColumnString deviceId;
 
-  late final _i1.ColumnDateTime updatedAt;
+  late final _is.ColumnDateTime updatedAt;
 
   @override
-  List<_i1.Column> get columns => [id, token, deviceId, updatedAt];
+  List<_is.Column> get columns => [id, token, deviceId, updatedAt];
 }
 
-class FcmTokenInclude extends _i1.IncludeObject {
+class FcmTokenInclude extends _is.IncludeObject {
   FcmTokenInclude._();
 
   @override
-  Map<String, _i1.Include?> get includes => {};
+  Map<String, _is.Include?> get includes => {};
 
   @override
-  _i1.Table<_i1.UuidValue> get table => FcmToken.t;
+  _is.Table<_is.UuidValue> get table => FcmToken.t;
 }
 
-class FcmTokenIncludeList extends _i1.IncludeList {
+class FcmTokenIncludeList extends _is.IncludeList {
   FcmTokenIncludeList._({
-    _i1.WhereExpressionBuilder<FcmTokenTable>? where,
+    _is.WhereExpressionBuilder<FcmTokenTable>? where,
     super.limit,
     super.offset,
     super.orderBy,
@@ -202,10 +202,10 @@ class FcmTokenIncludeList extends _i1.IncludeList {
   }
 
   @override
-  Map<String, _i1.Include?> get includes => include?.includes ?? {};
+  Map<String, _is.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<_i1.UuidValue> get table => FcmToken.t;
+  _is.Table<_is.UuidValue> get table => FcmToken.t;
 }
 
 class FcmTokenRepository {
@@ -234,15 +234,15 @@ class FcmTokenRepository {
   /// );
   /// ```
   Future<List<FcmToken>> find(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<FcmTokenTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<FcmTokenTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<FcmTokenTable>? orderBy,
-    _i1.OrderByListBuilder<FcmTokenTable>? orderByList,
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.OrderByBuilder<FcmTokenTable>? orderBy,
+    _is.OrderByListBuilder<FcmTokenTable>? orderByList,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<FcmToken>(
       where: where?.call(FcmToken.t),
@@ -274,14 +274,14 @@ class FcmTokenRepository {
   /// );
   /// ```
   Future<FcmToken?> findFirstRow(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<FcmTokenTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<FcmTokenTable>? where,
     int? offset,
-    _i1.OrderByBuilder<FcmTokenTable>? orderBy,
-    _i1.OrderByListBuilder<FcmTokenTable>? orderByList,
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.OrderByBuilder<FcmTokenTable>? orderBy,
+    _is.OrderByListBuilder<FcmTokenTable>? orderByList,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<FcmToken>(
       where: where?.call(FcmToken.t),
@@ -296,11 +296,11 @@ class FcmTokenRepository {
 
   /// Finds a single [FcmToken] by its [id] or null if no such row exists.
   Future<FcmToken?> findById(
-    _i1.DatabaseSession session,
-    _i1.UuidValue id, {
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.DatabaseSession session,
+    _is.UuidValue id, {
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<FcmToken>(
       id,
@@ -325,9 +325,9 @@ class FcmTokenRepository {
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<FcmToken>> insert(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<FcmToken> rows, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
     bool ignoreConflicts = false,
     bool noReturn = false,
   }) async {
@@ -343,9 +343,9 @@ class FcmTokenRepository {
   ///
   /// The returned [FcmToken] will have its `id` field set.
   Future<FcmToken> insertRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     FcmToken row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.insertRow<FcmToken>(row, transaction: transaction);
   }
@@ -371,12 +371,12 @@ class FcmTokenRepository {
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<FcmToken>> upsert(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<FcmToken> rows, {
-    required _i1.ColumnSelections<FcmTokenTable> conflictColumns,
-    _i1.ColumnSelections<FcmTokenTable>? updateColumns,
-    _i1.WhereExpressionBuilder<FcmTokenTable>? updateWhere,
-    _i1.Transaction? transaction,
+    required _is.ColumnSelections<FcmTokenTable> conflictColumns,
+    _is.ColumnSelections<FcmTokenTable>? updateColumns,
+    _is.WhereExpressionBuilder<FcmTokenTable>? updateWhere,
+    _is.Transaction? transaction,
     bool noReturn = false,
   }) async {
     return session.db.upsert<FcmToken>(
@@ -403,12 +403,12 @@ class FcmTokenRepository {
   ///
   /// The returned [FcmToken] will have its `id` field set.
   Future<FcmToken?> upsertRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     FcmToken row, {
-    required _i1.ColumnSelections<FcmTokenTable> conflictColumns,
-    _i1.ColumnSelections<FcmTokenTable>? updateColumns,
-    _i1.WhereExpressionBuilder<FcmTokenTable>? updateWhere,
-    _i1.Transaction? transaction,
+    required _is.ColumnSelections<FcmTokenTable> conflictColumns,
+    _is.ColumnSelections<FcmTokenTable>? updateColumns,
+    _is.WhereExpressionBuilder<FcmTokenTable>? updateWhere,
+    _is.Transaction? transaction,
   }) async {
     return session.db.upsertRow<FcmToken>(
       row,
@@ -429,10 +429,10 @@ class FcmTokenRepository {
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<FcmToken>> update(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<FcmToken> rows, {
-    _i1.ColumnSelections<FcmTokenTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<FcmTokenTable>? columns,
+    _is.Transaction? transaction,
     bool noReturn = false,
   }) async {
     return session.db.update<FcmToken>(
@@ -447,10 +447,10 @@ class FcmTokenRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<FcmToken> updateRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     FcmToken row, {
-    _i1.ColumnSelections<FcmTokenTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<FcmTokenTable>? columns,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateRow<FcmToken>(
       row,
@@ -462,10 +462,10 @@ class FcmTokenRepository {
   /// Updates a single [FcmToken] by its [id] with the specified [columnValues].
   /// Returns the updated row or null if no row with the given id exists.
   Future<FcmToken?> updateById(
-    _i1.DatabaseSession session,
-    _i1.UuidValue id, {
-    required _i1.ColumnValueListBuilder<FcmTokenUpdateTable> columnValues,
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session,
+    _is.UuidValue id, {
+    required _is.ColumnValueListBuilder<FcmTokenUpdateTable> columnValues,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateById<FcmToken>(
       id,
@@ -481,14 +481,14 @@ class FcmTokenRepository {
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<FcmToken>> updateWhere(
-    _i1.DatabaseSession session, {
-    required _i1.ColumnValueListBuilder<FcmTokenUpdateTable> columnValues,
-    required _i1.WhereExpressionBuilder<FcmTokenTable> where,
+    _is.DatabaseSession session, {
+    required _is.ColumnValueListBuilder<FcmTokenUpdateTable> columnValues,
+    required _is.WhereExpressionBuilder<FcmTokenTable> where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<FcmTokenTable>? orderBy,
-    _i1.OrderByListBuilder<FcmTokenTable>? orderByList,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<FcmTokenTable>? orderBy,
+    _is.OrderByListBuilder<FcmTokenTable>? orderByList,
+    _is.Transaction? transaction,
     bool noReturn = false,
   }) async {
     return session.db.updateWhere<FcmToken>(
@@ -515,11 +515,11 @@ class FcmTokenRepository {
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<FcmToken>> delete(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<FcmToken> rows, {
-    _i1.OrderByBuilder<FcmTokenTable>? orderBy,
-    _i1.OrderByListBuilder<FcmTokenTable>? orderByList,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<FcmTokenTable>? orderBy,
+    _is.OrderByListBuilder<FcmTokenTable>? orderByList,
+    _is.Transaction? transaction,
     bool noReturn = false,
   }) async {
     return session.db.delete<FcmToken>(
@@ -533,9 +533,9 @@ class FcmTokenRepository {
 
   /// Deletes a single [FcmToken].
   Future<FcmToken> deleteRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     FcmToken row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.deleteRow<FcmToken>(row, transaction: transaction);
   }
@@ -549,11 +549,11 @@ class FcmTokenRepository {
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<FcmToken>> deleteWhere(
-    _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<FcmTokenTable> where,
-    _i1.OrderByBuilder<FcmTokenTable>? orderBy,
-    _i1.OrderByListBuilder<FcmTokenTable>? orderByList,
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<FcmTokenTable> where,
+    _is.OrderByBuilder<FcmTokenTable>? orderBy,
+    _is.OrderByListBuilder<FcmTokenTable>? orderByList,
+    _is.Transaction? transaction,
     bool noReturn = false,
   }) async {
     return session.db.deleteWhere<FcmToken>(
@@ -568,10 +568,10 @@ class FcmTokenRepository {
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<FcmTokenTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<FcmTokenTable>? where,
     int? limit,
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.count<FcmToken>(
       where: where?.call(FcmToken.t),
@@ -582,11 +582,11 @@ class FcmTokenRepository {
 
   /// Acquires row-level locks on [FcmToken] rows matching the [where] expression.
   Future<void> lockRows(
-    _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<FcmTokenTable> where,
-    required _i1.LockMode lockMode,
-    required _i1.Transaction transaction,
-    _i1.LockBehavior lockBehavior = _i1.LockBehavior.wait,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<FcmTokenTable> where,
+    required _is.LockMode lockMode,
+    required _is.Transaction transaction,
+    _is.LockBehavior lockBehavior = _is.LockBehavior.wait,
   }) async {
     return session.db.lockRows<FcmToken>(
       where: where(FcmToken.t),

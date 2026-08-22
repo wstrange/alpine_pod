@@ -10,10 +10,10 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
+import 'package:serverpod/serverpod.dart' as _is;
 
 abstract class Section
-    implements _i1.TableRow<_i1.UuidValue?>, _i1.ProtocolSerialization {
+    implements _is.TableRow<_is.UuidValue?>, _is.ProtocolSerialization {
   Section._({
     this.id,
     required this.name,
@@ -24,7 +24,7 @@ abstract class Section
   }) : updatedAt = updatedAt ?? DateTime.now();
 
   factory Section({
-    _i1.UuidValue? id,
+    _is.UuidValue? id,
     required String name,
     required String description,
     String? location,
@@ -36,14 +36,14 @@ abstract class Section
     return Section(
       id: jsonSerialization['id'] == null
           ? null
-          : _i1.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
+          : _is.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
       name: jsonSerialization['name'] as String,
       description: jsonSerialization['description'] as String,
       location: jsonSerialization['location'] as String?,
       contactInfo: jsonSerialization['contactInfo'] as String?,
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
     );
   }
 
@@ -52,7 +52,7 @@ abstract class Section
   static const db = SectionRepository._();
 
   @override
-  _i1.UuidValue? id;
+  _is.UuidValue? id;
 
   String name;
 
@@ -65,13 +65,13 @@ abstract class Section
   DateTime updatedAt;
 
   @override
-  _i1.Table<_i1.UuidValue?> get table => t;
+  _is.Table<_is.UuidValue?> get table => t;
 
   /// Returns a shallow copy of this [Section]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   Section copyWith({
-    _i1.UuidValue? id,
+    _is.UuidValue? id,
     String? name,
     String? description,
     String? location,
@@ -109,11 +109,11 @@ abstract class Section
   }
 
   static SectionIncludeList includeList({
-    _i1.WhereExpressionBuilder<SectionTable>? where,
+    _is.WhereExpressionBuilder<SectionTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<SectionTable>? orderBy,
-    _i1.OrderByListBuilder<SectionTable>? orderByList,
+    _is.OrderByBuilder<SectionTable>? orderBy,
+    _is.OrderByListBuilder<SectionTable>? orderByList,
     SectionInclude? include,
   }) {
     return SectionIncludeList._(
@@ -128,7 +128,7 @@ abstract class Section
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -136,7 +136,7 @@ class _Undefined {}
 
 class _SectionImpl extends Section {
   _SectionImpl({
-    _i1.UuidValue? id,
+    _is.UuidValue? id,
     required String name,
     required String description,
     String? location,
@@ -153,7 +153,7 @@ class _SectionImpl extends Section {
 
   /// Returns a shallow copy of this [Section]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   Section copyWith({
     Object? id = _Undefined,
@@ -164,7 +164,7 @@ class _SectionImpl extends Section {
     DateTime? updatedAt,
   }) {
     return Section(
-      id: id is _i1.UuidValue? ? id : this.id,
+      id: id is _is.UuidValue? ? id : this.id,
       name: name ?? this.name,
       description: description ?? this.description,
       location: location is String? ? location : this.location,
@@ -174,49 +174,49 @@ class _SectionImpl extends Section {
   }
 }
 
-class SectionUpdateTable extends _i1.UpdateTable<SectionTable> {
+class SectionUpdateTable extends _is.UpdateTable<SectionTable> {
   SectionUpdateTable(super.table);
 
-  _i1.ColumnValue<String, String> name(String value) =>
-      _i1.ColumnValue(table.name, value);
+  _is.ColumnValue<String, String> name(String value) =>
+      _is.ColumnValue(table.name, value);
 
-  _i1.ColumnValue<String, String> description(String value) =>
-      _i1.ColumnValue(table.description, value);
+  _is.ColumnValue<String, String> description(String value) =>
+      _is.ColumnValue(table.description, value);
 
-  _i1.ColumnValue<String, String> location(String? value) =>
-      _i1.ColumnValue(table.location, value);
+  _is.ColumnValue<String, String> location(String? value) =>
+      _is.ColumnValue(table.location, value);
 
-  _i1.ColumnValue<String, String> contactInfo(String? value) =>
-      _i1.ColumnValue(table.contactInfo, value);
+  _is.ColumnValue<String, String> contactInfo(String? value) =>
+      _is.ColumnValue(table.contactInfo, value);
 
-  _i1.ColumnValue<DateTime, DateTime> updatedAt(DateTime value) =>
-      _i1.ColumnValue(table.updatedAt, value);
+  _is.ColumnValue<DateTime, DateTime> updatedAt(DateTime value) =>
+      _is.ColumnValue(table.updatedAt, value);
 }
 
-class SectionTable extends _i1.Table<_i1.UuidValue?> {
+class SectionTable extends _is.Table<_is.UuidValue?> {
   SectionTable({super.tableRelation}) : super(tableName: 'sections') {
     updateTable = SectionUpdateTable(this);
-    name = _i1.ColumnString('name', this);
-    description = _i1.ColumnString('description', this);
-    location = _i1.ColumnString('location', this);
-    contactInfo = _i1.ColumnString('contactInfo', this);
-    updatedAt = _i1.ColumnDateTime('updatedAt', this, hasDefault: true);
+    name = _is.ColumnString('name', this);
+    description = _is.ColumnString('description', this);
+    location = _is.ColumnString('location', this);
+    contactInfo = _is.ColumnString('contactInfo', this);
+    updatedAt = _is.ColumnDateTime('updatedAt', this, hasDefault: true);
   }
 
   late final SectionUpdateTable updateTable;
 
-  late final _i1.ColumnString name;
+  late final _is.ColumnString name;
 
-  late final _i1.ColumnString description;
+  late final _is.ColumnString description;
 
-  late final _i1.ColumnString location;
+  late final _is.ColumnString location;
 
-  late final _i1.ColumnString contactInfo;
+  late final _is.ColumnString contactInfo;
 
-  late final _i1.ColumnDateTime updatedAt;
+  late final _is.ColumnDateTime updatedAt;
 
   @override
-  List<_i1.Column> get columns => [
+  List<_is.Column> get columns => [
     id,
     name,
     description,
@@ -226,19 +226,19 @@ class SectionTable extends _i1.Table<_i1.UuidValue?> {
   ];
 }
 
-class SectionInclude extends _i1.IncludeObject {
+class SectionInclude extends _is.IncludeObject {
   SectionInclude._();
 
   @override
-  Map<String, _i1.Include?> get includes => {};
+  Map<String, _is.Include?> get includes => {};
 
   @override
-  _i1.Table<_i1.UuidValue?> get table => Section.t;
+  _is.Table<_is.UuidValue?> get table => Section.t;
 }
 
-class SectionIncludeList extends _i1.IncludeList {
+class SectionIncludeList extends _is.IncludeList {
   SectionIncludeList._({
-    _i1.WhereExpressionBuilder<SectionTable>? where,
+    _is.WhereExpressionBuilder<SectionTable>? where,
     super.limit,
     super.offset,
     super.orderBy,
@@ -249,10 +249,10 @@ class SectionIncludeList extends _i1.IncludeList {
   }
 
   @override
-  Map<String, _i1.Include?> get includes => include?.includes ?? {};
+  Map<String, _is.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<_i1.UuidValue?> get table => Section.t;
+  _is.Table<_is.UuidValue?> get table => Section.t;
 }
 
 class SectionRepository {
@@ -281,15 +281,15 @@ class SectionRepository {
   /// );
   /// ```
   Future<List<Section>> find(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<SectionTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<SectionTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<SectionTable>? orderBy,
-    _i1.OrderByListBuilder<SectionTable>? orderByList,
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.OrderByBuilder<SectionTable>? orderBy,
+    _is.OrderByListBuilder<SectionTable>? orderByList,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<Section>(
       where: where?.call(Section.t),
@@ -321,14 +321,14 @@ class SectionRepository {
   /// );
   /// ```
   Future<Section?> findFirstRow(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<SectionTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<SectionTable>? where,
     int? offset,
-    _i1.OrderByBuilder<SectionTable>? orderBy,
-    _i1.OrderByListBuilder<SectionTable>? orderByList,
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.OrderByBuilder<SectionTable>? orderBy,
+    _is.OrderByListBuilder<SectionTable>? orderByList,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<Section>(
       where: where?.call(Section.t),
@@ -343,11 +343,11 @@ class SectionRepository {
 
   /// Finds a single [Section] by its [id] or null if no such row exists.
   Future<Section?> findById(
-    _i1.DatabaseSession session,
-    _i1.UuidValue id, {
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.DatabaseSession session,
+    _is.UuidValue id, {
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<Section>(
       id,
@@ -372,9 +372,9 @@ class SectionRepository {
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<Section>> insert(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<Section> rows, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
     bool ignoreConflicts = false,
     bool noReturn = false,
   }) async {
@@ -390,9 +390,9 @@ class SectionRepository {
   ///
   /// The returned [Section] will have its `id` field set.
   Future<Section> insertRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     Section row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.insertRow<Section>(row, transaction: transaction);
   }
@@ -418,12 +418,12 @@ class SectionRepository {
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<Section>> upsert(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<Section> rows, {
-    required _i1.ColumnSelections<SectionTable> conflictColumns,
-    _i1.ColumnSelections<SectionTable>? updateColumns,
-    _i1.WhereExpressionBuilder<SectionTable>? updateWhere,
-    _i1.Transaction? transaction,
+    required _is.ColumnSelections<SectionTable> conflictColumns,
+    _is.ColumnSelections<SectionTable>? updateColumns,
+    _is.WhereExpressionBuilder<SectionTable>? updateWhere,
+    _is.Transaction? transaction,
     bool noReturn = false,
   }) async {
     return session.db.upsert<Section>(
@@ -450,12 +450,12 @@ class SectionRepository {
   ///
   /// The returned [Section] will have its `id` field set.
   Future<Section?> upsertRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     Section row, {
-    required _i1.ColumnSelections<SectionTable> conflictColumns,
-    _i1.ColumnSelections<SectionTable>? updateColumns,
-    _i1.WhereExpressionBuilder<SectionTable>? updateWhere,
-    _i1.Transaction? transaction,
+    required _is.ColumnSelections<SectionTable> conflictColumns,
+    _is.ColumnSelections<SectionTable>? updateColumns,
+    _is.WhereExpressionBuilder<SectionTable>? updateWhere,
+    _is.Transaction? transaction,
   }) async {
     return session.db.upsertRow<Section>(
       row,
@@ -476,10 +476,10 @@ class SectionRepository {
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<Section>> update(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<Section> rows, {
-    _i1.ColumnSelections<SectionTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<SectionTable>? columns,
+    _is.Transaction? transaction,
     bool noReturn = false,
   }) async {
     return session.db.update<Section>(
@@ -494,10 +494,10 @@ class SectionRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<Section> updateRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     Section row, {
-    _i1.ColumnSelections<SectionTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<SectionTable>? columns,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateRow<Section>(
       row,
@@ -509,10 +509,10 @@ class SectionRepository {
   /// Updates a single [Section] by its [id] with the specified [columnValues].
   /// Returns the updated row or null if no row with the given id exists.
   Future<Section?> updateById(
-    _i1.DatabaseSession session,
-    _i1.UuidValue id, {
-    required _i1.ColumnValueListBuilder<SectionUpdateTable> columnValues,
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session,
+    _is.UuidValue id, {
+    required _is.ColumnValueListBuilder<SectionUpdateTable> columnValues,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateById<Section>(
       id,
@@ -528,14 +528,14 @@ class SectionRepository {
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<Section>> updateWhere(
-    _i1.DatabaseSession session, {
-    required _i1.ColumnValueListBuilder<SectionUpdateTable> columnValues,
-    required _i1.WhereExpressionBuilder<SectionTable> where,
+    _is.DatabaseSession session, {
+    required _is.ColumnValueListBuilder<SectionUpdateTable> columnValues,
+    required _is.WhereExpressionBuilder<SectionTable> where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<SectionTable>? orderBy,
-    _i1.OrderByListBuilder<SectionTable>? orderByList,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<SectionTable>? orderBy,
+    _is.OrderByListBuilder<SectionTable>? orderByList,
+    _is.Transaction? transaction,
     bool noReturn = false,
   }) async {
     return session.db.updateWhere<Section>(
@@ -562,11 +562,11 @@ class SectionRepository {
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<Section>> delete(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<Section> rows, {
-    _i1.OrderByBuilder<SectionTable>? orderBy,
-    _i1.OrderByListBuilder<SectionTable>? orderByList,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<SectionTable>? orderBy,
+    _is.OrderByListBuilder<SectionTable>? orderByList,
+    _is.Transaction? transaction,
     bool noReturn = false,
   }) async {
     return session.db.delete<Section>(
@@ -580,9 +580,9 @@ class SectionRepository {
 
   /// Deletes a single [Section].
   Future<Section> deleteRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     Section row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.deleteRow<Section>(row, transaction: transaction);
   }
@@ -596,11 +596,11 @@ class SectionRepository {
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<Section>> deleteWhere(
-    _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<SectionTable> where,
-    _i1.OrderByBuilder<SectionTable>? orderBy,
-    _i1.OrderByListBuilder<SectionTable>? orderByList,
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<SectionTable> where,
+    _is.OrderByBuilder<SectionTable>? orderBy,
+    _is.OrderByListBuilder<SectionTable>? orderByList,
+    _is.Transaction? transaction,
     bool noReturn = false,
   }) async {
     return session.db.deleteWhere<Section>(
@@ -615,10 +615,10 @@ class SectionRepository {
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<SectionTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<SectionTable>? where,
     int? limit,
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.count<Section>(
       where: where?.call(Section.t),
@@ -629,11 +629,11 @@ class SectionRepository {
 
   /// Acquires row-level locks on [Section] rows matching the [where] expression.
   Future<void> lockRows(
-    _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<SectionTable> where,
-    required _i1.LockMode lockMode,
-    required _i1.Transaction transaction,
-    _i1.LockBehavior lockBehavior = _i1.LockBehavior.wait,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<SectionTable> where,
+    required _is.LockMode lockMode,
+    required _is.Transaction transaction,
+    _is.LockBehavior lockBehavior = _is.LockBehavior.wait,
   }) async {
     return session.db.lockRows<Section>(
       where: where(Section.t),

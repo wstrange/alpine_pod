@@ -10,10 +10,10 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
 abstract class NotificationTemplate
-    implements _i1.SerializableModel, _i1.ProtocolSerialization {
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   NotificationTemplate._({
     this.id,
     required this.name,
@@ -25,7 +25,7 @@ abstract class NotificationTemplate
   }) : updatedAt = updatedAt ?? DateTime.now();
 
   factory NotificationTemplate({
-    _i1.UuidValue? id,
+    _isc.UuidValue? id,
     required String name,
     required String titleTemplate,
     required String bodyTemplate,
@@ -40,24 +40,24 @@ abstract class NotificationTemplate
     return NotificationTemplate(
       id: jsonSerialization['id'] == null
           ? null
-          : _i1.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
+          : _isc.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
       name: jsonSerialization['name'] as String,
       titleTemplate: jsonSerialization['titleTemplate'] as String,
       bodyTemplate: jsonSerialization['bodyTemplate'] as String,
       htmlTemplate: jsonSerialization['htmlTemplate'] as String?,
-      createdAt: _i1.DateTimeJsonExtension.fromJson(
+      createdAt: _isc.DateTimeJsonExtension.fromJson(
         jsonSerialization['createdAt'],
       ),
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
     );
   }
 
   /// The database id, set if the object has been inserted into the
   /// database or if it has been fetched from the database. Otherwise,
   /// the id will be null.
-  _i1.UuidValue? id;
+  _isc.UuidValue? id;
 
   String name;
 
@@ -73,9 +73,9 @@ abstract class NotificationTemplate
 
   /// Returns a shallow copy of this [NotificationTemplate]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   NotificationTemplate copyWith({
-    _i1.UuidValue? id,
+    _isc.UuidValue? id,
     String? name,
     String? titleTemplate,
     String? bodyTemplate,
@@ -113,7 +113,7 @@ abstract class NotificationTemplate
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -121,7 +121,7 @@ class _Undefined {}
 
 class _NotificationTemplateImpl extends NotificationTemplate {
   _NotificationTemplateImpl({
-    _i1.UuidValue? id,
+    _isc.UuidValue? id,
     required String name,
     required String titleTemplate,
     required String bodyTemplate,
@@ -140,7 +140,7 @@ class _NotificationTemplateImpl extends NotificationTemplate {
 
   /// Returns a shallow copy of this [NotificationTemplate]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   NotificationTemplate copyWith({
     Object? id = _Undefined,
@@ -152,7 +152,7 @@ class _NotificationTemplateImpl extends NotificationTemplate {
     DateTime? updatedAt,
   }) {
     return NotificationTemplate(
-      id: id is _i1.UuidValue? ? id : this.id,
+      id: id is _isc.UuidValue? ? id : this.id,
       name: name ?? this.name,
       titleTemplate: titleTemplate ?? this.titleTemplate,
       bodyTemplate: bodyTemplate ?? this.bodyTemplate,

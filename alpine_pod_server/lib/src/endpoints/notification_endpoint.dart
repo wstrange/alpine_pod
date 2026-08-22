@@ -16,7 +16,7 @@ class NotificationEndpoint extends Endpoint {
 
     final userNotifications = await UserNotification.db.find(
       session,
-      where: (t) => t.id.equals(currentUserId),
+      where: (t) => t.userId.equals(currentUserId),
       orderBy: (t) => t.createdAt.desc(),
       limit: limit,
       offset: offset,
@@ -36,7 +36,7 @@ class NotificationEndpoint extends Endpoint {
 
     await UserNotification.db.deleteWhere(
       session,
-      where: (t) => t.id.equals(currentUserId),
+      where: (t) => t.userId.equals(currentUserId),
     );
   }
 
@@ -48,7 +48,7 @@ class NotificationEndpoint extends Endpoint {
       session,
       userNotificationId,
     );
-    if (userNotif == null || userNotif.id != currentUserId) {
+    if (userNotif == null || userNotif.userId != currentUserId) {
       return false;
     }
 

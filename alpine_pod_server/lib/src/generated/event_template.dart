@@ -10,10 +10,10 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
+import 'package:serverpod/serverpod.dart' as _is;
 
 abstract class EventTemplate
-    implements _i1.TableRow<_i1.UuidValue?>, _i1.ProtocolSerialization {
+    implements _is.TableRow<_is.UuidValue?>, _is.ProtocolSerialization {
   EventTemplate._({
     this.id,
     required this.name,
@@ -25,7 +25,7 @@ abstract class EventTemplate
        updatedAt = updatedAt ?? DateTime.now();
 
   factory EventTemplate({
-    _i1.UuidValue? id,
+    _is.UuidValue? id,
     required String name,
     required String description,
     required String content,
@@ -37,14 +37,14 @@ abstract class EventTemplate
     return EventTemplate(
       id: jsonSerialization['id'] == null
           ? null
-          : _i1.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
+          : _is.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
       name: jsonSerialization['name'] as String,
       description: jsonSerialization['description'] as String,
       content: jsonSerialization['content'] as String,
       language: jsonSerialization['language'] as String?,
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
     );
   }
 
@@ -53,7 +53,7 @@ abstract class EventTemplate
   static const db = EventTemplateRepository._();
 
   @override
-  _i1.UuidValue? id;
+  _is.UuidValue? id;
 
   String name;
 
@@ -66,13 +66,13 @@ abstract class EventTemplate
   DateTime updatedAt;
 
   @override
-  _i1.Table<_i1.UuidValue?> get table => t;
+  _is.Table<_is.UuidValue?> get table => t;
 
   /// Returns a shallow copy of this [EventTemplate]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   EventTemplate copyWith({
-    _i1.UuidValue? id,
+    _is.UuidValue? id,
     String? name,
     String? description,
     String? content,
@@ -110,11 +110,11 @@ abstract class EventTemplate
   }
 
   static EventTemplateIncludeList includeList({
-    _i1.WhereExpressionBuilder<EventTemplateTable>? where,
+    _is.WhereExpressionBuilder<EventTemplateTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<EventTemplateTable>? orderBy,
-    _i1.OrderByListBuilder<EventTemplateTable>? orderByList,
+    _is.OrderByBuilder<EventTemplateTable>? orderBy,
+    _is.OrderByListBuilder<EventTemplateTable>? orderByList,
     EventTemplateInclude? include,
   }) {
     return EventTemplateIncludeList._(
@@ -129,7 +129,7 @@ abstract class EventTemplate
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -137,7 +137,7 @@ class _Undefined {}
 
 class _EventTemplateImpl extends EventTemplate {
   _EventTemplateImpl({
-    _i1.UuidValue? id,
+    _is.UuidValue? id,
     required String name,
     required String description,
     required String content,
@@ -154,7 +154,7 @@ class _EventTemplateImpl extends EventTemplate {
 
   /// Returns a shallow copy of this [EventTemplate]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   EventTemplate copyWith({
     Object? id = _Undefined,
@@ -165,7 +165,7 @@ class _EventTemplateImpl extends EventTemplate {
     DateTime? updatedAt,
   }) {
     return EventTemplate(
-      id: id is _i1.UuidValue? ? id : this.id,
+      id: id is _is.UuidValue? ? id : this.id,
       name: name ?? this.name,
       description: description ?? this.description,
       content: content ?? this.content,
@@ -175,50 +175,50 @@ class _EventTemplateImpl extends EventTemplate {
   }
 }
 
-class EventTemplateUpdateTable extends _i1.UpdateTable<EventTemplateTable> {
+class EventTemplateUpdateTable extends _is.UpdateTable<EventTemplateTable> {
   EventTemplateUpdateTable(super.table);
 
-  _i1.ColumnValue<String, String> name(String value) =>
-      _i1.ColumnValue(table.name, value);
+  _is.ColumnValue<String, String> name(String value) =>
+      _is.ColumnValue(table.name, value);
 
-  _i1.ColumnValue<String, String> description(String value) =>
-      _i1.ColumnValue(table.description, value);
+  _is.ColumnValue<String, String> description(String value) =>
+      _is.ColumnValue(table.description, value);
 
-  _i1.ColumnValue<String, String> content(String value) =>
-      _i1.ColumnValue(table.content, value);
+  _is.ColumnValue<String, String> content(String value) =>
+      _is.ColumnValue(table.content, value);
 
-  _i1.ColumnValue<String, String> language(String value) =>
-      _i1.ColumnValue(table.language, value);
+  _is.ColumnValue<String, String> language(String value) =>
+      _is.ColumnValue(table.language, value);
 
-  _i1.ColumnValue<DateTime, DateTime> updatedAt(DateTime value) =>
-      _i1.ColumnValue(table.updatedAt, value);
+  _is.ColumnValue<DateTime, DateTime> updatedAt(DateTime value) =>
+      _is.ColumnValue(table.updatedAt, value);
 }
 
-class EventTemplateTable extends _i1.Table<_i1.UuidValue?> {
+class EventTemplateTable extends _is.Table<_is.UuidValue?> {
   EventTemplateTable({super.tableRelation})
     : super(tableName: 'event_templates') {
     updateTable = EventTemplateUpdateTable(this);
-    name = _i1.ColumnString('name', this);
-    description = _i1.ColumnString('description', this);
-    content = _i1.ColumnString('content', this);
-    language = _i1.ColumnString('language', this, hasDefault: true);
-    updatedAt = _i1.ColumnDateTime('updatedAt', this, hasDefault: true);
+    name = _is.ColumnString('name', this);
+    description = _is.ColumnString('description', this);
+    content = _is.ColumnString('content', this);
+    language = _is.ColumnString('language', this, hasDefault: true);
+    updatedAt = _is.ColumnDateTime('updatedAt', this, hasDefault: true);
   }
 
   late final EventTemplateUpdateTable updateTable;
 
-  late final _i1.ColumnString name;
+  late final _is.ColumnString name;
 
-  late final _i1.ColumnString description;
+  late final _is.ColumnString description;
 
-  late final _i1.ColumnString content;
+  late final _is.ColumnString content;
 
-  late final _i1.ColumnString language;
+  late final _is.ColumnString language;
 
-  late final _i1.ColumnDateTime updatedAt;
+  late final _is.ColumnDateTime updatedAt;
 
   @override
-  List<_i1.Column> get columns => [
+  List<_is.Column> get columns => [
     id,
     name,
     description,
@@ -228,19 +228,19 @@ class EventTemplateTable extends _i1.Table<_i1.UuidValue?> {
   ];
 }
 
-class EventTemplateInclude extends _i1.IncludeObject {
+class EventTemplateInclude extends _is.IncludeObject {
   EventTemplateInclude._();
 
   @override
-  Map<String, _i1.Include?> get includes => {};
+  Map<String, _is.Include?> get includes => {};
 
   @override
-  _i1.Table<_i1.UuidValue?> get table => EventTemplate.t;
+  _is.Table<_is.UuidValue?> get table => EventTemplate.t;
 }
 
-class EventTemplateIncludeList extends _i1.IncludeList {
+class EventTemplateIncludeList extends _is.IncludeList {
   EventTemplateIncludeList._({
-    _i1.WhereExpressionBuilder<EventTemplateTable>? where,
+    _is.WhereExpressionBuilder<EventTemplateTable>? where,
     super.limit,
     super.offset,
     super.orderBy,
@@ -251,10 +251,10 @@ class EventTemplateIncludeList extends _i1.IncludeList {
   }
 
   @override
-  Map<String, _i1.Include?> get includes => include?.includes ?? {};
+  Map<String, _is.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<_i1.UuidValue?> get table => EventTemplate.t;
+  _is.Table<_is.UuidValue?> get table => EventTemplate.t;
 }
 
 class EventTemplateRepository {
@@ -283,15 +283,15 @@ class EventTemplateRepository {
   /// );
   /// ```
   Future<List<EventTemplate>> find(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<EventTemplateTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<EventTemplateTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<EventTemplateTable>? orderBy,
-    _i1.OrderByListBuilder<EventTemplateTable>? orderByList,
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.OrderByBuilder<EventTemplateTable>? orderBy,
+    _is.OrderByListBuilder<EventTemplateTable>? orderByList,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<EventTemplate>(
       where: where?.call(EventTemplate.t),
@@ -323,14 +323,14 @@ class EventTemplateRepository {
   /// );
   /// ```
   Future<EventTemplate?> findFirstRow(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<EventTemplateTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<EventTemplateTable>? where,
     int? offset,
-    _i1.OrderByBuilder<EventTemplateTable>? orderBy,
-    _i1.OrderByListBuilder<EventTemplateTable>? orderByList,
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.OrderByBuilder<EventTemplateTable>? orderBy,
+    _is.OrderByListBuilder<EventTemplateTable>? orderByList,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<EventTemplate>(
       where: where?.call(EventTemplate.t),
@@ -345,11 +345,11 @@ class EventTemplateRepository {
 
   /// Finds a single [EventTemplate] by its [id] or null if no such row exists.
   Future<EventTemplate?> findById(
-    _i1.DatabaseSession session,
-    _i1.UuidValue id, {
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.DatabaseSession session,
+    _is.UuidValue id, {
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<EventTemplate>(
       id,
@@ -374,9 +374,9 @@ class EventTemplateRepository {
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<EventTemplate>> insert(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<EventTemplate> rows, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
     bool ignoreConflicts = false,
     bool noReturn = false,
   }) async {
@@ -392,9 +392,9 @@ class EventTemplateRepository {
   ///
   /// The returned [EventTemplate] will have its `id` field set.
   Future<EventTemplate> insertRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     EventTemplate row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.insertRow<EventTemplate>(row, transaction: transaction);
   }
@@ -420,12 +420,12 @@ class EventTemplateRepository {
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<EventTemplate>> upsert(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<EventTemplate> rows, {
-    required _i1.ColumnSelections<EventTemplateTable> conflictColumns,
-    _i1.ColumnSelections<EventTemplateTable>? updateColumns,
-    _i1.WhereExpressionBuilder<EventTemplateTable>? updateWhere,
-    _i1.Transaction? transaction,
+    required _is.ColumnSelections<EventTemplateTable> conflictColumns,
+    _is.ColumnSelections<EventTemplateTable>? updateColumns,
+    _is.WhereExpressionBuilder<EventTemplateTable>? updateWhere,
+    _is.Transaction? transaction,
     bool noReturn = false,
   }) async {
     return session.db.upsert<EventTemplate>(
@@ -452,12 +452,12 @@ class EventTemplateRepository {
   ///
   /// The returned [EventTemplate] will have its `id` field set.
   Future<EventTemplate?> upsertRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     EventTemplate row, {
-    required _i1.ColumnSelections<EventTemplateTable> conflictColumns,
-    _i1.ColumnSelections<EventTemplateTable>? updateColumns,
-    _i1.WhereExpressionBuilder<EventTemplateTable>? updateWhere,
-    _i1.Transaction? transaction,
+    required _is.ColumnSelections<EventTemplateTable> conflictColumns,
+    _is.ColumnSelections<EventTemplateTable>? updateColumns,
+    _is.WhereExpressionBuilder<EventTemplateTable>? updateWhere,
+    _is.Transaction? transaction,
   }) async {
     return session.db.upsertRow<EventTemplate>(
       row,
@@ -478,10 +478,10 @@ class EventTemplateRepository {
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<EventTemplate>> update(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<EventTemplate> rows, {
-    _i1.ColumnSelections<EventTemplateTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<EventTemplateTable>? columns,
+    _is.Transaction? transaction,
     bool noReturn = false,
   }) async {
     return session.db.update<EventTemplate>(
@@ -496,10 +496,10 @@ class EventTemplateRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<EventTemplate> updateRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     EventTemplate row, {
-    _i1.ColumnSelections<EventTemplateTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<EventTemplateTable>? columns,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateRow<EventTemplate>(
       row,
@@ -511,10 +511,10 @@ class EventTemplateRepository {
   /// Updates a single [EventTemplate] by its [id] with the specified [columnValues].
   /// Returns the updated row or null if no row with the given id exists.
   Future<EventTemplate?> updateById(
-    _i1.DatabaseSession session,
-    _i1.UuidValue id, {
-    required _i1.ColumnValueListBuilder<EventTemplateUpdateTable> columnValues,
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session,
+    _is.UuidValue id, {
+    required _is.ColumnValueListBuilder<EventTemplateUpdateTable> columnValues,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateById<EventTemplate>(
       id,
@@ -530,14 +530,14 @@ class EventTemplateRepository {
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<EventTemplate>> updateWhere(
-    _i1.DatabaseSession session, {
-    required _i1.ColumnValueListBuilder<EventTemplateUpdateTable> columnValues,
-    required _i1.WhereExpressionBuilder<EventTemplateTable> where,
+    _is.DatabaseSession session, {
+    required _is.ColumnValueListBuilder<EventTemplateUpdateTable> columnValues,
+    required _is.WhereExpressionBuilder<EventTemplateTable> where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<EventTemplateTable>? orderBy,
-    _i1.OrderByListBuilder<EventTemplateTable>? orderByList,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<EventTemplateTable>? orderBy,
+    _is.OrderByListBuilder<EventTemplateTable>? orderByList,
+    _is.Transaction? transaction,
     bool noReturn = false,
   }) async {
     return session.db.updateWhere<EventTemplate>(
@@ -564,11 +564,11 @@ class EventTemplateRepository {
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<EventTemplate>> delete(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<EventTemplate> rows, {
-    _i1.OrderByBuilder<EventTemplateTable>? orderBy,
-    _i1.OrderByListBuilder<EventTemplateTable>? orderByList,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<EventTemplateTable>? orderBy,
+    _is.OrderByListBuilder<EventTemplateTable>? orderByList,
+    _is.Transaction? transaction,
     bool noReturn = false,
   }) async {
     return session.db.delete<EventTemplate>(
@@ -582,9 +582,9 @@ class EventTemplateRepository {
 
   /// Deletes a single [EventTemplate].
   Future<EventTemplate> deleteRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     EventTemplate row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.deleteRow<EventTemplate>(row, transaction: transaction);
   }
@@ -598,11 +598,11 @@ class EventTemplateRepository {
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<EventTemplate>> deleteWhere(
-    _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<EventTemplateTable> where,
-    _i1.OrderByBuilder<EventTemplateTable>? orderBy,
-    _i1.OrderByListBuilder<EventTemplateTable>? orderByList,
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<EventTemplateTable> where,
+    _is.OrderByBuilder<EventTemplateTable>? orderBy,
+    _is.OrderByListBuilder<EventTemplateTable>? orderByList,
+    _is.Transaction? transaction,
     bool noReturn = false,
   }) async {
     return session.db.deleteWhere<EventTemplate>(
@@ -617,10 +617,10 @@ class EventTemplateRepository {
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<EventTemplateTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<EventTemplateTable>? where,
     int? limit,
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.count<EventTemplate>(
       where: where?.call(EventTemplate.t),
@@ -631,11 +631,11 @@ class EventTemplateRepository {
 
   /// Acquires row-level locks on [EventTemplate] rows matching the [where] expression.
   Future<void> lockRows(
-    _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<EventTemplateTable> where,
-    required _i1.LockMode lockMode,
-    required _i1.Transaction transaction,
-    _i1.LockBehavior lockBehavior = _i1.LockBehavior.wait,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<EventTemplateTable> where,
+    required _is.LockMode lockMode,
+    required _is.Transaction transaction,
+    _is.LockBehavior lockBehavior = _is.LockBehavior.wait,
   }) async {
     return session.db.lockRows<EventTemplate>(
       where: where(EventTemplate.t),

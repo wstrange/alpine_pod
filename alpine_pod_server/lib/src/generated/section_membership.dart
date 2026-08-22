@@ -11,13 +11,13 @@
 // ignore_for_file: dead_code, unnecessary_null_comparison
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
-import 'member.dart' as _i2;
-import 'section.dart' as _i3;
-import 'package:alpine_pod_server/src/generated/protocol.dart' as _i4;
+import 'package:alpine_pod_server/src/generated/protocol.dart' as _i1rm9ghy;
+import 'package:serverpod/serverpod.dart' as _is;
+import 'member.dart' as _i7zhj6lg;
+import 'section.dart' as _ibhmj7lb;
 
 abstract class SectionMembership
-    implements _i1.TableRow<_i1.UuidValue?>, _i1.ProtocolSerialization {
+    implements _is.TableRow<_is.UuidValue?>, _is.ProtocolSerialization {
   SectionMembership._({
     this.id,
     required this.memberId,
@@ -33,11 +33,11 @@ abstract class SectionMembership
        updatedAt = updatedAt ?? DateTime.now();
 
   factory SectionMembership({
-    _i1.UuidValue? id,
-    required _i1.UuidValue memberId,
-    _i2.Member? member,
-    required _i1.UuidValue sectionId,
-    _i3.Section? section,
+    _is.UuidValue? id,
+    required _is.UuidValue memberId,
+    _i7zhj6lg.Member? member,
+    required _is.UuidValue sectionId,
+    _ibhmj7lb.Section? section,
     String? externalUserId,
     DateTime? syncedAt,
     String? sourceSystem,
@@ -49,32 +49,34 @@ abstract class SectionMembership
     return SectionMembership(
       id: jsonSerialization['id'] == null
           ? null
-          : _i1.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
-      memberId: _i1.UuidValueJsonExtension.fromJson(
+          : _is.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
+      memberId: _is.UuidValueJsonExtension.fromJson(
         jsonSerialization['memberId'],
       ),
       member: jsonSerialization['member'] == null
           ? null
-          : _i4.Protocol().deserialize<_i2.Member>(jsonSerialization['member']),
-      sectionId: _i1.UuidValueJsonExtension.fromJson(
+          : _i1rm9ghy.Protocol().deserialize<_i7zhj6lg.Member>(
+              jsonSerialization['member'],
+            ),
+      sectionId: _is.UuidValueJsonExtension.fromJson(
         jsonSerialization['sectionId'],
       ),
       section: jsonSerialization['section'] == null
           ? null
-          : _i4.Protocol().deserialize<_i3.Section>(
+          : _i1rm9ghy.Protocol().deserialize<_ibhmj7lb.Section>(
               jsonSerialization['section'],
             ),
       externalUserId: jsonSerialization['externalUserId'] as String?,
       syncedAt: jsonSerialization['syncedAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['syncedAt']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['syncedAt']),
       sourceSystem: jsonSerialization['sourceSystem'] as String?,
-      scopes: _i4.Protocol().deserialize<Set<String>>(
+      scopes: _i1rm9ghy.Protocol().deserialize<Set<String>>(
         jsonSerialization['scopes'],
       ),
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
     );
   }
 
@@ -83,15 +85,15 @@ abstract class SectionMembership
   static const db = SectionMembershipRepository._();
 
   @override
-  _i1.UuidValue? id;
+  _is.UuidValue? id;
 
-  _i1.UuidValue memberId;
+  _is.UuidValue memberId;
 
-  _i2.Member? member;
+  _i7zhj6lg.Member? member;
 
-  _i1.UuidValue sectionId;
+  _is.UuidValue sectionId;
 
-  _i3.Section? section;
+  _ibhmj7lb.Section? section;
 
   String? externalUserId;
 
@@ -104,17 +106,17 @@ abstract class SectionMembership
   DateTime updatedAt;
 
   @override
-  _i1.Table<_i1.UuidValue?> get table => t;
+  _is.Table<_is.UuidValue?> get table => t;
 
   /// Returns a shallow copy of this [SectionMembership]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   SectionMembership copyWith({
-    _i1.UuidValue? id,
-    _i1.UuidValue? memberId,
-    _i2.Member? member,
-    _i1.UuidValue? sectionId,
-    _i3.Section? section,
+    _is.UuidValue? id,
+    _is.UuidValue? memberId,
+    _i7zhj6lg.Member? member,
+    _is.UuidValue? sectionId,
+    _ibhmj7lb.Section? section,
     String? externalUserId,
     DateTime? syncedAt,
     String? sourceSystem,
@@ -156,18 +158,18 @@ abstract class SectionMembership
   }
 
   static SectionMembershipInclude include({
-    _i2.MemberInclude? member,
-    _i3.SectionInclude? section,
+    _i7zhj6lg.MemberInclude? member,
+    _ibhmj7lb.SectionInclude? section,
   }) {
     return SectionMembershipInclude._(member: member, section: section);
   }
 
   static SectionMembershipIncludeList includeList({
-    _i1.WhereExpressionBuilder<SectionMembershipTable>? where,
+    _is.WhereExpressionBuilder<SectionMembershipTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<SectionMembershipTable>? orderBy,
-    _i1.OrderByListBuilder<SectionMembershipTable>? orderByList,
+    _is.OrderByBuilder<SectionMembershipTable>? orderBy,
+    _is.OrderByListBuilder<SectionMembershipTable>? orderByList,
     SectionMembershipInclude? include,
   }) {
     return SectionMembershipIncludeList._(
@@ -182,7 +184,7 @@ abstract class SectionMembership
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -190,11 +192,11 @@ class _Undefined {}
 
 class _SectionMembershipImpl extends SectionMembership {
   _SectionMembershipImpl({
-    _i1.UuidValue? id,
-    required _i1.UuidValue memberId,
-    _i2.Member? member,
-    required _i1.UuidValue sectionId,
-    _i3.Section? section,
+    _is.UuidValue? id,
+    required _is.UuidValue memberId,
+    _i7zhj6lg.Member? member,
+    required _is.UuidValue sectionId,
+    _ibhmj7lb.Section? section,
     String? externalUserId,
     DateTime? syncedAt,
     String? sourceSystem,
@@ -215,13 +217,13 @@ class _SectionMembershipImpl extends SectionMembership {
 
   /// Returns a shallow copy of this [SectionMembership]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   SectionMembership copyWith({
     Object? id = _Undefined,
-    _i1.UuidValue? memberId,
+    _is.UuidValue? memberId,
     Object? member = _Undefined,
-    _i1.UuidValue? sectionId,
+    _is.UuidValue? sectionId,
     Object? section = _Undefined,
     Object? externalUserId = _Undefined,
     DateTime? syncedAt,
@@ -230,11 +232,13 @@ class _SectionMembershipImpl extends SectionMembership {
     DateTime? updatedAt,
   }) {
     return SectionMembership(
-      id: id is _i1.UuidValue? ? id : this.id,
+      id: id is _is.UuidValue? ? id : this.id,
       memberId: memberId ?? this.memberId,
-      member: member is _i2.Member? ? member : this.member?.copyWith(),
+      member: member is _i7zhj6lg.Member? ? member : this.member?.copyWith(),
       sectionId: sectionId ?? this.sectionId,
-      section: section is _i3.Section? ? section : this.section?.copyWith(),
+      section: section is _ibhmj7lb.Section?
+          ? section
+          : this.section?.copyWith(),
       externalUserId: externalUserId is String?
           ? externalUserId
           : this.externalUserId,
@@ -247,93 +251,93 @@ class _SectionMembershipImpl extends SectionMembership {
 }
 
 class SectionMembershipUpdateTable
-    extends _i1.UpdateTable<SectionMembershipTable> {
+    extends _is.UpdateTable<SectionMembershipTable> {
   SectionMembershipUpdateTable(super.table);
 
-  _i1.ColumnValue<_i1.UuidValue, _i1.UuidValue> memberId(_i1.UuidValue value) =>
-      _i1.ColumnValue(table.memberId, value);
+  _is.ColumnValue<_is.UuidValue, _is.UuidValue> memberId(_is.UuidValue value) =>
+      _is.ColumnValue(table.memberId, value);
 
-  _i1.ColumnValue<_i1.UuidValue, _i1.UuidValue> sectionId(
-    _i1.UuidValue value,
-  ) => _i1.ColumnValue(table.sectionId, value);
+  _is.ColumnValue<_is.UuidValue, _is.UuidValue> sectionId(
+    _is.UuidValue value,
+  ) => _is.ColumnValue(table.sectionId, value);
 
-  _i1.ColumnValue<String, String> externalUserId(String? value) =>
-      _i1.ColumnValue(table.externalUserId, value);
+  _is.ColumnValue<String, String> externalUserId(String? value) =>
+      _is.ColumnValue(table.externalUserId, value);
 
-  _i1.ColumnValue<DateTime, DateTime> syncedAt(DateTime value) =>
-      _i1.ColumnValue(table.syncedAt, value);
+  _is.ColumnValue<DateTime, DateTime> syncedAt(DateTime value) =>
+      _is.ColumnValue(table.syncedAt, value);
 
-  _i1.ColumnValue<String, String> sourceSystem(String? value) =>
-      _i1.ColumnValue(table.sourceSystem, value);
+  _is.ColumnValue<String, String> sourceSystem(String? value) =>
+      _is.ColumnValue(table.sourceSystem, value);
 
-  _i1.ColumnValue<Set<String>, Set<String>> scopes(Set<String> value) =>
-      _i1.ColumnValue(table.scopes, value);
+  _is.ColumnValue<Set<String>, Set<String>> scopes(Set<String> value) =>
+      _is.ColumnValue(table.scopes, value);
 
-  _i1.ColumnValue<DateTime, DateTime> updatedAt(DateTime value) =>
-      _i1.ColumnValue(table.updatedAt, value);
+  _is.ColumnValue<DateTime, DateTime> updatedAt(DateTime value) =>
+      _is.ColumnValue(table.updatedAt, value);
 }
 
-class SectionMembershipTable extends _i1.Table<_i1.UuidValue?> {
+class SectionMembershipTable extends _is.Table<_is.UuidValue?> {
   SectionMembershipTable({super.tableRelation})
     : super(tableName: 'section_memberships') {
     updateTable = SectionMembershipUpdateTable(this);
-    memberId = _i1.ColumnUuid('memberId', this);
-    sectionId = _i1.ColumnUuid('sectionId', this);
-    externalUserId = _i1.ColumnString('externalUserId', this);
-    syncedAt = _i1.ColumnDateTime('syncedAt', this, hasDefault: true);
-    sourceSystem = _i1.ColumnString('sourceSystem', this);
-    scopes = _i1.ColumnSerializable<Set<String>>('scopes', this);
-    updatedAt = _i1.ColumnDateTime('updatedAt', this, hasDefault: true);
+    memberId = _is.ColumnUuid('memberId', this);
+    sectionId = _is.ColumnUuid('sectionId', this);
+    externalUserId = _is.ColumnString('externalUserId', this);
+    syncedAt = _is.ColumnDateTime('syncedAt', this, hasDefault: true);
+    sourceSystem = _is.ColumnString('sourceSystem', this);
+    scopes = _is.ColumnSerializable<Set<String>>('scopes', this);
+    updatedAt = _is.ColumnDateTime('updatedAt', this, hasDefault: true);
   }
 
   late final SectionMembershipUpdateTable updateTable;
 
-  late final _i1.ColumnUuid memberId;
+  late final _is.ColumnUuid memberId;
 
-  _i2.MemberTable? _member;
+  _i7zhj6lg.MemberTable? _member;
 
-  late final _i1.ColumnUuid sectionId;
+  late final _is.ColumnUuid sectionId;
 
-  _i3.SectionTable? _section;
+  _ibhmj7lb.SectionTable? _section;
 
-  late final _i1.ColumnString externalUserId;
+  late final _is.ColumnString externalUserId;
 
-  late final _i1.ColumnDateTime syncedAt;
+  late final _is.ColumnDateTime syncedAt;
 
-  late final _i1.ColumnString sourceSystem;
+  late final _is.ColumnString sourceSystem;
 
-  late final _i1.ColumnSerializable<Set<String>> scopes;
+  late final _is.ColumnSerializable<Set<String>> scopes;
 
-  late final _i1.ColumnDateTime updatedAt;
+  late final _is.ColumnDateTime updatedAt;
 
-  _i2.MemberTable get member {
+  _i7zhj6lg.MemberTable get member {
     if (_member != null) return _member!;
-    _member = _i1.createRelationTable(
+    _member = _is.createRelationTable(
       relationFieldName: 'member',
       field: SectionMembership.t.memberId,
-      foreignField: _i2.Member.t.id,
+      foreignField: _i7zhj6lg.Member.t.id,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i2.MemberTable(tableRelation: foreignTableRelation),
+          _i7zhj6lg.MemberTable(tableRelation: foreignTableRelation),
     );
     return _member!;
   }
 
-  _i3.SectionTable get section {
+  _ibhmj7lb.SectionTable get section {
     if (_section != null) return _section!;
-    _section = _i1.createRelationTable(
+    _section = _is.createRelationTable(
       relationFieldName: 'section',
       field: SectionMembership.t.sectionId,
-      foreignField: _i3.Section.t.id,
+      foreignField: _ibhmj7lb.Section.t.id,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i3.SectionTable(tableRelation: foreignTableRelation),
+          _ibhmj7lb.SectionTable(tableRelation: foreignTableRelation),
     );
     return _section!;
   }
 
   @override
-  List<_i1.Column> get columns => [
+  List<_is.Column> get columns => [
     id,
     memberId,
     sectionId,
@@ -345,7 +349,7 @@ class SectionMembershipTable extends _i1.Table<_i1.UuidValue?> {
   ];
 
   @override
-  _i1.Table? getRelationTable(String relationField) {
+  _is.Table? getRelationTable(String relationField) {
     if (relationField == 'member') {
       return member;
     }
@@ -356,32 +360,32 @@ class SectionMembershipTable extends _i1.Table<_i1.UuidValue?> {
   }
 }
 
-class SectionMembershipInclude extends _i1.IncludeObject {
+class SectionMembershipInclude extends _is.IncludeObject {
   SectionMembershipInclude._({
-    _i2.MemberInclude? member,
-    _i3.SectionInclude? section,
+    _i7zhj6lg.MemberInclude? member,
+    _ibhmj7lb.SectionInclude? section,
   }) {
     _member = member;
     _section = section;
   }
 
-  _i2.MemberInclude? _member;
+  _i7zhj6lg.MemberInclude? _member;
 
-  _i3.SectionInclude? _section;
+  _ibhmj7lb.SectionInclude? _section;
 
   @override
-  Map<String, _i1.Include?> get includes => {
+  Map<String, _is.Include?> get includes => {
     'member': _member,
     'section': _section,
   };
 
   @override
-  _i1.Table<_i1.UuidValue?> get table => SectionMembership.t;
+  _is.Table<_is.UuidValue?> get table => SectionMembership.t;
 }
 
-class SectionMembershipIncludeList extends _i1.IncludeList {
+class SectionMembershipIncludeList extends _is.IncludeList {
   SectionMembershipIncludeList._({
-    _i1.WhereExpressionBuilder<SectionMembershipTable>? where,
+    _is.WhereExpressionBuilder<SectionMembershipTable>? where,
     super.limit,
     super.offset,
     super.orderBy,
@@ -392,10 +396,10 @@ class SectionMembershipIncludeList extends _i1.IncludeList {
   }
 
   @override
-  Map<String, _i1.Include?> get includes => include?.includes ?? {};
+  Map<String, _is.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<_i1.UuidValue?> get table => SectionMembership.t;
+  _is.Table<_is.UuidValue?> get table => SectionMembership.t;
 }
 
 class SectionMembershipRepository {
@@ -426,16 +430,16 @@ class SectionMembershipRepository {
   /// );
   /// ```
   Future<List<SectionMembership>> find(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<SectionMembershipTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<SectionMembershipTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<SectionMembershipTable>? orderBy,
-    _i1.OrderByListBuilder<SectionMembershipTable>? orderByList,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<SectionMembershipTable>? orderBy,
+    _is.OrderByListBuilder<SectionMembershipTable>? orderByList,
+    _is.Transaction? transaction,
     SectionMembershipInclude? include,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<SectionMembership>(
       where: where?.call(SectionMembership.t),
@@ -468,15 +472,15 @@ class SectionMembershipRepository {
   /// );
   /// ```
   Future<SectionMembership?> findFirstRow(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<SectionMembershipTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<SectionMembershipTable>? where,
     int? offset,
-    _i1.OrderByBuilder<SectionMembershipTable>? orderBy,
-    _i1.OrderByListBuilder<SectionMembershipTable>? orderByList,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<SectionMembershipTable>? orderBy,
+    _is.OrderByListBuilder<SectionMembershipTable>? orderByList,
+    _is.Transaction? transaction,
     SectionMembershipInclude? include,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<SectionMembership>(
       where: where?.call(SectionMembership.t),
@@ -492,12 +496,12 @@ class SectionMembershipRepository {
 
   /// Finds a single [SectionMembership] by its [id] or null if no such row exists.
   Future<SectionMembership?> findById(
-    _i1.DatabaseSession session,
-    _i1.UuidValue id, {
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session,
+    _is.UuidValue id, {
+    _is.Transaction? transaction,
     SectionMembershipInclude? include,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<SectionMembership>(
       id,
@@ -523,9 +527,9 @@ class SectionMembershipRepository {
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<SectionMembership>> insert(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<SectionMembership> rows, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
     bool ignoreConflicts = false,
     bool noReturn = false,
   }) async {
@@ -541,9 +545,9 @@ class SectionMembershipRepository {
   ///
   /// The returned [SectionMembership] will have its `id` field set.
   Future<SectionMembership> insertRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     SectionMembership row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.insertRow<SectionMembership>(
       row,
@@ -572,12 +576,12 @@ class SectionMembershipRepository {
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<SectionMembership>> upsert(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<SectionMembership> rows, {
-    required _i1.ColumnSelections<SectionMembershipTable> conflictColumns,
-    _i1.ColumnSelections<SectionMembershipTable>? updateColumns,
-    _i1.WhereExpressionBuilder<SectionMembershipTable>? updateWhere,
-    _i1.Transaction? transaction,
+    required _is.ColumnSelections<SectionMembershipTable> conflictColumns,
+    _is.ColumnSelections<SectionMembershipTable>? updateColumns,
+    _is.WhereExpressionBuilder<SectionMembershipTable>? updateWhere,
+    _is.Transaction? transaction,
     bool noReturn = false,
   }) async {
     return session.db.upsert<SectionMembership>(
@@ -604,12 +608,12 @@ class SectionMembershipRepository {
   ///
   /// The returned [SectionMembership] will have its `id` field set.
   Future<SectionMembership?> upsertRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     SectionMembership row, {
-    required _i1.ColumnSelections<SectionMembershipTable> conflictColumns,
-    _i1.ColumnSelections<SectionMembershipTable>? updateColumns,
-    _i1.WhereExpressionBuilder<SectionMembershipTable>? updateWhere,
-    _i1.Transaction? transaction,
+    required _is.ColumnSelections<SectionMembershipTable> conflictColumns,
+    _is.ColumnSelections<SectionMembershipTable>? updateColumns,
+    _is.WhereExpressionBuilder<SectionMembershipTable>? updateWhere,
+    _is.Transaction? transaction,
   }) async {
     return session.db.upsertRow<SectionMembership>(
       row,
@@ -630,10 +634,10 @@ class SectionMembershipRepository {
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<SectionMembership>> update(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<SectionMembership> rows, {
-    _i1.ColumnSelections<SectionMembershipTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<SectionMembershipTable>? columns,
+    _is.Transaction? transaction,
     bool noReturn = false,
   }) async {
     return session.db.update<SectionMembership>(
@@ -648,10 +652,10 @@ class SectionMembershipRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<SectionMembership> updateRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     SectionMembership row, {
-    _i1.ColumnSelections<SectionMembershipTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<SectionMembershipTable>? columns,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateRow<SectionMembership>(
       row,
@@ -663,11 +667,11 @@ class SectionMembershipRepository {
   /// Updates a single [SectionMembership] by its [id] with the specified [columnValues].
   /// Returns the updated row or null if no row with the given id exists.
   Future<SectionMembership?> updateById(
-    _i1.DatabaseSession session,
-    _i1.UuidValue id, {
-    required _i1.ColumnValueListBuilder<SectionMembershipUpdateTable>
+    _is.DatabaseSession session,
+    _is.UuidValue id, {
+    required _is.ColumnValueListBuilder<SectionMembershipUpdateTable>
     columnValues,
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateById<SectionMembership>(
       id,
@@ -683,15 +687,15 @@ class SectionMembershipRepository {
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<SectionMembership>> updateWhere(
-    _i1.DatabaseSession session, {
-    required _i1.ColumnValueListBuilder<SectionMembershipUpdateTable>
+    _is.DatabaseSession session, {
+    required _is.ColumnValueListBuilder<SectionMembershipUpdateTable>
     columnValues,
-    required _i1.WhereExpressionBuilder<SectionMembershipTable> where,
+    required _is.WhereExpressionBuilder<SectionMembershipTable> where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<SectionMembershipTable>? orderBy,
-    _i1.OrderByListBuilder<SectionMembershipTable>? orderByList,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<SectionMembershipTable>? orderBy,
+    _is.OrderByListBuilder<SectionMembershipTable>? orderByList,
+    _is.Transaction? transaction,
     bool noReturn = false,
   }) async {
     return session.db.updateWhere<SectionMembership>(
@@ -718,11 +722,11 @@ class SectionMembershipRepository {
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<SectionMembership>> delete(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<SectionMembership> rows, {
-    _i1.OrderByBuilder<SectionMembershipTable>? orderBy,
-    _i1.OrderByListBuilder<SectionMembershipTable>? orderByList,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<SectionMembershipTable>? orderBy,
+    _is.OrderByListBuilder<SectionMembershipTable>? orderByList,
+    _is.Transaction? transaction,
     bool noReturn = false,
   }) async {
     return session.db.delete<SectionMembership>(
@@ -736,9 +740,9 @@ class SectionMembershipRepository {
 
   /// Deletes a single [SectionMembership].
   Future<SectionMembership> deleteRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     SectionMembership row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.deleteRow<SectionMembership>(
       row,
@@ -755,11 +759,11 @@ class SectionMembershipRepository {
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<SectionMembership>> deleteWhere(
-    _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<SectionMembershipTable> where,
-    _i1.OrderByBuilder<SectionMembershipTable>? orderBy,
-    _i1.OrderByListBuilder<SectionMembershipTable>? orderByList,
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<SectionMembershipTable> where,
+    _is.OrderByBuilder<SectionMembershipTable>? orderBy,
+    _is.OrderByListBuilder<SectionMembershipTable>? orderByList,
+    _is.Transaction? transaction,
     bool noReturn = false,
   }) async {
     return session.db.deleteWhere<SectionMembership>(
@@ -774,10 +778,10 @@ class SectionMembershipRepository {
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<SectionMembershipTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<SectionMembershipTable>? where,
     int? limit,
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.count<SectionMembership>(
       where: where?.call(SectionMembership.t),
@@ -788,11 +792,11 @@ class SectionMembershipRepository {
 
   /// Acquires row-level locks on [SectionMembership] rows matching the [where] expression.
   Future<void> lockRows(
-    _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<SectionMembershipTable> where,
-    required _i1.LockMode lockMode,
-    required _i1.Transaction transaction,
-    _i1.LockBehavior lockBehavior = _i1.LockBehavior.wait,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<SectionMembershipTable> where,
+    required _is.LockMode lockMode,
+    required _is.Transaction transaction,
+    _is.LockBehavior lockBehavior = _is.LockBehavior.wait,
   }) async {
     return session.db.lockRows<SectionMembership>(
       where: where(SectionMembership.t),
@@ -809,10 +813,10 @@ class SectionMembershipAttachRowRepository {
   /// Creates a relation between the given [SectionMembership] and [Member]
   /// by setting the [SectionMembership]'s foreign key `memberId` to refer to the [Member].
   Future<void> member(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     SectionMembership sectionMembership,
-    _i2.Member member, {
-    _i1.Transaction? transaction,
+    _i7zhj6lg.Member member, {
+    _is.Transaction? transaction,
   }) async {
     if (sectionMembership.id == null) {
       throw ArgumentError.notNull('sectionMembership.id');
@@ -832,10 +836,10 @@ class SectionMembershipAttachRowRepository {
   /// Creates a relation between the given [SectionMembership] and [Section]
   /// by setting the [SectionMembership]'s foreign key `sectionId` to refer to the [Section].
   Future<void> section(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     SectionMembership sectionMembership,
-    _i3.Section section, {
-    _i1.Transaction? transaction,
+    _ibhmj7lb.Section section, {
+    _is.Transaction? transaction,
   }) async {
     if (sectionMembership.id == null) {
       throw ArgumentError.notNull('sectionMembership.id');

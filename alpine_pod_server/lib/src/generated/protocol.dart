@@ -11,39 +11,42 @@
 // ignore_for_file: dead_code, unnecessary_type_check
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
-import 'package:serverpod/protocol.dart' as _i2;
-import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart'
-    as _i3;
-import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
-    as _i4;
-import 'event.dart' as _i5;
-import 'event_manager.dart' as _i6;
-import 'event_registration.dart' as _i7;
-import 'event_template.dart' as _i8;
-import 'fcm_token.dart' as _i9;
-import 'member.dart' as _i10;
-import 'notification.dart' as _i11;
-import 'notification_channel.dart' as _i12;
-import 'notification_delivery.dart' as _i13;
-import 'notification_template.dart' as _i14;
-import 'registration_status.dart' as _i15;
-import 'section.dart' as _i16;
-import 'section_membership.dart' as _i17;
-import 'user_notification.dart' as _i18;
-import 'user_notification_preference.dart' as _i19;
-import 'package:alpine_pod_server/src/generated/section.dart' as _i20;
-import 'package:alpine_pod_server/src/generated/notification_delivery.dart'
-    as _i21;
-import 'package:alpine_pod_server/src/generated/event.dart' as _i22;
-import 'package:alpine_pod_server/src/generated/event_manager.dart' as _i23;
-import 'package:alpine_pod_server/src/generated/event_template.dart' as _i24;
-import 'package:alpine_pod_server/src/generated/section_membership.dart'
-    as _i25;
-import 'package:alpine_pod_server/src/generated/member.dart' as _i26;
-import 'package:alpine_pod_server/src/generated/user_notification.dart' as _i27;
+import 'package:alpine_pod_server/src/generated/event.dart' as _ix3n45j3;
+import 'package:alpine_pod_server/src/generated/event_manager.dart'
+    as _ic9gt6sp;
 import 'package:alpine_pod_server/src/generated/event_registration.dart'
-    as _i28;
+    as _ilehff48;
+import 'package:alpine_pod_server/src/generated/event_template.dart'
+    as _ien9qwaj;
+import 'package:alpine_pod_server/src/generated/member.dart' as _i4yfgm2x;
+import 'package:alpine_pod_server/src/generated/notification_delivery.dart'
+    as _id1h1owf;
+import 'package:alpine_pod_server/src/generated/section.dart' as _ikvglbzb;
+import 'package:alpine_pod_server/src/generated/section_membership.dart'
+    as _i63wiasb;
+import 'package:alpine_pod_server/src/generated/user_notification.dart'
+    as _il434e8e;
+import 'package:serverpod/protocol.dart' as _isp;
+import 'package:serverpod/serverpod.dart' as _is;
+import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
+    as _iacs;
+import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart'
+    as _iais;
+import 'event.dart' as _iu57571s;
+import 'event_manager.dart' as _ich6ygep;
+import 'event_registration.dart' as _i27uzliw;
+import 'event_template.dart' as _inrioji0;
+import 'fcm_token.dart' as _iv0wxest;
+import 'member.dart' as _i7zhj6lg;
+import 'notification.dart' as _irt10kca;
+import 'notification_channel.dart' as _i05lhlgd;
+import 'notification_delivery.dart' as _ikw6watb;
+import 'notification_template.dart' as _ikosvoxr;
+import 'registration_status.dart' as _infnr7i7;
+import 'section.dart' as _ibhmj7lb;
+import 'section_membership.dart' as _ikti0jxs;
+import 'user_notification.dart' as _ikzqql1t;
+import 'user_notification_preference.dart' as _iiu7743a;
 export 'event.dart';
 export 'event_manager.dart';
 export 'event_registration.dart';
@@ -60,86 +63,86 @@ export 'section_membership.dart';
 export 'user_notification.dart';
 export 'user_notification_preference.dart';
 
-class Protocol extends _i1.DatabaseSerializationManager {
+class Protocol extends _is.DatabaseSerializationManager {
   Protocol._();
 
   factory Protocol() => _instance;
 
   static final Protocol _instance = Protocol._().._registerHostProtocols();
 
-  static List<_i2.TableDefinition> get targetTableDefinitions => [
-    _i2.TableDefinition(
+  static List<_isp.TableDefinition> get targetTableDefinitions => [
+    _isp.TableDefinition(
       name: 'event_managers',
       dartName: 'EventManager',
       schema: 'public',
       module: 'alpine_pod',
       columns: [
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.uuid,
+          columnType: _isp.ColumnType.uuid,
           isNullable: false,
           dartType: 'UuidValue',
           columnDefault: 'random_v7',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'eventId',
-          columnType: _i2.ColumnType.uuid,
+          columnType: _isp.ColumnType.uuid,
           isNullable: false,
           dartType: 'UuidValue',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'memberId',
-          columnType: _i2.ColumnType.uuid,
+          columnType: _isp.ColumnType.uuid,
           isNullable: false,
           dartType: 'UuidValue',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'assignedAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'updatedAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: false,
           dartType: 'DateTime',
           columnDefault: 'now',
         ),
       ],
       foreignKeys: [
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'event_managers_fk_0',
           columns: ['eventId'],
           referenceTable: 'events',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.cascade,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.cascade,
           matchType: null,
         ),
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'event_managers_fk_1',
           columns: ['memberId'],
           referenceTable: 'members',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.cascade,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.cascade,
           matchType: null,
         ),
       ],
       indexes: [
-        _i2.IndexDefinition(
+        _isp.IndexDefinition(
           indexName: 'event_manager_idx',
           tableSpace: null,
           elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'eventId',
             ),
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'memberId',
             ),
           ],
@@ -150,148 +153,148 @@ class Protocol extends _i1.DatabaseSerializationManager {
       ],
       managed: true,
     ),
-    _i2.TableDefinition(
+    _isp.TableDefinition(
       name: 'event_registrations',
       dartName: 'EventRegistration',
       schema: 'public',
       module: 'alpine_pod',
       columns: [
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.uuid,
+          columnType: _isp.ColumnType.uuid,
           isNullable: false,
           dartType: 'UuidValue?',
           columnDefault: 'random_v7',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'memberId',
-          columnType: _i2.ColumnType.uuid,
+          columnType: _isp.ColumnType.uuid,
           isNullable: false,
           dartType: 'UuidValue',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'eventId',
-          columnType: _i2.ColumnType.uuid,
+          columnType: _isp.ColumnType.uuid,
           isNullable: false,
           dartType: 'UuidValue',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'registrationStatus',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: false,
           dartType: 'protocol:RegistrationStatus',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'registrationDate',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: false,
           dartType: 'DateTime',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'carPoolPreference',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'additionalGuests',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
           columnDefault: '0',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'waiverAccepted',
-          columnType: _i2.ColumnType.boolean,
+          columnType: _isp.ColumnType.boolean,
           isNullable: false,
           dartType: 'bool',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'participantNotes',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'waitlistPosition',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'waitlistedAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'paymentStatus',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: false,
           dartType: 'String',
           columnDefault: '\'N/A\'',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'paymentAmount',
-          columnType: _i2.ColumnType.doublePrecision,
+          columnType: _isp.ColumnType.doublePrecision,
           isNullable: false,
           dartType: 'double',
           columnDefault: '0.0',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'modifiedAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: false,
           dartType: 'DateTime',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'updatedAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: false,
           dartType: 'DateTime',
           columnDefault: 'now',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'noShow',
-          columnType: _i2.ColumnType.boolean,
+          columnType: _isp.ColumnType.boolean,
           isNullable: false,
           dartType: 'bool',
           columnDefault: 'false',
         ),
       ],
       foreignKeys: [
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'event_registrations_fk_0',
           columns: ['memberId'],
           referenceTable: 'members',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'event_registrations_fk_1',
           columns: ['eventId'],
           referenceTable: 'events',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
       ],
       indexes: [
-        _i2.IndexDefinition(
+        _isp.IndexDefinition(
           indexName: 'user_event_idx',
           tableSpace: null,
           elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'memberId',
             ),
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'eventId',
             ),
           ],
@@ -299,16 +302,16 @@ class Protocol extends _i1.DatabaseSerializationManager {
           isUnique: true,
           isPrimary: false,
         ),
-        _i2.IndexDefinition(
+        _isp.IndexDefinition(
           indexName: 'event_status_idx',
           tableSpace: null,
           elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'eventId',
             ),
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'registrationStatus',
             ),
           ],
@@ -319,47 +322,47 @@ class Protocol extends _i1.DatabaseSerializationManager {
       ],
       managed: true,
     ),
-    _i2.TableDefinition(
+    _isp.TableDefinition(
       name: 'event_templates',
       dartName: 'EventTemplate',
       schema: 'public',
       module: 'alpine_pod',
       columns: [
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.uuid,
+          columnType: _isp.ColumnType.uuid,
           isNullable: false,
           dartType: 'UuidValue?',
           columnDefault: 'random_v7',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'name',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: false,
           dartType: 'String',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'description',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: false,
           dartType: 'String',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'content',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: false,
           dartType: 'String',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'language',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: false,
           dartType: 'String',
           columnDefault: '\'en\'',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'updatedAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: false,
           dartType: 'DateTime',
           columnDefault: 'now',
@@ -369,159 +372,159 @@ class Protocol extends _i1.DatabaseSerializationManager {
       indexes: [],
       managed: true,
     ),
-    _i2.TableDefinition(
+    _isp.TableDefinition(
       name: 'events',
       dartName: 'Event',
       schema: 'public',
       module: 'alpine_pod',
       columns: [
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.uuid,
+          columnType: _isp.ColumnType.uuid,
           isNullable: false,
           dartType: 'UuidValue',
           columnDefault: 'random_v7',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'title',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: false,
           dartType: 'String',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'description',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: false,
           dartType: 'String',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'type',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: false,
           dartType: 'String',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'startTime',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: false,
           dartType: 'DateTime',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'endTime',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: false,
           dartType: 'DateTime',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'eventLocation',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'carpoolLocation',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'carpoolTime',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'registrationDeadline',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'registrationStartDate',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'registrationFee',
-          columnType: _i2.ColumnType.doublePrecision,
+          columnType: _isp.ColumnType.doublePrecision,
           isNullable: true,
           dartType: 'double?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'requiresApproval',
-          columnType: _i2.ColumnType.boolean,
+          columnType: _isp.ColumnType.boolean,
           isNullable: false,
           dartType: 'bool',
           columnDefault: 'true',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'minimumParticipants',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
           columnDefault: '0',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'maxParticipants',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
           columnDefault: '8',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'cancellationDeadline',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'cancelled',
-          columnType: _i2.ColumnType.boolean,
+          columnType: _isp.ColumnType.boolean,
           isNullable: false,
           dartType: 'bool',
           columnDefault: 'false',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'sectionId',
-          columnType: _i2.ColumnType.uuid,
+          columnType: _isp.ColumnType.uuid,
           isNullable: false,
           dartType: 'UuidValue',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'published',
-          columnType: _i2.ColumnType.boolean,
+          columnType: _isp.ColumnType.boolean,
           isNullable: false,
           dartType: 'bool',
           columnDefault: 'false',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'updatedAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: false,
           dartType: 'DateTime',
           columnDefault: 'now',
         ),
       ],
       foreignKeys: [
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'events_fk_0',
           columns: ['sectionId'],
           referenceTable: 'sections',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
       ],
       indexes: [
-        _i2.IndexDefinition(
+        _isp.IndexDefinition(
           indexName: 'upcoming_events_idx',
           tableSpace: null,
           elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'startTime',
             ),
           ],
@@ -529,12 +532,12 @@ class Protocol extends _i1.DatabaseSerializationManager {
           isUnique: false,
           isPrimary: false,
         ),
-        _i2.IndexDefinition(
+        _isp.IndexDefinition(
           indexName: 'section_idx',
           tableSpace: null,
           elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'sectionId',
             ),
           ],
@@ -545,34 +548,34 @@ class Protocol extends _i1.DatabaseSerializationManager {
       ],
       managed: true,
     ),
-    _i2.TableDefinition(
+    _isp.TableDefinition(
       name: 'fcm_tokens',
       dartName: 'FcmToken',
       schema: 'public',
       module: 'alpine_pod',
       columns: [
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.uuid,
+          columnType: _isp.ColumnType.uuid,
           isNullable: false,
           dartType: 'UuidValue',
           columnDefault: 'random_v7',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'token',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: false,
           dartType: 'String',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'deviceId',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'updatedAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: false,
           dartType: 'DateTime',
           columnDefault: 'now',
@@ -580,12 +583,12 @@ class Protocol extends _i1.DatabaseSerializationManager {
       ],
       foreignKeys: [],
       indexes: [
-        _i2.IndexDefinition(
+        _isp.IndexDefinition(
           indexName: 'token_idx',
           tableSpace: null,
           elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'token',
             ),
           ],
@@ -593,12 +596,12 @@ class Protocol extends _i1.DatabaseSerializationManager {
           isUnique: true,
           isPrimary: false,
         ),
-        _i2.IndexDefinition(
+        _isp.IndexDefinition(
           indexName: 'fcm_user_idx',
           tableSpace: null,
           elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'id',
             ),
           ],
@@ -609,109 +612,109 @@ class Protocol extends _i1.DatabaseSerializationManager {
       ],
       managed: true,
     ),
-    _i2.TableDefinition(
+    _isp.TableDefinition(
       name: 'members',
       dartName: 'Member',
       schema: 'public',
       module: 'alpine_pod',
       columns: [
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.uuid,
+          columnType: _isp.ColumnType.uuid,
           isNullable: false,
           dartType: 'UuidValue',
           columnDefault: 'random_v7',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'firstName',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: false,
           dartType: 'String',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'lastName',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: false,
           dartType: 'String',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'displayName',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'bio',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'email',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: false,
           dartType: 'String',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'phoneNumber',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: false,
           dartType: 'String',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'membershipStatus',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: false,
           dartType: 'String',
           columnDefault: '\'active\'',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'emergencyContactName',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: false,
           dartType: 'String',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'emergencyContactPhone',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: false,
           dartType: 'String',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'medicalConditions',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'profileImageUrl',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'waiverSignedDate',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: false,
           dartType: 'DateTime',
           columnDefault: '1970-01-01T00:00:00.000Z',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'certifications',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'createdAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: false,
           dartType: 'DateTime',
           columnDefault: 'now',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'updatedAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: false,
           dartType: 'DateTime',
           columnDefault: 'now',
@@ -719,12 +722,12 @@ class Protocol extends _i1.DatabaseSerializationManager {
       ],
       foreignKeys: [],
       indexes: [
-        _i2.IndexDefinition(
+        _isp.IndexDefinition(
           indexName: 'member_id_idx',
           tableSpace: null,
           elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'id',
             ),
           ],
@@ -732,12 +735,12 @@ class Protocol extends _i1.DatabaseSerializationManager {
           isUnique: true,
           isPrimary: false,
         ),
-        _i2.IndexDefinition(
+        _isp.IndexDefinition(
           indexName: 'email_idx',
           tableSpace: null,
           elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'email',
             ),
           ],
@@ -748,200 +751,200 @@ class Protocol extends _i1.DatabaseSerializationManager {
       ],
       managed: true,
     ),
-    _i2.TableDefinition(
+    _isp.TableDefinition(
       name: 'notification',
       dartName: 'Notification',
       schema: 'public',
       module: 'alpine_pod',
       columns: [
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.uuid,
+          columnType: _isp.ColumnType.uuid,
           isNullable: false,
           dartType: 'UuidValue?',
           columnDefault: 'random_v7',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'templateId',
-          columnType: _i2.ColumnType.uuid,
+          columnType: _isp.ColumnType.uuid,
           isNullable: false,
           dartType: 'UuidValue',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'data',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: false,
           dartType: 'Map<String,String>',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'actionUrl',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'renderedTitle',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: false,
           dartType: 'String',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'renderedBody',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: false,
           dartType: 'String',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'renderedHtml',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'createdAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: false,
           dartType: 'DateTime',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'updatedAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: false,
           dartType: 'DateTime',
           columnDefault: 'now',
         ),
       ],
       foreignKeys: [
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'notification_fk_0',
           columns: ['templateId'],
           referenceTable: 'notification_template',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
       ],
       indexes: [],
       managed: true,
     ),
-    _i2.TableDefinition(
+    _isp.TableDefinition(
       name: 'notification_delivery',
       dartName: 'NotificationDelivery',
       schema: 'public',
       module: 'alpine_pod',
       columns: [
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.uuid,
+          columnType: _isp.ColumnType.uuid,
           isNullable: false,
           dartType: 'UuidValue?',
           columnDefault: 'random_v7',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'notificationId',
-          columnType: _i2.ColumnType.uuid,
+          columnType: _isp.ColumnType.uuid,
           isNullable: false,
           dartType: 'UuidValue',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'recipientUserId',
-          columnType: _i2.ColumnType.uuid,
+          columnType: _isp.ColumnType.uuid,
           isNullable: true,
           dartType: 'UuidValue?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'channel',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: false,
           dartType: 'protocol:NotificationChannel',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'status',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: false,
           dartType: 'String',
           columnDefault: '\'pending\'',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'attempts',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
           columnDefault: '0',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'lastAttemptAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'errorMessage',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'info',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'sectionId',
-          columnType: _i2.ColumnType.uuid,
+          columnType: _isp.ColumnType.uuid,
           isNullable: true,
           dartType: 'UuidValue?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'createdAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: false,
           dartType: 'DateTime',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'updatedAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: false,
           dartType: 'DateTime',
           columnDefault: 'now',
         ),
       ],
       foreignKeys: [
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'notification_delivery_fk_0',
           columns: ['notificationId'],
           referenceTable: 'notification',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'notification_delivery_fk_1',
           columns: ['recipientUserId'],
           referenceTable: 'serverpod_auth_core_user',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.cascade,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.cascade,
           matchType: null,
         ),
       ],
       indexes: [
-        _i2.IndexDefinition(
+        _isp.IndexDefinition(
           indexName: 'pending_delivery_idx',
           tableSpace: null,
           elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'status',
             ),
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'createdAt',
             ),
           ],
@@ -949,16 +952,16 @@ class Protocol extends _i1.DatabaseSerializationManager {
           isUnique: false,
           isPrimary: false,
         ),
-        _i2.IndexDefinition(
+        _isp.IndexDefinition(
           indexName: 'recipient_channel_idx',
           tableSpace: null,
           elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'recipientUserId',
             ),
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'channel',
             ),
           ],
@@ -969,52 +972,52 @@ class Protocol extends _i1.DatabaseSerializationManager {
       ],
       managed: true,
     ),
-    _i2.TableDefinition(
+    _isp.TableDefinition(
       name: 'notification_template',
       dartName: 'NotificationTemplate',
       schema: 'public',
       module: 'alpine_pod',
       columns: [
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.uuid,
+          columnType: _isp.ColumnType.uuid,
           isNullable: false,
           dartType: 'UuidValue?',
           columnDefault: 'random_v7',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'name',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: false,
           dartType: 'String',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'titleTemplate',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: false,
           dartType: 'String',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'bodyTemplate',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: false,
           dartType: 'String',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'htmlTemplate',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'createdAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: false,
           dartType: 'DateTime',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'updatedAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: false,
           dartType: 'DateTime',
           columnDefault: 'now',
@@ -1022,12 +1025,12 @@ class Protocol extends _i1.DatabaseSerializationManager {
       ],
       foreignKeys: [],
       indexes: [
-        _i2.IndexDefinition(
+        _isp.IndexDefinition(
           indexName: 'name_idx',
           tableSpace: null,
           elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'name',
             ),
           ],
@@ -1038,97 +1041,97 @@ class Protocol extends _i1.DatabaseSerializationManager {
       ],
       managed: true,
     ),
-    _i2.TableDefinition(
+    _isp.TableDefinition(
       name: 'section_memberships',
       dartName: 'SectionMembership',
       schema: 'public',
       module: 'alpine_pod',
       columns: [
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.uuid,
+          columnType: _isp.ColumnType.uuid,
           isNullable: false,
           dartType: 'UuidValue?',
           columnDefault: 'random_v7',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'memberId',
-          columnType: _i2.ColumnType.uuid,
+          columnType: _isp.ColumnType.uuid,
           isNullable: false,
           dartType: 'UuidValue',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'sectionId',
-          columnType: _i2.ColumnType.uuid,
+          columnType: _isp.ColumnType.uuid,
           isNullable: false,
           dartType: 'UuidValue',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'externalUserId',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'syncedAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: false,
           dartType: 'DateTime',
           columnDefault: 'now',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'sourceSystem',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'scopes',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: false,
           dartType: 'Set<String>',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'updatedAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: false,
           dartType: 'DateTime',
           columnDefault: 'now',
         ),
       ],
       foreignKeys: [
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'section_memberships_fk_0',
           columns: ['memberId'],
           referenceTable: 'members',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'section_memberships_fk_1',
           columns: ['sectionId'],
           referenceTable: 'sections',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
       ],
       indexes: [
-        _i2.IndexDefinition(
+        _isp.IndexDefinition(
           indexName: 'user_section_unique_idx',
           tableSpace: null,
           elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'memberId',
             ),
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'sectionId',
             ),
           ],
@@ -1139,46 +1142,46 @@ class Protocol extends _i1.DatabaseSerializationManager {
       ],
       managed: true,
     ),
-    _i2.TableDefinition(
+    _isp.TableDefinition(
       name: 'sections',
       dartName: 'Section',
       schema: 'public',
       module: 'alpine_pod',
       columns: [
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.uuid,
+          columnType: _isp.ColumnType.uuid,
           isNullable: false,
           dartType: 'UuidValue?',
           columnDefault: 'random_v7',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'name',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: false,
           dartType: 'String',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'description',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: false,
           dartType: 'String',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'location',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'contactInfo',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'updatedAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: false,
           dartType: 'DateTime',
           columnDefault: 'now',
@@ -1186,12 +1189,12 @@ class Protocol extends _i1.DatabaseSerializationManager {
       ],
       foreignKeys: [],
       indexes: [
-        _i2.IndexDefinition(
+        _isp.IndexDefinition(
           indexName: 'idx_sections_name',
           tableSpace: null,
           elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'name',
             ),
           ],
@@ -1202,98 +1205,98 @@ class Protocol extends _i1.DatabaseSerializationManager {
       ],
       managed: true,
     ),
-    _i2.TableDefinition(
+    _isp.TableDefinition(
       name: 'user_notification',
       dartName: 'UserNotification',
       schema: 'public',
       module: 'alpine_pod',
       columns: [
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.uuid,
+          columnType: _isp.ColumnType.uuid,
           isNullable: false,
           dartType: 'UuidValue',
           columnDefault: 'random_v7',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'userId',
-          columnType: _i2.ColumnType.uuid,
+          columnType: _isp.ColumnType.uuid,
           isNullable: false,
           dartType: 'UuidValue',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'notificationId',
-          columnType: _i2.ColumnType.uuid,
+          columnType: _isp.ColumnType.uuid,
           isNullable: false,
           dartType: 'UuidValue',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'isRead',
-          columnType: _i2.ColumnType.boolean,
+          columnType: _isp.ColumnType.boolean,
           isNullable: false,
           dartType: 'bool',
           columnDefault: 'false',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'isSeen',
-          columnType: _i2.ColumnType.boolean,
+          columnType: _isp.ColumnType.boolean,
           isNullable: false,
           dartType: 'bool',
           columnDefault: 'false',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'readAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'createdAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: false,
           dartType: 'DateTime',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'updatedAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: false,
           dartType: 'DateTime',
           columnDefault: 'now',
         ),
       ],
       foreignKeys: [
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'user_notification_fk_0',
           columns: ['userId'],
           referenceTable: 'serverpod_auth_core_user',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.cascade,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.cascade,
           matchType: null,
         ),
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'user_notification_fk_1',
           columns: ['notificationId'],
           referenceTable: 'notification',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
       ],
       indexes: [
-        _i2.IndexDefinition(
+        _isp.IndexDefinition(
           indexName: 'user_feed_idx',
           tableSpace: null,
           elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'userId',
             ),
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'createdAt',
             ),
           ],
@@ -1304,57 +1307,57 @@ class Protocol extends _i1.DatabaseSerializationManager {
       ],
       managed: true,
     ),
-    _i2.TableDefinition(
+    _isp.TableDefinition(
       name: 'user_notification_preference',
       dartName: 'UserNotificationPreference',
       schema: 'public',
       module: 'alpine_pod',
       columns: [
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.uuid,
+          columnType: _isp.ColumnType.uuid,
           isNullable: false,
           dartType: 'UuidValue?',
           columnDefault: 'random_v7',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'allowInApp',
-          columnType: _i2.ColumnType.boolean,
+          columnType: _isp.ColumnType.boolean,
           isNullable: false,
           dartType: 'bool',
           columnDefault: 'true',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'allowEmail',
-          columnType: _i2.ColumnType.boolean,
+          columnType: _isp.ColumnType.boolean,
           isNullable: false,
           dartType: 'bool',
           columnDefault: 'true',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'allowPush',
-          columnType: _i2.ColumnType.boolean,
+          columnType: _isp.ColumnType.boolean,
           isNullable: false,
           dartType: 'bool',
           columnDefault: 'true',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'allowSms',
-          columnType: _i2.ColumnType.boolean,
+          columnType: _isp.ColumnType.boolean,
           isNullable: false,
           dartType: 'bool',
           columnDefault: 'false',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'newEvents',
-          columnType: _i2.ColumnType.boolean,
+          columnType: _isp.ColumnType.boolean,
           isNullable: false,
           dartType: 'bool',
           columnDefault: 'true',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'updatedAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: false,
           dartType: 'DateTime',
           columnDefault: 'now',
@@ -1362,12 +1365,12 @@ class Protocol extends _i1.DatabaseSerializationManager {
       ],
       foreignKeys: [],
       indexes: [
-        _i2.IndexDefinition(
+        _isp.IndexDefinition(
           indexName: 'user_type_unique_idx',
           tableSpace: null,
           elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'id',
             ),
           ],
@@ -1378,9 +1381,9 @@ class Protocol extends _i1.DatabaseSerializationManager {
       ],
       managed: true,
     ),
-    ..._i3.Protocol.targetTableDefinitions,
-    ..._i4.Protocol.targetTableDefinitions,
-    ..._i2.Protocol.targetTableDefinitions,
+    ..._iais.Protocol.targetTableDefinitions,
+    ..._iacs.Protocol.targetTableDefinitions,
+    ..._isp.Protocol.targetTableDefinitions,
   ];
 
   static String? getClassNameFromObjectJson(dynamic data) {
@@ -1407,127 +1410,137 @@ class Protocol extends _i1.DatabaseSerializationManager {
       }
     }
 
-    if (t == _i5.Event) {
-      return _i5.Event.fromJson(data) as T;
+    if (t == _iu57571s.Event) {
+      return _iu57571s.Event.fromJson(data) as T;
     }
-    if (t == _i6.EventManager) {
-      return _i6.EventManager.fromJson(data) as T;
+    if (t == _ich6ygep.EventManager) {
+      return _ich6ygep.EventManager.fromJson(data) as T;
     }
-    if (t == _i7.EventRegistration) {
-      return _i7.EventRegistration.fromJson(data) as T;
+    if (t == _i27uzliw.EventRegistration) {
+      return _i27uzliw.EventRegistration.fromJson(data) as T;
     }
-    if (t == _i8.EventTemplate) {
-      return _i8.EventTemplate.fromJson(data) as T;
+    if (t == _inrioji0.EventTemplate) {
+      return _inrioji0.EventTemplate.fromJson(data) as T;
     }
-    if (t == _i9.FcmToken) {
-      return _i9.FcmToken.fromJson(data) as T;
+    if (t == _iv0wxest.FcmToken) {
+      return _iv0wxest.FcmToken.fromJson(data) as T;
     }
-    if (t == _i10.Member) {
-      return _i10.Member.fromJson(data) as T;
+    if (t == _i7zhj6lg.Member) {
+      return _i7zhj6lg.Member.fromJson(data) as T;
     }
-    if (t == _i11.Notification) {
-      return _i11.Notification.fromJson(data) as T;
+    if (t == _irt10kca.Notification) {
+      return _irt10kca.Notification.fromJson(data) as T;
     }
-    if (t == _i12.NotificationChannel) {
-      return _i12.NotificationChannel.fromJson(data) as T;
+    if (t == _i05lhlgd.NotificationChannel) {
+      return _i05lhlgd.NotificationChannel.fromJson(data) as T;
     }
-    if (t == _i13.NotificationDelivery) {
-      return _i13.NotificationDelivery.fromJson(data) as T;
+    if (t == _ikw6watb.NotificationDelivery) {
+      return _ikw6watb.NotificationDelivery.fromJson(data) as T;
     }
-    if (t == _i14.NotificationTemplate) {
-      return _i14.NotificationTemplate.fromJson(data) as T;
+    if (t == _ikosvoxr.NotificationTemplate) {
+      return _ikosvoxr.NotificationTemplate.fromJson(data) as T;
     }
-    if (t == _i15.RegistrationStatus) {
-      return _i15.RegistrationStatus.fromJson(data) as T;
+    if (t == _infnr7i7.RegistrationStatus) {
+      return _infnr7i7.RegistrationStatus.fromJson(data) as T;
     }
-    if (t == _i16.Section) {
-      return _i16.Section.fromJson(data) as T;
+    if (t == _ibhmj7lb.Section) {
+      return _ibhmj7lb.Section.fromJson(data) as T;
     }
-    if (t == _i17.SectionMembership) {
-      return _i17.SectionMembership.fromJson(data) as T;
+    if (t == _ikti0jxs.SectionMembership) {
+      return _ikti0jxs.SectionMembership.fromJson(data) as T;
     }
-    if (t == _i18.UserNotification) {
-      return _i18.UserNotification.fromJson(data) as T;
+    if (t == _ikzqql1t.UserNotification) {
+      return _ikzqql1t.UserNotification.fromJson(data) as T;
     }
-    if (t == _i19.UserNotificationPreference) {
-      return _i19.UserNotificationPreference.fromJson(data) as T;
+    if (t == _iiu7743a.UserNotificationPreference) {
+      return _iiu7743a.UserNotificationPreference.fromJson(data) as T;
     }
-    if (t == _i1.getType<_i5.Event?>()) {
-      return (data != null ? _i5.Event.fromJson(data) : null) as T;
+    if (t == _is.getType<_iu57571s.Event?>()) {
+      return (data != null ? _iu57571s.Event.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i6.EventManager?>()) {
-      return (data != null ? _i6.EventManager.fromJson(data) : null) as T;
+    if (t == _is.getType<_ich6ygep.EventManager?>()) {
+      return (data != null ? _ich6ygep.EventManager.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i7.EventRegistration?>()) {
-      return (data != null ? _i7.EventRegistration.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i8.EventTemplate?>()) {
-      return (data != null ? _i8.EventTemplate.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i9.FcmToken?>()) {
-      return (data != null ? _i9.FcmToken.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i10.Member?>()) {
-      return (data != null ? _i10.Member.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i11.Notification?>()) {
-      return (data != null ? _i11.Notification.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i12.NotificationChannel?>()) {
-      return (data != null ? _i12.NotificationChannel.fromJson(data) : null)
+    if (t == _is.getType<_i27uzliw.EventRegistration?>()) {
+      return (data != null ? _i27uzliw.EventRegistration.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i13.NotificationDelivery?>()) {
-      return (data != null ? _i13.NotificationDelivery.fromJson(data) : null)
+    if (t == _is.getType<_inrioji0.EventTemplate?>()) {
+      return (data != null ? _inrioji0.EventTemplate.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i14.NotificationTemplate?>()) {
-      return (data != null ? _i14.NotificationTemplate.fromJson(data) : null)
-          as T;
+    if (t == _is.getType<_iv0wxest.FcmToken?>()) {
+      return (data != null ? _iv0wxest.FcmToken.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i15.RegistrationStatus?>()) {
-      return (data != null ? _i15.RegistrationStatus.fromJson(data) : null)
-          as T;
+    if (t == _is.getType<_i7zhj6lg.Member?>()) {
+      return (data != null ? _i7zhj6lg.Member.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i16.Section?>()) {
-      return (data != null ? _i16.Section.fromJson(data) : null) as T;
+    if (t == _is.getType<_irt10kca.Notification?>()) {
+      return (data != null ? _irt10kca.Notification.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i17.SectionMembership?>()) {
-      return (data != null ? _i17.SectionMembership.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i18.UserNotification?>()) {
-      return (data != null ? _i18.UserNotification.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i19.UserNotificationPreference?>()) {
+    if (t == _is.getType<_i05lhlgd.NotificationChannel?>()) {
       return (data != null
-              ? _i19.UserNotificationPreference.fromJson(data)
+              ? _i05lhlgd.NotificationChannel.fromJson(data)
               : null)
           as T;
     }
-    if (t == List<_i7.EventRegistration>) {
+    if (t == _is.getType<_ikw6watb.NotificationDelivery?>()) {
+      return (data != null
+              ? _ikw6watb.NotificationDelivery.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_ikosvoxr.NotificationTemplate?>()) {
+      return (data != null
+              ? _ikosvoxr.NotificationTemplate.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_infnr7i7.RegistrationStatus?>()) {
+      return (data != null ? _infnr7i7.RegistrationStatus.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_ibhmj7lb.Section?>()) {
+      return (data != null ? _ibhmj7lb.Section.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_ikti0jxs.SectionMembership?>()) {
+      return (data != null ? _ikti0jxs.SectionMembership.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_ikzqql1t.UserNotification?>()) {
+      return (data != null ? _ikzqql1t.UserNotification.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_iiu7743a.UserNotificationPreference?>()) {
+      return (data != null
+              ? _iiu7743a.UserNotificationPreference.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == List<_i27uzliw.EventRegistration>) {
       return (data as List)
-              .map((e) => deserialize<_i7.EventRegistration>(e))
+              .map((e) => deserialize<_i27uzliw.EventRegistration>(e))
               .toList()
           as T;
     }
-    if (t == _i1.getType<List<_i7.EventRegistration>?>()) {
+    if (t == _is.getType<List<_i27uzliw.EventRegistration>?>()) {
       return (data != null
               ? (data as List)
-                    .map((e) => deserialize<_i7.EventRegistration>(e))
+                    .map((e) => deserialize<_i27uzliw.EventRegistration>(e))
                     .toList()
               : null)
           as T;
     }
-    if (t == List<_i6.EventManager>) {
+    if (t == List<_ich6ygep.EventManager>) {
       return (data as List)
-              .map((e) => deserialize<_i6.EventManager>(e))
+              .map((e) => deserialize<_ich6ygep.EventManager>(e))
               .toList()
           as T;
     }
-    if (t == _i1.getType<List<_i6.EventManager>?>()) {
+    if (t == _is.getType<List<_ich6ygep.EventManager>?>()) {
       return (data != null
               ? (data as List)
-                    .map((e) => deserialize<_i6.EventManager>(e))
+                    .map((e) => deserialize<_ich6ygep.EventManager>(e))
                     .toList()
               : null)
           as T;
@@ -1541,98 +1554,102 @@ class Protocol extends _i1.DatabaseSerializationManager {
     if (t == Set<String>) {
       return (data as List).map((e) => deserialize<String>(e)).toSet() as T;
     }
-    if (t == List<_i20.Section>) {
-      return (data as List).map((e) => deserialize<_i20.Section>(e)).toList()
-          as T;
-    }
-    if (t == List<_i21.NotificationDelivery>) {
+    if (t == List<_ikvglbzb.Section>) {
       return (data as List)
-              .map((e) => deserialize<_i21.NotificationDelivery>(e))
+              .map((e) => deserialize<_ikvglbzb.Section>(e))
               .toList()
           as T;
     }
-    if (t == List<_i1.UuidValue>) {
-      return (data as List).map((e) => deserialize<_i1.UuidValue>(e)).toList()
+    if (t == List<_id1h1owf.NotificationDelivery>) {
+      return (data as List)
+              .map((e) => deserialize<_id1h1owf.NotificationDelivery>(e))
+              .toList()
           as T;
     }
-    if (t == _i1.getType<List<_i1.UuidValue>?>()) {
+    if (t == List<_is.UuidValue>) {
+      return (data as List).map((e) => deserialize<_is.UuidValue>(e)).toList()
+          as T;
+    }
+    if (t == _is.getType<List<_is.UuidValue>?>()) {
       return (data != null
               ? (data as List)
-                    .map((e) => deserialize<_i1.UuidValue>(e))
+                    .map((e) => deserialize<_is.UuidValue>(e))
                     .toList()
               : null)
           as T;
     }
-    if (t == List<_i22.Event>) {
-      return (data as List).map((e) => deserialize<_i22.Event>(e)).toList()
+    if (t == List<_ix3n45j3.Event>) {
+      return (data as List).map((e) => deserialize<_ix3n45j3.Event>(e)).toList()
           as T;
     }
-    if (t == List<_i23.EventManager>) {
+    if (t == List<_ic9gt6sp.EventManager>) {
       return (data as List)
-              .map((e) => deserialize<_i23.EventManager>(e))
+              .map((e) => deserialize<_ic9gt6sp.EventManager>(e))
               .toList()
           as T;
     }
-    if (t == List<_i24.EventTemplate>) {
+    if (t == List<_ien9qwaj.EventTemplate>) {
       return (data as List)
-              .map((e) => deserialize<_i24.EventTemplate>(e))
+              .map((e) => deserialize<_ien9qwaj.EventTemplate>(e))
               .toList()
           as T;
     }
-    if (t == List<_i25.SectionMembership>) {
+    if (t == List<_i63wiasb.SectionMembership>) {
       return (data as List)
-              .map((e) => deserialize<_i25.SectionMembership>(e))
+              .map((e) => deserialize<_i63wiasb.SectionMembership>(e))
               .toList()
           as T;
     }
-    if (t == List<_i26.Member>) {
-      return (data as List).map((e) => deserialize<_i26.Member>(e)).toList()
+    if (t == List<_i4yfgm2x.Member>) {
+      return (data as List)
+              .map((e) => deserialize<_i4yfgm2x.Member>(e))
+              .toList()
           as T;
     }
     if (t == Set<String>) {
       return (data as List).map((e) => deserialize<String>(e)).toSet() as T;
     }
-    if (t == List<_i27.UserNotification>) {
+    if (t == List<_il434e8e.UserNotification>) {
       return (data as List)
-              .map((e) => deserialize<_i27.UserNotification>(e))
+              .map((e) => deserialize<_il434e8e.UserNotification>(e))
               .toList()
           as T;
     }
-    if (t == List<_i28.EventRegistration>) {
+    if (t == List<_ilehff48.EventRegistration>) {
       return (data as List)
-              .map((e) => deserialize<_i28.EventRegistration>(e))
+              .map((e) => deserialize<_ilehff48.EventRegistration>(e))
               .toList()
           as T;
     }
     try {
-      return _i3.Protocol().deserialize<T>(data, t);
-    } on _i1.DeserializationTypeNotFoundException catch (_) {}
+      return _iais.Protocol().deserialize<T>(data, t);
+    } on _is.DeserializationTypeNotFoundException catch (_) {}
     try {
-      return _i4.Protocol().deserialize<T>(data, t);
-    } on _i1.DeserializationTypeNotFoundException catch (_) {}
+      return _iacs.Protocol().deserialize<T>(data, t);
+    } on _is.DeserializationTypeNotFoundException catch (_) {}
     try {
-      return _i2.Protocol().deserialize<T>(data, t);
-    } on _i1.DeserializationTypeNotFoundException catch (_) {}
+      return _isp.Protocol().deserialize<T>(data, t);
+    } on _is.DeserializationTypeNotFoundException catch (_) {}
     return super.deserialize<T>(data, t);
   }
 
   static String? getClassNameForType(Type type) {
     return switch (type) {
-      _i5.Event => 'Event',
-      _i6.EventManager => 'EventManager',
-      _i7.EventRegistration => 'EventRegistration',
-      _i8.EventTemplate => 'EventTemplate',
-      _i9.FcmToken => 'FcmToken',
-      _i10.Member => 'Member',
-      _i11.Notification => 'Notification',
-      _i12.NotificationChannel => 'NotificationChannel',
-      _i13.NotificationDelivery => 'NotificationDelivery',
-      _i14.NotificationTemplate => 'NotificationTemplate',
-      _i15.RegistrationStatus => 'RegistrationStatus',
-      _i16.Section => 'Section',
-      _i17.SectionMembership => 'SectionMembership',
-      _i18.UserNotification => 'UserNotification',
-      _i19.UserNotificationPreference => 'UserNotificationPreference',
+      _iu57571s.Event => 'Event',
+      _ich6ygep.EventManager => 'EventManager',
+      _i27uzliw.EventRegistration => 'EventRegistration',
+      _inrioji0.EventTemplate => 'EventTemplate',
+      _iv0wxest.FcmToken => 'FcmToken',
+      _i7zhj6lg.Member => 'Member',
+      _irt10kca.Notification => 'Notification',
+      _i05lhlgd.NotificationChannel => 'NotificationChannel',
+      _ikw6watb.NotificationDelivery => 'NotificationDelivery',
+      _ikosvoxr.NotificationTemplate => 'NotificationTemplate',
+      _infnr7i7.RegistrationStatus => 'RegistrationStatus',
+      _ibhmj7lb.Section => 'Section',
+      _ikti0jxs.SectionMembership => 'SectionMembership',
+      _ikzqql1t.UserNotification => 'UserNotification',
+      _iiu7743a.UserNotificationPreference => 'UserNotificationPreference',
       _ => null,
     };
   }
@@ -1647,50 +1664,50 @@ class Protocol extends _i1.DatabaseSerializationManager {
     }
 
     switch (data) {
-      case _i5.Event():
+      case _iu57571s.Event():
         return 'Event';
-      case _i6.EventManager():
+      case _ich6ygep.EventManager():
         return 'EventManager';
-      case _i7.EventRegistration():
+      case _i27uzliw.EventRegistration():
         return 'EventRegistration';
-      case _i8.EventTemplate():
+      case _inrioji0.EventTemplate():
         return 'EventTemplate';
-      case _i9.FcmToken():
+      case _iv0wxest.FcmToken():
         return 'FcmToken';
-      case _i10.Member():
+      case _i7zhj6lg.Member():
         return 'Member';
-      case _i11.Notification():
+      case _irt10kca.Notification():
         return 'Notification';
-      case _i12.NotificationChannel():
+      case _i05lhlgd.NotificationChannel():
         return 'NotificationChannel';
-      case _i13.NotificationDelivery():
+      case _ikw6watb.NotificationDelivery():
         return 'NotificationDelivery';
-      case _i14.NotificationTemplate():
+      case _ikosvoxr.NotificationTemplate():
         return 'NotificationTemplate';
-      case _i15.RegistrationStatus():
+      case _infnr7i7.RegistrationStatus():
         return 'RegistrationStatus';
-      case _i16.Section():
+      case _ibhmj7lb.Section():
         return 'Section';
-      case _i17.SectionMembership():
+      case _ikti0jxs.SectionMembership():
         return 'SectionMembership';
-      case _i18.UserNotification():
+      case _ikzqql1t.UserNotification():
         return 'UserNotification';
-      case _i19.UserNotificationPreference():
+      case _iiu7743a.UserNotificationPreference():
         return 'UserNotificationPreference';
     }
-    className = _i3.Protocol().getClassNameForObject(data);
+    className = _iais.Protocol().getClassNameForObject(data);
     if (className != null) {
       return className.contains('.')
           ? className
           : 'serverpod_auth_idp.$className';
     }
-    className = _i4.Protocol().getClassNameForObject(data);
+    className = _iacs.Protocol().getClassNameForObject(data);
     if (className != null) {
       return className.contains('.')
           ? className
           : 'serverpod_auth_core.$className';
     }
-    className = _i2.Protocol().getClassNameForObject(data);
+    className = _isp.Protocol().getClassNameForObject(data);
     if (className != null) {
       return className.contains('.') ? className : 'serverpod.$className';
     }
@@ -1704,123 +1721,123 @@ class Protocol extends _i1.DatabaseSerializationManager {
       return super.deserializeByClassName(data);
     }
     if (dataClassName == 'Event') {
-      return deserialize<_i5.Event>(data['data']);
+      return deserialize<_iu57571s.Event>(data['data']);
     }
     if (dataClassName == 'EventManager') {
-      return deserialize<_i6.EventManager>(data['data']);
+      return deserialize<_ich6ygep.EventManager>(data['data']);
     }
     if (dataClassName == 'EventRegistration') {
-      return deserialize<_i7.EventRegistration>(data['data']);
+      return deserialize<_i27uzliw.EventRegistration>(data['data']);
     }
     if (dataClassName == 'EventTemplate') {
-      return deserialize<_i8.EventTemplate>(data['data']);
+      return deserialize<_inrioji0.EventTemplate>(data['data']);
     }
     if (dataClassName == 'FcmToken') {
-      return deserialize<_i9.FcmToken>(data['data']);
+      return deserialize<_iv0wxest.FcmToken>(data['data']);
     }
     if (dataClassName == 'Member') {
-      return deserialize<_i10.Member>(data['data']);
+      return deserialize<_i7zhj6lg.Member>(data['data']);
     }
     if (dataClassName == 'Notification') {
-      return deserialize<_i11.Notification>(data['data']);
+      return deserialize<_irt10kca.Notification>(data['data']);
     }
     if (dataClassName == 'NotificationChannel') {
-      return deserialize<_i12.NotificationChannel>(data['data']);
+      return deserialize<_i05lhlgd.NotificationChannel>(data['data']);
     }
     if (dataClassName == 'NotificationDelivery') {
-      return deserialize<_i13.NotificationDelivery>(data['data']);
+      return deserialize<_ikw6watb.NotificationDelivery>(data['data']);
     }
     if (dataClassName == 'NotificationTemplate') {
-      return deserialize<_i14.NotificationTemplate>(data['data']);
+      return deserialize<_ikosvoxr.NotificationTemplate>(data['data']);
     }
     if (dataClassName == 'RegistrationStatus') {
-      return deserialize<_i15.RegistrationStatus>(data['data']);
+      return deserialize<_infnr7i7.RegistrationStatus>(data['data']);
     }
     if (dataClassName == 'Section') {
-      return deserialize<_i16.Section>(data['data']);
+      return deserialize<_ibhmj7lb.Section>(data['data']);
     }
     if (dataClassName == 'SectionMembership') {
-      return deserialize<_i17.SectionMembership>(data['data']);
+      return deserialize<_ikti0jxs.SectionMembership>(data['data']);
     }
     if (dataClassName == 'UserNotification') {
-      return deserialize<_i18.UserNotification>(data['data']);
+      return deserialize<_ikzqql1t.UserNotification>(data['data']);
     }
     if (dataClassName == 'UserNotificationPreference') {
-      return deserialize<_i19.UserNotificationPreference>(data['data']);
+      return deserialize<_iiu7743a.UserNotificationPreference>(data['data']);
     }
     if (dataClassName.startsWith('serverpod_auth_idp.')) {
       data['className'] = dataClassName.substring(19);
-      return _i3.Protocol().deserializeByClassName(data);
+      return _iais.Protocol().deserializeByClassName(data);
     }
     if (dataClassName.startsWith('serverpod_auth_core.')) {
       data['className'] = dataClassName.substring(20);
-      return _i4.Protocol().deserializeByClassName(data);
+      return _iacs.Protocol().deserializeByClassName(data);
     }
     if (dataClassName.startsWith('serverpod.')) {
       data['className'] = dataClassName.substring(10);
-      return _i2.Protocol().deserializeByClassName(data);
+      return _isp.Protocol().deserializeByClassName(data);
     }
     return super.deserializeByClassName(data);
   }
 
   void _registerHostProtocols() {
-    _i3.Protocol().registerHostProtocol('alpine_pod', this);
-    _i4.Protocol().registerHostProtocol('alpine_pod', this);
+    _iais.Protocol().registerHostProtocol('alpine_pod', this);
+    _iacs.Protocol().registerHostProtocol('alpine_pod', this);
   }
 
   @override
-  _i1.Table? getTableForType(Type t) {
+  _is.Table? getTableForType(Type t) {
     {
-      var table = _i3.Protocol().getTableForType(t);
+      var table = _iais.Protocol().getTableForType(t);
       if (table != null) {
         return table;
       }
     }
     {
-      var table = _i4.Protocol().getTableForType(t);
+      var table = _iacs.Protocol().getTableForType(t);
       if (table != null) {
         return table;
       }
     }
     {
-      var table = _i2.Protocol().getTableForType(t);
+      var table = _isp.Protocol().getTableForType(t);
       if (table != null) {
         return table;
       }
     }
     switch (t) {
-      case _i5.Event:
-        return _i5.Event.t;
-      case _i6.EventManager:
-        return _i6.EventManager.t;
-      case _i7.EventRegistration:
-        return _i7.EventRegistration.t;
-      case _i8.EventTemplate:
-        return _i8.EventTemplate.t;
-      case _i9.FcmToken:
-        return _i9.FcmToken.t;
-      case _i10.Member:
-        return _i10.Member.t;
-      case _i11.Notification:
-        return _i11.Notification.t;
-      case _i13.NotificationDelivery:
-        return _i13.NotificationDelivery.t;
-      case _i14.NotificationTemplate:
-        return _i14.NotificationTemplate.t;
-      case _i16.Section:
-        return _i16.Section.t;
-      case _i17.SectionMembership:
-        return _i17.SectionMembership.t;
-      case _i18.UserNotification:
-        return _i18.UserNotification.t;
-      case _i19.UserNotificationPreference:
-        return _i19.UserNotificationPreference.t;
+      case _iu57571s.Event:
+        return _iu57571s.Event.t;
+      case _ich6ygep.EventManager:
+        return _ich6ygep.EventManager.t;
+      case _i27uzliw.EventRegistration:
+        return _i27uzliw.EventRegistration.t;
+      case _inrioji0.EventTemplate:
+        return _inrioji0.EventTemplate.t;
+      case _iv0wxest.FcmToken:
+        return _iv0wxest.FcmToken.t;
+      case _i7zhj6lg.Member:
+        return _i7zhj6lg.Member.t;
+      case _irt10kca.Notification:
+        return _irt10kca.Notification.t;
+      case _ikw6watb.NotificationDelivery:
+        return _ikw6watb.NotificationDelivery.t;
+      case _ikosvoxr.NotificationTemplate:
+        return _ikosvoxr.NotificationTemplate.t;
+      case _ibhmj7lb.Section:
+        return _ibhmj7lb.Section.t;
+      case _ikti0jxs.SectionMembership:
+        return _ikti0jxs.SectionMembership.t;
+      case _ikzqql1t.UserNotification:
+        return _ikzqql1t.UserNotification.t;
+      case _iiu7743a.UserNotificationPreference:
+        return _iiu7743a.UserNotificationPreference.t;
     }
     return null;
   }
 
   @override
-  List<_i2.TableDefinition> getTargetTableDefinitions() =>
+  List<_isp.TableDefinition> getTargetTableDefinitions() =>
       targetTableDefinitions;
 
   @override
@@ -1836,10 +1853,10 @@ class Protocol extends _i1.DatabaseSerializationManager {
       return null;
     }
     try {
-      return _i3.Protocol().mapRecordToJson(record);
+      return _iais.Protocol().mapRecordToJson(record);
     } catch (_) {}
     try {
-      return _i4.Protocol().mapRecordToJson(record);
+      return _iacs.Protocol().mapRecordToJson(record);
     } catch (_) {}
     throw Exception('Unsupported record type ${record.runtimeType}');
   }

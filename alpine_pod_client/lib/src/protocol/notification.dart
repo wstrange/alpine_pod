@@ -10,12 +10,12 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
-import 'notification_template.dart' as _i2;
-import 'package:alpine_pod_client/src/protocol/protocol.dart' as _i3;
+import 'package:alpine_pod_client/src/protocol/protocol.dart' as _iib3gdw5;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
+import 'notification_template.dart' as _ikosvoxr;
 
 abstract class Notification
-    implements _i1.SerializableModel, _i1.ProtocolSerialization {
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   Notification._({
     this.id,
     required this.templateId,
@@ -30,9 +30,9 @@ abstract class Notification
   }) : updatedAt = updatedAt ?? DateTime.now();
 
   factory Notification({
-    _i1.UuidValue? id,
-    required _i1.UuidValue templateId,
-    _i2.NotificationTemplate? template,
+    _isc.UuidValue? id,
+    required _isc.UuidValue templateId,
+    _ikosvoxr.NotificationTemplate? template,
     required Map<String, String> data,
     String? actionUrl,
     required String renderedTitle,
@@ -46,39 +46,39 @@ abstract class Notification
     return Notification(
       id: jsonSerialization['id'] == null
           ? null
-          : _i1.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
-      templateId: _i1.UuidValueJsonExtension.fromJson(
+          : _isc.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
+      templateId: _isc.UuidValueJsonExtension.fromJson(
         jsonSerialization['templateId'],
       ),
       template: jsonSerialization['template'] == null
           ? null
-          : _i3.Protocol().deserialize<_i2.NotificationTemplate>(
+          : _iib3gdw5.Protocol().deserialize<_ikosvoxr.NotificationTemplate>(
               jsonSerialization['template'],
             ),
-      data: _i3.Protocol().deserialize<Map<String, String>>(
+      data: _iib3gdw5.Protocol().deserialize<Map<String, String>>(
         jsonSerialization['data'],
       ),
       actionUrl: jsonSerialization['actionUrl'] as String?,
       renderedTitle: jsonSerialization['renderedTitle'] as String,
       renderedBody: jsonSerialization['renderedBody'] as String,
       renderedHtml: jsonSerialization['renderedHtml'] as String?,
-      createdAt: _i1.DateTimeJsonExtension.fromJson(
+      createdAt: _isc.DateTimeJsonExtension.fromJson(
         jsonSerialization['createdAt'],
       ),
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
     );
   }
 
   /// The database id, set if the object has been inserted into the
   /// database or if it has been fetched from the database. Otherwise,
   /// the id will be null.
-  _i1.UuidValue? id;
+  _isc.UuidValue? id;
 
-  _i1.UuidValue templateId;
+  _isc.UuidValue templateId;
 
-  _i2.NotificationTemplate? template;
+  _ikosvoxr.NotificationTemplate? template;
 
   Map<String, String> data;
 
@@ -96,11 +96,11 @@ abstract class Notification
 
   /// Returns a shallow copy of this [Notification]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   Notification copyWith({
-    _i1.UuidValue? id,
-    _i1.UuidValue? templateId,
-    _i2.NotificationTemplate? template,
+    _isc.UuidValue? id,
+    _isc.UuidValue? templateId,
+    _ikosvoxr.NotificationTemplate? template,
     Map<String, String>? data,
     String? actionUrl,
     String? renderedTitle,
@@ -145,7 +145,7 @@ abstract class Notification
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -153,9 +153,9 @@ class _Undefined {}
 
 class _NotificationImpl extends Notification {
   _NotificationImpl({
-    _i1.UuidValue? id,
-    required _i1.UuidValue templateId,
-    _i2.NotificationTemplate? template,
+    _isc.UuidValue? id,
+    required _isc.UuidValue templateId,
+    _ikosvoxr.NotificationTemplate? template,
     required Map<String, String> data,
     String? actionUrl,
     required String renderedTitle,
@@ -178,11 +178,11 @@ class _NotificationImpl extends Notification {
 
   /// Returns a shallow copy of this [Notification]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   Notification copyWith({
     Object? id = _Undefined,
-    _i1.UuidValue? templateId,
+    _isc.UuidValue? templateId,
     Object? template = _Undefined,
     Map<String, String>? data,
     Object? actionUrl = _Undefined,
@@ -193,9 +193,9 @@ class _NotificationImpl extends Notification {
     DateTime? updatedAt,
   }) {
     return Notification(
-      id: id is _i1.UuidValue? ? id : this.id,
+      id: id is _isc.UuidValue? ? id : this.id,
       templateId: templateId ?? this.templateId,
-      template: template is _i2.NotificationTemplate?
+      template: template is _ikosvoxr.NotificationTemplate?
           ? template
           : this.template?.copyWith(),
       data: data ?? this.data.map((key0, value0) => MapEntry(key0, value0)),

@@ -10,10 +10,10 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
+import 'package:serverpod/serverpod.dart' as _is;
 
 abstract class UserNotificationPreference
-    implements _i1.TableRow<_i1.UuidValue?>, _i1.ProtocolSerialization {
+    implements _is.TableRow<_is.UuidValue?>, _is.ProtocolSerialization {
   UserNotificationPreference._({
     this.id,
     bool? allowInApp,
@@ -30,7 +30,7 @@ abstract class UserNotificationPreference
        updatedAt = updatedAt ?? DateTime.now();
 
   factory UserNotificationPreference({
-    _i1.UuidValue? id,
+    _is.UuidValue? id,
     bool? allowInApp,
     bool? allowEmail,
     bool? allowPush,
@@ -45,25 +45,25 @@ abstract class UserNotificationPreference
     return UserNotificationPreference(
       id: jsonSerialization['id'] == null
           ? null
-          : _i1.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
+          : _is.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
       allowInApp: jsonSerialization['allowInApp'] == null
           ? null
-          : _i1.BoolJsonExtension.fromJson(jsonSerialization['allowInApp']),
+          : _is.BoolJsonExtension.fromJson(jsonSerialization['allowInApp']),
       allowEmail: jsonSerialization['allowEmail'] == null
           ? null
-          : _i1.BoolJsonExtension.fromJson(jsonSerialization['allowEmail']),
+          : _is.BoolJsonExtension.fromJson(jsonSerialization['allowEmail']),
       allowPush: jsonSerialization['allowPush'] == null
           ? null
-          : _i1.BoolJsonExtension.fromJson(jsonSerialization['allowPush']),
+          : _is.BoolJsonExtension.fromJson(jsonSerialization['allowPush']),
       allowSms: jsonSerialization['allowSms'] == null
           ? null
-          : _i1.BoolJsonExtension.fromJson(jsonSerialization['allowSms']),
+          : _is.BoolJsonExtension.fromJson(jsonSerialization['allowSms']),
       newEvents: jsonSerialization['newEvents'] == null
           ? null
-          : _i1.BoolJsonExtension.fromJson(jsonSerialization['newEvents']),
+          : _is.BoolJsonExtension.fromJson(jsonSerialization['newEvents']),
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
     );
   }
 
@@ -72,7 +72,7 @@ abstract class UserNotificationPreference
   static const db = UserNotificationPreferenceRepository._();
 
   @override
-  _i1.UuidValue? id;
+  _is.UuidValue? id;
 
   bool allowInApp;
 
@@ -87,13 +87,13 @@ abstract class UserNotificationPreference
   DateTime updatedAt;
 
   @override
-  _i1.Table<_i1.UuidValue?> get table => t;
+  _is.Table<_is.UuidValue?> get table => t;
 
   /// Returns a shallow copy of this [UserNotificationPreference]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   UserNotificationPreference copyWith({
-    _i1.UuidValue? id,
+    _is.UuidValue? id,
     bool? allowInApp,
     bool? allowEmail,
     bool? allowPush,
@@ -134,11 +134,11 @@ abstract class UserNotificationPreference
   }
 
   static UserNotificationPreferenceIncludeList includeList({
-    _i1.WhereExpressionBuilder<UserNotificationPreferenceTable>? where,
+    _is.WhereExpressionBuilder<UserNotificationPreferenceTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<UserNotificationPreferenceTable>? orderBy,
-    _i1.OrderByListBuilder<UserNotificationPreferenceTable>? orderByList,
+    _is.OrderByBuilder<UserNotificationPreferenceTable>? orderBy,
+    _is.OrderByListBuilder<UserNotificationPreferenceTable>? orderByList,
     UserNotificationPreferenceInclude? include,
   }) {
     return UserNotificationPreferenceIncludeList._(
@@ -153,7 +153,7 @@ abstract class UserNotificationPreference
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -161,7 +161,7 @@ class _Undefined {}
 
 class _UserNotificationPreferenceImpl extends UserNotificationPreference {
   _UserNotificationPreferenceImpl({
-    _i1.UuidValue? id,
+    _is.UuidValue? id,
     bool? allowInApp,
     bool? allowEmail,
     bool? allowPush,
@@ -180,7 +180,7 @@ class _UserNotificationPreferenceImpl extends UserNotificationPreference {
 
   /// Returns a shallow copy of this [UserNotificationPreference]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   UserNotificationPreference copyWith({
     Object? id = _Undefined,
@@ -192,7 +192,7 @@ class _UserNotificationPreferenceImpl extends UserNotificationPreference {
     DateTime? updatedAt,
   }) {
     return UserNotificationPreference(
-      id: id is _i1.UuidValue? ? id : this.id,
+      id: id is _is.UuidValue? ? id : this.id,
       allowInApp: allowInApp ?? this.allowInApp,
       allowEmail: allowEmail ?? this.allowEmail,
       allowPush: allowPush ?? this.allowPush,
@@ -204,56 +204,56 @@ class _UserNotificationPreferenceImpl extends UserNotificationPreference {
 }
 
 class UserNotificationPreferenceUpdateTable
-    extends _i1.UpdateTable<UserNotificationPreferenceTable> {
+    extends _is.UpdateTable<UserNotificationPreferenceTable> {
   UserNotificationPreferenceUpdateTable(super.table);
 
-  _i1.ColumnValue<bool, bool> allowInApp(bool value) =>
-      _i1.ColumnValue(table.allowInApp, value);
+  _is.ColumnValue<bool, bool> allowInApp(bool value) =>
+      _is.ColumnValue(table.allowInApp, value);
 
-  _i1.ColumnValue<bool, bool> allowEmail(bool value) =>
-      _i1.ColumnValue(table.allowEmail, value);
+  _is.ColumnValue<bool, bool> allowEmail(bool value) =>
+      _is.ColumnValue(table.allowEmail, value);
 
-  _i1.ColumnValue<bool, bool> allowPush(bool value) =>
-      _i1.ColumnValue(table.allowPush, value);
+  _is.ColumnValue<bool, bool> allowPush(bool value) =>
+      _is.ColumnValue(table.allowPush, value);
 
-  _i1.ColumnValue<bool, bool> allowSms(bool value) =>
-      _i1.ColumnValue(table.allowSms, value);
+  _is.ColumnValue<bool, bool> allowSms(bool value) =>
+      _is.ColumnValue(table.allowSms, value);
 
-  _i1.ColumnValue<bool, bool> newEvents(bool value) =>
-      _i1.ColumnValue(table.newEvents, value);
+  _is.ColumnValue<bool, bool> newEvents(bool value) =>
+      _is.ColumnValue(table.newEvents, value);
 
-  _i1.ColumnValue<DateTime, DateTime> updatedAt(DateTime value) =>
-      _i1.ColumnValue(table.updatedAt, value);
+  _is.ColumnValue<DateTime, DateTime> updatedAt(DateTime value) =>
+      _is.ColumnValue(table.updatedAt, value);
 }
 
-class UserNotificationPreferenceTable extends _i1.Table<_i1.UuidValue?> {
+class UserNotificationPreferenceTable extends _is.Table<_is.UuidValue?> {
   UserNotificationPreferenceTable({super.tableRelation})
     : super(tableName: 'user_notification_preference') {
     updateTable = UserNotificationPreferenceUpdateTable(this);
-    allowInApp = _i1.ColumnBool('allowInApp', this, hasDefault: true);
-    allowEmail = _i1.ColumnBool('allowEmail', this, hasDefault: true);
-    allowPush = _i1.ColumnBool('allowPush', this, hasDefault: true);
-    allowSms = _i1.ColumnBool('allowSms', this, hasDefault: true);
-    newEvents = _i1.ColumnBool('newEvents', this, hasDefault: true);
-    updatedAt = _i1.ColumnDateTime('updatedAt', this, hasDefault: true);
+    allowInApp = _is.ColumnBool('allowInApp', this, hasDefault: true);
+    allowEmail = _is.ColumnBool('allowEmail', this, hasDefault: true);
+    allowPush = _is.ColumnBool('allowPush', this, hasDefault: true);
+    allowSms = _is.ColumnBool('allowSms', this, hasDefault: true);
+    newEvents = _is.ColumnBool('newEvents', this, hasDefault: true);
+    updatedAt = _is.ColumnDateTime('updatedAt', this, hasDefault: true);
   }
 
   late final UserNotificationPreferenceUpdateTable updateTable;
 
-  late final _i1.ColumnBool allowInApp;
+  late final _is.ColumnBool allowInApp;
 
-  late final _i1.ColumnBool allowEmail;
+  late final _is.ColumnBool allowEmail;
 
-  late final _i1.ColumnBool allowPush;
+  late final _is.ColumnBool allowPush;
 
-  late final _i1.ColumnBool allowSms;
+  late final _is.ColumnBool allowSms;
 
-  late final _i1.ColumnBool newEvents;
+  late final _is.ColumnBool newEvents;
 
-  late final _i1.ColumnDateTime updatedAt;
+  late final _is.ColumnDateTime updatedAt;
 
   @override
-  List<_i1.Column> get columns => [
+  List<_is.Column> get columns => [
     id,
     allowInApp,
     allowEmail,
@@ -264,19 +264,19 @@ class UserNotificationPreferenceTable extends _i1.Table<_i1.UuidValue?> {
   ];
 }
 
-class UserNotificationPreferenceInclude extends _i1.IncludeObject {
+class UserNotificationPreferenceInclude extends _is.IncludeObject {
   UserNotificationPreferenceInclude._();
 
   @override
-  Map<String, _i1.Include?> get includes => {};
+  Map<String, _is.Include?> get includes => {};
 
   @override
-  _i1.Table<_i1.UuidValue?> get table => UserNotificationPreference.t;
+  _is.Table<_is.UuidValue?> get table => UserNotificationPreference.t;
 }
 
-class UserNotificationPreferenceIncludeList extends _i1.IncludeList {
+class UserNotificationPreferenceIncludeList extends _is.IncludeList {
   UserNotificationPreferenceIncludeList._({
-    _i1.WhereExpressionBuilder<UserNotificationPreferenceTable>? where,
+    _is.WhereExpressionBuilder<UserNotificationPreferenceTable>? where,
     super.limit,
     super.offset,
     super.orderBy,
@@ -287,10 +287,10 @@ class UserNotificationPreferenceIncludeList extends _i1.IncludeList {
   }
 
   @override
-  Map<String, _i1.Include?> get includes => include?.includes ?? {};
+  Map<String, _is.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<_i1.UuidValue?> get table => UserNotificationPreference.t;
+  _is.Table<_is.UuidValue?> get table => UserNotificationPreference.t;
 }
 
 class UserNotificationPreferenceRepository {
@@ -319,15 +319,15 @@ class UserNotificationPreferenceRepository {
   /// );
   /// ```
   Future<List<UserNotificationPreference>> find(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<UserNotificationPreferenceTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<UserNotificationPreferenceTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<UserNotificationPreferenceTable>? orderBy,
-    _i1.OrderByListBuilder<UserNotificationPreferenceTable>? orderByList,
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.OrderByBuilder<UserNotificationPreferenceTable>? orderBy,
+    _is.OrderByListBuilder<UserNotificationPreferenceTable>? orderByList,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<UserNotificationPreference>(
       where: where?.call(UserNotificationPreference.t),
@@ -359,14 +359,14 @@ class UserNotificationPreferenceRepository {
   /// );
   /// ```
   Future<UserNotificationPreference?> findFirstRow(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<UserNotificationPreferenceTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<UserNotificationPreferenceTable>? where,
     int? offset,
-    _i1.OrderByBuilder<UserNotificationPreferenceTable>? orderBy,
-    _i1.OrderByListBuilder<UserNotificationPreferenceTable>? orderByList,
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.OrderByBuilder<UserNotificationPreferenceTable>? orderBy,
+    _is.OrderByListBuilder<UserNotificationPreferenceTable>? orderByList,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<UserNotificationPreference>(
       where: where?.call(UserNotificationPreference.t),
@@ -381,11 +381,11 @@ class UserNotificationPreferenceRepository {
 
   /// Finds a single [UserNotificationPreference] by its [id] or null if no such row exists.
   Future<UserNotificationPreference?> findById(
-    _i1.DatabaseSession session,
-    _i1.UuidValue id, {
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.DatabaseSession session,
+    _is.UuidValue id, {
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<UserNotificationPreference>(
       id,
@@ -410,9 +410,9 @@ class UserNotificationPreferenceRepository {
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<UserNotificationPreference>> insert(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<UserNotificationPreference> rows, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
     bool ignoreConflicts = false,
     bool noReturn = false,
   }) async {
@@ -428,9 +428,9 @@ class UserNotificationPreferenceRepository {
   ///
   /// The returned [UserNotificationPreference] will have its `id` field set.
   Future<UserNotificationPreference> insertRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     UserNotificationPreference row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.insertRow<UserNotificationPreference>(
       row,
@@ -459,13 +459,13 @@ class UserNotificationPreferenceRepository {
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<UserNotificationPreference>> upsert(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<UserNotificationPreference> rows, {
-    required _i1.ColumnSelections<UserNotificationPreferenceTable>
+    required _is.ColumnSelections<UserNotificationPreferenceTable>
     conflictColumns,
-    _i1.ColumnSelections<UserNotificationPreferenceTable>? updateColumns,
-    _i1.WhereExpressionBuilder<UserNotificationPreferenceTable>? updateWhere,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<UserNotificationPreferenceTable>? updateColumns,
+    _is.WhereExpressionBuilder<UserNotificationPreferenceTable>? updateWhere,
+    _is.Transaction? transaction,
     bool noReturn = false,
   }) async {
     return session.db.upsert<UserNotificationPreference>(
@@ -492,13 +492,13 @@ class UserNotificationPreferenceRepository {
   ///
   /// The returned [UserNotificationPreference] will have its `id` field set.
   Future<UserNotificationPreference?> upsertRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     UserNotificationPreference row, {
-    required _i1.ColumnSelections<UserNotificationPreferenceTable>
+    required _is.ColumnSelections<UserNotificationPreferenceTable>
     conflictColumns,
-    _i1.ColumnSelections<UserNotificationPreferenceTable>? updateColumns,
-    _i1.WhereExpressionBuilder<UserNotificationPreferenceTable>? updateWhere,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<UserNotificationPreferenceTable>? updateColumns,
+    _is.WhereExpressionBuilder<UserNotificationPreferenceTable>? updateWhere,
+    _is.Transaction? transaction,
   }) async {
     return session.db.upsertRow<UserNotificationPreference>(
       row,
@@ -519,10 +519,10 @@ class UserNotificationPreferenceRepository {
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<UserNotificationPreference>> update(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<UserNotificationPreference> rows, {
-    _i1.ColumnSelections<UserNotificationPreferenceTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<UserNotificationPreferenceTable>? columns,
+    _is.Transaction? transaction,
     bool noReturn = false,
   }) async {
     return session.db.update<UserNotificationPreference>(
@@ -537,10 +537,10 @@ class UserNotificationPreferenceRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<UserNotificationPreference> updateRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     UserNotificationPreference row, {
-    _i1.ColumnSelections<UserNotificationPreferenceTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<UserNotificationPreferenceTable>? columns,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateRow<UserNotificationPreference>(
       row,
@@ -552,11 +552,11 @@ class UserNotificationPreferenceRepository {
   /// Updates a single [UserNotificationPreference] by its [id] with the specified [columnValues].
   /// Returns the updated row or null if no row with the given id exists.
   Future<UserNotificationPreference?> updateById(
-    _i1.DatabaseSession session,
-    _i1.UuidValue id, {
-    required _i1.ColumnValueListBuilder<UserNotificationPreferenceUpdateTable>
+    _is.DatabaseSession session,
+    _is.UuidValue id, {
+    required _is.ColumnValueListBuilder<UserNotificationPreferenceUpdateTable>
     columnValues,
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateById<UserNotificationPreference>(
       id,
@@ -572,15 +572,15 @@ class UserNotificationPreferenceRepository {
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<UserNotificationPreference>> updateWhere(
-    _i1.DatabaseSession session, {
-    required _i1.ColumnValueListBuilder<UserNotificationPreferenceUpdateTable>
+    _is.DatabaseSession session, {
+    required _is.ColumnValueListBuilder<UserNotificationPreferenceUpdateTable>
     columnValues,
-    required _i1.WhereExpressionBuilder<UserNotificationPreferenceTable> where,
+    required _is.WhereExpressionBuilder<UserNotificationPreferenceTable> where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<UserNotificationPreferenceTable>? orderBy,
-    _i1.OrderByListBuilder<UserNotificationPreferenceTable>? orderByList,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<UserNotificationPreferenceTable>? orderBy,
+    _is.OrderByListBuilder<UserNotificationPreferenceTable>? orderByList,
+    _is.Transaction? transaction,
     bool noReturn = false,
   }) async {
     return session.db.updateWhere<UserNotificationPreference>(
@@ -607,11 +607,11 @@ class UserNotificationPreferenceRepository {
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<UserNotificationPreference>> delete(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<UserNotificationPreference> rows, {
-    _i1.OrderByBuilder<UserNotificationPreferenceTable>? orderBy,
-    _i1.OrderByListBuilder<UserNotificationPreferenceTable>? orderByList,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<UserNotificationPreferenceTable>? orderBy,
+    _is.OrderByListBuilder<UserNotificationPreferenceTable>? orderByList,
+    _is.Transaction? transaction,
     bool noReturn = false,
   }) async {
     return session.db.delete<UserNotificationPreference>(
@@ -625,9 +625,9 @@ class UserNotificationPreferenceRepository {
 
   /// Deletes a single [UserNotificationPreference].
   Future<UserNotificationPreference> deleteRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     UserNotificationPreference row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.deleteRow<UserNotificationPreference>(
       row,
@@ -644,11 +644,11 @@ class UserNotificationPreferenceRepository {
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<UserNotificationPreference>> deleteWhere(
-    _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<UserNotificationPreferenceTable> where,
-    _i1.OrderByBuilder<UserNotificationPreferenceTable>? orderBy,
-    _i1.OrderByListBuilder<UserNotificationPreferenceTable>? orderByList,
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<UserNotificationPreferenceTable> where,
+    _is.OrderByBuilder<UserNotificationPreferenceTable>? orderBy,
+    _is.OrderByListBuilder<UserNotificationPreferenceTable>? orderByList,
+    _is.Transaction? transaction,
     bool noReturn = false,
   }) async {
     return session.db.deleteWhere<UserNotificationPreference>(
@@ -663,10 +663,10 @@ class UserNotificationPreferenceRepository {
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<UserNotificationPreferenceTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<UserNotificationPreferenceTable>? where,
     int? limit,
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.count<UserNotificationPreference>(
       where: where?.call(UserNotificationPreference.t),
@@ -677,11 +677,11 @@ class UserNotificationPreferenceRepository {
 
   /// Acquires row-level locks on [UserNotificationPreference] rows matching the [where] expression.
   Future<void> lockRows(
-    _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<UserNotificationPreferenceTable> where,
-    required _i1.LockMode lockMode,
-    required _i1.Transaction transaction,
-    _i1.LockBehavior lockBehavior = _i1.LockBehavior.wait,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<UserNotificationPreferenceTable> where,
+    required _is.LockMode lockMode,
+    required _is.Transaction transaction,
+    _is.LockBehavior lockBehavior = _is.LockBehavior.wait,
   }) async {
     return session.db.lockRows<UserNotificationPreference>(
       where: where(UserNotificationPreference.t),

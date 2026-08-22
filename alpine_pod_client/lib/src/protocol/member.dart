@@ -11,16 +11,16 @@
 // ignore_for_file: dead_code, unnecessary_null_comparison
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_database/serverpod_database.dart' as _i1;
-import 'package:serverpod_client/serverpod_client.dart' as _i2;
-import 'event_registration.dart' as _i3;
-import 'event_manager.dart' as _i4;
-import 'package:alpine_pod_client/src/protocol/protocol.dart' as _i5;
+import 'package:alpine_pod_client/src/protocol/protocol.dart' as _iib3gdw5;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
+import 'package:serverpod_database/serverpod_database.dart' as _isd;
+import 'event_manager.dart' as _ich6ygep;
+import 'event_registration.dart' as _i27uzliw;
 
 abstract class Member
-    implements _i1.TableRow<_i2.UuidValue>, _i2.ProtocolSerialization {
+    implements _isd.TableRow<_isc.UuidValue>, _isc.ProtocolSerialization {
   Member._({
-    _i2.UuidValue? id,
+    _isc.UuidValue? id,
     required this.firstName,
     required this.lastName,
     this.displayName,
@@ -38,7 +38,7 @@ abstract class Member
     DateTime? updatedAt,
     this.registrations,
     this.managedEvents,
-  }) : id = id ?? const _i2.Uuid().v7obj(),
+  }) : id = id ?? const _isc.Uuid().v7obj(),
        membershipStatus = membershipStatus ?? 'active',
        waiverSignedDate =
            waiverSignedDate ?? DateTime.parse('1970-01-01T00:00:00.000Z'),
@@ -46,7 +46,7 @@ abstract class Member
        updatedAt = updatedAt ?? DateTime.now();
 
   factory Member({
-    _i2.UuidValue? id,
+    _isc.UuidValue? id,
     required String firstName,
     required String lastName,
     String? displayName,
@@ -62,15 +62,15 @@ abstract class Member
     String? certifications,
     DateTime? createdAt,
     DateTime? updatedAt,
-    List<_i3.EventRegistration>? registrations,
-    List<_i4.EventManager>? managedEvents,
+    List<_i27uzliw.EventRegistration>? registrations,
+    List<_ich6ygep.EventManager>? managedEvents,
   }) = _MemberImpl;
 
   factory Member.fromJson(Map<String, dynamic> jsonSerialization) {
     return Member(
       id: jsonSerialization['id'] == null
           ? null
-          : _i2.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
+          : _isc.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
       firstName: jsonSerialization['firstName'] as String,
       lastName: jsonSerialization['lastName'] as String,
       displayName: jsonSerialization['displayName'] as String?,
@@ -85,24 +85,24 @@ abstract class Member
       profileImageUrl: jsonSerialization['profileImageUrl'] as String?,
       waiverSignedDate: jsonSerialization['waiverSignedDate'] == null
           ? null
-          : _i2.DateTimeJsonExtension.fromJson(
+          : _isc.DateTimeJsonExtension.fromJson(
               jsonSerialization['waiverSignedDate'],
             ),
       certifications: jsonSerialization['certifications'] as String?,
       createdAt: jsonSerialization['createdAt'] == null
           ? null
-          : _i2.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
-          : _i2.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
       registrations: jsonSerialization['registrations'] == null
           ? null
-          : _i5.Protocol().deserialize<List<_i3.EventRegistration>>(
+          : _iib3gdw5.Protocol().deserialize<List<_i27uzliw.EventRegistration>>(
               jsonSerialization['registrations'],
             ),
       managedEvents: jsonSerialization['managedEvents'] == null
           ? null
-          : _i5.Protocol().deserialize<List<_i4.EventManager>>(
+          : _iib3gdw5.Protocol().deserialize<List<_ich6ygep.EventManager>>(
               jsonSerialization['managedEvents'],
             ),
     );
@@ -113,7 +113,7 @@ abstract class Member
   static const db = MemberRepository._();
 
   @override
-  _i2.UuidValue id;
+  _isc.UuidValue id;
 
   String firstName;
 
@@ -145,18 +145,18 @@ abstract class Member
 
   DateTime updatedAt;
 
-  List<_i3.EventRegistration>? registrations;
+  List<_i27uzliw.EventRegistration>? registrations;
 
-  List<_i4.EventManager>? managedEvents;
+  List<_ich6ygep.EventManager>? managedEvents;
 
   @override
-  _i1.Table<_i2.UuidValue> get table => t;
+  _isd.Table<_isc.UuidValue> get table => t;
 
   /// Returns a shallow copy of this [Member]
   /// with some or all fields replaced by the given arguments.
-  @_i2.useResult
+  @_isc.useResult
   Member copyWith({
-    _i2.UuidValue? id,
+    _isc.UuidValue? id,
     String? firstName,
     String? lastName,
     String? displayName,
@@ -172,8 +172,8 @@ abstract class Member
     String? certifications,
     DateTime? createdAt,
     DateTime? updatedAt,
-    List<_i3.EventRegistration>? registrations,
-    List<_i4.EventManager>? managedEvents,
+    List<_i27uzliw.EventRegistration>? registrations,
+    List<_ich6ygep.EventManager>? managedEvents,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -234,8 +234,8 @@ abstract class Member
   }
 
   static MemberInclude include({
-    _i3.EventRegistrationIncludeList? registrations,
-    _i4.EventManagerIncludeList? managedEvents,
+    _i27uzliw.EventRegistrationIncludeList? registrations,
+    _ich6ygep.EventManagerIncludeList? managedEvents,
   }) {
     return MemberInclude._(
       registrations: registrations,
@@ -244,11 +244,11 @@ abstract class Member
   }
 
   static MemberIncludeList includeList({
-    _i1.WhereExpressionBuilder<MemberTable>? where,
+    _isd.WhereExpressionBuilder<MemberTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<MemberTable>? orderBy,
-    _i1.OrderByListBuilder<MemberTable>? orderByList,
+    _isd.OrderByBuilder<MemberTable>? orderBy,
+    _isd.OrderByListBuilder<MemberTable>? orderByList,
     MemberInclude? include,
   }) {
     return MemberIncludeList._(
@@ -263,7 +263,7 @@ abstract class Member
 
   @override
   String toString() {
-    return _i2.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -271,7 +271,7 @@ class _Undefined {}
 
 class _MemberImpl extends Member {
   _MemberImpl({
-    _i2.UuidValue? id,
+    _isc.UuidValue? id,
     required String firstName,
     required String lastName,
     String? displayName,
@@ -287,8 +287,8 @@ class _MemberImpl extends Member {
     String? certifications,
     DateTime? createdAt,
     DateTime? updatedAt,
-    List<_i3.EventRegistration>? registrations,
-    List<_i4.EventManager>? managedEvents,
+    List<_i27uzliw.EventRegistration>? registrations,
+    List<_ich6ygep.EventManager>? managedEvents,
   }) : super._(
          id: id,
          firstName: firstName,
@@ -312,10 +312,10 @@ class _MemberImpl extends Member {
 
   /// Returns a shallow copy of this [Member]
   /// with some or all fields replaced by the given arguments.
-  @_i2.useResult
+  @_isc.useResult
   @override
   Member copyWith({
-    _i2.UuidValue? id,
+    _isc.UuidValue? id,
     String? firstName,
     String? lastName,
     Object? displayName = _Undefined,
@@ -358,191 +358,191 @@ class _MemberImpl extends Member {
           : this.certifications,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
-      registrations: registrations is List<_i3.EventRegistration>?
+      registrations: registrations is List<_i27uzliw.EventRegistration>?
           ? registrations
           : this.registrations?.map((e0) => e0.copyWith()).toList(),
-      managedEvents: managedEvents is List<_i4.EventManager>?
+      managedEvents: managedEvents is List<_ich6ygep.EventManager>?
           ? managedEvents
           : this.managedEvents?.map((e0) => e0.copyWith()).toList(),
     );
   }
 }
 
-class MemberUpdateTable extends _i1.UpdateTable<MemberTable> {
+class MemberUpdateTable extends _isd.UpdateTable<MemberTable> {
   MemberUpdateTable(super.table);
 
-  _i1.ColumnValue<String, String> firstName(String value) =>
-      _i1.ColumnValue(table.firstName, value);
+  _isd.ColumnValue<String, String> firstName(String value) =>
+      _isd.ColumnValue(table.firstName, value);
 
-  _i1.ColumnValue<String, String> lastName(String value) =>
-      _i1.ColumnValue(table.lastName, value);
+  _isd.ColumnValue<String, String> lastName(String value) =>
+      _isd.ColumnValue(table.lastName, value);
 
-  _i1.ColumnValue<String, String> displayName(String? value) =>
-      _i1.ColumnValue(table.displayName, value);
+  _isd.ColumnValue<String, String> displayName(String? value) =>
+      _isd.ColumnValue(table.displayName, value);
 
-  _i1.ColumnValue<String, String> bio(String? value) =>
-      _i1.ColumnValue(table.bio, value);
+  _isd.ColumnValue<String, String> bio(String? value) =>
+      _isd.ColumnValue(table.bio, value);
 
-  _i1.ColumnValue<String, String> email(String value) =>
-      _i1.ColumnValue(table.email, value);
+  _isd.ColumnValue<String, String> email(String value) =>
+      _isd.ColumnValue(table.email, value);
 
-  _i1.ColumnValue<String, String> phoneNumber(String value) =>
-      _i1.ColumnValue(table.phoneNumber, value);
+  _isd.ColumnValue<String, String> phoneNumber(String value) =>
+      _isd.ColumnValue(table.phoneNumber, value);
 
-  _i1.ColumnValue<String, String> membershipStatus(String value) =>
-      _i1.ColumnValue(table.membershipStatus, value);
+  _isd.ColumnValue<String, String> membershipStatus(String value) =>
+      _isd.ColumnValue(table.membershipStatus, value);
 
-  _i1.ColumnValue<String, String> emergencyContactName(String value) =>
-      _i1.ColumnValue(table.emergencyContactName, value);
+  _isd.ColumnValue<String, String> emergencyContactName(String value) =>
+      _isd.ColumnValue(table.emergencyContactName, value);
 
-  _i1.ColumnValue<String, String> emergencyContactPhone(String value) =>
-      _i1.ColumnValue(table.emergencyContactPhone, value);
+  _isd.ColumnValue<String, String> emergencyContactPhone(String value) =>
+      _isd.ColumnValue(table.emergencyContactPhone, value);
 
-  _i1.ColumnValue<String, String> medicalConditions(String? value) =>
-      _i1.ColumnValue(table.medicalConditions, value);
+  _isd.ColumnValue<String, String> medicalConditions(String? value) =>
+      _isd.ColumnValue(table.medicalConditions, value);
 
-  _i1.ColumnValue<String, String> profileImageUrl(String? value) =>
-      _i1.ColumnValue(table.profileImageUrl, value);
+  _isd.ColumnValue<String, String> profileImageUrl(String? value) =>
+      _isd.ColumnValue(table.profileImageUrl, value);
 
-  _i1.ColumnValue<DateTime, DateTime> waiverSignedDate(DateTime value) =>
-      _i1.ColumnValue(table.waiverSignedDate, value);
+  _isd.ColumnValue<DateTime, DateTime> waiverSignedDate(DateTime value) =>
+      _isd.ColumnValue(table.waiverSignedDate, value);
 
-  _i1.ColumnValue<String, String> certifications(String? value) =>
-      _i1.ColumnValue(table.certifications, value);
+  _isd.ColumnValue<String, String> certifications(String? value) =>
+      _isd.ColumnValue(table.certifications, value);
 
-  _i1.ColumnValue<DateTime, DateTime> createdAt(DateTime value) =>
-      _i1.ColumnValue(table.createdAt, value);
+  _isd.ColumnValue<DateTime, DateTime> createdAt(DateTime value) =>
+      _isd.ColumnValue(table.createdAt, value);
 
-  _i1.ColumnValue<DateTime, DateTime> updatedAt(DateTime value) =>
-      _i1.ColumnValue(table.updatedAt, value);
+  _isd.ColumnValue<DateTime, DateTime> updatedAt(DateTime value) =>
+      _isd.ColumnValue(table.updatedAt, value);
 }
 
-class MemberTable extends _i1.Table<_i2.UuidValue> {
+class MemberTable extends _isd.Table<_isc.UuidValue> {
   MemberTable({super.tableRelation}) : super(tableName: 'members') {
     updateTable = MemberUpdateTable(this);
-    firstName = _i1.ColumnString('firstName', this);
-    lastName = _i1.ColumnString('lastName', this);
-    displayName = _i1.ColumnString('displayName', this);
-    bio = _i1.ColumnString('bio', this);
-    email = _i1.ColumnString('email', this);
-    phoneNumber = _i1.ColumnString('phoneNumber', this);
-    membershipStatus = _i1.ColumnString(
+    firstName = _isd.ColumnString('firstName', this);
+    lastName = _isd.ColumnString('lastName', this);
+    displayName = _isd.ColumnString('displayName', this);
+    bio = _isd.ColumnString('bio', this);
+    email = _isd.ColumnString('email', this);
+    phoneNumber = _isd.ColumnString('phoneNumber', this);
+    membershipStatus = _isd.ColumnString(
       'membershipStatus',
       this,
       hasDefault: true,
     );
-    emergencyContactName = _i1.ColumnString('emergencyContactName', this);
-    emergencyContactPhone = _i1.ColumnString('emergencyContactPhone', this);
-    medicalConditions = _i1.ColumnString('medicalConditions', this);
-    profileImageUrl = _i1.ColumnString('profileImageUrl', this);
-    waiverSignedDate = _i1.ColumnDateTime(
+    emergencyContactName = _isd.ColumnString('emergencyContactName', this);
+    emergencyContactPhone = _isd.ColumnString('emergencyContactPhone', this);
+    medicalConditions = _isd.ColumnString('medicalConditions', this);
+    profileImageUrl = _isd.ColumnString('profileImageUrl', this);
+    waiverSignedDate = _isd.ColumnDateTime(
       'waiverSignedDate',
       this,
       hasDefault: true,
     );
-    certifications = _i1.ColumnString('certifications', this);
-    createdAt = _i1.ColumnDateTime('createdAt', this, hasDefault: true);
-    updatedAt = _i1.ColumnDateTime('updatedAt', this, hasDefault: true);
+    certifications = _isd.ColumnString('certifications', this);
+    createdAt = _isd.ColumnDateTime('createdAt', this, hasDefault: true);
+    updatedAt = _isd.ColumnDateTime('updatedAt', this, hasDefault: true);
   }
 
   late final MemberUpdateTable updateTable;
 
-  late final _i1.ColumnString firstName;
+  late final _isd.ColumnString firstName;
 
-  late final _i1.ColumnString lastName;
+  late final _isd.ColumnString lastName;
 
-  late final _i1.ColumnString displayName;
+  late final _isd.ColumnString displayName;
 
-  late final _i1.ColumnString bio;
+  late final _isd.ColumnString bio;
 
-  late final _i1.ColumnString email;
+  late final _isd.ColumnString email;
 
-  late final _i1.ColumnString phoneNumber;
+  late final _isd.ColumnString phoneNumber;
 
-  late final _i1.ColumnString membershipStatus;
+  late final _isd.ColumnString membershipStatus;
 
-  late final _i1.ColumnString emergencyContactName;
+  late final _isd.ColumnString emergencyContactName;
 
-  late final _i1.ColumnString emergencyContactPhone;
+  late final _isd.ColumnString emergencyContactPhone;
 
-  late final _i1.ColumnString medicalConditions;
+  late final _isd.ColumnString medicalConditions;
 
-  late final _i1.ColumnString profileImageUrl;
+  late final _isd.ColumnString profileImageUrl;
 
-  late final _i1.ColumnDateTime waiverSignedDate;
+  late final _isd.ColumnDateTime waiverSignedDate;
 
-  late final _i1.ColumnString certifications;
+  late final _isd.ColumnString certifications;
 
-  late final _i1.ColumnDateTime createdAt;
+  late final _isd.ColumnDateTime createdAt;
 
-  late final _i1.ColumnDateTime updatedAt;
+  late final _isd.ColumnDateTime updatedAt;
 
-  _i3.EventRegistrationTable? ___registrations;
+  _i27uzliw.EventRegistrationTable? ___registrations;
 
-  _i1.ManyRelation<_i3.EventRegistrationTable>? _registrations;
+  _isd.ManyRelation<_i27uzliw.EventRegistrationTable>? _registrations;
 
-  _i4.EventManagerTable? ___managedEvents;
+  _ich6ygep.EventManagerTable? ___managedEvents;
 
-  _i1.ManyRelation<_i4.EventManagerTable>? _managedEvents;
+  _isd.ManyRelation<_ich6ygep.EventManagerTable>? _managedEvents;
 
-  _i3.EventRegistrationTable get __registrations {
+  _i27uzliw.EventRegistrationTable get __registrations {
     if (___registrations != null) return ___registrations!;
-    ___registrations = _i1.createRelationTable(
+    ___registrations = _isd.createRelationTable(
       relationFieldName: '__registrations',
       field: Member.t.id,
-      foreignField: _i3.EventRegistration.t.memberId,
+      foreignField: _i27uzliw.EventRegistration.t.memberId,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i3.EventRegistrationTable(tableRelation: foreignTableRelation),
+          _i27uzliw.EventRegistrationTable(tableRelation: foreignTableRelation),
     );
     return ___registrations!;
   }
 
-  _i4.EventManagerTable get __managedEvents {
+  _ich6ygep.EventManagerTable get __managedEvents {
     if (___managedEvents != null) return ___managedEvents!;
-    ___managedEvents = _i1.createRelationTable(
+    ___managedEvents = _isd.createRelationTable(
       relationFieldName: '__managedEvents',
       field: Member.t.id,
-      foreignField: _i4.EventManager.t.memberId,
+      foreignField: _ich6ygep.EventManager.t.memberId,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i4.EventManagerTable(tableRelation: foreignTableRelation),
+          _ich6ygep.EventManagerTable(tableRelation: foreignTableRelation),
     );
     return ___managedEvents!;
   }
 
-  _i1.ManyRelation<_i3.EventRegistrationTable> get registrations {
+  _isd.ManyRelation<_i27uzliw.EventRegistrationTable> get registrations {
     if (_registrations != null) return _registrations!;
-    var relationTable = _i1.createRelationTable(
+    var relationTable = _isd.createRelationTable(
       relationFieldName: 'registrations',
       field: Member.t.id,
-      foreignField: _i3.EventRegistration.t.memberId,
+      foreignField: _i27uzliw.EventRegistration.t.memberId,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i3.EventRegistrationTable(tableRelation: foreignTableRelation),
+          _i27uzliw.EventRegistrationTable(tableRelation: foreignTableRelation),
     );
-    _registrations = _i1.ManyRelation<_i3.EventRegistrationTable>(
+    _registrations = _isd.ManyRelation<_i27uzliw.EventRegistrationTable>(
       tableWithRelations: relationTable,
-      table: _i3.EventRegistrationTable(
+      table: _i27uzliw.EventRegistrationTable(
         tableRelation: relationTable.tableRelation!.lastRelation,
       ),
     );
     return _registrations!;
   }
 
-  _i1.ManyRelation<_i4.EventManagerTable> get managedEvents {
+  _isd.ManyRelation<_ich6ygep.EventManagerTable> get managedEvents {
     if (_managedEvents != null) return _managedEvents!;
-    var relationTable = _i1.createRelationTable(
+    var relationTable = _isd.createRelationTable(
       relationFieldName: 'managedEvents',
       field: Member.t.id,
-      foreignField: _i4.EventManager.t.memberId,
+      foreignField: _ich6ygep.EventManager.t.memberId,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i4.EventManagerTable(tableRelation: foreignTableRelation),
+          _ich6ygep.EventManagerTable(tableRelation: foreignTableRelation),
     );
-    _managedEvents = _i1.ManyRelation<_i4.EventManagerTable>(
+    _managedEvents = _isd.ManyRelation<_ich6ygep.EventManagerTable>(
       tableWithRelations: relationTable,
-      table: _i4.EventManagerTable(
+      table: _ich6ygep.EventManagerTable(
         tableRelation: relationTable.tableRelation!.lastRelation,
       ),
     );
@@ -550,7 +550,7 @@ class MemberTable extends _i1.Table<_i2.UuidValue> {
   }
 
   @override
-  List<_i1.Column> get columns => [
+  List<_isd.Column> get columns => [
     id,
     firstName,
     lastName,
@@ -570,7 +570,7 @@ class MemberTable extends _i1.Table<_i2.UuidValue> {
   ];
 
   @override
-  _i1.Table? getRelationTable(String relationField) {
+  _isd.Table? getRelationTable(String relationField) {
     if (relationField == 'registrations') {
       return __registrations;
     }
@@ -581,32 +581,32 @@ class MemberTable extends _i1.Table<_i2.UuidValue> {
   }
 }
 
-class MemberInclude extends _i1.IncludeObject {
+class MemberInclude extends _isd.IncludeObject {
   MemberInclude._({
-    _i3.EventRegistrationIncludeList? registrations,
-    _i4.EventManagerIncludeList? managedEvents,
+    _i27uzliw.EventRegistrationIncludeList? registrations,
+    _ich6ygep.EventManagerIncludeList? managedEvents,
   }) {
     _registrations = registrations;
     _managedEvents = managedEvents;
   }
 
-  _i3.EventRegistrationIncludeList? _registrations;
+  _i27uzliw.EventRegistrationIncludeList? _registrations;
 
-  _i4.EventManagerIncludeList? _managedEvents;
+  _ich6ygep.EventManagerIncludeList? _managedEvents;
 
   @override
-  Map<String, _i1.Include?> get includes => {
+  Map<String, _isd.Include?> get includes => {
     'registrations': _registrations,
     'managedEvents': _managedEvents,
   };
 
   @override
-  _i1.Table<_i2.UuidValue> get table => Member.t;
+  _isd.Table<_isc.UuidValue> get table => Member.t;
 }
 
-class MemberIncludeList extends _i1.IncludeList {
+class MemberIncludeList extends _isd.IncludeList {
   MemberIncludeList._({
-    _i1.WhereExpressionBuilder<MemberTable>? where,
+    _isd.WhereExpressionBuilder<MemberTable>? where,
     super.limit,
     super.offset,
     super.orderBy,
@@ -617,10 +617,10 @@ class MemberIncludeList extends _i1.IncludeList {
   }
 
   @override
-  Map<String, _i1.Include?> get includes => include?.includes ?? {};
+  Map<String, _isd.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<_i2.UuidValue> get table => Member.t;
+  _isd.Table<_isc.UuidValue> get table => Member.t;
 }
 
 class MemberRepository {
@@ -653,16 +653,16 @@ class MemberRepository {
   /// );
   /// ```
   Future<List<Member>> find(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<MemberTable>? where,
+    _isd.DatabaseSession session, {
+    _isd.WhereExpressionBuilder<MemberTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<MemberTable>? orderBy,
-    _i1.OrderByListBuilder<MemberTable>? orderByList,
-    _i1.Transaction? transaction,
+    _isd.OrderByBuilder<MemberTable>? orderBy,
+    _isd.OrderByListBuilder<MemberTable>? orderByList,
+    _isd.Transaction? transaction,
     MemberInclude? include,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _isd.LockMode? lockMode,
+    _isd.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<Member>(
       where: where?.call(Member.t),
@@ -695,15 +695,15 @@ class MemberRepository {
   /// );
   /// ```
   Future<Member?> findFirstRow(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<MemberTable>? where,
+    _isd.DatabaseSession session, {
+    _isd.WhereExpressionBuilder<MemberTable>? where,
     int? offset,
-    _i1.OrderByBuilder<MemberTable>? orderBy,
-    _i1.OrderByListBuilder<MemberTable>? orderByList,
-    _i1.Transaction? transaction,
+    _isd.OrderByBuilder<MemberTable>? orderBy,
+    _isd.OrderByListBuilder<MemberTable>? orderByList,
+    _isd.Transaction? transaction,
     MemberInclude? include,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _isd.LockMode? lockMode,
+    _isd.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<Member>(
       where: where?.call(Member.t),
@@ -719,12 +719,12 @@ class MemberRepository {
 
   /// Finds a single [Member] by its [id] or null if no such row exists.
   Future<Member?> findById(
-    _i1.DatabaseSession session,
-    _i2.UuidValue id, {
-    _i1.Transaction? transaction,
+    _isd.DatabaseSession session,
+    _isc.UuidValue id, {
+    _isd.Transaction? transaction,
     MemberInclude? include,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _isd.LockMode? lockMode,
+    _isd.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<Member>(
       id,
@@ -750,9 +750,9 @@ class MemberRepository {
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<Member>> insert(
-    _i1.DatabaseSession session,
+    _isd.DatabaseSession session,
     List<Member> rows, {
-    _i1.Transaction? transaction,
+    _isd.Transaction? transaction,
     bool ignoreConflicts = false,
     bool noReturn = false,
   }) async {
@@ -768,9 +768,9 @@ class MemberRepository {
   ///
   /// The returned [Member] will have its `id` field set.
   Future<Member> insertRow(
-    _i1.DatabaseSession session,
+    _isd.DatabaseSession session,
     Member row, {
-    _i1.Transaction? transaction,
+    _isd.Transaction? transaction,
   }) async {
     return session.db.insertRow<Member>(row, transaction: transaction);
   }
@@ -796,12 +796,12 @@ class MemberRepository {
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<Member>> upsert(
-    _i1.DatabaseSession session,
+    _isd.DatabaseSession session,
     List<Member> rows, {
-    required _i1.ColumnSelections<MemberTable> conflictColumns,
-    _i1.ColumnSelections<MemberTable>? updateColumns,
-    _i1.WhereExpressionBuilder<MemberTable>? updateWhere,
-    _i1.Transaction? transaction,
+    required _isd.ColumnSelections<MemberTable> conflictColumns,
+    _isd.ColumnSelections<MemberTable>? updateColumns,
+    _isd.WhereExpressionBuilder<MemberTable>? updateWhere,
+    _isd.Transaction? transaction,
     bool noReturn = false,
   }) async {
     return session.db.upsert<Member>(
@@ -828,12 +828,12 @@ class MemberRepository {
   ///
   /// The returned [Member] will have its `id` field set.
   Future<Member?> upsertRow(
-    _i1.DatabaseSession session,
+    _isd.DatabaseSession session,
     Member row, {
-    required _i1.ColumnSelections<MemberTable> conflictColumns,
-    _i1.ColumnSelections<MemberTable>? updateColumns,
-    _i1.WhereExpressionBuilder<MemberTable>? updateWhere,
-    _i1.Transaction? transaction,
+    required _isd.ColumnSelections<MemberTable> conflictColumns,
+    _isd.ColumnSelections<MemberTable>? updateColumns,
+    _isd.WhereExpressionBuilder<MemberTable>? updateWhere,
+    _isd.Transaction? transaction,
   }) async {
     return session.db.upsertRow<Member>(
       row,
@@ -854,10 +854,10 @@ class MemberRepository {
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<Member>> update(
-    _i1.DatabaseSession session,
+    _isd.DatabaseSession session,
     List<Member> rows, {
-    _i1.ColumnSelections<MemberTable>? columns,
-    _i1.Transaction? transaction,
+    _isd.ColumnSelections<MemberTable>? columns,
+    _isd.Transaction? transaction,
     bool noReturn = false,
   }) async {
     return session.db.update<Member>(
@@ -872,10 +872,10 @@ class MemberRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<Member> updateRow(
-    _i1.DatabaseSession session,
+    _isd.DatabaseSession session,
     Member row, {
-    _i1.ColumnSelections<MemberTable>? columns,
-    _i1.Transaction? transaction,
+    _isd.ColumnSelections<MemberTable>? columns,
+    _isd.Transaction? transaction,
   }) async {
     return session.db.updateRow<Member>(
       row,
@@ -887,10 +887,10 @@ class MemberRepository {
   /// Updates a single [Member] by its [id] with the specified [columnValues].
   /// Returns the updated row or null if no row with the given id exists.
   Future<Member?> updateById(
-    _i1.DatabaseSession session,
-    _i2.UuidValue id, {
-    required _i1.ColumnValueListBuilder<MemberUpdateTable> columnValues,
-    _i1.Transaction? transaction,
+    _isd.DatabaseSession session,
+    _isc.UuidValue id, {
+    required _isd.ColumnValueListBuilder<MemberUpdateTable> columnValues,
+    _isd.Transaction? transaction,
   }) async {
     return session.db.updateById<Member>(
       id,
@@ -906,14 +906,14 @@ class MemberRepository {
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<Member>> updateWhere(
-    _i1.DatabaseSession session, {
-    required _i1.ColumnValueListBuilder<MemberUpdateTable> columnValues,
-    required _i1.WhereExpressionBuilder<MemberTable> where,
+    _isd.DatabaseSession session, {
+    required _isd.ColumnValueListBuilder<MemberUpdateTable> columnValues,
+    required _isd.WhereExpressionBuilder<MemberTable> where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<MemberTable>? orderBy,
-    _i1.OrderByListBuilder<MemberTable>? orderByList,
-    _i1.Transaction? transaction,
+    _isd.OrderByBuilder<MemberTable>? orderBy,
+    _isd.OrderByListBuilder<MemberTable>? orderByList,
+    _isd.Transaction? transaction,
     bool noReturn = false,
   }) async {
     return session.db.updateWhere<Member>(
@@ -940,11 +940,11 @@ class MemberRepository {
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<Member>> delete(
-    _i1.DatabaseSession session,
+    _isd.DatabaseSession session,
     List<Member> rows, {
-    _i1.OrderByBuilder<MemberTable>? orderBy,
-    _i1.OrderByListBuilder<MemberTable>? orderByList,
-    _i1.Transaction? transaction,
+    _isd.OrderByBuilder<MemberTable>? orderBy,
+    _isd.OrderByListBuilder<MemberTable>? orderByList,
+    _isd.Transaction? transaction,
     bool noReturn = false,
   }) async {
     return session.db.delete<Member>(
@@ -958,9 +958,9 @@ class MemberRepository {
 
   /// Deletes a single [Member].
   Future<Member> deleteRow(
-    _i1.DatabaseSession session,
+    _isd.DatabaseSession session,
     Member row, {
-    _i1.Transaction? transaction,
+    _isd.Transaction? transaction,
   }) async {
     return session.db.deleteRow<Member>(row, transaction: transaction);
   }
@@ -974,11 +974,11 @@ class MemberRepository {
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<Member>> deleteWhere(
-    _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<MemberTable> where,
-    _i1.OrderByBuilder<MemberTable>? orderBy,
-    _i1.OrderByListBuilder<MemberTable>? orderByList,
-    _i1.Transaction? transaction,
+    _isd.DatabaseSession session, {
+    required _isd.WhereExpressionBuilder<MemberTable> where,
+    _isd.OrderByBuilder<MemberTable>? orderBy,
+    _isd.OrderByListBuilder<MemberTable>? orderByList,
+    _isd.Transaction? transaction,
     bool noReturn = false,
   }) async {
     return session.db.deleteWhere<Member>(
@@ -993,10 +993,10 @@ class MemberRepository {
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<MemberTable>? where,
+    _isd.DatabaseSession session, {
+    _isd.WhereExpressionBuilder<MemberTable>? where,
     int? limit,
-    _i1.Transaction? transaction,
+    _isd.Transaction? transaction,
   }) async {
     return session.db.count<Member>(
       where: where?.call(Member.t),
@@ -1007,11 +1007,11 @@ class MemberRepository {
 
   /// Acquires row-level locks on [Member] rows matching the [where] expression.
   Future<void> lockRows(
-    _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<MemberTable> where,
-    required _i1.LockMode lockMode,
-    required _i1.Transaction transaction,
-    _i1.LockBehavior lockBehavior = _i1.LockBehavior.wait,
+    _isd.DatabaseSession session, {
+    required _isd.WhereExpressionBuilder<MemberTable> where,
+    required _isd.LockMode lockMode,
+    required _isd.Transaction transaction,
+    _isd.LockBehavior lockBehavior = _isd.LockBehavior.wait,
   }) async {
     return session.db.lockRows<Member>(
       where: where(Member.t),
@@ -1028,10 +1028,10 @@ class MemberAttachRepository {
   /// Creates a relation between this [Member] and the given [EventRegistration]s
   /// by setting each [EventRegistration]'s foreign key `memberId` to refer to this [Member].
   Future<void> registrations(
-    _i1.DatabaseSession session,
+    _isd.DatabaseSession session,
     Member member,
-    List<_i3.EventRegistration> eventRegistration, {
-    _i1.Transaction? transaction,
+    List<_i27uzliw.EventRegistration> eventRegistration, {
+    _isd.Transaction? transaction,
   }) async {
     if (eventRegistration.any((e) => e.id == null)) {
       throw ArgumentError.notNull('eventRegistration.id');
@@ -1043,9 +1043,9 @@ class MemberAttachRepository {
     var $eventRegistration = eventRegistration
         .map((e) => e.copyWith(memberId: member.id))
         .toList();
-    await session.db.update<_i3.EventRegistration>(
+    await session.db.update<_i27uzliw.EventRegistration>(
       $eventRegistration,
-      columns: [_i3.EventRegistration.t.memberId],
+      columns: [_i27uzliw.EventRegistration.t.memberId],
       transaction: transaction,
     );
   }
@@ -1053,10 +1053,10 @@ class MemberAttachRepository {
   /// Creates a relation between this [Member] and the given [EventManager]s
   /// by setting each [EventManager]'s foreign key `memberId` to refer to this [Member].
   Future<void> managedEvents(
-    _i1.DatabaseSession session,
+    _isd.DatabaseSession session,
     Member member,
-    List<_i4.EventManager> eventManager, {
-    _i1.Transaction? transaction,
+    List<_ich6ygep.EventManager> eventManager, {
+    _isd.Transaction? transaction,
   }) async {
     if (eventManager.any((e) => e.id == null)) {
       throw ArgumentError.notNull('eventManager.id');
@@ -1068,9 +1068,9 @@ class MemberAttachRepository {
     var $eventManager = eventManager
         .map((e) => e.copyWith(memberId: member.id))
         .toList();
-    await session.db.update<_i4.EventManager>(
+    await session.db.update<_ich6ygep.EventManager>(
       $eventManager,
-      columns: [_i4.EventManager.t.memberId],
+      columns: [_ich6ygep.EventManager.t.memberId],
       transaction: transaction,
     );
   }
@@ -1082,10 +1082,10 @@ class MemberAttachRowRepository {
   /// Creates a relation between this [Member] and the given [EventRegistration]
   /// by setting the [EventRegistration]'s foreign key `memberId` to refer to this [Member].
   Future<void> registrations(
-    _i1.DatabaseSession session,
+    _isd.DatabaseSession session,
     Member member,
-    _i3.EventRegistration eventRegistration, {
-    _i1.Transaction? transaction,
+    _i27uzliw.EventRegistration eventRegistration, {
+    _isd.Transaction? transaction,
   }) async {
     if (eventRegistration.id == null) {
       throw ArgumentError.notNull('eventRegistration.id');
@@ -1095,9 +1095,9 @@ class MemberAttachRowRepository {
     }
 
     var $eventRegistration = eventRegistration.copyWith(memberId: member.id);
-    await session.db.updateRow<_i3.EventRegistration>(
+    await session.db.updateRow<_i27uzliw.EventRegistration>(
       $eventRegistration,
-      columns: [_i3.EventRegistration.t.memberId],
+      columns: [_i27uzliw.EventRegistration.t.memberId],
       transaction: transaction,
     );
   }
@@ -1105,10 +1105,10 @@ class MemberAttachRowRepository {
   /// Creates a relation between this [Member] and the given [EventManager]
   /// by setting the [EventManager]'s foreign key `memberId` to refer to this [Member].
   Future<void> managedEvents(
-    _i1.DatabaseSession session,
+    _isd.DatabaseSession session,
     Member member,
-    _i4.EventManager eventManager, {
-    _i1.Transaction? transaction,
+    _ich6ygep.EventManager eventManager, {
+    _isd.Transaction? transaction,
   }) async {
     if (eventManager.id == null) {
       throw ArgumentError.notNull('eventManager.id');
@@ -1118,9 +1118,9 @@ class MemberAttachRowRepository {
     }
 
     var $eventManager = eventManager.copyWith(memberId: member.id);
-    await session.db.updateRow<_i4.EventManager>(
+    await session.db.updateRow<_ich6ygep.EventManager>(
       $eventManager,
-      columns: [_i4.EventManager.t.memberId],
+      columns: [_ich6ygep.EventManager.t.memberId],
       transaction: transaction,
     );
   }
