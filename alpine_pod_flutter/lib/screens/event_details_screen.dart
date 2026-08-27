@@ -6,23 +6,26 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:signals_flutter/signals_flutter.dart';
 
+import '../repositories/event_repository.dart';
 import '../signals.dart';
 import '../widgets/event_view.dart';
 
-class const EventDetailsScreen({required final UuidValue eventId, super.key})
-    extends HookWidget {
+class EventDetailsScreen extends HookWidget {
+  final UuidValue eventId;
+  const EventDetailsScreen({required this.eventId, super.key});
 
   @override
   Widget build(BuildContext context) {
-    // We create a memoized future signal for this specific event ID.
+    final isOnline = isOnlineSignal.value;
+
+    // We create a memoized future signal for this specific event ID via eventRepository.
     final eventSignal = useMemoized(
-      () => futureSignal(() => client.event.getEvent(eventId)),
+      () => futureSignal(() => eventRepository.getEvent(eventId)),
       [eventId],
     );
 
     return Scaffold(
       appBar: AppBar(
-        // title: const Text('${eventValue.}'),
         actions: [
           IconButton(
             icon: const Icon(Icons.home_outlined),
@@ -40,6 +43,7 @@ class const EventDetailsScreen({required final UuidValue eventId, super.key})
                 children: [
                   ...eventValue.map(
                     data: (event) {
+                      if (event == null) return [];
                       final isPast = DateTime.now().isAfter(
                         event.endTime.toLocal(),
                       );
@@ -63,27 +67,35 @@ class const EventDetailsScreen({required final UuidValue eventId, super.key})
                         if (canCreate)
                           IconButton(
                             icon: const Icon(Icons.copy),
-                            tooltip: 'Copy Event',
-                            onPressed: () {
-                              final clonedEvent = event.copyWith(
-                                id: null,
-                                title: 'Copy of ${event.title}',
-                                published: false,
-                              );
-                              GoRouter.of(
-                                context,
-                              ).push('/create-event', extra: clonedEvent);
-                            },
+                            tooltip: isOnline
+                                ? 'Copy Event'
+                                : 'Copy Event (Offline)',
+                            onPressed: isOnline
+                                ? () {
+                                    final clonedEvent = event.copyWith(
+                                      id: null,
+                                      title: 'Copy of ${event.title}',
+                                      published: false,
+                                    );
+                                    GoRouter.of(
+                                      context,
+                                    ).push('/create-event', extra: clonedEvent);
+                                  }
+                                : null,
                           ),
                         if (canEdit)
                           IconButton(
                             icon: const Icon(Icons.edit),
-                            tooltip: 'Edit Event',
-                            onPressed: () {
-                              GoRouter.of(
-                                context,
-                              ).push('/event-edit/${event.id}');
-                            },
+                            tooltip: isOnline
+                                ? 'Edit Event'
+                                : 'Edit Event (Offline)',
+                            onPressed: isOnline
+                                ? () {
+                                    GoRouter.of(
+                                      context,
+                                    ).push('/event-edit/${event.id}');
+                                  }
+                                : null,
                           ),
                       ];
                     },
@@ -98,7 +110,9 @@ class const EventDetailsScreen({required final UuidValue eventId, super.key})
       ),
       body: SignalBuilder(
         builder: (context) => eventSignal.value.map(
-          data: (event) => EventView(event: event),
+          data: (event) => event == null
+              ? const Center(child: Text('Event not found'))
+              : EventView(event: event),
           error: (err, _) => Center(child: Text('Error loading event: $err')),
           loading: () => const Center(child: CircularProgressIndicator()),
         ),

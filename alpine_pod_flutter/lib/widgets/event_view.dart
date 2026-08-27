@@ -12,12 +12,14 @@ import 'event_participants_manager.dart';
 import 'location_widget.dart';
 import 'user_list_widget.dart';
 
-class const EventView({required this.event, super.key}) extends HookWidget {
+class EventView extends HookWidget {
   final Event event;
+  const EventView({required this.event, super.key});
 
   @override
   Widget build(BuildContext context) {
     final isPast = DateTime.now().isAfter(event.endTime.toLocal());
+    final isOnline = isOnlineSignal.value;
 
     // A single counter that drives re-fetches of the event details.
     // Incremented both by the onRefresh callback (local actions) and whenever
@@ -33,14 +35,20 @@ class const EventView({required this.event, super.key}) extends HookWidget {
       return sub; // dispose
     }, []);
 
-    // Fetch full event details (registrations, managers)
-    final detailsFuture = useMemoized(() => client.event.getEvent(event.id), [event.id, refreshCount.value]);
+    // Fetch full event details (registrations, managers) via repository
+    final detailsFuture = useMemoized(() => eventRepository.getEvent(event.id), [event.id, refreshCount.value]);
 
     final snapshot = useFuture(detailsFuture);
 
     Future<void> register() async {
+      if (!isOnline) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('You are currently offline. Registration requires an internet connection.')),
+        );
+        return;
+      }
       try {
-        final reg = await client.event.registerForEvent(event.id);
+        final reg = await eventRepository.registerForEvent(event.id, event.sectionId);
         if (context.mounted) {
           final isWaitlisted = reg.registrationStatus == RegistrationStatus.waitlisted;
           ScaffoldMessenger.of(context).showSnackBar(
@@ -64,6 +72,12 @@ class const EventView({required this.event, super.key}) extends HookWidget {
     }
 
     Future<void> cancelRegistration(UuidValue registrationId, UuidValue memberId) async {
+      if (!isOnline) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('You are currently offline. Cancellation requires an internet connection.')),
+        );
+        return;
+      }
       try {
         await eventRepository.cancelRegistration(registrationId, memberId);
         if (context.mounted) {
@@ -334,9 +348,9 @@ class const EventView({required this.event, super.key}) extends HookWidget {
                           padding: const EdgeInsets.symmetric(vertical: 16.0),
                           child: isRegistered
                               ? ElevatedButton.icon(
-                                  onPressed: () => cancelRegistration(myRegistration.id!, myRegistration.memberId),
+                                  onPressed: isOnline ? () => cancelRegistration(myRegistration.id!, myRegistration.memberId) : null,
                                   icon: const Icon(Icons.cancel_outlined),
-                                  label: const Text('Cancel My Registration'),
+                                  label: Text(isOnline ? 'Cancel My Registration' : 'Cancel Registration (Offline)'),
                                   style: ElevatedButton.styleFrom(
                                     minimumSize: const Size(200, 50),
                                     backgroundColor: Colors.red.shade600,
@@ -344,9 +358,9 @@ class const EventView({required this.event, super.key}) extends HookWidget {
                                   ),
                                 )
                               : ElevatedButton.icon(
-                                  onPressed: register,
+                                  onPressed: isOnline ? register : null,
                                   icon: const Icon(Icons.person_add),
-                                  label: const Text('Register'),
+                                  label: Text(isOnline ? 'Register' : 'Register (Offline)'),
                                   style: ElevatedButton.styleFrom(minimumSize: const Size(200, 50)),
                                 ),
                         ),

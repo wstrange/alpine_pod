@@ -2,10 +2,12 @@ import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:go_router/go_router.dart';
+import '../repositories/member_repository.dart';
 import '../router.dart' show resetRouterBootstrap;
 import '../signals.dart';
 
-class const WaiverScreen({super.key}) extends StatefulWidget {
+class WaiverScreen extends StatefulWidget {
+  const WaiverScreen({super.key});
 
   @override
   State<WaiverScreen> createState() => _WaiverScreenState();
@@ -49,8 +51,7 @@ class _WaiverScreenState extends State<WaiverScreen> {
     });
 
     try {
-      // Calling our new endpoint
-      await client.member.acceptWaiver();
+      await memberRepository.signWaiver();
 
       if (mounted) {
         // Clear stale bootstrap so the redirect re-runs _performBootstrap

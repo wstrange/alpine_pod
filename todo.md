@@ -1,31 +1,22 @@
-# List of things to do
+# List of things to dothis.
 
 
-Look for redundant endpoint code
-RBAC testing
-Flutter client should show error if the server is not available - not just wifi not available
-macos
+## Offline Sync is not working well. Create a plan to fix it.
+* Client still wants to fetch some data from server when offline. Evetn detailed view, event particpants, managers.
+* Notifications get an error when offline.
+* Rather than test for wifi, etc. - just test for server being reachable or not.
 
+## Offline expectations
 
-Sync notes:
-19000 members. Say 1K per member of profile data to sync. Approx 20 MB.
-Events - probably want to be selective on which events to cache.
-Should prune older events in the client cache. Say older than 6 months.
-
-
-Working on:
-- sync service just needs to sync since last update time. Test this.
-- Create some better test scripts.
-
-
-Test client sync. Not always working.
-
-
+When network is offline:
+* All data fetched should be from local cache.
+* No attempts to fetch from server.
+* Any buttons/apis that would require a network call should be disabled/show an offline state. Any updates should be disabled
 
 
 ## Things to do much later
 
 * Maps package: https://pub.dev/packages/goodmap
-
-
+* look for redundant endpoint code
+* RBAC testing
 

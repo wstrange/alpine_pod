@@ -5,6 +5,7 @@ import 'package:logging/logging.dart';
 import 'package:signals_flutter/signals_flutter.dart';
 
 import '../event_types.dart';
+import '../repositories/event_repository.dart';
 import '../signals.dart';
 import '../util.dart';
 
@@ -23,6 +24,7 @@ class EventEditScreen extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isOnline = isOnlineSignal.value;
     final titleController = useTextEditingController();
     final descriptionController = useTextEditingController();
     final locationController = useTextEditingController();
@@ -61,7 +63,7 @@ class EventEditScreen extends HookWidget {
           isLoading.value = true;
           error.value = null;
           try {
-            final fetchedEvent = await client.event.getEvent(eventId!);
+            final fetchedEvent = await eventRepository.getEvent(eventId!);
             loadedEvent.value = fetchedEvent;
           } catch (e) {
             error.value = e.toString();
@@ -102,50 +104,80 @@ class EventEditScreen extends HookWidget {
 
     void reset() {
       final e = loadedEvent.value ?? event;
-      titleController.text = e?.title ?? '';
-      descriptionController.text = e?.description ?? '';
-      locationController.text = e?.eventLocation ?? '';
-      carpoolLocationController.text = e?.carpoolLocation ?? '';
-      startTime.value = e?.startTime ?? DateTime.now();
-      endTime.value = e?.endTime ?? DateTime.now().add(const Duration(hours: 8));
-      carpoolTime.value = e?.carpoolTime;
-      minParticipantsController.text = (e?.minimumParticipants ?? 1).toString();
-      maxParticipantsController.text = (e?.maxParticipants ?? 8).toString();
-      selectedType.value = e?.type ?? eventTypes.first;
-      requiresApproval.value = e?.requiresApproval ?? true;
-      published.value = e?.published ?? false;
+      if (e != null) {
+        titleController.text = e.title;
+        descriptionController.text = e.description;
+        locationController.text = e.eventLocation ?? '';
+        carpoolLocationController.text = e.carpoolLocation ?? '';
+        startTime.value = e.startTime;
+        endTime.value = e.endTime;
+        carpoolTime.value = e.carpoolTime;
+        minParticipantsController.text = (e.minimumParticipants).toString();
+        maxParticipantsController.text = (e.maxParticipants).toString();
+        selectedType.value = e.type;
+        requiresApproval.value = e.requiresApproval;
+        published.value = e.published;
+        if (e.eventManagers != null) {
+          managers.value = e.eventManagers!.where((m) => m.member != null).map((m) => m.member!).toList();
+        }
+      } else {
+        titleController.clear();
+        descriptionController.clear();
+        locationController.clear();
+        carpoolLocationController.clear();
+        startTime.value = DateTime.now();
+        endTime.value = DateTime.now().add(const Duration(hours: 8));
+        carpoolTime.value = null;
+        minParticipantsController.clear();
+        maxParticipantsController.clear();
+        selectedType.value = eventTypes.first;
+        requiresApproval.value = true;
+        published.value = false;
+        final currentMember = currentMemberSignal.value;
+        managers.value = currentMember != null ? [currentMember] : [];
+      }
     }
 
-    void save() async {
-      if (!formKey.currentState!.validate()) return;
-
-      final activeEvent = loadedEvent.value ?? event;
-      final isCreating = activeEvent == null;
-
-      // Read signal values imperatively for the save action
-      final section = sectionSignal.value;
-      final sid = section?.id;
-      final currentMember = currentMemberSignal.value;
-
-      if (sid == null) {
+    Future<void> save() async {
+      if (!isOnline) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('You are currently offline. Saving events requires an internet connection.')),
+        );
+        return;
+      }
+      if (!formKey.currentState!.validate()) {
         return;
       }
 
-      final locText = locationController.text.trim().isEmpty ? null : locationController.text.trim();
-      final carpoolLocText = carpoolLocationController.text.trim().isEmpty
-          ? null
-          : carpoolLocationController.text.trim();
+      final activeEvent = loadedEvent.value ?? event;
+      final isCreating = activeEvent == null;
+      final section = sectionSignal.value;
+      final currentMember = currentMemberSignal.value;
 
-      final minParticipants = int.tryParse(minParticipantsController.text) ?? 0;
-      final maxParticipants = int.tryParse(maxParticipantsController.text) ?? 8;
+      if (section == null) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('No section selected. Please select a section first.')));
+        return;
+      }
 
-      final eventToSave =
-          activeEvent?.copyWith(
-            sectionId: sid,
-            title: titleController.text,
-            description: descriptionController.text,
-            eventLocation: locText,
-            carpoolLocation: carpoolLocText,
+      final minParticipants = int.tryParse(minParticipantsController.text) ?? 1;
+      final maxParticipants = int.tryParse(maxParticipantsController.text) ?? 10;
+
+      if (minParticipants > maxParticipants) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Minimum participants cannot be greater than maximum participants.')),
+        );
+        return;
+      }
+
+      final eventToSave = isCreating
+          ? Event(
+            sectionId: section.id!,
+            title: titleController.text.trim(),
+            description: descriptionController.text.trim(),
+            eventLocation: locationController.text.trim().isEmpty ? null : locationController.text.trim(),
+            carpoolLocation: carpoolLocationController.text.trim().isEmpty ? null : carpoolLocationController.text.trim(),
             carpoolTime: carpoolTime.value,
             startTime: startTime.value,
             endTime: endTime.value,
@@ -154,13 +186,12 @@ class EventEditScreen extends HookWidget {
             minimumParticipants: minParticipants,
             maxParticipants: maxParticipants,
             published: published.value,
-          ) ??
-          Event(
-            sectionId: sid,
-            title: titleController.text,
-            description: descriptionController.text,
-            eventLocation: locText,
-            carpoolLocation: carpoolLocText,
+          )
+          : activeEvent.copyWith(
+            title: titleController.text.trim(),
+            description: descriptionController.text.trim(),
+            eventLocation: locationController.text.trim().isEmpty ? null : locationController.text.trim(),
+            carpoolLocation: carpoolLocationController.text.trim().isEmpty ? null : carpoolLocationController.text.trim(),
             carpoolTime: carpoolTime.value,
             startTime: startTime.value,
             endTime: endTime.value,
@@ -177,13 +208,13 @@ class EventEditScreen extends HookWidget {
           // Pass additional manager IDs (excluding creator who is added by default)
           final additionalManagerIds = managers.value.where((m) => m.id != currentMember?.id).map((m) => m.id).toList();
 
-          savedEvent = await client.event.createEvent(
+          savedEvent = await eventRepository.createEvent(
             eventToSave,
             additionalManagerIds: additionalManagerIds.isEmpty ? null : additionalManagerIds,
             notifyNewEvent: true,
           );
         } else {
-          savedEvent = await client.event.updateEvent(eventToSave);
+          savedEvent = await eventRepository.updateEvent(eventToSave);
         }
         currentEventsSignal.refresh();
         if (context.mounted) {
@@ -231,7 +262,6 @@ class EventEditScreen extends HookWidget {
       );
     }
 
-    // Read section signal value imperatively for the body
     final sid = sectionSignal.value?.id;
 
     return Scaffold(
@@ -244,22 +274,43 @@ class EventEditScreen extends HookWidget {
         ),
         title: Text(isCreating ? 'Create Event' : 'Edit Event'),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: formKey,
-          child: Column(
-            children: [
-              TextFormField(
-                controller: titleController,
-                decoration: const InputDecoration(labelText: 'Title'),
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'Title is required';
-                  }
-                  return null;
-                },
+      body: Column(
+        children: [
+          if (!isOnline)
+            Container(
+              width: double.infinity,
+              color: Colors.amber.shade100,
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+              child: Row(
+                children: [
+                  Icon(Icons.cloud_off, size: 18, color: Colors.amber.shade900),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Offline Mode: Event creation and editing are disabled.',
+                      style: TextStyle(fontSize: 12, color: Colors.amber.shade900, fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                ],
               ),
+            ),
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16.0),
+              child: Form(
+                key: formKey,
+                child: Column(
+                  children: [
+                    TextFormField(
+                      controller: titleController,
+                      decoration: const InputDecoration(labelText: 'Title'),
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return 'Title is required';
+                        }
+                        return null;
+                      },
+                    ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -506,7 +557,11 @@ class EventEditScreen extends HookWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             ElevatedButton.icon(onPressed: reset, icon: const Icon(Icons.refresh), label: const Text('Reset')),
-            ElevatedButton.icon(onPressed: save, icon: const Icon(Icons.save), label: const Text('Save')),
+            ElevatedButton.icon(
+              onPressed: isOnline ? save : null,
+              icon: const Icon(Icons.save),
+              label: Text(isOnline ? 'Save' : 'Save (Offline)'),
+            ),
           ],
         ),
       ],

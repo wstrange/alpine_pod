@@ -130,11 +130,15 @@ class HomeScreen extends SignalWidget {
 
             ListTile(
               leading: const Icon(Icons.add),
-              title: const Text('Create Event'),
-              onTap: () {
-                Navigator.pop(context); // Close the drawer
-                context.pushNamed('create-event');
-              },
+              title: Text(isOnline ? 'Create Event' : 'Create Event (Offline)'),
+              subtitle: !isOnline ? const Text('Requires internet connection', style: TextStyle(fontSize: 11)) : null,
+              enabled: isOnline,
+              onTap: isOnline
+                  ? () {
+                      Navigator.pop(context); // Close the drawer
+                      context.pushNamed('create-event');
+                    }
+                  : null,
             ),
             ListTile(
               leading: const Icon(Icons.people_alt),

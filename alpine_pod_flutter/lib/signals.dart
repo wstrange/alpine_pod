@@ -8,6 +8,9 @@ import 'repositories/event_repository.dart';
 import 'repositories/member_repository.dart';
 import 'repositories/notification_repository.dart';
 import 'repositories/section_repository.dart';
+import 'services/connectivity_service.dart';
+
+export 'services/connectivity_service.dart';
 
 ///
 late Client client;

@@ -42,6 +42,9 @@ void main() async {
     ..connectivityMonitor = FlutterConnectivityMonitor()
     ..authSessionManager = FlutterAuthSessionManager();
 
+  sessionManager = client.auth;
+  await sessionManager.initialize();
+
   connectivityService.initialize(client.connectivityMonitor);
 
   // Initialize client-side SQLite database session before initializing auth/signals
@@ -52,9 +55,6 @@ void main() async {
   } catch (e, stack) {
     Logger.root.severe('Failed to initialize client database session', e, stack);
   }
-
-  sessionManager = client.auth;
-  await sessionManager.initialize();
 
   runApp(const MyApp());
 }

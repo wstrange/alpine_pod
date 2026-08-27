@@ -30,7 +30,7 @@ class SectionRepository {
           return await Section.db.find(dbSession, orderBy: (t) => t.name);
         } catch (e) {
           _log.warning('Failed to sync sections: $e');
-          connectivityService.markServerUnreachable();
+          connectivityService.markServerUnreachable(error: e);
           try {
             return await Section.db.find(dbSession, orderBy: (t) => t.name);
           } catch (_) {}
@@ -44,7 +44,7 @@ class SectionRepository {
           return sections;
         } catch (e) {
           _log.warning('Failed to fetch sections directly from server: $e');
-          connectivityService.markServerUnreachable();
+          connectivityService.markServerUnreachable(error: e);
           try {
             return await Section.db.find(dbSession, orderBy: (t) => t.name);
           } catch (_) {}
@@ -82,7 +82,7 @@ class SectionRepository {
         return membership;
       } catch (e) {
         _log.warning('Failed to fetch my section membership from server: $e');
-        connectivityService.markServerUnreachable();
+        connectivityService.markServerUnreachable(error: e);
         try {
           final member = currentMemberSignal.value;
           if (member != null) {

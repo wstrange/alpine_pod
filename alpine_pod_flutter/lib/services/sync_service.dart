@@ -39,7 +39,7 @@ class SyncService {
       return;
     }
 
-    if (!isOnlineSignal.value || currentSectionId == null) {
+    if (!isOnlineSignal.value) {
       _log.info('Offline: skipping syncAll');
       return;
     }
@@ -54,19 +54,26 @@ class SyncService {
       _log.info('Starting eager syncAll...');
 
       // 1. Member profile
-      await syncCurrentMember();
+      if (sessionManager.isAuthenticated) {
+        await syncCurrentMember();
 
-      // 2. Sections & Memberships
-      await syncSectionsAndMemberships();
+        // 2. Sections & Memberships
+        await syncSectionsAndMemberships();
+      }
 
       // 3. Events for the current section if selected
-      final now = DateTime.now();
-      final start = DateTime(now.year, now.month - 1, 1);
-      final end = DateTime(now.year, now.month + 2, 0);
-      await syncEvents(currentSectionId, start, end);
+      if (currentSectionId != null) {
+        final now = DateTime.now();
+        final start = DateTime(now.year, now.month - 1, 1);
+        final end = DateTime(now.year, now.month + 2, 0);
+        await syncEvents(currentSectionId, start, end);
+      }
 
-      // 4. Notification preferences
-      await syncNotificationPreferences();
+      // 4. Notifications and notification preferences
+      if (sessionManager.isAuthenticated) {
+        await syncNotifications();
+        await syncNotificationPreferences();
+      }
 
       final syncTime = DateTime.now();
       connectivityService.updateLastSynced(syncTime);
@@ -357,6 +364,33 @@ class SyncService {
     } catch (e) {
       _log.warning('Failed to sync events: $e ');
       return [];
+    }
+  }
+
+  /// Syncs notifications feed to local cache.
+  Future<void> syncNotifications() async {
+    if (!isOnlineSignal.value) return;
+    try {
+      final notifications = await client.notification.getMyFeed(limit: 50, offset: 0);
+      for (final un in notifications) {
+        if (un.notification != null) {
+          final notifId = un.notification!.id;
+          final existingNotif = notifId != null ? await Notification.db.findById(dbSession, notifId) : null;
+          if (existingNotif != null) {
+            await Notification.db.updateRow(dbSession, un.notification!);
+          } else {
+            await Notification.db.insertRow(dbSession, un.notification!);
+          }
+        }
+        final existing = await UserNotification.db.findById(dbSession, un.id);
+        if (existing != null) {
+          await UserNotification.db.updateRow(dbSession, un);
+        } else {
+          await UserNotification.db.insertRow(dbSession, un);
+        }
+      }
+    } catch (e) {
+      _log.warning('Failed to sync notifications: $e');
     }
   }
 

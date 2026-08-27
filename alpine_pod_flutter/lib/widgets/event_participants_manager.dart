@@ -5,25 +5,30 @@ import 'package:material_ui/material_ui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 import '../repositories/event_repository.dart';
+import '../repositories/member_repository.dart';
 import '../signals.dart';
 import 'member_avatar.dart';
 import 'member_details_dialog.dart';
 
 /// Shown to event managers — lets them add or remove participants.
-class const EventParticipantsManager({
-  super.key,
-  required this.event,
-  required this.confirmed,
-  required this.waitlisted,
-  required this.onRefresh,
-}) extends HookWidget {
+class EventParticipantsManager extends HookWidget {
   final Event event;
   final List<EventRegistration> confirmed;
   final List<EventRegistration> waitlisted;
   final VoidCallback onRefresh;
 
+  const EventParticipantsManager({
+    super.key,
+    required this.event,
+    required this.confirmed,
+    required this.waitlisted,
+    required this.onRefresh,
+  });
+
   @override
   Widget build(BuildContext context) {
+    final isOnline = isOnlineSignal.value;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -37,9 +42,9 @@ class const EventParticipantsManager({
                   ?.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.primary),
             ),
             FilledButton.icon(
-              onPressed: () => _showAddParticipantDialog(context),
+              onPressed: isOnline ? () => _showAddParticipantDialog(context) : null,
               icon: const Icon(Icons.person_add_alt_1, size: 18),
-              label: const Text('Add'),
+              label: Text(isOnline ? 'Add' : 'Add (Offline)'),
             ),
           ],
         ),
@@ -55,7 +60,11 @@ class const EventParticipantsManager({
           Text('Confirmed (${confirmed.length})', style: Theme.of(context).textTheme.titleSmall),
           const SizedBox(height: 4),
           ...confirmed.map(
-            (reg) => _ParticipantTile(registration: reg, onRemove: () => _removeParticipant(context, reg)),
+            (reg) => _ParticipantTile(
+              registration: reg,
+              isOnline: isOnline,
+              onRemove: isOnline ? () => _removeParticipant(context, reg) : null,
+            ),
           ),
           const SizedBox(height: 8),
         ],
@@ -69,8 +78,9 @@ class const EventParticipantsManager({
           ...waitlisted.map(
             (reg) => _ParticipantTile(
               registration: reg,
-              onRemove: () => _removeParticipant(context, reg),
-              onApprove: () => _approveParticipant(context, reg),
+              isOnline: isOnline,
+              onRemove: isOnline ? () => _removeParticipant(context, reg) : null,
+              onApprove: isOnline ? () => _approveParticipant(context, reg) : null,
             ),
           ),
         ],
@@ -149,10 +159,16 @@ class const EventParticipantsManager({
 // ─── Participant tile ────────────────────────────────────────────────────────
 
 class _ParticipantTile extends StatelessWidget {
-  const _ParticipantTile({required this.registration, required this.onRemove, this.onApprove});
+  const _ParticipantTile({
+    required this.registration,
+    required this.isOnline,
+    this.onRemove,
+    this.onApprove,
+  });
 
   final EventRegistration registration;
-  final VoidCallback onRemove;
+  final bool isOnline;
+  final VoidCallback? onRemove;
   final VoidCallback? onApprove;
 
   @override
@@ -176,11 +192,12 @@ class _ParticipantTile extends StatelessWidget {
               tooltip: 'Approve',
               onPressed: onApprove,
             ),
-          IconButton(
-            icon: Icon(Icons.remove_circle_outline, color: Colors.red.shade600),
-            tooltip: 'Remove participant',
-            onPressed: onRemove,
-          ),
+          if (onRemove != null)
+            IconButton(
+              icon: Icon(Icons.remove_circle_outline, color: Colors.red.shade600),
+              tooltip: 'Remove participant',
+              onPressed: onRemove,
+            ),
         ],
       ),
     );
@@ -202,9 +219,9 @@ class _AddParticipantDialog extends HookWidget {
     final filterText = useState('');
     final isLoading = useState(false);
 
-    // Fetch section members with server-side filtering, re-fetching when filter changes
+    // Fetch section members via repository (supporting offline cache lookup)
     final membersFuture = useMemoized(
-      () => client.member.getSectionMembers(
+      () => memberRepository.getSectionMembers(
         sectionId: event.sectionId,
         filter: filterText.value.isEmpty ? null : filterText.value,
         limit: 50,

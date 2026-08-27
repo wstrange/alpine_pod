@@ -161,8 +161,8 @@ final router = GoRouter(
 Future<String?> _performBootstrap() async {
   try {
     debugPrint('Router: Starting post-login bootstrap...');
-    final member = await memberRepository.getCurrentMember();
-    final sections = await memberRepository.getAllMySectionMemberships();
+    final member = await memberRepository.getCurrentMember(forceRefresh: true);
+    final sections = await memberRepository.getAllMySectionMemberships(forceRefresh: true);
 
     currentMemberSignal.value = member;
 

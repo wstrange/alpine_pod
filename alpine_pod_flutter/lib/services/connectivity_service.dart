@@ -18,10 +18,10 @@ final isServerReachableSignal = signal<bool>(
   options: SignalOptions(name: 'isServerReachableSignal'),
 );
 
-/// Computed signal: true only if network interface is up AND server is reachable.
-/// Replaces legacy single isOnlineSignal behavior while keeping backwards compatibility.
+/// Computed signal: true if the Serverpod server backend is reachable.
+/// Replaces testing for WiFi/network interfaces directly, using actual server reachability.
 final isOnlineSignal = computed<bool>(() {
-  return isNetworkConnectedSignal.value && isServerReachableSignal.value;
+  return isServerReachableSignal.value;
 }, options: ComputedOptions(name: 'isOnlineSignal'));
 
 /// Reactive signal holding the timestamp of the last successful data sync.
@@ -46,18 +46,20 @@ class ConnectivityService {
     if (_monitor != null) {
       _monitor!.addListener((bool isConnected) {
         isNetworkConnectedSignal.value = isConnected;
-        if (isConnected) {
-          checkServerReachability();
-        } else {
-          isServerReachableSignal.value = false;
-        }
+        checkServerReachability();
       });
     }
 
     // Periodically verify server reachability every 15 seconds
     _healthCheckTimer?.cancel();
     _healthCheckTimer = Timer.periodic(const Duration(seconds: 15), (_) {
-      if (isNetworkConnectedSignal.value) {
+      checkServerReachability();
+    });
+
+    // Listen to session changes to immediately update reachability upon login
+    sessionManager.authInfoListenable.addListener(() {
+      if (sessionManager.isAuthenticated) {
+        markServerReachable();
         checkServerReachability();
       }
     });
@@ -68,11 +70,6 @@ class ConnectivityService {
 
   /// Pings the server to verify if the Serverpod backend is reachable.
   Future<bool> checkServerReachability() async {
-    if (!isNetworkConnectedSignal.value) {
-      isServerReachableSignal.value = false;
-      return false;
-    }
-
     if (_isCheckingReachability) return isServerReachableSignal.value;
     _isCheckingReachability = true;
 
@@ -84,7 +81,25 @@ class ConnectivityService {
       }
       isServerReachableSignal.value = true;
       return true;
+    } on TimeoutException catch (e) {
+      _log.warning('Server unreachable (timeout): $e');
+      isServerReachableSignal.value = false;
+      return false;
     } catch (e) {
+      // If server responded with an auth/HTTP exception (e.g., requireLogin),
+      // the server is reachable and responding.
+      final errorStr = e.toString().toLowerCase();
+      if (e is ServerpodClientException ||
+          errorStr.contains('unauthorized') ||
+          errorStr.contains('401') ||
+          errorStr.contains('403') ||
+          (!errorStr.contains('handshake') && (errorStr.contains('statuscode') || errorStr.contains('status code')))) {
+        if (!isServerReachableSignal.value) {
+          _log.info('Server connection verified (server responded)');
+        }
+        isServerReachableSignal.value = true;
+        return true;
+      }
       _log.warning('Server unreachable: $e');
       isServerReachableSignal.value = false;
       return false;
@@ -94,7 +109,17 @@ class ConnectivityService {
   }
 
   /// Marks server as unreachable immediately when a network failure occurs in any repository.
-  void markServerUnreachable() {
+  void markServerUnreachable({Object? error}) {
+    if (error != null) {
+      final errorStr = error.toString().toLowerCase();
+      if (error is ServerpodClientException ||
+          errorStr.contains('unauthorized') ||
+          errorStr.contains('401') ||
+          errorStr.contains('403')) {
+        // Not a reachability error
+        return;
+      }
+    }
     isServerReachableSignal.value = false;
   }
 
@@ -103,12 +128,11 @@ class ConnectivityService {
     isServerReachableSignal.value = true;
   }
 
-  /// Manually update the network connected status (useful for testing).
+  /// Manually update the online / server reachable status (useful for testing and toggling offline mode).
   void setOnline(bool online) {
+    isServerReachableSignal.value = online;
     isNetworkConnectedSignal.value = online;
-    if (!online) {
-      isServerReachableSignal.value = false;
-    } else {
+    if (online) {
       checkServerReachability();
     }
   }

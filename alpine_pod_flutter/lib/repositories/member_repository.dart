@@ -9,9 +9,9 @@ final _log = Logger('MemberRepository');
 final memberRepository = MemberRepository();
 
 class MemberRepository {
-  /// Gets the member profile for the current user from local cache (or server if cache is bypassed).
-  Future<Member?> getCurrentMember() async {
-    if (useClientCacheSignal.value) {
+  /// Gets the member profile for the current user from local cache (or server if cache is bypassed or forced).
+  Future<Member?> getCurrentMember({bool forceRefresh = false}) async {
+    if (useClientCacheSignal.value && !forceRefresh) {
       try {
         final members = await Member.db.find(dbSession, limit: 1);
         if (members.isNotEmpty) return members.first;
@@ -32,25 +32,29 @@ class MemberRepository {
     } else {
       if (isOnlineSignal.value) {
         try {
-          final member = await client.member.getCurrentMember();
-          connectivityService.markServerReachable();
-          return member;
+          final member = useClientCacheSignal.value
+              ? await syncService.syncCurrentMember()
+              : await client.member.getCurrentMember();
+          if (member != null) {
+            connectivityService.markServerReachable();
+            return member;
+          }
         } catch (e) {
           _log.warning('Failed to fetch current member directly from server: $e');
           connectivityService.markServerUnreachable();
-          try {
-            final members = await Member.db.find(dbSession, limit: 1);
-            if (members.isNotEmpty) return members.first;
-          } catch (_) {}
         }
       }
+      try {
+        final members = await Member.db.find(dbSession, limit: 1);
+        if (members.isNotEmpty) return members.first;
+      } catch (_) {}
     }
     return null;
   }
 
-  /// Gets all section memberships for the current user from local cache (or server if cache is bypassed).
-  Future<List<SectionMembership>> getAllMySectionMemberships() async {
-    if (useClientCacheSignal.value) {
+  /// Gets all section memberships for the current user from local cache (or server if cache is bypassed or forced).
+  Future<List<SectionMembership>> getAllMySectionMemberships({bool forceRefresh = false}) async {
+    if (useClientCacheSignal.value && !forceRefresh) {
       try {
         final memberships = await SectionMembership.db.find(
           dbSession,
@@ -86,22 +90,31 @@ class MemberRepository {
     } else {
       if (isOnlineSignal.value) {
         try {
-          final memberships = await client.member.getAllMySectionMemberships();
-          connectivityService.markServerReachable();
-          return memberships;
+          if (useClientCacheSignal.value) {
+            await syncService.syncSectionsAndMemberships();
+            connectivityService.markServerReachable();
+            return await SectionMembership.db.find(
+              dbSession,
+              include: SectionMembership.include(section: Section.include()),
+            );
+          } else {
+            final memberships = await client.member.getAllMySectionMemberships();
+            connectivityService.markServerReachable();
+            return memberships;
+          }
         } catch (e) {
           _log.warning(
             'Failed to fetch section memberships directly from server: $e',
           );
           connectivityService.markServerUnreachable();
-          try {
-            return await SectionMembership.db.find(
-              dbSession,
-              include: SectionMembership.include(section: Section.include()),
-            );
-          } catch (_) {}
         }
       }
+      try {
+        return await SectionMembership.db.find(
+          dbSession,
+          include: SectionMembership.include(section: Section.include()),
+        );
+      } catch (_) {}
     }
     return [];
   }
@@ -109,30 +122,42 @@ class MemberRepository {
   /// Updates member profile via server and syncs local cache.
   Future<Member> updateMember(Member member) async {
     if (!isOnlineSignal.value) {
-      throw Exception(
-        'You are currently offline. Profile updates require an internet connection.',
-      );
+      if (isNetworkConnectedSignal.value) {
+        await connectivityService.checkServerReachability();
+      }
+      if (!isOnlineSignal.value) {
+        throw Exception(
+          'You are currently offline. Profile updates require an internet connection.',
+        );
+      }
     }
 
     final updated = await client.member.updateMember(member);
     if (useClientCacheSignal.value) {
       await syncService.syncCurrentMember();
     }
+    currentMemberSignal.value = updated;
     return updated;
   }
 
   /// Signs waiver via server and syncs member profile cache.
   Future<Member> signWaiver() async {
     if (!isOnlineSignal.value) {
-      throw Exception(
-        'You are currently offline. Signing waiver requires an internet connection.',
-      );
+      if (isNetworkConnectedSignal.value) {
+        await connectivityService.checkServerReachability();
+      }
+      if (!isOnlineSignal.value) {
+        throw Exception(
+          'You are currently offline. Signing waiver requires an internet connection.',
+        );
+      }
     }
 
     final member = await client.member.acceptWaiver();
     if (useClientCacheSignal.value) {
       await syncService.syncCurrentMember();
     }
+    currentMemberSignal.value = member;
     return member;
   }
 
@@ -206,9 +231,50 @@ class MemberRepository {
         return members;
       } catch (e) {
         _log.warning('Failed to fetch section members from server: $e');
-        connectivityService.markServerUnreachable();
+        connectivityService.markServerUnreachable(error: e);
       }
     }
     return [];
+  }
+
+  /// Gets a single member by ID from cache or server.
+  Future<Member?> getMember(UuidValue memberId) async {
+    if (useClientCacheSignal.value) {
+      try {
+        final cached = await Member.db.findById(dbSession, memberId);
+        if (cached != null || !isOnlineSignal.value) return cached;
+      } catch (e) {
+        _log.warning('Failed to load member from local cache: $e');
+      }
+    }
+
+    if (isOnlineSignal.value) {
+      try {
+        final member = await client.member.getMember(memberId);
+        if (member != null) {
+          connectivityService.markServerReachable();
+          if (useClientCacheSignal.value) {
+            final existing = await Member.db.findById(dbSession, member.id);
+            if (existing != null) {
+              await Member.db.updateRow(dbSession, member);
+            } else {
+              await Member.db.insertRow(dbSession, member);
+            }
+          }
+        }
+        return member;
+      } catch (e) {
+        _log.warning('Failed to fetch member from server: $e');
+        connectivityService.markServerUnreachable(error: e);
+        try {
+          return await Member.db.findById(dbSession, memberId);
+        } catch (_) {}
+      }
+    } else {
+      try {
+        return await Member.db.findById(dbSession, memberId);
+      } catch (_) {}
+    }
+    return null;
   }
 }

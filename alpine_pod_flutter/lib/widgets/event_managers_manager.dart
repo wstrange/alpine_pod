@@ -4,26 +4,32 @@ import 'package:alpine_pod_client/alpine_pod_client.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
+import '../repositories/member_repository.dart';
 import '../signals.dart';
 import 'member_avatar.dart';
 import 'member_details_dialog.dart';
 
 /// Manage the list of event managers.
 /// Can be used both during creation (local state) and editing (immediate server actions).
-class const EventManagersManager({
-  super.key,
-  this.eventId,
-  required this.sectionId,
-  required this.managers,
-  required this.onChanged,
-}) extends HookWidget {
+class EventManagersManager extends HookWidget {
   final UuidValue? eventId;
   final UuidValue sectionId;
   final List<Member> managers;
   final Function(List<Member>) onChanged;
 
+  const EventManagersManager({
+    super.key,
+    this.eventId,
+    required this.sectionId,
+    required this.managers,
+    required this.onChanged,
+  });
+
   @override
   Widget build(BuildContext context) {
+    final isOnline = isOnlineSignal.value;
+    final canModify = eventId == null || isOnline;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -37,15 +43,20 @@ class const EventManagersManager({
                   ?.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.primary),
             ),
             FilledButton.icon(
-              onPressed: () => _showAddManagerDialog(context),
+              onPressed: canModify ? () => _showAddManagerDialog(context) : null,
               icon: const Icon(Icons.person_add_alt_1, size: 18),
-              label: const Text('Add'),
+              label: Text(canModify ? 'Add' : 'Add (Offline)'),
             ),
           ],
         ),
         const SizedBox(height: 8),
         if (managers.isNotEmpty)
-          ...managers.map((member) => _ManagerTile(member: member, onRemove: () => _removeManager(context, member)))
+          ...managers.map(
+            (member) => _ManagerTile(
+              member: member,
+              onRemove: canModify ? () => _removeManager(context, member) : null,
+            ),
+          )
         else
           const Padding(padding: EdgeInsets.symmetric(vertical: 8), child: Text('No managers assigned.')),
       ],
@@ -126,7 +137,7 @@ class _ManagerTile extends StatelessWidget {
   const _ManagerTile({required this.member, required this.onRemove});
 
   final Member member;
-  final VoidCallback onRemove;
+  final VoidCallback? onRemove;
 
   @override
   Widget build(BuildContext context) {
@@ -139,11 +150,13 @@ class _ManagerTile extends StatelessWidget {
       title: Text(name, style: const TextStyle(fontSize: 14)),
       subtitle: Text(member.email, style: const TextStyle(fontSize: 12)),
       onTap: () => showMemberDetailsDialog(context, member),
-      trailing: IconButton(
-        icon: Icon(Icons.remove_circle_outline, color: Colors.red.shade600),
-        tooltip: 'Remove manager',
-        onPressed: onRemove,
-      ),
+      trailing: onRemove != null
+          ? IconButton(
+              icon: Icon(Icons.remove_circle_outline, color: Colors.red.shade600),
+              tooltip: 'Remove manager',
+              onPressed: onRemove,
+            )
+          : null,
     );
   }
 }
@@ -161,8 +174,9 @@ class _AddManagerDialog extends HookWidget {
     final filterText = useState('');
     final isLoading = useState(false);
 
+    // Fetch section members via repository (supports offline cache)
     final membersFuture = useMemoized(
-      () => client.member.getSectionMembers(
+      () => memberRepository.getSectionMembers(
         sectionId: sectionId,
         filter: filterText.value.isEmpty ? null : filterText.value,
         limit: 50,

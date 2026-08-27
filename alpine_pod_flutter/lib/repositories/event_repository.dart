@@ -138,6 +138,24 @@ class EventRepository {
   /// Gets a single event by ID from cache or server.
   Future<Event?> getEvent(UuidValue id) async {
     if (useClientCacheSignal.value) {
+      if (!isOnlineSignal.value) {
+        try {
+          return await Event.db.findById(
+            dbSession,
+            id,
+            include: Event.include(
+              eventManagers: EventManager.includeList(include: EventManager.include(member: Member.include())),
+              eventRegistrations: EventRegistration.includeList(
+                include: EventRegistration.include(member: Member.include()),
+              ),
+            ),
+          );
+        } catch (e) {
+          _log.warning('Local cache lookup failed for event $id: $e');
+          return null;
+        }
+      }
+
       try {
         final cached = await Event.db.findById(
           dbSession,
@@ -162,7 +180,7 @@ class EventRepository {
         return event;
       } catch (e) {
         _log.warning('Failed to fetch event $id from server: $e');
-        connectivityService.markServerUnreachable();
+        connectivityService.markServerUnreachable(error: e);
         try {
           return await Event.db.findById(
             dbSession,
@@ -176,6 +194,19 @@ class EventRepository {
           );
         } catch (_) {}
       }
+    } else {
+      try {
+        return await Event.db.findById(
+          dbSession,
+          id,
+          include: Event.include(
+            eventManagers: EventManager.includeList(include: EventManager.include(member: Member.include())),
+            eventRegistrations: EventRegistration.includeList(
+              include: EventRegistration.include(member: Member.include()),
+            ),
+          ),
+        );
+      } catch (_) {}
     }
     return null;
   }

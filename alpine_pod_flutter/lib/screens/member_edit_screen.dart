@@ -3,19 +3,21 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:signals_hooks/signals_hooks.dart';
 import 'package:alpine_pod_client/alpine_pod_client.dart';
+import '../repositories/member_repository.dart';
 import '../signals.dart';
 import '../services/image.dart' as image_service;
 import '../widgets/member_avatar.dart';
 import '../widgets/user_role_editor.dart';
 
-class const MemberEditScreen({super.key, required final UuidValue memberId})
-    extends HookWidget {
+class MemberEditScreen extends HookWidget {
+  final UuidValue memberId;
+  const MemberEditScreen({super.key, required this.memberId});
 
   @override
   Widget build(BuildContext context) {
     // Always call hooks unconditionally to maintain consistent hook order.
     final targetMemberSignal = useFutureSignal<Member?>(
-      () => client.member.getMember(memberId),
+      () => memberRepository.getMember(memberId),
       keys: [memberId],
     );
 
@@ -48,13 +50,19 @@ class const MemberEditScreen({super.key, required final UuidValue memberId})
   }
 }
 
-class const _MemberEditForm({
-  required final Member member,
-  required final VoidCallback onProfileImageChanged,
-}) extends HookWidget {
+class _MemberEditForm extends HookWidget {
+  final Member member;
+  final VoidCallback onProfileImageChanged;
+
+  const _MemberEditForm({
+    super.key,
+    required this.member,
+    required this.onProfileImageChanged,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final isOnline = isOnlineSignal.value;
     final memberId = member.id;
     final firstNameController = useTextEditingController(
       text: member.firstName,
@@ -102,6 +110,12 @@ class const _MemberEditForm({
     );
 
     Future<void> save() async {
+      if (!isOnline) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('You are currently offline. Profile updates require an internet connection.')),
+        );
+        return;
+      }
       try {
         final updatedMember = member.copyWith(
           firstName: firstNameController.text,
@@ -115,7 +129,7 @@ class const _MemberEditForm({
           medicalConditions: medicalConditionsController.text,
           certifications: certificationsController.text,
         );
-        await client.member.updateMember(updatedMember);
+        await memberRepository.updateMember(updatedMember);
 
         if (context.mounted) {
           ScaffoldMessenger.of(
@@ -157,10 +171,39 @@ class const _MemberEditForm({
         final allSectionsValue = allSectionsSignal.value;
         final isGlobalAdmin = isGlobalAdminSignal.value;
         final canEditProfileImage =
-            authUserSignal.value?.authUserId == member.id;
+            isOnline && (authUserSignal.value?.authUserId == member.id);
 
         return Column(
           children: [
+            if (!isOnline)
+              Container(
+                width: double.infinity,
+                color: Colors.amber.shade100,
+                padding: const EdgeInsets.symmetric(
+                  vertical: 8,
+                  horizontal: 16,
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.cloud_off,
+                      size: 18,
+                      color: Colors.amber.shade900,
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        'Offline Mode: Profile updates are disabled.',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.amber.shade900,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(16.0),
@@ -271,62 +314,64 @@ class const _MemberEditForm({
                                 }
 
                                 return ElevatedButton.icon(
-                                  onPressed: () async {
-                                    final selectedSection =
-                                        await showDialog<Section>(
-                                          context: context,
-                                          builder: (context) => AlertDialog(
-                                            title: const Text('Add to Section'),
-                                            content: SizedBox(
-                                              width: double.maxFinite,
-                                              child: ListView.builder(
-                                                shrinkWrap: true,
-                                                itemCount:
-                                                    availableSections.length,
-                                                itemBuilder: (context, index) {
-                                                  final s =
-                                                      availableSections[index];
-                                                  return ListTile(
-                                                    title: Text(s.name),
-                                                    onTap: () => Navigator.pop(
-                                                      context,
-                                                      s,
+                                  onPressed: isOnline
+                                      ? () async {
+                                          final selectedSection =
+                                              await showDialog<Section>(
+                                                context: context,
+                                                builder: (context) => AlertDialog(
+                                                  title: const Text('Add to Section'),
+                                                  content: SizedBox(
+                                                    width: double.maxFinite,
+                                                    child: ListView.builder(
+                                                      shrinkWrap: true,
+                                                      itemCount:
+                                                          availableSections.length,
+                                                      itemBuilder: (context, index) {
+                                                        final s =
+                                                            availableSections[index];
+                                                        return ListTile(
+                                                          title: Text(s.name),
+                                                          onTap: () => Navigator.pop(
+                                                            context,
+                                                            s,
+                                                          ),
+                                                        );
+                                                      },
                                                     ),
-                                                  );
-                                                },
-                                              ),
-                                            ),
-                                          ),
-                                        );
+                                                  ),
+                                                ),
+                                              );
 
-                                    if (selectedSection != null &&
-                                        context.mounted) {
-                                      try {
-                                        await client.member.addMemberToSection(
-                                          SectionMembership(
-                                            memberId: memberId,
-                                            sectionId: selectedSection.id!,
-                                            scopes: {'member'},
-                                          ),
-                                        );
-                                        reloadMemberships.value++;
-                                      } catch (e) {
-                                        if (context.mounted) {
-                                          ScaffoldMessenger.of(
-                                            context,
-                                          ).showSnackBar(
-                                            SnackBar(
-                                              content: Text(
-                                                'Failed to add to section: $e',
-                                              ),
-                                            ),
-                                          );
+                                          if (selectedSection != null &&
+                                              context.mounted) {
+                                            try {
+                                              await client.member.addMemberToSection(
+                                                SectionMembership(
+                                                  memberId: memberId,
+                                                  sectionId: selectedSection.id!,
+                                                  scopes: {'member'},
+                                                ),
+                                              );
+                                              reloadMemberships.value++;
+                                            } catch (e) {
+                                              if (context.mounted) {
+                                                ScaffoldMessenger.of(
+                                                  context,
+                                                ).showSnackBar(
+                                                  SnackBar(
+                                                    content: Text(
+                                                      'Failed to add to section: $e',
+                                                    ),
+                                                  ),
+                                                );
+                                              }
+                                            }
+                                          }
                                         }
-                                      }
-                                    }
-                                  },
+                                      : null,
                                   icon: const Icon(Icons.add),
-                                  label: const Text('Add to Section'),
+                                  label: Text(isOnline ? 'Add to Section' : 'Add to Section (Offline)'),
                                 );
                               }(),
                               _ => const SizedBox.shrink(),
@@ -362,9 +407,9 @@ class const _MemberEditForm({
                     label: const Text('Reset'),
                   ),
                   ElevatedButton.icon(
-                    onPressed: save,
+                    onPressed: isOnline ? save : null,
                     icon: const Icon(Icons.save),
-                    label: const Text('Save'),
+                    label: Text(isOnline ? 'Save' : 'Save (Offline)'),
                   ),
                 ],
               ),
@@ -376,11 +421,17 @@ class const _MemberEditForm({
   }
 }
 
-class const _ProfileImageEditor({
-  required final Member member,
-  required final bool canEdit,
-  required final VoidCallback onImageChanged,
-}) extends StatelessWidget {
+class _ProfileImageEditor extends StatelessWidget {
+  final Member member;
+  final bool canEdit;
+  final VoidCallback onImageChanged;
+
+  const _ProfileImageEditor({
+    super.key,
+    required this.member,
+    required this.canEdit,
+    required this.onImageChanged,
+  });
 
   @override
   Widget build(BuildContext context) {
