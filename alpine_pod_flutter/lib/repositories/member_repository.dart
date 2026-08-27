@@ -11,18 +11,27 @@ final memberRepository = MemberRepository();
 class MemberRepository {
   /// Gets the member profile for the current user from local cache (or server if cache is bypassed or forced).
   Future<Member?> getCurrentMember({bool forceRefresh = false}) async {
+    final currentUserId = sessionManager.authInfo?.authUserId;
     if (useClientCacheSignal.value && !forceRefresh) {
-      try {
-        final members = await Member.db.find(dbSession, limit: 1);
-        if (members.isNotEmpty) return members.first;
-      } catch (e) {
-        _log.warning('Failed to load member from local cache: $e');
+      if (currentUserId != null) {
+        try {
+          final cached = await Member.db.findById(dbSession, currentUserId);
+          if (cached != null) {
+            currentMemberSignal.value = cached;
+            return cached;
+          }
+        } catch (e) {
+          _log.warning('Failed to load member from local cache: $e');
+        }
       }
 
       if (isOnlineSignal.value) {
         try {
           final member = await syncService.syncCurrentMember();
-          if (member != null) connectivityService.markServerReachable();
+          if (member != null) {
+            connectivityService.markServerReachable();
+            currentMemberSignal.value = member;
+          }
           return member;
         } catch (e) {
           _log.warning('Failed to sync current member: $e');
@@ -37,6 +46,7 @@ class MemberRepository {
               : await client.member.getCurrentMember();
           if (member != null) {
             connectivityService.markServerReachable();
+            currentMemberSignal.value = member;
             return member;
           }
         } catch (e) {
@@ -46,10 +56,15 @@ class MemberRepository {
           connectivityService.markServerUnreachable();
         }
       }
-      try {
-        final members = await Member.db.find(dbSession, limit: 1);
-        if (members.isNotEmpty) return members.first;
-      } catch (_) {}
+      if (currentUserId != null) {
+        try {
+          final cached = await Member.db.findById(dbSession, currentUserId);
+          if (cached != null) {
+            currentMemberSignal.value = cached;
+            return cached;
+          }
+        } catch (_) {}
+      }
     }
     return null;
   }
@@ -58,11 +73,14 @@ class MemberRepository {
   Future<List<SectionMembership>> getAllMySectionMemberships({
     bool forceRefresh = false,
   }) async {
-    if (useClientCacheSignal.value && !forceRefresh) {
+    final member = currentMemberSignal.value ?? await getCurrentMember();
+    final memberId = member?.id ?? sessionManager.authInfo?.authUserId;
+
+    if (useClientCacheSignal.value && !forceRefresh && memberId != null) {
       try {
         final memberships = await SectionMembership.db.find(
           dbSession,
-          where: (t) => Constant.bool(true),
+          where: (t) => t.memberId.equals(memberId),
           include: SectionMembership.include(section: Section.include()),
         );
         if (memberships.isNotEmpty || !isOnlineSignal.value) {
@@ -78,6 +96,7 @@ class MemberRepository {
           connectivityService.markServerReachable();
           return await SectionMembership.db.find(
             dbSession,
+            where: (t) => t.memberId.equals(memberId),
             include: SectionMembership.include(section: Section.include()),
           );
         } catch (e) {
@@ -86,6 +105,7 @@ class MemberRepository {
           try {
             return await SectionMembership.db.find(
               dbSession,
+              where: (t) => t.memberId.equals(memberId),
               include: SectionMembership.include(section: Section.include()),
             );
           } catch (_) {}
@@ -97,10 +117,13 @@ class MemberRepository {
           if (useClientCacheSignal.value) {
             await syncService.syncSectionsAndMemberships();
             connectivityService.markServerReachable();
-            return await SectionMembership.db.find(
-              dbSession,
-              include: SectionMembership.include(section: Section.include()),
-            );
+            if (memberId != null) {
+              return await SectionMembership.db.find(
+                dbSession,
+                where: (t) => t.memberId.equals(memberId),
+                include: SectionMembership.include(section: Section.include()),
+              );
+            }
           } else {
             final memberships = await client.member
                 .getAllMySectionMemberships();
@@ -114,12 +137,15 @@ class MemberRepository {
           connectivityService.markServerUnreachable();
         }
       }
-      try {
-        return await SectionMembership.db.find(
-          dbSession,
-          include: SectionMembership.include(section: Section.include()),
-        );
-      } catch (_) {}
+      if (memberId != null) {
+        try {
+          return await SectionMembership.db.find(
+            dbSession,
+            where: (t) => t.memberId.equals(memberId),
+            include: SectionMembership.include(section: Section.include()),
+          );
+        } catch (_) {}
+      }
     }
     return [];
   }
@@ -289,10 +315,11 @@ class MemberRepository {
     String? filter,
     int limit = 50,
     int offset = 0,
+    bool forceRefresh = false,
   }) async {
-    if (useClientCacheSignal.value) {
+    if (!isOnlineSignal.value) {
       try {
-        final memberships = await SectionMembership.db.find(
+        return await SectionMembership.db.find(
           dbSession,
           where: (t) {
             Expression expr = t.sectionId.equals(sectionId);
@@ -309,12 +336,9 @@ class MemberRepository {
           limit: limit,
           offset: offset,
         );
-
-        if (memberships.isNotEmpty || !isOnlineSignal.value) {
-          return memberships;
-        }
       } catch (e) {
         _log.warning('Failed to load section memberships from local cache: $e');
+        return [];
       }
     }
 
@@ -378,7 +402,17 @@ class MemberRepository {
         try {
           return await SectionMembership.db.find(
             dbSession,
-            where: (t) => t.sectionId.equals(sectionId),
+            where: (t) {
+              Expression expr = t.sectionId.equals(sectionId);
+              if (filter != null && filter.isNotEmpty) {
+                expr =
+                    expr &
+                    (t.member.firstName.ilike('%$filter%') |
+                        t.member.lastName.ilike('%$filter%') |
+                        t.member.email.ilike('%$filter%'));
+              }
+              return expr;
+            },
             include: SectionMembership.include(member: Member.include()),
             limit: limit,
             offset: offset,

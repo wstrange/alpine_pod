@@ -64,7 +64,12 @@ class SyncService {
         await syncSectionsAndMemberships();
       }
 
-      // 3. Events for the current section if selected
+      // 3. Section Members & Memberships for current section
+      if (currentSectionId != null) {
+        await syncSectionMemberships(currentSectionId);
+      }
+
+      // 4. Events for the current section if selected
       if (currentSectionId != null) {
         final now = DateTime.now();
         final start = DateTime(now.year, now.month - 1, 1);
@@ -72,7 +77,7 @@ class SyncService {
         await syncEvents(currentSectionId, start, end);
       }
 
-      // 4. Notifications and notification preferences
+      // 5. Notifications and notification preferences
       if (sessionManager.isAuthenticated) {
         await syncNotifications();
         await syncNotificationPreferences();
@@ -288,22 +293,48 @@ class SyncService {
       for (final section in sections) {
         await _upsertSection(section);
       }
-      // _log.info('synced sections: $sections. \nSyncing section memberships');
 
       final memberships = await client.member.getAllMySectionMemberships();
       for (final m in memberships) {
         if (m.member != null) await _upsertMember(m.member!);
         if (m.section != null) await _upsertSection(m.section!);
       }
-      await SectionMembership.db.deleteWhere(
-        dbSession,
-        where: (t) => Constant.bool(true),
-      );
+      final currentMember = currentMemberSignal.value;
+      if (currentMember != null) {
+        await SectionMembership.db.deleteWhere(
+          dbSession,
+          where: (t) => t.memberId.equals(currentMember.id),
+        );
+      }
       for (final m in memberships) {
         await _upsertSectionMembership(m);
       }
     } catch (e) {
       _log.warning('Failed to sync sections/memberships: $e');
+    }
+  }
+
+  /// Syncs all section memberships (and associated member profiles) for a specific section to local cache.
+  Future<void> syncSectionMemberships(UuidValue sectionId) async {
+    if (!isOnlineSignal.value) return;
+    try {
+      final memberships = await client.member.getSectionMemberships(
+        sectionId,
+        limit: 1000,
+        offset: 0,
+      );
+      for (final m in memberships) {
+        if (m.member != null) await _upsertMember(m.member!);
+        if (m.section != null) await _upsertSection(m.section!);
+        await _upsertSectionMembership(m);
+      }
+      _log.info(
+        'Synced ${memberships.length} section memberships for section $sectionId',
+      );
+    } catch (e) {
+      _log.warning(
+        'Failed to sync section memberships for section $sectionId: $e',
+      );
     }
   }
 

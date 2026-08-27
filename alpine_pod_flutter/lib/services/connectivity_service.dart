@@ -76,10 +76,12 @@ class ConnectivityService {
     _isCheckingReachability = true;
 
     try {
-      // Lightweight call to test server connection
-      await client.section.listSections().timeout(const Duration(seconds: 4));
+      // Call the status endpoint to verify server reachability
+      final status = await client.status.getStatus().timeout(
+        const Duration(seconds: 4),
+      );
       if (!isServerReachableSignal.value) {
-        _log.info('Server connection restored');
+        _log.info('Server connection restored (status: $status)');
       }
       isServerReachableSignal.value = true;
       return true;

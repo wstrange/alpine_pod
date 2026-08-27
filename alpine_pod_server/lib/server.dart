@@ -133,7 +133,7 @@ class HelloRoute extends Route {
   Future<Result> handleCall(Session session, Request request) async {
     return Response.ok(
       body: Body.fromString(
-        jsonEncode({'message': 'Hello from Serverpod!'}),
+        jsonEncode({'status': 'OK'}),
         mimeType: MimeType.json,
       ),
     );

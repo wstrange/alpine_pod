@@ -11,7 +11,6 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:typed_data' as _idt;
-
 import 'package:alpine_pod_server/src/generated/event.dart' as _ix3n45j3;
 import 'package:alpine_pod_server/src/generated/event_manager.dart'
     as _ic9gt6sp;
@@ -33,7 +32,6 @@ import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
     as _iacs;
 import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart'
     as _iais;
-
 import '../auth/auth_endpoints.dart' as _iv2b7hcx;
 import '../endpoints/admin_endpoint.dart' as _i5t1w2d2;
 import '../endpoints/event_endpoint.dart' as _icw8lb6p;
@@ -43,6 +41,7 @@ import '../endpoints/member_endpoint.dart' as _iyz2rnhz;
 import '../endpoints/notification_endpoint.dart' as _ihb11yhk;
 import '../endpoints/registration_endpoint.dart' as _ii8lddo2;
 import '../endpoints/section_endpoint.dart' as _i1uqsrrw;
+import '../endpoints/status_endpoint.dart' as _iv1cbiab;
 import '../endpoints/user_profile_endpoint.dart' as _i5r4pchv;
 export 'future_calls.dart' show ServerpodFutureCallsGetter;
 
@@ -71,6 +70,7 @@ class Endpoints extends _is.EndpointDispatch {
         ..initialize(server, 'registration', null),
       'section': _i1uqsrrw.SectionEndpoint()
         ..initialize(server, 'section', null),
+      'status': _iv1cbiab.StatusEndpoint()..initialize(server, 'status', null),
       'userProfile': _i5r4pchv.UserProfileEndpoint()
         ..initialize(server, 'userProfile', null),
     };
@@ -1256,6 +1256,20 @@ class Endpoints extends _is.EndpointDispatch {
           call: (_is.Session session, Map<String, dynamic> params) async =>
               (endpoints['section'] as _i1uqsrrw.SectionEndpoint)
                   .getSectionsForCurrentUser(session),
+        ),
+      },
+    );
+    connectors['status'] = _is.EndpointConnector(
+      name: 'status',
+      endpoint: endpoints['status']!,
+      methodConnectors: {
+        'getStatus': _is.MethodConnector(
+          name: 'getStatus',
+          params: {},
+          call: (_is.Session session, Map<String, dynamic> params) async =>
+              (endpoints['status'] as _iv1cbiab.StatusEndpoint).getStatus(
+                session,
+              ),
         ),
       },
     );

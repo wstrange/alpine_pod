@@ -12,7 +12,6 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _ida;
 import 'dart:typed_data' as _idt;
-
 import 'package:alpine_pod_client/src/protocol/event.dart' as _ix4abnwg;
 import 'package:alpine_pod_client/src/protocol/event_manager.dart' as _iygn3jma;
 import 'package:alpine_pod_client/src/protocol/event_registration.dart'
@@ -38,9 +37,7 @@ import 'package:serverpod_auth_idp_client/serverpod_auth_idp_client.dart'
     as _iaic;
 import 'package:serverpod_client/serverpod_client.dart' as _isc;
 import 'package:serverpod_database/serverpod_database.dart' as _isd;
-
 import 'protocol.dart' as _il2as5qe;
-
 import 'package:alpine_pod_client/migrations/migration_registry.dart';
 
 /// {@category Endpoint}
@@ -789,6 +786,18 @@ class EndpointSection extends _isc.EndpointRef {
       );
 }
 
+/// {@category Endpoint}
+class EndpointStatus extends _isc.EndpointRef {
+  EndpointStatus(_isc.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'status';
+
+  /// Returns the server status. Accessible without authentication.
+  _ida.Future<String> getStatus() =>
+      caller.callServerEndpoint<String>('status', 'getStatus', {});
+}
+
 /// Endpoint to view and edit the signed-in user's profile.
 /// {@category Endpoint}
 class EndpointUserProfile extends _iacc.EndpointUserProfileEditBase {
@@ -885,6 +894,7 @@ class Client extends _isc.ServerpodClientShared {
     notification = EndpointNotification(this);
     registration = EndpointRegistration(this);
     section = EndpointSection(this);
+    status = EndpointStatus(this);
     userProfile = EndpointUserProfile(this);
     modules = Modules(this);
   }
@@ -913,6 +923,8 @@ class Client extends _isc.ServerpodClientShared {
 
   late final EndpointSection section;
 
+  late final EndpointStatus status;
+
   late final EndpointUserProfile userProfile;
 
   late final Modules modules;
@@ -931,6 +943,7 @@ class Client extends _isc.ServerpodClientShared {
     'notification': notification,
     'registration': registration,
     'section': section,
+    'status': status,
     'userProfile': userProfile,
   };
 

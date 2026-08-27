@@ -163,11 +163,10 @@ Future<String?> _performBootstrap() async {
   try {
     debugPrint('Router: Starting post-login bootstrap...');
     final member = await memberRepository.getCurrentMember(forceRefresh: true);
+    currentMemberSignal.value = member;
     final sections = await memberRepository.getAllMySectionMemberships(
       forceRefresh: true,
     );
-
-    currentMemberSignal.value = member;
 
     if (member == null || sections.isEmpty) {
       debugPrint(
