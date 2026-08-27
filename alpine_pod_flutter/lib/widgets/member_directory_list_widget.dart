@@ -6,16 +6,7 @@ import '../signals.dart';
 import 'member_avatar.dart';
 import 'member_details_dialog.dart';
 
-class const MemberDirectoryListWidget({
-  super.key,
-  required this.memberships,
-  this.shrinkWrap = false,
-  this.physics,
-  this.scrollController,
-  this.hasMore = false,
-  this.isLoadingMore = false,
-  this.onScopesUpdated,
-}) extends StatelessWidget {
+class MemberDirectoryListWidget extends StatelessWidget {
   final List<SectionMembership> memberships;
   final bool shrinkWrap;
   final ScrollPhysics? physics;
@@ -23,6 +14,17 @@ class const MemberDirectoryListWidget({
   final bool hasMore;
   final bool isLoadingMore;
   final Function(UuidValue memberId, Set<String> newScopes)? onScopesUpdated;
+
+  const MemberDirectoryListWidget({
+    super.key,
+    required this.memberships,
+    this.shrinkWrap = false,
+    this.physics,
+    this.scrollController,
+    this.hasMore = false,
+    this.isLoadingMore = false,
+    this.onScopesUpdated,
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -282,4 +282,110 @@ class MemberRepository {
     }
     return null;
   }
+
+  /// Gets section memberships (with member details) for a specific section from local cache or server.
+  Future<List<SectionMembership>> getSectionMemberships({
+    required UuidValue sectionId,
+    String? filter,
+    int limit = 50,
+    int offset = 0,
+  }) async {
+    if (useClientCacheSignal.value) {
+      try {
+        final memberships = await SectionMembership.db.find(
+          dbSession,
+          where: (t) {
+            Expression expr = t.sectionId.equals(sectionId);
+            if (filter != null && filter.isNotEmpty) {
+              expr =
+                  expr &
+                  (t.member.firstName.ilike('%$filter%') |
+                      t.member.lastName.ilike('%$filter%') |
+                      t.member.email.ilike('%$filter%'));
+            }
+            return expr;
+          },
+          include: SectionMembership.include(member: Member.include()),
+          limit: limit,
+          offset: offset,
+        );
+
+        if (memberships.isNotEmpty || !isOnlineSignal.value) {
+          return memberships;
+        }
+      } catch (e) {
+        _log.warning('Failed to load section memberships from local cache: $e');
+      }
+    }
+
+    if (isOnlineSignal.value) {
+      try {
+        final memberships = await client.member.getSectionMemberships(
+          sectionId,
+          filter: filter,
+          limit: limit,
+          offset: offset,
+        );
+        connectivityService.markServerReachable();
+
+        if (useClientCacheSignal.value) {
+          for (final m in memberships) {
+            if (m.member != null) {
+              final existingMember = await Member.db.findById(
+                dbSession,
+                m.member!.id,
+              );
+              if (existingMember != null) {
+                await Member.db.updateRow(dbSession, m.member!);
+              } else {
+                final existingByEmail = await Member.db.findFirstRow(
+                  dbSession,
+                  where: (t) => t.email.equals(m.member!.email),
+                );
+                if (existingByEmail != null) {
+                  await Member.db.deleteRow(dbSession, existingByEmail);
+                }
+                await Member.db.insertRow(dbSession, m.member!);
+              }
+            }
+            final id = m.id;
+            if (id != null) {
+              final existing = await SectionMembership.db.findById(
+                dbSession,
+                id,
+              );
+              if (existing != null) {
+                await SectionMembership.db.updateRow(dbSession, m);
+                continue;
+              }
+            }
+            final existingByKey = await SectionMembership.db.findFirstRow(
+              dbSession,
+              where: (t) =>
+                  t.memberId.equals(m.memberId) &
+                  t.sectionId.equals(m.sectionId),
+            );
+            if (existingByKey != null) {
+              await SectionMembership.db.deleteRow(dbSession, existingByKey);
+            }
+            await SectionMembership.db.insertRow(dbSession, m);
+          }
+        }
+        return memberships;
+      } catch (e) {
+        _log.warning('Failed to fetch section memberships from server: $e');
+        connectivityService.markServerUnreachable(error: e);
+        try {
+          return await SectionMembership.db.find(
+            dbSession,
+            where: (t) => t.sectionId.equals(sectionId),
+            include: SectionMembership.include(member: Member.include()),
+            limit: limit,
+            offset: offset,
+          );
+        } catch (_) {}
+      }
+    }
+    return [];
+  }
 }

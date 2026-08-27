@@ -14,6 +14,7 @@
 import 'package:alpine_pod_client/src/protocol/protocol.dart' as _iib3gdw5;
 import 'package:serverpod_client/serverpod_client.dart' as _isc;
 import 'package:serverpod_database/serverpod_database.dart' as _isd;
+
 import 'notification.dart' as _irt10kca;
 
 abstract class UserNotification

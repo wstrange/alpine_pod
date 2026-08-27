@@ -127,15 +127,27 @@ class HomeScreen extends SignalWidget {
 
             ListTile(
               leading: const Icon(Icons.person),
-              title: const Text('Profile'),
-              onTap: () {
-                final m = currentMemberSignal.value;
-                if (m == null) return;
-                final id = m.id.toString();
+              title: Text(isOnline ? 'Profile' : 'Profile (Offline)'),
+              subtitle: !isOnline
+                  ? const Text(
+                      'Requires internet connection',
+                      style: TextStyle(fontSize: 11),
+                    )
+                  : null,
+              enabled: isOnline,
+              onTap: isOnline
+                  ? () {
+                      final m = currentMemberSignal.value;
+                      if (m == null) return;
+                      final id = m.id.toString();
 
-                Navigator.pop(context); // Close the drawer
-                context.pushNamed('member-edit', pathParameters: {'id': id});
-              },
+                      Navigator.pop(context); // Close the drawer
+                      context.pushNamed(
+                        'member-edit',
+                        pathParameters: {'id': id},
+                      );
+                    }
+                  : null,
             ),
 
             ListTile(

@@ -5,12 +5,13 @@ import 'package:material_ui/material_ui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:signals_hooks/signals_hooks.dart';
 
+import '../repositories/member_repository.dart';
 import '../signals.dart';
 import '../widgets/member_directory_list_widget.dart';
 
-// todo: SectionId is never going to change. Rethink how this is loaded.
+class MemberDirectoryScreen extends HookWidget {
+  const MemberDirectoryScreen({super.key});
 
-class const MemberDirectoryScreen({super.key}) extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final searchCtrl = useTextEditingController();
@@ -27,6 +28,7 @@ class const MemberDirectoryScreen({super.key}) extends HookWidget {
     const int pageSize = 50;
 
     final section = sectionSignal.value;
+    final isOnline = isOnlineSignal.value;
 
     Future<void> fetchPage({bool reset = false}) async {
       final sectionId = section?.id;
@@ -46,8 +48,8 @@ class const MemberDirectoryScreen({super.key}) extends HookWidget {
       }
 
       try {
-        final newItems = await client.member.getSectionMemberships(
-          sectionId,
+        final newItems = await memberRepository.getSectionMemberships(
+          sectionId: sectionId,
           filter: filter.peek(),
           limit: pageSize,
           offset: offset.peek(),
@@ -86,11 +88,11 @@ class const MemberDirectoryScreen({super.key}) extends HookWidget {
       };
     }, [searchCtrl]);
 
-    // Re-fetch on filter, reload or section change
+    // Re-fetch on filter, reload, section change, or online status change
     useEffect(() {
       fetchPage(reset: true);
       return null;
-    }, [filter.value, reload.value, section?.id]);
+    }, [filter.value, reload.value, section?.id, isOnline]);
 
     final scrollController = useScrollController();
     useEffect(() {
@@ -110,6 +112,16 @@ class const MemberDirectoryScreen({super.key}) extends HookWidget {
       if (sectionId == null) return;
 
       final messenger = ScaffoldMessenger.of(context);
+      if (!isOnlineSignal.value) {
+        messenger.showSnackBar(
+          const SnackBar(
+            content: Text('Cannot update roles while offline.'),
+            backgroundColor: Colors.orange,
+          ),
+        );
+        return;
+      }
+
       try {
         await client.member.updateMemberScopes(memberId, sectionId, newScopes);
         messenger.showSnackBar(
@@ -127,6 +139,28 @@ class const MemberDirectoryScreen({super.key}) extends HookWidget {
       appBar: AppBar(title: const Text('Member Directory')),
       body: Column(
         children: [
+          if (!isOnline)
+            Container(
+              width: double.infinity,
+              color: Colors.amber.shade100,
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+              child: Row(
+                children: [
+                  Icon(Icons.cloud_off, size: 18, color: Colors.amber.shade900),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Offline Mode: Viewing cached member directory. Role updates are disabled.',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.amber.shade900,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: TextField(

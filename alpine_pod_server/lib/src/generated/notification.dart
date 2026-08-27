@@ -13,6 +13,7 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:alpine_pod_server/src/generated/protocol.dart' as _i1rm9ghy;
 import 'package:serverpod/serverpod.dart' as _is;
+
 import 'notification_template.dart' as _ikosvoxr;
 
 abstract class Notification

@@ -32,6 +32,7 @@ import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
     as _iacs;
 import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart'
     as _iais;
+
 import 'event.dart' as _iu57571s;
 import 'event_manager.dart' as _ich6ygep;
 import 'event_registration.dart' as _i27uzliw;
@@ -1537,9 +1538,8 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (t == Map<String, String>) {
       return (data as Map).map(
-            (k, v) => MapEntry(deserialize<String>(k), deserialize<String>(v)),
-          )
-          as T;
+        (k, v) => MapEntry(deserialize<String>(k), deserialize<String>(v)),
+      ) as T;
     }
     if (t == Set<String>) {
       return (data as List).map((e) => deserialize<String>(e)).toSet() as T;

@@ -12,6 +12,7 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _ida;
 import 'dart:typed_data' as _idt;
+
 import 'package:alpine_pod_client/src/protocol/event.dart' as _ix4abnwg;
 import 'package:alpine_pod_client/src/protocol/event_manager.dart' as _iygn3jma;
 import 'package:alpine_pod_client/src/protocol/event_registration.dart'
@@ -37,7 +38,9 @@ import 'package:serverpod_auth_idp_client/serverpod_auth_idp_client.dart'
     as _iaic;
 import 'package:serverpod_client/serverpod_client.dart' as _isc;
 import 'package:serverpod_database/serverpod_database.dart' as _isd;
+
 import 'protocol.dart' as _il2as5qe;
+
 import 'package:alpine_pod_client/migrations/migration_registry.dart';
 
 /// {@category Endpoint}
