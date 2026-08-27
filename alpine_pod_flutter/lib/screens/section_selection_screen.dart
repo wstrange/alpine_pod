@@ -1,10 +1,10 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:signals_flutter/signals_flutter.dart';
+
 import '../signals.dart';
 
 class const SectionSelectionScreen({super.key}) extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,7 +16,9 @@ class const SectionSelectionScreen({super.key}) extends StatelessWidget {
             final membershipsValue = allMySectionMembershipsSignal.value;
             return switch (membershipsValue) {
               AsyncError(:final error) => Center(child: Text('Error $error')),
-              AsyncLoading() => const Center(child: CircularProgressIndicator()),
+              AsyncLoading() => const Center(
+                child: CircularProgressIndicator(),
+              ),
               AsyncData(value: final memberships) => ListView.builder(
                 itemCount: memberships.length,
                 itemBuilder: (context, index) {

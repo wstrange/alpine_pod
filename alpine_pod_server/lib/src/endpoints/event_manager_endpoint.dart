@@ -1,7 +1,9 @@
 // ignore_for_file: unnecessary_non_null_assertion, unnecessary_null_comparison
 
 import 'dart:async';
+
 import 'package:serverpod/serverpod.dart';
+
 import '../generated/protocol.dart';
 import '../member_cache.dart';
 import '../services/notification_service.dart';

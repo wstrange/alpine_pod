@@ -34,7 +34,9 @@ class EventEditScreen extends HookWidget {
     final maxParticipantsController = useTextEditingController();
 
     final startTime = useState<DateTime>(event?.startTime ?? DateTime.now());
-    final endTime = useState<DateTime>(event?.endTime ?? DateTime.now().add(const Duration(hours: 8)));
+    final endTime = useState<DateTime>(
+      event?.endTime ?? DateTime.now().add(const Duration(hours: 8)),
+    );
     final carpoolTime = useState<DateTime?>(event?.carpoolTime);
     final selectedType = useState<String>(event?.type ?? eventTypes.first);
     final requiresApproval = useState<bool>(event?.requiresApproval ?? true);
@@ -50,7 +52,10 @@ class EventEditScreen extends HookWidget {
     useEffect(() {
       final memberState = currentMemberSignal.value;
       final currentMember = memberState is AsyncData ? memberState : null;
-      if (eventId == null && event == null && currentMember != null && managers.value.isEmpty) {
+      if (eventId == null &&
+          event == null &&
+          currentMember != null &&
+          managers.value.isEmpty) {
         managers.value = [currentMember];
       }
       return null;
@@ -96,7 +101,10 @@ class EventEditScreen extends HookWidget {
 
         // Load managers from the event if they are included
         if (e.eventManagers != null) {
-          managers.value = e.eventManagers!.where((m) => m.member != null).map((m) => m.member!).toList();
+          managers.value = e.eventManagers!
+              .where((m) => m.member != null)
+              .map((m) => m.member!)
+              .toList();
         }
       }
       return null;
@@ -118,7 +126,10 @@ class EventEditScreen extends HookWidget {
         requiresApproval.value = e.requiresApproval;
         published.value = e.published;
         if (e.eventManagers != null) {
-          managers.value = e.eventManagers!.where((m) => m.member != null).map((m) => m.member!).toList();
+          managers.value = e.eventManagers!
+              .where((m) => m.member != null)
+              .map((m) => m.member!)
+              .toList();
         }
       } else {
         titleController.clear();
@@ -141,7 +152,11 @@ class EventEditScreen extends HookWidget {
     Future<void> save() async {
       if (!isOnline) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('You are currently offline. Saving events requires an internet connection.')),
+          const SnackBar(
+            content: Text(
+              'You are currently offline. Saving events requires an internet connection.',
+            ),
+          ),
         );
         return;
       }
@@ -155,62 +170,84 @@ class EventEditScreen extends HookWidget {
       final currentMember = currentMemberSignal.value;
 
       if (section == null) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('No section selected. Please select a section first.')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'No section selected. Please select a section first.',
+            ),
+          ),
+        );
         return;
       }
 
       final minParticipants = int.tryParse(minParticipantsController.text) ?? 1;
-      final maxParticipants = int.tryParse(maxParticipantsController.text) ?? 10;
+      final maxParticipants =
+          int.tryParse(maxParticipantsController.text) ?? 10;
 
       if (minParticipants > maxParticipants) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Minimum participants cannot be greater than maximum participants.')),
+          const SnackBar(
+            content: Text(
+              'Minimum participants cannot be greater than maximum participants.',
+            ),
+          ),
         );
         return;
       }
 
       final eventToSave = isCreating
           ? Event(
-            sectionId: section.id!,
-            title: titleController.text.trim(),
-            description: descriptionController.text.trim(),
-            eventLocation: locationController.text.trim().isEmpty ? null : locationController.text.trim(),
-            carpoolLocation: carpoolLocationController.text.trim().isEmpty ? null : carpoolLocationController.text.trim(),
-            carpoolTime: carpoolTime.value,
-            startTime: startTime.value,
-            endTime: endTime.value,
-            type: selectedType.value,
-            requiresApproval: requiresApproval.value,
-            minimumParticipants: minParticipants,
-            maxParticipants: maxParticipants,
-            published: published.value,
-          )
+              sectionId: section.id!,
+              title: titleController.text.trim(),
+              description: descriptionController.text.trim(),
+              eventLocation: locationController.text.trim().isEmpty
+                  ? null
+                  : locationController.text.trim(),
+              carpoolLocation: carpoolLocationController.text.trim().isEmpty
+                  ? null
+                  : carpoolLocationController.text.trim(),
+              carpoolTime: carpoolTime.value,
+              startTime: startTime.value,
+              endTime: endTime.value,
+              type: selectedType.value,
+              requiresApproval: requiresApproval.value,
+              minimumParticipants: minParticipants,
+              maxParticipants: maxParticipants,
+              published: published.value,
+            )
           : activeEvent.copyWith(
-            title: titleController.text.trim(),
-            description: descriptionController.text.trim(),
-            eventLocation: locationController.text.trim().isEmpty ? null : locationController.text.trim(),
-            carpoolLocation: carpoolLocationController.text.trim().isEmpty ? null : carpoolLocationController.text.trim(),
-            carpoolTime: carpoolTime.value,
-            startTime: startTime.value,
-            endTime: endTime.value,
-            type: selectedType.value,
-            requiresApproval: requiresApproval.value,
-            minimumParticipants: minParticipants,
-            maxParticipants: maxParticipants,
-            published: published.value,
-          );
+              title: titleController.text.trim(),
+              description: descriptionController.text.trim(),
+              eventLocation: locationController.text.trim().isEmpty
+                  ? null
+                  : locationController.text.trim(),
+              carpoolLocation: carpoolLocationController.text.trim().isEmpty
+                  ? null
+                  : carpoolLocationController.text.trim(),
+              carpoolTime: carpoolTime.value,
+              startTime: startTime.value,
+              endTime: endTime.value,
+              type: selectedType.value,
+              requiresApproval: requiresApproval.value,
+              minimumParticipants: minParticipants,
+              maxParticipants: maxParticipants,
+              published: published.value,
+            );
 
       try {
         final Event savedEvent;
         if (isCreating) {
           // Pass additional manager IDs (excluding creator who is added by default)
-          final additionalManagerIds = managers.value.where((m) => m.id != currentMember?.id).map((m) => m.id).toList();
+          final additionalManagerIds = managers.value
+              .where((m) => m.id != currentMember?.id)
+              .map((m) => m.id)
+              .toList();
 
           savedEvent = await eventRepository.createEvent(
             eventToSave,
-            additionalManagerIds: additionalManagerIds.isEmpty ? null : additionalManagerIds,
+            additionalManagerIds: additionalManagerIds.isEmpty
+                ? null
+                : additionalManagerIds,
             notifyNewEvent: true,
           );
         } else {
@@ -218,13 +255,20 @@ class EventEditScreen extends HookWidget {
         }
         currentEventsSignal.refresh();
         if (context.mounted) {
-          final msg = savedEvent.published ? "Published live to site" : "DRAFT: Not visible to other members.";
+          final msg = savedEvent.published
+              ? "Published live to site"
+              : "DRAFT: Not visible to other members.";
           await showDialog(
             context: context,
             builder: (context) => AlertDialog(
               title: const Text('Success'),
               content: Text('Event saved successfully. Event Status: $msg'),
-              actions: [TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('OK'))],
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('OK'),
+                ),
+              ],
             ),
           );
           if (context.mounted) {
@@ -238,7 +282,12 @@ class EventEditScreen extends HookWidget {
             builder: (context) => AlertDialog(
               title: const Text('Error'),
               content: Text('Error saving event: $e'),
-              actions: [TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('OK'))],
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('OK'),
+                ),
+              ],
             ),
           );
         }
@@ -288,7 +337,11 @@ class EventEditScreen extends HookWidget {
                   Expanded(
                     child: Text(
                       'Offline Mode: Event creation and editing are disabled.',
-                      style: TextStyle(fontSize: 12, color: Colors.amber.shade900, fontWeight: FontWeight.w600),
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.amber.shade900,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                 ],
@@ -311,252 +364,317 @@ class EventEditScreen extends HookWidget {
                         return null;
                       },
                     ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.only(left: 4.0),
-                    child: Text(
-                      'Description',
-                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white70),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.only(left: 4.0),
+                          child: Text(
+                            'Description',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white70,
+                            ),
+                          ),
+                        ),
+                        TextButton.icon(
+                          onPressed: () async {
+                            final template = await showDialog<String>(
+                              context: context,
+                              builder: (context) =>
+                                  const TemplateBrowserDialog(),
+                            );
+                            if (template != null) {
+                              final currentText = descriptionController.text;
+                              final selection = descriptionController.selection;
+                              if (selection.baseOffset < 0) {
+                                descriptionController.text =
+                                    currentText +
+                                    (currentText.isEmpty ? '' : '\n\n') +
+                                    template;
+                              } else {
+                                final newText = currentText.replaceRange(
+                                  selection.start,
+                                  selection.end,
+                                  template,
+                                );
+                                descriptionController.value =
+                                    descriptionController.value.copyWith(
+                                      text: newText,
+                                      selection: TextSelection.collapsed(
+                                        offset:
+                                            selection.start + template.length,
+                                      ),
+                                    );
+                              }
+                            }
+                          },
+                          icon: const Icon(Icons.library_books),
+                          label: const Text('Insert Markdown template'),
+                        ),
+                      ],
                     ),
-                  ),
-                  TextButton.icon(
-                    onPressed: () async {
-                      final template = await showDialog<String>(
-                        context: context,
-                        builder: (context) => const TemplateBrowserDialog(),
-                      );
-                      if (template != null) {
-                        final currentText = descriptionController.text;
-                        final selection = descriptionController.selection;
-                        if (selection.baseOffset < 0) {
-                          descriptionController.text = currentText + (currentText.isEmpty ? '' : '\n\n') + template;
-                        } else {
-                          final newText = currentText.replaceRange(selection.start, selection.end, template);
-                          descriptionController.value = descriptionController.value.copyWith(
-                            text: newText,
-                            selection: TextSelection.collapsed(offset: selection.start + template.length),
+                    TextFormField(
+                      controller: descriptionController,
+                      decoration: const InputDecoration(
+                        hintText: 'Enter event description (supports markdown)',
+                      ),
+                      maxLines: 30,
+                      minLines: 5,
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return 'Description is required';
+                        }
+                        return null;
+                      },
+                    ),
+                    TextFormField(
+                      controller: locationController,
+                      decoration: const InputDecoration(
+                        labelText: 'Event Location (supports markdown)',
+                        hintText: 'Address, place name, or Google Maps URL',
+                        prefixIcon: Icon(Icons.map_outlined),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    const Divider(),
+                    const Align(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: 4),
+                        child: Text(
+                          'Carpool',
+                          style: TextStyle(fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                    ),
+                    TextFormField(
+                      controller: carpoolLocationController,
+                      decoration: const InputDecoration(
+                        labelText: 'Carpool Meet Location (supports markdown)',
+                        hintText: 'Address, place name, or Google Maps URL',
+                        prefixIcon: Icon(Icons.directions_car_outlined),
+                      ),
+                    ),
+                    ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: const Icon(Icons.access_time),
+                      title: const Text('Carpool Meet Time'),
+                      subtitle: Text(
+                        carpoolTime.value != null
+                            ? eventDateFormat(carpoolTime.value!)
+                            : 'Not set',
+                      ),
+                      trailing: carpoolTime.value != null
+                          ? IconButton(
+                              icon: const Icon(Icons.clear),
+                              tooltip: 'Clear',
+                              onPressed: () => carpoolTime.value = null,
+                            )
+                          : null,
+                      onTap: () async {
+                        final date = await showDatePicker(
+                          context: context,
+                          initialDate: carpoolTime.value ?? startTime.value,
+                          firstDate: DateTime(2025),
+                          lastDate: DateTime(2100),
+                        );
+                        if (date != null && context.mounted) {
+                          final time = await showTimePicker(
+                            context: context,
+                            initialTime: TimeOfDay.fromDateTime(
+                              carpoolTime.value ?? startTime.value,
+                            ),
                           );
+                          if (time != null) {
+                            carpoolTime.value = DateTime(
+                              date.year,
+                              date.month,
+                              date.day,
+                              time.hour,
+                              time.minute,
+                            );
+                          }
                         }
-                      }
-                    },
-                    icon: const Icon(Icons.library_books),
-                    label: const Text('Insert Markdown template'),
-                  ),
-                ],
-              ),
-              TextFormField(
-                controller: descriptionController,
-                decoration: const InputDecoration(hintText: 'Enter event description (supports markdown)'),
-                maxLines: 30,
-                minLines: 5,
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'Description is required';
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                controller: locationController,
-                decoration: const InputDecoration(
-                  labelText: 'Event Location (supports markdown)',
-                  hintText: 'Address, place name, or Google Maps URL',
-                  prefixIcon: Icon(Icons.map_outlined),
-                ),
-              ),
-              const SizedBox(height: 8),
-              const Divider(),
-              const Align(
-                alignment: Alignment.centerLeft,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 4),
-                  child: Text('Carpool', style: TextStyle(fontWeight: FontWeight.w600)),
-                ),
-              ),
-              TextFormField(
-                controller: carpoolLocationController,
-                decoration: const InputDecoration(
-                  labelText: 'Carpool Meet Location (supports markdown)',
-                  hintText: 'Address, place name, or Google Maps URL',
-                  prefixIcon: Icon(Icons.directions_car_outlined),
-                ),
-              ),
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: const Icon(Icons.access_time),
-                title: const Text('Carpool Meet Time'),
-                subtitle: Text(carpoolTime.value != null ? eventDateFormat(carpoolTime.value!) : 'Not set'),
-                trailing: carpoolTime.value != null
-                    ? IconButton(
-                        icon: const Icon(Icons.clear),
-                        tooltip: 'Clear',
-                        onPressed: () => carpoolTime.value = null,
-                      )
-                    : null,
-                onTap: () async {
-                  final date = await showDatePicker(
-                    context: context,
-                    initialDate: carpoolTime.value ?? startTime.value,
-                    firstDate: DateTime(2025),
-                    lastDate: DateTime(2100),
-                  );
-                  if (date != null && context.mounted) {
-                    final time = await showTimePicker(
-                      context: context,
-                      initialTime: TimeOfDay.fromDateTime(carpoolTime.value ?? startTime.value),
-                    );
-                    if (time != null) {
-                      carpoolTime.value = DateTime(date.year, date.month, date.day, time.hour, time.minute);
-                    }
-                  }
-                },
-              ),
-              const Divider(),
-              DropdownButtonFormField<String>(
-                initialValue: selectedType.value,
-                decoration: const InputDecoration(labelText: 'Event Type'),
-                items: eventTypes.map((t) => DropdownMenuItem(value: t, child: Text(t))).toList(),
-                onChanged: (value) {
-                  if (value != null) {
-                    selectedType.value = value;
-                  }
-                },
-              ),
-              SwitchListTile(
-                contentPadding: EdgeInsets.zero,
-                secondary: const Icon(Icons.how_to_reg_outlined),
-                title: const Text('Requires Approval'),
-                subtitle: Text(
-                  requiresApproval.value
-                      ? 'Registrations go to a waitlist and must be approved'
-                      : 'Members can register directly without approval',
-                ),
-                value: requiresApproval.value,
-                onChanged: (val) => requiresApproval.value = val,
-              ),
-              SwitchListTile(
-                contentPadding: EdgeInsets.zero,
-                secondary: const Icon(Icons.publish_outlined),
-                title: const Text('Published'),
-                subtitle: Text(
-                  published.value
-                      ? 'Event is published and visible to members'
-                      : 'Event is a draft and only visible to event managers',
-                ),
-                value: published.value,
-                onChanged: (val) => published.value = val,
-              ),
-              const Divider(),
-              Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: minParticipantsController,
-                      decoration: const InputDecoration(
-                        labelText: 'Min Participants',
-                        prefixIcon: Icon(Icons.person_outline),
-                      ),
-                      keyboardType: TextInputType.number,
-                      validator: (value) {
-                        final min = int.tryParse(value ?? '');
-                        if (min == null || min < 1) {
-                          return 'Must be at least 1';
-                        }
-                        final max = int.tryParse(maxParticipantsController.text);
-                        if (max != null && min > max) {
-                          return 'Must be ≤ max';
-                        }
-                        return null;
                       },
                     ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: TextFormField(
-                      controller: maxParticipantsController,
+                    const Divider(),
+                    DropdownButtonFormField<String>(
+                      initialValue: selectedType.value,
                       decoration: const InputDecoration(
-                        labelText: 'Max Participants',
-                        prefixIcon: Icon(Icons.people_outline),
+                        labelText: 'Event Type',
                       ),
-                      keyboardType: TextInputType.number,
-                      validator: (value) {
-                        final max = int.tryParse(value ?? '');
-                        if (max == null || max < 1) {
-                          return 'Must be at least 1';
+                      items: eventTypes
+                          .map(
+                            (t) => DropdownMenuItem(value: t, child: Text(t)),
+                          )
+                          .toList(),
+                      onChanged: (value) {
+                        if (value != null) {
+                          selectedType.value = value;
                         }
-                        final min = int.tryParse(minParticipantsController.text);
-                        if (min != null && max < min) {
-                          return 'Must be ≥ min';
-                        }
-                        return null;
                       },
                     ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              ListTile(
-                title: const Text('Start Time'),
-                subtitle: Text(eventDateFormat(startTime.value)),
-                onTap: () async {
-                  final date = await showDatePicker(
-                    context: context,
-                    initialDate: startTime.value,
-                    firstDate: DateTime(2025),
-                    lastDate: DateTime(2050),
-                  );
-                  if (date != null && context.mounted) {
-                    final time = await showTimePicker(
-                      context: context,
-                      initialTime: TimeOfDay.fromDateTime(startTime.value),
-                    );
-                    if (time != null) {
-                      startTime.value = DateTime(date.year, date.month, date.day, time.hour, time.minute);
-                      endTime.value = startTime.value.add(const Duration(hours: 8));
-                    }
-                  }
-                },
-              ),
-              ListTile(
-                title: const Text('End Time'),
-                subtitle: Text(eventDateFormat(endTime.value)),
-                onTap: () async {
-                  final date = await showDatePicker(
-                    context: context,
-                    initialDate: endTime.value,
-                    firstDate: startTime.value,
-                    lastDate: DateTime(2100),
-                  );
-                  if (date != null && context.mounted) {
-                    final time = await showTimePicker(
-                      context: context,
-                      initialTime: TimeOfDay.fromDateTime(endTime.value),
-                    );
-                    if (time != null) {
-                      endTime.value = DateTime(date.year, date.month, date.day, time.hour, time.minute);
-                    }
-                  }
-                },
-              ),
-              const SizedBox(height: 16),
-              if (sid != null)
-                EventManagersManager(
-                  eventId: activeEvent?.id,
-                  sectionId: sid,
-                  managers: managers.value,
-                  onChanged: (newList) => managers.value = newList,
+                    SwitchListTile(
+                      contentPadding: EdgeInsets.zero,
+                      secondary: const Icon(Icons.how_to_reg_outlined),
+                      title: const Text('Requires Approval'),
+                      subtitle: Text(
+                        requiresApproval.value
+                            ? 'Registrations go to a waitlist and must be approved'
+                            : 'Members can register directly without approval',
+                      ),
+                      value: requiresApproval.value,
+                      onChanged: (val) => requiresApproval.value = val,
+                    ),
+                    SwitchListTile(
+                      contentPadding: EdgeInsets.zero,
+                      secondary: const Icon(Icons.publish_outlined),
+                      title: const Text('Published'),
+                      subtitle: Text(
+                        published.value
+                            ? 'Event is published and visible to members'
+                            : 'Event is a draft and only visible to event managers',
+                      ),
+                      value: published.value,
+                      onChanged: (val) => published.value = val,
+                    ),
+                    const Divider(),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TextFormField(
+                            controller: minParticipantsController,
+                            decoration: const InputDecoration(
+                              labelText: 'Min Participants',
+                              prefixIcon: Icon(Icons.person_outline),
+                            ),
+                            keyboardType: TextInputType.number,
+                            validator: (value) {
+                              final min = int.tryParse(value ?? '');
+                              if (min == null || min < 1) {
+                                return 'Must be at least 1';
+                              }
+                              final max = int.tryParse(
+                                maxParticipantsController.text,
+                              );
+                              if (max != null && min > max) {
+                                return 'Must be ≤ max';
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: TextFormField(
+                            controller: maxParticipantsController,
+                            decoration: const InputDecoration(
+                              labelText: 'Max Participants',
+                              prefixIcon: Icon(Icons.people_outline),
+                            ),
+                            keyboardType: TextInputType.number,
+                            validator: (value) {
+                              final max = int.tryParse(value ?? '');
+                              if (max == null || max < 1) {
+                                return 'Must be at least 1';
+                              }
+                              final min = int.tryParse(
+                                minParticipantsController.text,
+                              );
+                              if (min != null && max < min) {
+                                return 'Must be ≥ min';
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    ListTile(
+                      title: const Text('Start Time'),
+                      subtitle: Text(eventDateFormat(startTime.value)),
+                      onTap: () async {
+                        final date = await showDatePicker(
+                          context: context,
+                          initialDate: startTime.value,
+                          firstDate: DateTime(2025),
+                          lastDate: DateTime(2050),
+                        );
+                        if (date != null && context.mounted) {
+                          final time = await showTimePicker(
+                            context: context,
+                            initialTime: TimeOfDay.fromDateTime(
+                              startTime.value,
+                            ),
+                          );
+                          if (time != null) {
+                            startTime.value = DateTime(
+                              date.year,
+                              date.month,
+                              date.day,
+                              time.hour,
+                              time.minute,
+                            );
+                            endTime.value = startTime.value.add(
+                              const Duration(hours: 8),
+                            );
+                          }
+                        }
+                      },
+                    ),
+                    ListTile(
+                      title: const Text('End Time'),
+                      subtitle: Text(eventDateFormat(endTime.value)),
+                      onTap: () async {
+                        final date = await showDatePicker(
+                          context: context,
+                          initialDate: endTime.value,
+                          firstDate: startTime.value,
+                          lastDate: DateTime(2100),
+                        );
+                        if (date != null && context.mounted) {
+                          final time = await showTimePicker(
+                            context: context,
+                            initialTime: TimeOfDay.fromDateTime(endTime.value),
+                          );
+                          if (time != null) {
+                            endTime.value = DateTime(
+                              date.year,
+                              date.month,
+                              date.day,
+                              time.hour,
+                              time.minute,
+                            );
+                          }
+                        }
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    if (sid != null)
+                      EventManagersManager(
+                        eventId: activeEvent?.id,
+                        sectionId: sid,
+                        managers: managers.value,
+                        onChanged: (newList) => managers.value = newList,
+                      ),
+                  ],
                 ),
-            ],
+              ),
+            ),
           ),
-        ),
+        ],
       ),
       persistentFooterButtons: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            ElevatedButton.icon(onPressed: reset, icon: const Icon(Icons.refresh), label: const Text('Reset')),
+            ElevatedButton.icon(
+              onPressed: reset,
+              icon: const Icon(Icons.refresh),
+              label: const Text('Reset'),
+            ),
             ElevatedButton.icon(
               onPressed: isOnline ? save : null,
               icon: const Icon(Icons.save),

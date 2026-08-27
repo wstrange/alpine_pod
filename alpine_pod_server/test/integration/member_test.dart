@@ -6,6 +6,7 @@ import 'package:serverpod/serverpod.dart';
 import 'package:test/test.dart';
 import 'package:serverpod_auth_idp_server/core.dart';
 import 'package:serverpod_auth_idp_server/providers/email.dart';
+
 import 'test_tools/serverpod_test_tools.dart';
 import 'utils/gen_data.dart';
 
@@ -17,16 +18,15 @@ void main() {
   withServerpod('Given TestDataGenerator', (sessionBuilder, endpoints) {
     Serverpod.instance.initializeAuthServices(
       identityProviderBuilders: [
-        EmailIdpConfig(
-          secretHashPepper: 'emailSecretHashPepper',
-        ),
+        EmailIdpConfig(secretHashPepper: 'emailSecretHashPepper'),
       ],
       tokenManagerBuilders: [
         JwtConfig(
           refreshTokenHashPepper: 'jwtRefreshTokenHashPepper',
           algorithm: JwtAlgorithm.hmacSha512(
             SecretKey(
-                'jwtHmacSha512PrivateKey-MustBeLongEnoughFor-HMAC-SHA512-Tests'),
+              'jwtHmacSha512PrivateKey-MustBeLongEnoughFor-HMAC-SHA512-Tests',
+            ),
           ),
         ),
       ],
@@ -34,24 +34,30 @@ void main() {
 
     group('auth member endpoint tests', () {
       var authenticatedSessionBuilder = sessionBuilder.copyWith(
-        authentication:
-            AuthenticationOverride.authenticationInfo(id, {Scope.admin}),
+        authentication: AuthenticationOverride.authenticationInfo(id, {
+          Scope.admin,
+        }),
       );
 
       test('getSectionMembers returns list of members for admin', () async {
         // Empty db expected.
         final session = sessionBuilder.build();
-        await EventRegistration.db
-            .deleteWhere(session, where: (t) => Constant.bool(true));
+        await EventRegistration.db.deleteWhere(
+          session,
+          where: (t) => Constant.bool(true),
+        );
         await Event.db.deleteWhere(session, where: (t) => Constant.bool(true));
-        await SectionMembership.db
-            .deleteWhere(session, where: (t) => Constant.bool(true));
+        await SectionMembership.db.deleteWhere(
+          session,
+          where: (t) => Constant.bool(true),
+        );
         await Member.db.deleteWhere(session, where: (t) => Constant.bool(true));
 
         final members = await endpoints.member.getSectionMembers(
-            authenticatedSessionBuilder,
-            limit: 100,
-            offset: 0);
+          authenticatedSessionBuilder,
+          limit: 100,
+          offset: 0,
+        );
         expect(members, isA<List<Member>>());
         expect(members.length, equals(0));
       });
@@ -63,8 +69,10 @@ void main() {
         var m = genData.member(userId: authUser.id);
         print(m);
 
-        final member =
-            await endpoints.member.createMember(authenticatedSessionBuilder, m);
+        final member = await endpoints.member.createMember(
+          authenticatedSessionBuilder,
+          m,
+        );
 
         print('Created $member');
 
@@ -72,8 +80,10 @@ void main() {
         // try to insert again with same email / id should fail
 
         try {
-          await endpoints.member
-              .createMember(authenticatedSessionBuilder, member);
+          await endpoints.member.createMember(
+            authenticatedSessionBuilder,
+            member,
+          );
           fail('Expected exception for duplicate member creation');
         } catch (e) {
           expect(e, isA<Exception>());

@@ -6,7 +6,11 @@ import 'package:serverpod_auth_idp_server/providers/google.dart';
 
 class EmailIdpEndpoint extends EmailIdpBaseEndpoint {
   @override
-  Future<AuthSuccess> login(Session session, {required String email, required String password}) async {
+  Future<AuthSuccess> login(
+    Session session, {
+    required String email,
+    required String password,
+  }) async {
     var result = await super.login(session, email: email, password: password);
     print('Login result: $result');
     return result;
@@ -17,11 +21,19 @@ class RefreshJwtTokensEndpoint extends core.RefreshJwtTokensEndpoint {}
 
 class GoogleIdpEndpoint extends GoogleIdpBaseEndpoint {
   @override
-  Future<AuthSuccess> login(Session session, {required String idToken, required String? accessToken}) async {
+  Future<AuthSuccess> login(
+    Session session, {
+    required String idToken,
+    required String? accessToken,
+  }) async {
     print('Google Login request');
     print('idToken: $idToken');
     print('accessToken: $accessToken');
-    var result = await super.login(session, idToken: idToken, accessToken: accessToken);
+    var result = await super.login(
+      session,
+      idToken: idToken,
+      accessToken: accessToken,
+    );
     print('Google Login result: $result');
     return result;
   }

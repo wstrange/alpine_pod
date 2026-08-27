@@ -5,7 +5,9 @@ import 'package:alpine_pod_server/src/custom_scopes.dart';
 import 'package:alpine_pod_server/src/generated/protocol.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:test/test.dart';
+
 import 'test_tools/serverpod_test_tools.dart';
+
 import 'package:serverpod_auth_idp_server/providers/email.dart';
 import 'package:serverpod_auth_idp_server/core.dart';
 
@@ -20,7 +22,11 @@ final numUsers = 20;
 
 List<UuidValue> createdUserIds = [];
 
-const fallbackNotificationTypes = {'event-created', 'registration-approved', 'registration-removed'};
+const fallbackNotificationTypes = {
+  'event-created',
+  'registration-approved',
+  'registration-removed',
+};
 
 void main() {
   final adminId = uuid.v4obj();
@@ -30,12 +36,22 @@ void main() {
     (sessionBuilder, endpoints) {
       Serverpod.instance.initializeAuthServices(
         identityProviderBuilders: [
-          EmailIdpConfig(secretHashPepper: Serverpod.instance.getPassword('emailSecretHashPepper')!),
+          EmailIdpConfig(
+            secretHashPepper: Serverpod.instance.getPassword(
+              'emailSecretHashPepper',
+            )!,
+          ),
         ],
         tokenManagerBuilders: [
           JwtConfig(
-            refreshTokenHashPepper: Serverpod.instance.getPassword('jwtRefreshTokenHashPepper')!,
-            algorithm: JwtAlgorithm.hmacSha512(SecretKey(Serverpod.instance.getPassword('jwtHmacSha512PrivateKey')!)),
+            refreshTokenHashPepper: Serverpod.instance.getPassword(
+              'jwtRefreshTokenHashPepper',
+            )!,
+            algorithm: JwtAlgorithm.hmacSha512(
+              SecretKey(
+                Serverpod.instance.getPassword('jwtHmacSha512PrivateKey')!,
+              ),
+            ),
           ),
         ],
         userProfileConfig: UserProfileConfig(
@@ -43,13 +59,14 @@ void main() {
           userImageFormat: UserProfileImageType.png,
           userImageQuality: 85,
           userImageGenerator: defaultUserImageGenerator,
-          onAfterUserProfileCreated: (session, profile, {required transaction}) async {
-            await AuthServices.instance.userProfiles.setDefaultUserImage(
-              session,
-              profile.authUserId,
-              transaction: transaction,
-            );
-          },
+          onAfterUserProfileCreated:
+              (session, profile, {required transaction}) async {
+                await AuthServices.instance.userProfiles.setDefaultUserImage(
+                  session,
+                  profile.authUserId,
+                  transaction: transaction,
+                );
+              },
         ),
       );
 
@@ -57,34 +74,69 @@ void main() {
       final admin = emailIdp.admin;
 
       var authSession = sessionBuilder.copyWith(
-        authentication: AuthenticationOverride.authenticationInfo(adminId.uuid, {Scope.admin}),
+        authentication: AuthenticationOverride.authenticationInfo(
+          adminId.uuid,
+          {Scope.admin},
+        ),
         enableLogging: true,
       );
 
       test('Clean up database', () async {
         final session = authSession.build();
-        await session.db.unsafeSimpleExecute(r'TRUNCATE public.user_notification_preference CASCADE');
-        await session.db.unsafeSimpleExecute(r'TRUNCATE public.serverpod_auth_core_user CASCADE');
-        await session.db.unsafeSimpleExecute(r'TRUNCATE public.serverpod_auth_idp_email_account CASCADE');
-        await session.db.unsafeSimpleExecute(r'TRUNCATE public.section_memberships CASCADE');
-        await session.db.unsafeSimpleExecute(r'TRUNCATE public.members CASCADE');
+        await session.db.unsafeSimpleExecute(
+          r'TRUNCATE public.user_notification_preference CASCADE',
+        );
+        await session.db.unsafeSimpleExecute(
+          r'TRUNCATE public.serverpod_auth_core_user CASCADE',
+        );
+        await session.db.unsafeSimpleExecute(
+          r'TRUNCATE public.serverpod_auth_idp_email_account CASCADE',
+        );
+        await session.db.unsafeSimpleExecute(
+          r'TRUNCATE public.section_memberships CASCADE',
+        );
+        await session.db.unsafeSimpleExecute(
+          r'TRUNCATE public.members CASCADE',
+        );
         await session.db.unsafeSimpleExecute(r'TRUNCATE public.events CASCADE');
-        await session.db.unsafeSimpleExecute(r'TRUNCATE public.sections CASCADE');
+        await session.db.unsafeSimpleExecute(
+          r'TRUNCATE public.sections CASCADE',
+        );
       });
 
       test('Clean up test users', () async {
         final session = authSession.build();
-        await session.db.unsafeSimpleExecute(r'TRUNCATE public.user_notification_preference CASCADE');
-        await session.db.unsafeSimpleExecute(r'TRUNCATE public.serverpod_auth_core_user CASCADE');
-        await session.db.unsafeSimpleExecute(r'TRUNCATE public.serverpod_auth_idp_email_account CASCADE');
-        await session.db.unsafeSimpleExecute(r'TRUNCATE public.section_memberships CASCADE');
-        await session.db.unsafeSimpleExecute(r'TRUNCATE public.members CASCADE');
+        await session.db.unsafeSimpleExecute(
+          r'TRUNCATE public.user_notification_preference CASCADE',
+        );
+        await session.db.unsafeSimpleExecute(
+          r'TRUNCATE public.serverpod_auth_core_user CASCADE',
+        );
+        await session.db.unsafeSimpleExecute(
+          r'TRUNCATE public.serverpod_auth_idp_email_account CASCADE',
+        );
+        await session.db.unsafeSimpleExecute(
+          r'TRUNCATE public.section_memberships CASCADE',
+        );
+        await session.db.unsafeSimpleExecute(
+          r'TRUNCATE public.members CASCADE',
+        );
       }, skip: false); // we only run this as needed
 
       test('Create Default Sections', () async {
         for (final s in [
-          Section(name: 'National', description: 'National Section', location: 'Online', contactInfo: '555-121-23456'),
-          Section(name: 'Calgary', description: 'Calgary Section', location: 'Room 101', contactInfo: '555-121-23456'),
+          Section(
+            name: 'National',
+            description: 'National Section',
+            location: 'Online',
+            contactInfo: '555-121-23456',
+          ),
+          Section(
+            name: 'Calgary',
+            description: 'Calgary Section',
+            location: 'Room 101',
+            contactInfo: '555-121-23456',
+          ),
           Section(
             name: 'Edmonton',
             description: 'Edmonton Section',
@@ -100,7 +152,10 @@ void main() {
 
       test('Create Admin User', () async {
         final session = authSession.build();
-        var auModel = await AuthServices.instance.authUsers.create(session, scopes: {Scope.admin, CustomScope.admin});
+        var auModel = await AuthServices.instance.authUsers.create(
+          session,
+          scopes: {Scope.admin, CustomScope.admin},
+        );
         await enableAllNotificationsForUser(session, auModel.id);
 
         final emailAccountId = await admin.createEmailAuthentication(
@@ -137,7 +192,10 @@ void main() {
           SectionMembership(
             memberId: adminMember.id,
             sectionId: national.id!,
-            scopes: {CustomScope.sectionManager.name!, CustomScope.member.name!},
+            scopes: {
+              CustomScope.sectionManager.name!,
+              CustomScope.member.name!,
+            },
           ),
         );
         print('Added Admin to National section');
@@ -153,14 +211,22 @@ void main() {
         for (var i = 1; i <= numUsers; i++) {
           var email = 'test$i@acc.ca';
 
-          var au = await AuthServices.instance.authUsers.create(session, scopes: {});
+          var au = await AuthServices.instance.authUsers.create(
+            session,
+            scopes: {},
+          );
 
           // we do this later so create events does not trigger abunch of email notifications
           // await enableAllNotificationsForUser(session, au.id);
           // Instead just add to the list...
           createdUserIds.add(au.id);
 
-          await admin.createEmailAuthentication(session, authUserId: au.id, email: email, password: 'Passw0rd');
+          await admin.createEmailAuthentication(
+            session,
+            authUserId: au.id,
+            email: email,
+            password: 'Passw0rd',
+          );
 
           //print('Created user: $au');
           // Now assign them to a section
@@ -180,12 +246,19 @@ void main() {
           );
           // print('Created member profile: $m');
 
-          var scopes = <String>{CustomScope.sectionManager.name!, CustomScope.member.name!};
+          var scopes = <String>{
+            CustomScope.sectionManager.name!,
+            CustomScope.member.name!,
+          };
 
           // assign to first and second sections
           await endpoints.member.addMemberToSection(
             authSession,
-            SectionMembership(memberId: m.id, sectionId: s1.id!, scopes: scopes),
+            SectionMembership(
+              memberId: m.id,
+              sectionId: s1.id!,
+              scopes: scopes,
+            ),
           );
 
           // print('Created section membership: $sm');
@@ -204,7 +277,9 @@ void main() {
           limit: 10000,
           offset: 0,
         );
-        final testMembers = members.where((m) => m.email.startsWith('test')).toList();
+        final testMembers = members
+            .where((m) => m.email.startsWith('test'))
+            .toList();
 
         for (var i = 0; i < 100; i++) {
           // final section = i % 2 == 0 ? calgary : edmonton;
@@ -216,11 +291,14 @@ void main() {
           final member = testMembers[memberIndex];
 
           final userAuthSession = sessionBuilder.copyWith(
-            authentication: AuthenticationOverride.authenticationInfo(member.id.toString(), {
-              CustomScope.member,
-              CustomScope.sectionManager,
-              CustomScope.eventManager,
-            }),
+            authentication: AuthenticationOverride.authenticationInfo(
+              member.id.toString(),
+              {
+                CustomScope.member,
+                CustomScope.sectionManager,
+                CustomScope.eventManager,
+              },
+            ),
           );
 
           final s = DateTime.now().add(Duration(days: i + 1));
@@ -231,7 +309,8 @@ void main() {
             userAuthSession,
             Event(
               title: 'Sample Event #${i + 1} (${section.name})',
-              description: 'This is a sample event generated for testing purposes.',
+              description:
+                  'This is a sample event generated for testing purposes.',
               type: 'Ski',
               startTime: startTime,
               endTime: endTime,
@@ -265,7 +344,10 @@ void main() {
   );
 }
 
-Future<void> enableAllNotificationsForUser(Session session, UuidValue userId) async {
+Future<void> enableAllNotificationsForUser(
+  Session session,
+  UuidValue userId,
+) async {
   final preference = UserNotificationPreference(
     id: userId,
     newEvents: true,

@@ -1,7 +1,9 @@
 import 'dart:async';
+
 import 'package:alpine_pod_client/alpine_pod_client.dart';
 import 'package:logging/logging.dart';
 import 'package:signals_flutter/signals_flutter.dart';
+
 import '../signals.dart';
 
 final _log = Logger('ConnectivityService');
@@ -93,7 +95,9 @@ class ConnectivityService {
           errorStr.contains('unauthorized') ||
           errorStr.contains('401') ||
           errorStr.contains('403') ||
-          (!errorStr.contains('handshake') && (errorStr.contains('statuscode') || errorStr.contains('status code')))) {
+          (!errorStr.contains('handshake') &&
+              (errorStr.contains('statuscode') ||
+                  errorStr.contains('status code')))) {
         if (!isServerReachableSignal.value) {
           _log.info('Server connection verified (server responded)');
         }
@@ -144,4 +148,3 @@ class ConnectivityService {
 }
 
 final connectivityService = ConnectivityService();
-

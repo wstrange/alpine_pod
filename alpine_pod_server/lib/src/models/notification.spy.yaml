@@ -1,5 +1,6 @@
 class: Notification
 table: notification
+database: all
 fields:
   id: UuidValue?, defaultPersist=random_v7
   template: NotificationTemplate?, relation

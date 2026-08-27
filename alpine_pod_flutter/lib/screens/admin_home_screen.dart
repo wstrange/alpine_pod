@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:signals_hooks/signals_hooks.dart';
+
 import '../signals.dart';
 
 /// The main admin dashboard. Only accessible to users with the 'admin' scope.
 class const AdminHomeScreen({super.key}) extends HookWidget {
-
   @override
   Widget build(BuildContext context) {
     final tabController = useTabController(initialLength: 4);
@@ -22,18 +22,29 @@ class const AdminHomeScreen({super.key}) extends HookWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               decoration: BoxDecoration(
-                gradient: const LinearGradient(colors: [Color(0xFF6C63FF), Color(0xFF4ECDC4)]),
+                gradient: const LinearGradient(
+                  colors: [Color(0xFF6C63FF), Color(0xFF4ECDC4)],
+                ),
                 borderRadius: BorderRadius.circular(6),
               ),
               child: const Text(
                 'ADMIN',
-                style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 11, letterSpacing: 1.5),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w800,
+                  fontSize: 11,
+                  letterSpacing: 1.5,
+                ),
               ),
             ),
             const SizedBox(width: 12),
             const Text(
               'Alpine Pod Control Panel',
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 17),
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+                fontSize: 17,
+              ),
             ),
           ],
         ),
@@ -63,7 +74,12 @@ class const AdminHomeScreen({super.key}) extends HookWidget {
       ),
       body: TabBarView(
         controller: tabController,
-        children: const [_SectionsTab(), _MembersTab(), _TemplatesTab(), _NotificationsTab()],
+        children: const [
+          _SectionsTab(),
+          _MembersTab(),
+          _TemplatesTab(),
+          _NotificationsTab(),
+        ],
       ),
     );
   }
@@ -74,13 +90,15 @@ class const AdminHomeScreen({super.key}) extends HookWidget {
 // ---------------------------------------------------------------------------
 
 class const _SectionsTab() extends HookWidget {
-
   @override
   Widget build(BuildContext context) {
     // A signal bump that we increment to force a reload.
     final reload = useSignal(0);
 
-    final sectionsSignal = useFutureSignal(() => client.admin.listSections(), keys: [reload.value]);
+    final sectionsSignal = useFutureSignal(
+      () => client.admin.listSections(),
+      keys: [reload.value],
+    );
 
     void refresh() => reload.value++;
 
@@ -95,11 +113,19 @@ class const _SectionsTab() extends HookWidget {
       try {
         await client.admin.deleteSection(s.id!);
         messenger.showSnackBar(
-          SnackBar(content: Text('"${s.name}" deleted.'), backgroundColor: const Color(0xFF4ECDC4)),
+          SnackBar(
+            content: Text('"${s.name}" deleted.'),
+            backgroundColor: const Color(0xFF4ECDC4),
+          ),
         );
         refresh();
       } catch (e) {
-        messenger.showSnackBar(SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red[700]));
+        messenger.showSnackBar(
+          SnackBar(
+            content: Text('Error: $e'),
+            backgroundColor: Colors.red[700],
+          ),
+        );
       }
     }
 
@@ -124,7 +150,10 @@ class const _SectionsTab() extends HookWidget {
           data: (list) {
             if (list.isEmpty) {
               return const Center(
-                child: Text('No sections yet. Create one!', style: TextStyle(color: Colors.white54)),
+                child: Text(
+                  'No sections yet. Create one!',
+                  style: TextStyle(color: Colors.white54),
+                ),
               );
             }
             return ListView.separated(
@@ -139,9 +168,14 @@ class const _SectionsTab() extends HookWidget {
             );
           },
           error: (e, _) => Center(
-            child: Text('Error: $e', style: const TextStyle(color: Colors.redAccent)),
+            child: Text(
+              'Error: $e',
+              style: const TextStyle(color: Colors.redAccent),
+            ),
           ),
-          loading: () => const Center(child: CircularProgressIndicator(color: Color(0xFF6C63FF))),
+          loading: () => const Center(
+            child: CircularProgressIndicator(color: Color(0xFF6C63FF)),
+          ),
         ),
       ),
     );
@@ -153,7 +187,6 @@ class const _SectionCard({
   required final VoidCallback onEdit,
   required final VoidCallback onDelete,
 }) extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -163,7 +196,10 @@ class const _SectionCard({
         border: Border.all(color: Colors.white.withAlpha(15)),
       ),
       child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 10,
+        ),
         leading: Container(
           width: 44,
           height: 44,
@@ -179,7 +215,11 @@ class const _SectionCard({
         ),
         title: Text(
           section.name,
-          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 15),
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w600,
+            fontSize: 15,
+          ),
         ),
         subtitle: Text(
           section.description,
@@ -212,14 +252,17 @@ class const _SectionDialog({
   final Section? section,
   required final VoidCallback onSaved,
 }) extends HookWidget {
-
   @override
   Widget build(BuildContext context) {
     final formKey = useMemoized(GlobalKey<FormState>.new);
     final nameCtrl = useTextEditingController(text: section?.name ?? '');
     final descCtrl = useTextEditingController(text: section?.description ?? '');
-    final locationCtrl = useTextEditingController(text: section?.location ?? '');
-    final contactCtrl = useTextEditingController(text: section?.contactInfo ?? '');
+    final locationCtrl = useTextEditingController(
+      text: section?.location ?? '',
+    );
+    final contactCtrl = useTextEditingController(
+      text: section?.contactInfo ?? '',
+    );
     final saving = useSignal(false);
 
     final isEdit = section != null;
@@ -232,8 +275,12 @@ class const _SectionDialog({
         id: section?.id,
         name: nameCtrl.text.trim(),
         description: descCtrl.text.trim(),
-        location: locationCtrl.text.trim().isEmpty ? null : locationCtrl.text.trim(),
-        contactInfo: contactCtrl.text.trim().isEmpty ? null : contactCtrl.text.trim(),
+        location: locationCtrl.text.trim().isEmpty
+            ? null
+            : locationCtrl.text.trim(),
+        contactInfo: contactCtrl.text.trim().isEmpty
+            ? null
+            : contactCtrl.text.trim(),
       );
 
       try {
@@ -248,9 +295,12 @@ class const _SectionDialog({
         }
       } catch (e) {
         if (context.mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text('Save failed: $e'), backgroundColor: Colors.red[700]));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Save failed: $e'),
+              backgroundColor: Colors.red[700],
+            ),
+          );
         }
       } finally {
         saving.value = false;
@@ -264,7 +314,10 @@ class const _SectionDialog({
           backgroundColor: const Color(0xFF1A1D27),
           title: Text(
             isEdit ? 'Edit Section' : 'New Section',
-            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w700,
+            ),
           ),
           content: SizedBox(
             width: 400,
@@ -287,16 +340,24 @@ class const _SectionDialog({
           actions: [
             TextButton(
               onPressed: isSaving ? null : () => Navigator.pop(context),
-              child: const Text('Cancel', style: TextStyle(color: Colors.white54)),
+              child: const Text(
+                'Cancel',
+                style: TextStyle(color: Colors.white54),
+              ),
             ),
             FilledButton(
-              style: FilledButton.styleFrom(backgroundColor: const Color(0xFF6C63FF)),
+              style: FilledButton.styleFrom(
+                backgroundColor: const Color(0xFF6C63FF),
+              ),
               onPressed: isSaving ? null : save,
               child: isSaving
                   ? const SizedBox(
                       width: 18,
                       height: 18,
-                      child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 2,
+                      ),
                     )
                   : Text(isEdit ? 'Update' : 'Create'),
             ),
@@ -306,7 +367,12 @@ class const _SectionDialog({
     );
   }
 
-  Widget _field(String label, TextEditingController ctrl, {bool required = false, int maxLines = 1}) {
+  Widget _field(
+    String label,
+    TextEditingController ctrl, {
+    bool required = false,
+    int maxLines = 1,
+  }) {
     return TextFormField(
       controller: ctrl,
       maxLines: maxLines,
@@ -333,7 +399,9 @@ class const _SectionDialog({
         filled: true,
         fillColor: const Color(0xFF0F1117),
       ),
-      validator: required ? (v) => (v == null || v.trim().isEmpty) ? 'Required' : null : null,
+      validator: required
+          ? (v) => (v == null || v.trim().isEmpty) ? 'Required' : null
+          : null,
     );
   }
 }
@@ -343,7 +411,6 @@ class const _SectionDialog({
 // ---------------------------------------------------------------------------
 
 class const _MembersTab() extends HookWidget {
-
   @override
   Widget build(BuildContext context) {
     final searchCtrl = useTextEditingController();
@@ -412,7 +479,8 @@ class const _MembersTab() extends HookWidget {
     final scrollController = useScrollController();
     useEffect(() {
       void onScroll() {
-        if (scrollController.position.pixels >= scrollController.position.maxScrollExtent - 200) {
+        if (scrollController.position.pixels >=
+            scrollController.position.maxScrollExtent - 200) {
           fetchPage();
         }
       }
@@ -422,22 +490,32 @@ class const _MembersTab() extends HookWidget {
     }, [scrollController]);
 
     Future<void> deleteUser(Member member) async {
-      final fullName = member.displayName ?? '${member.firstName} ${member.lastName}';
+      final fullName =
+          member.displayName ?? '${member.firstName} ${member.lastName}';
       final confirmed = await _showConfirmDialog(
         context,
         title: 'Delete Member',
-        message: 'Permanently delete "$fullName"? This will remove all their data and cannot be undone.',
+        message:
+            'Permanently delete "$fullName"? This will remove all their data and cannot be undone.',
       );
       if (!confirmed || !context.mounted) return;
       final messenger = ScaffoldMessenger.of(context);
       try {
         await client.admin.deleteUser(member.id);
         messenger.showSnackBar(
-          SnackBar(content: Text('"$fullName" deleted.'), backgroundColor: const Color(0xFF4ECDC4)),
+          SnackBar(
+            content: Text('"$fullName" deleted.'),
+            backgroundColor: const Color(0xFF4ECDC4),
+          ),
         );
         reload.value++;
       } catch (e) {
-        messenger.showSnackBar(SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red[700]));
+        messenger.showSnackBar(
+          SnackBar(
+            content: Text('Error: $e'),
+            backgroundColor: Colors.red[700],
+          ),
+        );
       }
     }
 
@@ -473,34 +551,53 @@ class const _MembersTab() extends HookWidget {
               final currentError = error.value;
 
               if (isInitialLoading) {
-                return const Center(child: CircularProgressIndicator(color: Color(0xFF6C63FF)));
+                return const Center(
+                  child: CircularProgressIndicator(color: Color(0xFF6C63FF)),
+                );
               }
 
               if (currentError != null && list.isEmpty) {
                 return Center(
-                  child: Text('Error: $currentError', style: const TextStyle(color: Colors.redAccent)),
+                  child: Text(
+                    'Error: $currentError',
+                    style: const TextStyle(color: Colors.redAccent),
+                  ),
                 );
               }
 
               if (list.isEmpty) {
                 return const Center(
-                  child: Text('No members found.', style: TextStyle(color: Colors.white54)),
+                  child: Text(
+                    'No members found.',
+                    style: TextStyle(color: Colors.white54),
+                  ),
                 );
               }
 
               return ListView.separated(
                 controller: scrollController,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
                 itemCount: list.length + (hasMore.value ? 1 : 0),
                 separatorBuilder: (_, _) => const SizedBox(height: 8),
                 itemBuilder: (_, i) {
                   if (i == list.length) {
                     return const Padding(
                       padding: EdgeInsets.symmetric(vertical: 16),
-                      child: Center(child: CircularProgressIndicator(color: Color(0xFF6C63FF), strokeWidth: 2)),
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          color: Color(0xFF6C63FF),
+                          strokeWidth: 2,
+                        ),
+                      ),
                     );
                   }
-                  return _MemberCard(member: list[i], onDelete: () => deleteUser(list[i]));
+                  return _MemberCard(
+                    member: list[i],
+                    onDelete: () => deleteUser(list[i]),
+                  );
                 },
               );
             },
@@ -515,10 +612,10 @@ class const _MemberCard({
   required final Member member,
   required final VoidCallback onDelete,
 }) extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
-    final fullName = member.displayName ?? '${member.firstName} ${member.lastName}';
+    final fullName =
+        member.displayName ?? '${member.firstName} ${member.lastName}';
     final initials = fullName
         .trim()
         .split(' ')
@@ -539,14 +636,25 @@ class const _MemberCard({
           backgroundColor: const Color(0xFF6C63FF).withAlpha(180),
           child: Text(
             initials,
-            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 14),
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w700,
+              fontSize: 14,
+            ),
           ),
         ),
         title: Text(
           fullName,
-          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14),
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w600,
+            fontSize: 14,
+          ),
         ),
-        subtitle: Text(member.email, style: const TextStyle(color: Colors.white54, fontSize: 12)),
+        subtitle: Text(
+          member.email,
+          style: const TextStyle(color: Colors.white54, fontSize: 12),
+        ),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -572,7 +680,6 @@ class const _MemberCard({
 // ---------------------------------------------------------------------------
 
 class const _NotificationsTab() extends HookWidget {
-
   @override
   Widget build(BuildContext context) {
     final statusFilter = useSignal<String?>(null);
@@ -580,7 +687,11 @@ class const _NotificationsTab() extends HookWidget {
 
     const pageSize = 100;
     final deliveriesSignal = useFutureSignal(
-      () => client.admin.getNotificationDeliveries(limit: pageSize, offset: 0, statusFilter: statusFilter.value),
+      () => client.admin.getNotificationDeliveries(
+        limit: pageSize,
+        offset: 0,
+        statusFilter: statusFilter.value,
+      ),
       keys: [statusFilter.value, reload.value],
     );
 
@@ -590,8 +701,7 @@ class const _NotificationsTab() extends HookWidget {
       final confirmed = await _showConfirmDialog(
         context,
         title: 'Purge Deliveries',
-        message:
-            'Delete every notification delivery row? Notification history will remain, but delivery status records will be removed.',
+        message: 'Delete every notification delivery row? Notification history will remain, but delivery status records will be removed.',
       );
       if (!confirmed || !context.mounted) return;
 
@@ -599,11 +709,19 @@ class const _NotificationsTab() extends HookWidget {
       try {
         await client.admin.clearNotificationDeliveries();
         messenger.showSnackBar(
-          const SnackBar(content: Text('Notification delivery table purged.'), backgroundColor: Color(0xFF4ECDC4)),
+          const SnackBar(
+            content: Text('Notification delivery table purged.'),
+            backgroundColor: Color(0xFF4ECDC4),
+          ),
         );
         refresh();
       } catch (e) {
-        messenger.showSnackBar(SnackBar(content: Text('Purge failed: $e'), backgroundColor: Colors.red));
+        messenger.showSnackBar(
+          SnackBar(
+            content: Text('Purge failed: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
       }
     }
 
@@ -612,11 +730,19 @@ class const _NotificationsTab() extends HookWidget {
       try {
         await client.admin.retryFailedNotifications();
         messenger.showSnackBar(
-          const SnackBar(content: Text('Failed deliveries queued for retry.'), backgroundColor: Color(0xFF4ECDC4)),
+          const SnackBar(
+            content: Text('Failed deliveries queued for retry.'),
+            backgroundColor: Color(0xFF4ECDC4),
+          ),
         );
         refresh();
       } catch (e) {
-        messenger.showSnackBar(SnackBar(content: Text('Retry failed: $e'), backgroundColor: Colors.red));
+        messenger.showSnackBar(
+          SnackBar(
+            content: Text('Retry failed: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
       }
     }
 
@@ -642,14 +768,21 @@ class const _NotificationsTab() extends HookWidget {
                     selected: statusFilter.value == status,
                     onSelected: () => statusFilter.value = status,
                   ),
-                OutlinedButton.icon(onPressed: refresh, icon: const Icon(Icons.refresh), label: const Text('Refresh')),
+                OutlinedButton.icon(
+                  onPressed: refresh,
+                  icon: const Icon(Icons.refresh),
+                  label: const Text('Refresh'),
+                ),
                 OutlinedButton.icon(
                   onPressed: retryFailed,
                   icon: const Icon(Icons.replay),
                   label: const Text('Retry Failed'),
                 ),
                 FilledButton.icon(
-                  style: FilledButton.styleFrom(backgroundColor: Colors.red[700], foregroundColor: Colors.white),
+                  style: FilledButton.styleFrom(
+                    backgroundColor: Colors.red[700],
+                    foregroundColor: Colors.white,
+                  ),
                   onPressed: purgeDeliveries,
                   icon: const Icon(Icons.delete_sweep_outlined),
                   label: const Text('Purge Deliveries'),
@@ -663,7 +796,10 @@ class const _NotificationsTab() extends HookWidget {
                 data: (deliveries) {
                   if (deliveries.isEmpty) {
                     return const Center(
-                      child: Text('No delivery records found.', style: TextStyle(color: Colors.white54)),
+                      child: Text(
+                        'No delivery records found.',
+                        style: TextStyle(color: Colors.white54),
+                      ),
                     );
                   }
 
@@ -671,13 +807,19 @@ class const _NotificationsTab() extends HookWidget {
                     padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
                     itemCount: deliveries.length,
                     separatorBuilder: (_, _) => const SizedBox(height: 8),
-                    itemBuilder: (_, i) => _NotificationDeliveryCard(delivery: deliveries[i]),
+                    itemBuilder: (_, i) =>
+                        _NotificationDeliveryCard(delivery: deliveries[i]),
                   );
                 },
                 error: (e, _) => Center(
-                  child: Text('Error: $e', style: const TextStyle(color: Colors.redAccent)),
+                  child: Text(
+                    'Error: $e',
+                    style: const TextStyle(color: Colors.redAccent),
+                  ),
                 ),
-                loading: () => const Center(child: CircularProgressIndicator(color: Color(0xFF6C63FF))),
+                loading: () => const Center(
+                  child: CircularProgressIndicator(color: Color(0xFF6C63FF)),
+                ),
               ),
             ),
           ),
@@ -692,7 +834,6 @@ class const _StatusFilterChip({
   required final bool selected,
   required final VoidCallback onSelected,
 }) extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return FilterChip(
@@ -711,12 +852,14 @@ class const _StatusFilterChip({
 class const _NotificationDeliveryCard({
   required final NotificationDelivery delivery,
 }) extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     final notification = delivery.notification;
-    final title = notification?.renderedTitle ?? 'Notification ${delivery.notificationId}';
-    final body = notification?.renderedBody ?? delivery.info ?? 'No delivery details';
+    final title =
+        notification?.renderedTitle ??
+        'Notification ${delivery.notificationId}';
+    final body =
+        notification?.renderedBody ?? delivery.info ?? 'No delivery details';
 
     return Container(
       decoration: BoxDecoration(
@@ -738,12 +881,19 @@ class const _NotificationDeliveryCard({
                     children: [
                       Text(
                         title,
-                        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 15),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 15,
+                        ),
                       ),
                       const SizedBox(height: 4),
                       Text(
                         body,
-                        style: const TextStyle(color: Colors.white60, fontSize: 12),
+                        style: const TextStyle(
+                          color: Colors.white60,
+                          fontSize: 12,
+                        ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -759,7 +909,10 @@ class const _NotificationDeliveryCard({
               spacing: 8,
               runSpacing: 8,
               children: [
-                _DeliveryMetaChip(icon: Icons.send_outlined, label: delivery.channel.name),
+                _DeliveryMetaChip(
+                  icon: Icons.send_outlined,
+                  label: delivery.channel.name,
+                ),
                 _DeliveryMetaChip(
                   icon: Icons.person_outline,
                   label:
@@ -767,13 +920,23 @@ class const _NotificationDeliveryCard({
                       delivery.recipientUserId?.toString() ??
                       'Bulk section ${delivery.sectionId ?? '-'}',
                 ),
-                _DeliveryMetaChip(icon: Icons.repeat, label: '${delivery.attempts} attempts'),
-                _DeliveryMetaChip(icon: Icons.schedule, label: _formatDateTime(delivery.createdAt)),
+                _DeliveryMetaChip(
+                  icon: Icons.repeat,
+                  label: '${delivery.attempts} attempts',
+                ),
+                _DeliveryMetaChip(
+                  icon: Icons.schedule,
+                  label: _formatDateTime(delivery.createdAt),
+                ),
                 if (delivery.lastAttemptAt != null)
-                  _DeliveryMetaChip(icon: Icons.history, label: 'Last ${_formatDateTime(delivery.lastAttemptAt!)}'),
+                  _DeliveryMetaChip(
+                    icon: Icons.history,
+                    label: 'Last ${_formatDateTime(delivery.lastAttemptAt!)}',
+                  ),
               ],
             ),
-            if (delivery.errorMessage != null && delivery.errorMessage!.trim().isNotEmpty) ...[
+            if (delivery.errorMessage != null &&
+                delivery.errorMessage!.trim().isNotEmpty) ...[
               const SizedBox(height: 10),
               Text(
                 delivery.errorMessage!,
@@ -789,8 +952,8 @@ class const _NotificationDeliveryCard({
   }
 }
 
-class const _DeliveryStatusBadge({required final String status}) extends StatelessWidget {
-
+class const _DeliveryStatusBadge({required final String status})
+    extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = switch (status) {
@@ -809,7 +972,11 @@ class const _DeliveryStatusBadge({required final String status}) extends Statele
       ),
       child: Text(
         status,
-        style: TextStyle(color: color, fontSize: 11, fontWeight: FontWeight.w800),
+        style: TextStyle(
+          color: color,
+          fontSize: 11,
+          fontWeight: FontWeight.w800,
+        ),
       ),
     );
   }
@@ -819,7 +986,6 @@ class const _DeliveryMetaChip({
   required final IconData icon,
   required final String label,
 }) extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -834,7 +1000,10 @@ class const _DeliveryMetaChip({
         children: [
           Icon(icon, size: 14, color: Colors.white54),
           const SizedBox(width: 5),
-          Text(label, style: const TextStyle(color: Colors.white70, fontSize: 12)),
+          Text(
+            label,
+            style: const TextStyle(color: Colors.white70, fontSize: 12),
+          ),
         ],
       ),
     );
@@ -852,14 +1021,21 @@ String _formatDateTime(DateTime value) {
       '${two(local.hour)}:${two(local.minute)}';
 }
 
-Future<bool> _showConfirmDialog(BuildContext context, {required String title, required String message}) async {
+Future<bool> _showConfirmDialog(
+  BuildContext context, {
+  required String title,
+  required String message,
+}) async {
   final result = await showDialog<bool>(
     context: context,
     builder: (ctx) => AlertDialog(
       backgroundColor: const Color(0xFF1A1D27),
       title: Text(
         title,
-        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+        style: const TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.w700,
+        ),
       ),
       content: Text(message, style: const TextStyle(color: Colors.white70)),
       actions: [
@@ -883,12 +1059,14 @@ Future<bool> _showConfirmDialog(BuildContext context, {required String title, re
 // ---------------------------------------------------------------------------
 
 class const _TemplatesTab() extends HookWidget {
-
   @override
   Widget build(BuildContext context) {
     final reload = useSignal(0);
 
-    final templatesSignal = useFutureSignal(() => client.eventTemplate.listTemplates(), keys: [reload.value]);
+    final templatesSignal = useFutureSignal(
+      () => client.eventTemplate.listTemplates(),
+      keys: [reload.value],
+    );
 
     void refresh() => reload.value++;
 
@@ -903,11 +1081,19 @@ class const _TemplatesTab() extends HookWidget {
       try {
         await client.eventTemplate.deleteTemplate(t.id!);
         messenger.showSnackBar(
-          SnackBar(content: Text('"${t.name}" deleted.'), backgroundColor: const Color(0xFF4ECDC4)),
+          SnackBar(
+            content: Text('"${t.name}" deleted.'),
+            backgroundColor: const Color(0xFF4ECDC4),
+          ),
         );
         refresh();
       } catch (e) {
-        messenger.showSnackBar(SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red[700]));
+        messenger.showSnackBar(
+          SnackBar(
+            content: Text('Error: $e'),
+            backgroundColor: Colors.red[700],
+          ),
+        );
       }
     }
 
@@ -932,7 +1118,10 @@ class const _TemplatesTab() extends HookWidget {
           data: (list) {
             if (list.isEmpty) {
               return const Center(
-                child: Text('No templates yet. Create one!', style: TextStyle(color: Colors.white54)),
+                child: Text(
+                  'No templates yet. Create one!',
+                  style: TextStyle(color: Colors.white54),
+                ),
               );
             }
             return ListView.separated(
@@ -947,9 +1136,14 @@ class const _TemplatesTab() extends HookWidget {
             );
           },
           error: (e, _) => Center(
-            child: Text('Error: $e', style: const TextStyle(color: Colors.redAccent)),
+            child: Text(
+              'Error: $e',
+              style: const TextStyle(color: Colors.redAccent),
+            ),
           ),
-          loading: () => const Center(child: CircularProgressIndicator(color: Color(0xFF6C63FF))),
+          loading: () => const Center(
+            child: CircularProgressIndicator(color: Color(0xFF6C63FF)),
+          ),
         ),
       ),
     );
@@ -961,7 +1155,6 @@ class const _TemplateCard({
   required final VoidCallback onEdit,
   required final VoidCallback onDelete,
 }) extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -971,7 +1164,10 @@ class const _TemplateCard({
         border: Border.all(color: Colors.white.withAlpha(15)),
       ),
       child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 10,
+        ),
         leading: Container(
           width: 44,
           height: 44,
@@ -990,15 +1186,26 @@ class const _TemplateCard({
             Expanded(
               child: Text(
                 template.name,
-                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 15),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 15,
+                ),
               ),
             ),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-              decoration: BoxDecoration(color: Colors.white.withAlpha(20), borderRadius: BorderRadius.circular(12)),
+              decoration: BoxDecoration(
+                color: Colors.white.withAlpha(20),
+                borderRadius: BorderRadius.circular(12),
+              ),
               child: Text(
                 template.language.toUpperCase(),
-                style: const TextStyle(color: Colors.white70, fontSize: 10, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  color: Colors.white70,
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ],
@@ -1036,13 +1243,16 @@ class const _TemplateDialog({
   final EventTemplate? template,
   required final VoidCallback onSaved,
 }) extends HookWidget {
-
   @override
   Widget build(BuildContext context) {
     final formKey = useMemoized(GlobalKey<FormState>.new);
     final nameCtrl = useTextEditingController(text: template?.name ?? '');
-    final languageCtrl = useTextEditingController(text: template?.language ?? 'en');
-    final descCtrl = useTextEditingController(text: template?.description ?? '');
+    final languageCtrl = useTextEditingController(
+      text: template?.language ?? 'en',
+    );
+    final descCtrl = useTextEditingController(
+      text: template?.description ?? '',
+    );
     final contentCtrl = useTextEditingController(text: template?.content ?? '');
     final saving = useSignal(false);
 
@@ -1072,9 +1282,12 @@ class const _TemplateDialog({
         }
       } catch (e) {
         if (context.mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text('Save failed: $e'), backgroundColor: Colors.red[700]));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Save failed: $e'),
+              backgroundColor: Colors.red[700],
+            ),
+          );
         }
       } finally {
         saving.value = false;
@@ -1088,7 +1301,10 @@ class const _TemplateDialog({
           backgroundColor: const Color(0xFF1A1D27),
           title: Text(
             isEdit ? 'Edit Template' : 'New Template',
-            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w700,
+            ),
           ),
           content: SizedBox(
             width: 600,
@@ -1100,15 +1316,35 @@ class const _TemplateDialog({
                   children: [
                     Row(
                       children: [
-                        Expanded(flex: 3, child: _field('Name', nameCtrl, required: true)),
+                        Expanded(
+                          flex: 3,
+                          child: _field('Name', nameCtrl, required: true),
+                        ),
                         const SizedBox(width: 12),
-                        Expanded(flex: 1, child: _field('Lang (e.g. en, fr)', languageCtrl, required: true)),
+                        Expanded(
+                          flex: 1,
+                          child: _field(
+                            'Lang (e.g. en, fr)',
+                            languageCtrl,
+                            required: true,
+                          ),
+                        ),
                       ],
                     ),
                     const SizedBox(height: 12),
-                    _field('Description', descCtrl, required: true, maxLines: 2),
+                    _field(
+                      'Description',
+                      descCtrl,
+                      required: true,
+                      maxLines: 2,
+                    ),
                     const SizedBox(height: 12),
-                    _field('Markdown Content', contentCtrl, required: true, maxLines: 15),
+                    _field(
+                      'Markdown Content',
+                      contentCtrl,
+                      required: true,
+                      maxLines: 15,
+                    ),
                   ],
                 ),
               ),
@@ -1117,16 +1353,24 @@ class const _TemplateDialog({
           actions: [
             TextButton(
               onPressed: isSaving ? null : () => Navigator.pop(context),
-              child: const Text('Cancel', style: TextStyle(color: Colors.white54)),
+              child: const Text(
+                'Cancel',
+                style: TextStyle(color: Colors.white54),
+              ),
             ),
             FilledButton(
-              style: FilledButton.styleFrom(backgroundColor: const Color(0xFF6C63FF)),
+              style: FilledButton.styleFrom(
+                backgroundColor: const Color(0xFF6C63FF),
+              ),
               onPressed: isSaving ? null : save,
               child: isSaving
                   ? const SizedBox(
                       width: 18,
                       height: 18,
-                      child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 2,
+                      ),
                     )
                   : Text(isEdit ? 'Update' : 'Create'),
             ),
@@ -1136,7 +1380,12 @@ class const _TemplateDialog({
     );
   }
 
-  Widget _field(String label, TextEditingController ctrl, {bool required = false, int maxLines = 1}) {
+  Widget _field(
+    String label,
+    TextEditingController ctrl, {
+    bool required = false,
+    int maxLines = 1,
+  }) {
     return TextFormField(
       controller: ctrl,
       maxLines: maxLines,
@@ -1163,7 +1412,9 @@ class const _TemplateDialog({
         filled: true,
         fillColor: const Color(0xFF0F1117),
       ),
-      validator: required ? (v) => (v == null || v.trim().isEmpty) ? 'Required' : null : null,
+      validator: required
+          ? (v) => (v == null || v.trim().isEmpty) ? 'Required' : null
+          : null,
     );
   }
 }

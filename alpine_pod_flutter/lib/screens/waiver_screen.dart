@@ -2,6 +2,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:go_router/go_router.dart';
+
 import '../repositories/member_repository.dart';
 import '../router.dart' show resetRouterBootstrap;
 import '../signals.dart';
@@ -62,9 +63,8 @@ class _WaiverScreenState extends State<WaiverScreen> {
     } catch (e) {
       log.severe('Failed to accept waiver', e);
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Failed to save waiver: $e')));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Failed to save waiver: $e')));
         setState(() {
           _isSubmitting = false;
         });

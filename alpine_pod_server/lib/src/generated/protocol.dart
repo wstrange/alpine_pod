@@ -1267,16 +1267,6 @@ class Protocol extends _is.DatabaseSerializationManager {
       foreignKeys: [
         _isp.ForeignKeyDefinition(
           constraintName: 'user_notification_fk_0',
-          columns: ['userId'],
-          referenceTable: 'serverpod_auth_core_user',
-          referenceTableSchema: 'public',
-          referenceColumns: ['id'],
-          onUpdate: _isp.ForeignKeyAction.noAction,
-          onDelete: _isp.ForeignKeyAction.cascade,
-          matchType: null,
-        ),
-        _isp.ForeignKeyDefinition(
-          constraintName: 'user_notification_fk_1',
           columns: ['notificationId'],
           referenceTable: 'notification',
           referenceTableSchema: 'public',

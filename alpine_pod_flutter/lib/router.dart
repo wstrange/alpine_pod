@@ -1,6 +1,7 @@
 import 'package:alpine_pod_client/alpine_pod_client.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:go_router/go_router.dart';
+
 import 'repositories/member_repository.dart';
 import 'signals.dart';
 import 'screens/event_details_screen.dart';
@@ -162,7 +163,9 @@ Future<String?> _performBootstrap() async {
   try {
     debugPrint('Router: Starting post-login bootstrap...');
     final member = await memberRepository.getCurrentMember(forceRefresh: true);
-    final sections = await memberRepository.getAllMySectionMemberships(forceRefresh: true);
+    final sections = await memberRepository.getAllMySectionMemberships(
+      forceRefresh: true,
+    );
 
     currentMemberSignal.value = member;
 

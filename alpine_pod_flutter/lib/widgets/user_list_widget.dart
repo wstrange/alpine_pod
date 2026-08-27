@@ -4,8 +4,12 @@ import 'package:material_ui/material_ui.dart';
 import 'member_avatar.dart';
 import 'member_details_dialog.dart';
 
-class const UserListWidget({super.key, required this.members, this.shrinkWrap = false, this.physics})
-    extends StatelessWidget {
+class const UserListWidget({
+  super.key,
+  required this.members,
+  this.shrinkWrap = false,
+  this.physics,
+}) extends StatelessWidget {
   final List<Member> members;
   final bool shrinkWrap;
   final ScrollPhysics? physics;
@@ -23,7 +27,8 @@ class const UserListWidget({super.key, required this.members, this.shrinkWrap = 
       separatorBuilder: (context, index) => const SizedBox(height: 8),
       itemBuilder: (context, index) {
         final member = members[index];
-        final name = member.displayName ?? '${member.firstName} ${member.lastName}';
+        final name =
+            member.displayName ?? '${member.firstName} ${member.lastName}';
 
         return ListTile(
           leading: MemberAvatar(member: member),

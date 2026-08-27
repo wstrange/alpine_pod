@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:signals_hooks/signals_hooks.dart';
 import 'package:alpine_pod_client/alpine_pod_client.dart';
+
 import '../repositories/member_repository.dart';
 import '../signals.dart';
 import '../services/image.dart' as image_service;
@@ -55,7 +56,6 @@ class _MemberEditForm extends HookWidget {
   final VoidCallback onProfileImageChanged;
 
   const _MemberEditForm({
-    super.key,
     required this.member,
     required this.onProfileImageChanged,
   });
@@ -112,7 +112,11 @@ class _MemberEditForm extends HookWidget {
     Future<void> save() async {
       if (!isOnline) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('You are currently offline. Profile updates require an internet connection.')),
+          const SnackBar(
+            content: Text(
+              'You are currently offline. Profile updates require an internet connection.',
+            ),
+          ),
         );
         return;
       }
@@ -132,9 +136,8 @@ class _MemberEditForm extends HookWidget {
         await memberRepository.updateMember(updatedMember);
 
         if (context.mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(const SnackBar(content: Text('Profile saved')));
+          ScaffoldMessenger.of(context)
+              .showSnackBar(const SnackBar(content: Text('Profile saved')));
           final router = GoRouter.of(context);
           if (router.canPop()) {
             router.pop();
@@ -320,22 +323,26 @@ class _MemberEditForm extends HookWidget {
                                               await showDialog<Section>(
                                                 context: context,
                                                 builder: (context) => AlertDialog(
-                                                  title: const Text('Add to Section'),
+                                                  title: const Text(
+                                                    'Add to Section',
+                                                  ),
                                                   content: SizedBox(
                                                     width: double.maxFinite,
                                                     child: ListView.builder(
                                                       shrinkWrap: true,
                                                       itemCount:
-                                                          availableSections.length,
+                                                          availableSections
+                                                              .length,
                                                       itemBuilder: (context, index) {
                                                         final s =
                                                             availableSections[index];
                                                         return ListTile(
                                                           title: Text(s.name),
-                                                          onTap: () => Navigator.pop(
-                                                            context,
-                                                            s,
-                                                          ),
+                                                          onTap: () =>
+                                                              Navigator.pop(
+                                                                context,
+                                                                s,
+                                                              ),
                                                         );
                                                       },
                                                     ),
@@ -346,13 +353,15 @@ class _MemberEditForm extends HookWidget {
                                           if (selectedSection != null &&
                                               context.mounted) {
                                             try {
-                                              await client.member.addMemberToSection(
-                                                SectionMembership(
-                                                  memberId: memberId,
-                                                  sectionId: selectedSection.id!,
-                                                  scopes: {'member'},
-                                                ),
-                                              );
+                                              await client.member
+                                                  .addMemberToSection(
+                                                    SectionMembership(
+                                                      memberId: memberId,
+                                                      sectionId:
+                                                          selectedSection.id!,
+                                                      scopes: {'member'},
+                                                    ),
+                                                  );
                                               reloadMemberships.value++;
                                             } catch (e) {
                                               if (context.mounted) {
@@ -371,7 +380,11 @@ class _MemberEditForm extends HookWidget {
                                         }
                                       : null,
                                   icon: const Icon(Icons.add),
-                                  label: Text(isOnline ? 'Add to Section' : 'Add to Section (Offline)'),
+                                  label: Text(
+                                    isOnline
+                                        ? 'Add to Section'
+                                        : 'Add to Section (Offline)',
+                                  ),
                                 );
                               }(),
                               _ => const SizedBox.shrink(),
@@ -427,7 +440,6 @@ class _ProfileImageEditor extends StatelessWidget {
   final VoidCallback onImageChanged;
 
   const _ProfileImageEditor({
-    super.key,
     required this.member,
     required this.canEdit,
     required this.onImageChanged,
@@ -478,7 +490,6 @@ class _ProfileImageEditor extends StatelessWidget {
 
 class const _ProfileImageDialog({required final Member member})
     extends StatefulWidget {
-
   @override
   State<_ProfileImageDialog> createState() => _ProfileImageDialogState();
 }

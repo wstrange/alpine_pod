@@ -1,9 +1,9 @@
 class: UserNotification
 table: user_notification
-database: server
+database: all
 fields:
   id: UuidValue, defaultModel=random_v7
-  user: module:serverpod_auth_core:AuthUser?, relation(onDelete=Cascade)
+  userId: UuidValue
   notification: Notification?, relation
   isRead: bool, default=false
   isSeen: bool, default=false

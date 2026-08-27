@@ -91,9 +91,8 @@ class EventDetailsScreen extends HookWidget {
                                 : 'Edit Event (Offline)',
                             onPressed: isOnline
                                 ? () {
-                                    GoRouter.of(
-                                      context,
-                                    ).push('/event-edit/${event.id}');
+                                    GoRouter.of(context)
+                                        .push('/event-edit/${event.id}');
                                   }
                                 : null,
                           ),

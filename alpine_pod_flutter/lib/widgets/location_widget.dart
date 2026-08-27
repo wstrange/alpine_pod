@@ -9,7 +9,11 @@ import 'package:url_launcher/url_launcher.dart';
 ///
 /// Set [compact] to `true` for single-line display (e.g. in event cards),
 /// or leave it `false` (default) for up to two lines (e.g. in event details).
-class const LocationWidget({required this.location, this.compact = false, super.key}) extends StatelessWidget {
+class const LocationWidget({
+  required this.location,
+  this.compact = false,
+  super.key,
+}) extends StatelessWidget {
   final String location;
 
   /// When `true`, text is limited to one line.  When `false`, up to two lines.
@@ -55,14 +59,21 @@ class const LocationWidget({required this.location, this.compact = false, super.
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(Icons.location_pin, size: compact ? 18 : 20, color: colorScheme.primary),
+            Icon(
+              Icons.location_pin,
+              size: compact ? 18 : 20,
+              color: colorScheme.primary,
+            ),
             const SizedBox(width: 4),
             Flexible(
               child: MarkdownBody(
                 data: location,
                 onTapLink: (text, href, title) {
                   if (href != null) {
-                    launchUrl(Uri.parse(href), mode: LaunchMode.externalApplication);
+                    launchUrl(
+                      Uri.parse(href),
+                      mode: LaunchMode.externalApplication,
+                    );
                   }
                 },
                 styleSheet: MarkdownStyleSheet(

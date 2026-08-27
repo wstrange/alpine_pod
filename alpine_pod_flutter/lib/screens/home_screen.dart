@@ -2,7 +2,6 @@ import 'package:material_ui/material_ui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:signals_flutter/signals_flutter.dart';
 
-import '../services/connectivity_service.dart';
 import '../signals.dart';
 import '../widgets/calendar_view.dart';
 
@@ -29,9 +28,14 @@ class HomeScreen extends SignalWidget {
               Tooltip(
                 message: !isNetwork
                     ? 'Offline (No internet)'
-                    : (!isServerReachable ? 'Server unreachable (Offline mode)' : 'Offline'),
+                    : (!isServerReachable
+                          ? 'Server unreachable (Offline mode)'
+                          : 'Offline'),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 6,
+                    vertical: 2,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.amber.shade800,
                     borderRadius: BorderRadius.circular(4),
@@ -71,15 +75,21 @@ class HomeScreen extends SignalWidget {
                   Icon(
                     useCache ? Icons.storage : Icons.cloud_outlined,
                     size: 18,
-                    color: useCache ? Theme.of(context).colorScheme.primary : Colors.grey,
+                    color: useCache
+                        ? Theme.of(context).colorScheme.primary
+                        : Colors.grey,
                   ),
                   const SizedBox(width: 4),
                   Text(
                     'Cache',
                     style: TextStyle(
                       fontSize: 12,
-                      color: useCache ? Theme.of(context).colorScheme.primary : Colors.grey,
-                      fontWeight: useCache ? FontWeight.bold : FontWeight.normal,
+                      color: useCache
+                          ? Theme.of(context).colorScheme.primary
+                          : Colors.grey,
+                      fontWeight: useCache
+                          ? FontWeight.bold
+                          : FontWeight.normal,
                     ),
                   ),
                   Transform.scale(
@@ -131,7 +141,12 @@ class HomeScreen extends SignalWidget {
             ListTile(
               leading: const Icon(Icons.add),
               title: Text(isOnline ? 'Create Event' : 'Create Event (Offline)'),
-              subtitle: !isOnline ? const Text('Requires internet connection', style: TextStyle(fontSize: 11)) : null,
+              subtitle: !isOnline
+                  ? const Text(
+                      'Requires internet connection',
+                      style: TextStyle(fontSize: 11),
+                    )
+                  : null,
               enabled: isOnline,
               onTap: isOnline
                   ? () {
@@ -152,7 +167,11 @@ class HomeScreen extends SignalWidget {
             SwitchListTile(
               secondary: Icon(useCache ? Icons.storage : Icons.cloud_outlined),
               title: const Text('Client Cache'),
-              subtitle: Text(useCache ? 'Using local SQLite cache' : 'Direct server fetching'),
+              subtitle: Text(
+                useCache
+                    ? 'Using local SQLite cache'
+                    : 'Direct server fetching',
+              ),
               value: useCache,
               onChanged: (val) {
                 useClientCacheSignal.value = val;
@@ -162,7 +181,9 @@ class HomeScreen extends SignalWidget {
               SwitchListTile(
                 secondary: const Icon(Icons.history),
                 title: const Text('Sync Changes Only'),
-                subtitle: const Text('Only fetch events updated since last sync'),
+                subtitle: const Text(
+                  'Only fetch events updated since last sync',
+                ),
                 value: syncOnlyUpdatedDataSignal.value,
                 onChanged: (val) {
                   syncOnlyUpdatedDataSignal.value = val;

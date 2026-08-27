@@ -3,8 +3,10 @@
 import 'dart:async';
 
 import '../services/notification_service.dart';
+
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_auth_idp_server/core.dart';
+
 import '../generated/protocol.dart';
 import '../member_cache.dart';
 

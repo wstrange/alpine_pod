@@ -2,8 +2,10 @@ import 'package:alpine_pod_server/src/custom_scopes.dart';
 import 'package:alpine_pod_server/src/generated/protocol.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:test/test.dart';
+
 import 'test_tools/serverpod_test_tools.dart';
 import 'utils/gen_data.dart';
+
 import 'package:serverpod_auth_idp_server/core.dart';
 import 'package:serverpod_auth_idp_server/providers/email.dart';
 
@@ -12,12 +14,16 @@ void main() {
 
   withServerpod('EventManager Tests', (sessionBuilder, endpoints) {
     Serverpod.instance.initializeAuthServices(
-      identityProviderBuilders: [EmailIdpConfig(secretHashPepper: 'emailSecretHashPepper')],
+      identityProviderBuilders: [
+        EmailIdpConfig(secretHashPepper: 'emailSecretHashPepper'),
+      ],
       tokenManagerBuilders: [
         JwtConfig(
           refreshTokenHashPepper: 'jwtRefreshTokenHashPepper',
           algorithm: JwtAlgorithm.hmacSha512(
-            SecretKey('jwtHmacSha512PrivateKey-MustBeLongEnoughFor-HMAC-SHA512-Tests'),
+            SecretKey(
+              'jwtHmacSha512PrivateKey-MustBeLongEnoughFor-HMAC-SHA512-Tests',
+            ),
           ),
         ),
       ],
@@ -34,11 +40,10 @@ void main() {
       final authUser = await AuthServices.instance.authUsers.create(session);
 
       adminAuth = sessionBuilder.copyWith(
-        authentication: AuthenticationOverride.authenticationInfo(authUser.id.toString(), {
-          Scope.admin,
-          CustomScope.eventManager,
-          CustomScope.member,
-        }),
+        authentication: AuthenticationOverride.authenticationInfo(
+          authUser.id.toString(),
+          {Scope.admin, CustomScope.eventManager, CustomScope.member},
+        ),
       );
 
       // Create a section
@@ -49,13 +54,20 @@ void main() {
 
       member = await endpoints.member.createMember(
         adminAuth,
-        genData.member(userId: authUser.id, email: 'test-${Uuid().v4()}@example.com'),
+        genData.member(
+          userId: authUser.id,
+          email: 'test-${Uuid().v4()}@example.com',
+        ),
       );
 
       // Assign member to section
       await endpoints.member.addMemberToSection(
         adminAuth,
-        SectionMembership(sectionId: section.id!, memberId: member.id, scopes: {CustomScope.member.name!}),
+        SectionMembership(
+          sectionId: section.id!,
+          memberId: member.id,
+          scopes: {CustomScope.member.name!},
+        ),
       );
 
       // Create an event
@@ -79,26 +91,40 @@ void main() {
 
     test('Assign and list event managers', () async {
       // Creator is already assigned as a manager
-      final initialManagers = await endpoints.eventManager.listEventManagers(adminAuth, event.id);
+      final initialManagers = await endpoints.eventManager.listEventManagers(
+        adminAuth,
+        event.id,
+      );
       expect(initialManagers.length, equals(1));
 
       // Create another member to assign
       final session = sessionBuilder.build();
-      final otherAuthUser = await AuthServices.instance.authUsers.create(session);
+      final otherAuthUser = await AuthServices.instance.authUsers.create(
+        session,
+      );
       final otherMember = await endpoints.member.createMember(
         adminAuth,
-        genData.member(userId: otherAuthUser.id, email: 'other-${Uuid().v4()}@example.com'),
+        genData.member(
+          userId: otherAuthUser.id,
+          email: 'other-${Uuid().v4()}@example.com',
+        ),
       );
 
       final manager = EventManager(eventId: event.id, memberId: otherMember.id);
 
-      final assigned = await endpoints.eventManager.assignEventManager(adminAuth, manager);
+      final assigned = await endpoints.eventManager.assignEventManager(
+        adminAuth,
+        manager,
+      );
 
       expect(assigned.id, isNotNull);
       expect(assigned.eventId, equals(event.id));
       expect(assigned.memberId, equals(otherMember.id));
 
-      final managers = await endpoints.eventManager.listEventManagers(adminAuth, event.id);
+      final managers = await endpoints.eventManager.listEventManagers(
+        adminAuth,
+        event.id,
+      );
 
       expect(managers.length, equals(2));
     });
@@ -110,7 +136,10 @@ void main() {
       // but here there are none.
       await endpoints.eventManager.removeEventManager(adminAuth, manager);
 
-      final managers = await endpoints.eventManager.listEventManagers(adminAuth, event.id);
+      final managers = await endpoints.eventManager.listEventManagers(
+        adminAuth,
+        event.id,
+      );
       expect(managers.isEmpty, isTrue);
     });
   });

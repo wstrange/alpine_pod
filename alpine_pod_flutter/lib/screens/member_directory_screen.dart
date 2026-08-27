@@ -4,13 +4,13 @@ import 'package:alpine_pod_client/alpine_pod_client.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:signals_hooks/signals_hooks.dart';
+
 import '../signals.dart';
 import '../widgets/member_directory_list_widget.dart';
 
 // todo: SectionId is never going to change. Rethink how this is loaded.
 
 class const MemberDirectoryScreen({super.key}) extends HookWidget {
-
   @override
   Widget build(BuildContext context) {
     final searchCtrl = useTextEditingController();

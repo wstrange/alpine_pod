@@ -5,7 +5,11 @@ import 'member_avatar.dart';
 
 /// Shows a dialog with the member's details.
 /// [extraActions] can be used to add buttons like "Edit Roles".
-void showMemberDetailsDialog(BuildContext context, Member member, {List<Widget>? extraActions}) {
+void showMemberDetailsDialog(
+  BuildContext context,
+  Member member, {
+  List<Widget>? extraActions,
+}) {
   final name = member.displayName ?? '${member.firstName} ${member.lastName}';
 
   showDialog(
@@ -26,18 +30,33 @@ void showMemberDetailsDialog(BuildContext context, Member member, {List<Widget>?
               ),
               _buildDetailRow(Icons.email, 'Email', member.email),
               _buildDetailRow(Icons.phone, 'Phone', member.phoneNumber),
-              if (member.bio != null && member.bio!.isNotEmpty) _buildDetailRow(Icons.info, 'Bio', member.bio!),
+              if (member.bio != null && member.bio!.isNotEmpty)
+                _buildDetailRow(Icons.info, 'Bio', member.bio!),
               const Divider(),
-              const Text('Emergency Contact', style: TextStyle(fontWeight: FontWeight.bold)),
+              const Text(
+                'Emergency Contact',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
               const SizedBox(height: 8),
-              _buildDetailRow(Icons.person, 'Name', member.emergencyContactName),
-              _buildDetailRow(Icons.phone, 'Phone', member.emergencyContactPhone),
+              _buildDetailRow(
+                Icons.person,
+                'Name',
+                member.emergencyContactName,
+              ),
+              _buildDetailRow(
+                Icons.phone,
+                'Phone',
+                member.emergencyContactPhone,
+              ),
             ],
           ),
         ),
         actions: [
           ...?extraActions,
-          TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Close')),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Close'),
+          ),
         ],
       );
     },
@@ -56,7 +75,10 @@ Widget _buildDetailRow(IconData icon, String label, String value) {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(label, style: const TextStyle(fontSize: 12, color: Colors.grey)),
+              Text(
+                label,
+                style: const TextStyle(fontSize: 12, color: Colors.grey),
+              ),
               Text(value, style: const TextStyle(fontSize: 14)),
             ],
           ),

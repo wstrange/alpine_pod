@@ -1,6 +1,6 @@
 import 'package:alpine_pod_client/alpine_pod_client.dart';
 import 'package:logging/logging.dart';
-import '../services/connectivity_service.dart';
+
 import '../services/sync_service.dart';
 import '../signals.dart';
 
@@ -77,7 +77,9 @@ class SectionRepository {
 
     if (isOnlineSignal.value) {
       try {
-        final membership = await client.member.getMySectionMembership(sectionId);
+        final membership = await client.member.getMySectionMembership(
+          sectionId,
+        );
         connectivityService.markServerReachable();
         return membership;
       } catch (e) {

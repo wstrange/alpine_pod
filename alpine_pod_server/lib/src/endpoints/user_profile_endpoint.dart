@@ -1,15 +1,14 @@
 import 'dart:typed_data';
+
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_auth_idp_server/core.dart';
+
 import '../generated/protocol.dart';
 
 /// Endpoint to view and edit the signed-in user's profile.
 class UserProfileEndpoint extends UserProfileEditBaseEndpoint {
   @override
-  Future<UserProfileModel> setUserImage(
-    Session session,
-    ByteData image,
-  ) async {
+  Future<UserProfileModel> setUserImage(Session session, ByteData image) async {
     final authUserId = session.authenticated?.authUserId;
     if (authUserId == null) {
       throw Exception('User not authenticated');

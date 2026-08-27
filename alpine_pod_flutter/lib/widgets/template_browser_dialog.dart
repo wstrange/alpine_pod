@@ -2,6 +2,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:alpine_pod_client/alpine_pod_client.dart';
+
 import '../signals.dart';
 
 class const TemplateBrowserDialog({super.key}) extends HookWidget {
@@ -273,17 +274,15 @@ class const TemplateBrowserDialog({super.key}) extends HookWidget {
                 FilledButton.icon(
                   style: FilledButton.styleFrom(
                     backgroundColor: const Color(0xFF6C63FF),
-                    disabledBackgroundColor: const Color(
-                      0xFF6C63FF,
-                    ).withAlpha(100),
+                    disabledBackgroundColor: const Color(0xFF6C63FF)
+                        .withAlpha(100),
                   ),
                   onPressed: selectedTemplate.value == null
                       ? null
                       : () {
                           // Return the selected template content to the caller
-                          Navigator.of(
-                            context,
-                          ).pop(selectedTemplate.value!.content);
+                          Navigator.of(context)
+                              .pop(selectedTemplate.value!.content);
                         },
                   icon: const Icon(Icons.add_box),
                   label: const Text('Insert Template'),

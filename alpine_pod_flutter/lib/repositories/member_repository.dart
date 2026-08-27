@@ -1,7 +1,7 @@
 import 'package:alpine_pod_client/alpine_pod_client.dart';
 import 'package:logging/logging.dart';
 import 'package:serverpod_database/serverpod_database.dart';
-import '../services/connectivity_service.dart';
+
 import '../services/sync_service.dart';
 import '../signals.dart';
 
@@ -40,7 +40,9 @@ class MemberRepository {
             return member;
           }
         } catch (e) {
-          _log.warning('Failed to fetch current member directly from server: $e');
+          _log.warning(
+            'Failed to fetch current member directly from server: $e',
+          );
           connectivityService.markServerUnreachable();
         }
       }
@@ -53,7 +55,9 @@ class MemberRepository {
   }
 
   /// Gets all section memberships for the current user from local cache (or server if cache is bypassed or forced).
-  Future<List<SectionMembership>> getAllMySectionMemberships({bool forceRefresh = false}) async {
+  Future<List<SectionMembership>> getAllMySectionMemberships({
+    bool forceRefresh = false,
+  }) async {
     if (useClientCacheSignal.value && !forceRefresh) {
       try {
         final memberships = await SectionMembership.db.find(
@@ -98,7 +102,8 @@ class MemberRepository {
               include: SectionMembership.include(section: Section.include()),
             );
           } else {
-            final memberships = await client.member.getAllMySectionMemberships();
+            final memberships = await client.member
+                .getAllMySectionMemberships();
             connectivityService.markServerReachable();
             return memberships;
           }

@@ -8,7 +8,6 @@ import 'repositories/event_repository.dart';
 import 'repositories/member_repository.dart';
 import 'repositories/notification_repository.dart';
 import 'repositories/section_repository.dart';
-import 'services/connectivity_service.dart';
 
 export 'services/connectivity_service.dart';
 
@@ -22,9 +21,15 @@ final log = Logger('signals');
 final userSignal = signal<AuthUser?>(null);
 final authInfoStreamSignal = client.auth.authInfoListenable.toSignal();
 
-final userProfileInfoSignal = futureSignal(() async {
-  return await client.modules.serverpod_auth_core.userProfileInfo.get();
-}, options: AsyncSignalOptions(dependencies: [authInfoStreamSignal], name: 'userProfileInfoSignal'));
+final userProfileInfoSignal = futureSignal(
+  () async {
+    return await client.modules.serverpod_auth_core.userProfileInfo.get();
+  },
+  options: AsyncSignalOptions(
+    dependencies: [authInfoStreamSignal],
+    name: 'userProfileInfoSignal',
+  ),
+);
 
 final authUserSignal = computed<AuthSuccess?>(() {
   final authInfo = authInfoStreamSignal.value;
@@ -47,18 +52,29 @@ final syncOnlyUpdatedDataSignal = signal<bool>(
 );
 
 // Get a list of all sections in the database from SectionRepository (cache-first or pure server fetch)
-final allSectionsSignal = futureSignal(() async {
-  return await sectionRepository.listSections();
-}, options: AsyncSignalOptions(dependencies: [useClientCacheSignal], name: 'allSectionsSignal'));
+final allSectionsSignal = futureSignal(
+  () async {
+    return await sectionRepository.listSections();
+  },
+  options: AsyncSignalOptions(
+    dependencies: [useClientCacheSignal],
+    name: 'allSectionsSignal',
+  ),
+);
 
-final currentMemberSignal = signal<Member?>(null, options: SignalOptions(name: 'currentMemberSignal'));
+final currentMemberSignal = signal<Member?>(
+  null,
+  options: SignalOptions(name: 'currentMemberSignal'),
+);
 
 // List of All sections that the current user is a member of (cache-first or pure server fetch via MemberRepository)
 final allMySectionMembershipsSignal = futureSignal<List<SectionMembership>>(
   () async {
     final member = currentMemberSignal.value;
     if (member == null) {
-      print('allMySectionMembershipsSignal: member is null, returning empty list');
+      print(
+        'allMySectionMembershipsSignal: member is null, returning empty list',
+      );
       return <SectionMembership>[];
     }
     return await memberRepository.getAllMySectionMemberships();
@@ -74,11 +90,17 @@ final allMySectionMembershipsSignal = futureSignal<List<SectionMembership>>(
 final sectionSignal = signal<Section?>(null);
 
 // Get the SectionMemberShip for the current Section via SectionRepository
-final mySectionMembershipSignal = futureSignal(() async {
-  final s = sectionSignal.value;
-  if (s == null) return null;
-  return await sectionRepository.getMySectionMembership(s.id!);
-}, options: AsyncSignalOptions(dependencies: [sectionSignal, useClientCacheSignal], name: 'mySectionMembershipSignal'));
+final mySectionMembershipSignal = futureSignal(
+  () async {
+    final s = sectionSignal.value;
+    if (s == null) return null;
+    return await sectionRepository.getMySectionMembership(s.id!);
+  },
+  options: AsyncSignalOptions(
+    dependencies: [sectionSignal, useClientCacheSignal],
+    name: 'mySectionMembershipSignal',
+  ),
+);
 
 final isGlobalAdminSignal = computed(() {
   final x = authUserSignal.value;
@@ -96,12 +118,19 @@ final isSectionManagerSignal = computed(() {
 final canCreateEventsSignal = computed(() {
   if (isGlobalAdminSignal.value) return true;
   final membership = mySectionMembershipSignal.value.value;
-  return membership?.scopes.contains('sectionManager') == true || membership?.scopes.contains('eventManager') == true;
+  return membership?.scopes.contains('sectionManager') == true ||
+      membership?.scopes.contains('eventManager') == true;
 });
 
 /// selected date in the calendar view
 final selectedDateSignal = signal<DateTime>(
-  DateTime.now().copyWith(hour: 0, minute: 0, second: 0, millisecond: 0, microsecond: 0),
+  DateTime.now().copyWith(
+    hour: 0,
+    minute: 0,
+    second: 0,
+    millisecond: 0,
+    microsecond: 0,
+  ),
 );
 
 final showMyEventsOnlySignal = signal<bool>(false);
@@ -138,11 +167,18 @@ final currentEventsSignal = futureSignal<List<Event>>(
   ),
 );
 
-final notificationsSignal = futureSignal<List<UserNotification>>(() async {
-  final i = authUserSignal.value;
-  if (i == null) return <UserNotification>[];
-  return await notificationRepository.getMyFeed(limit: 30, offset: 0);
-}, options: AsyncSignalOptions(dependencies: [], name: 'notificationsSignal', lazy: false));
+final notificationsSignal = futureSignal<List<UserNotification>>(
+  () async {
+    final i = authUserSignal.value;
+    if (i == null) return <UserNotification>[];
+    return await notificationRepository.getMyFeed(limit: 30, offset: 0);
+  },
+  options: AsyncSignalOptions(
+    dependencies: [],
+    name: 'notificationsSignal',
+    lazy: false,
+  ),
+);
 
 final unreadNotificationsCountSignal = computed(() {
   final state = notificationsSignal.value;
@@ -152,6 +188,9 @@ final unreadNotificationsCountSignal = computed(() {
   return 0;
 });
 
-final notificationPreferencesSignal = futureSignal<UserNotificationPreference?>(() async {
-  return await notificationRepository.getMyPreferences();
-}, options: AsyncSignalOptions(name: 'notificationPreferencesSignal'));
+final notificationPreferencesSignal = futureSignal<UserNotificationPreference?>(
+  () async {
+    return await notificationRepository.getMyPreferences();
+  },
+  options: AsyncSignalOptions(name: 'notificationPreferencesSignal'),
+);

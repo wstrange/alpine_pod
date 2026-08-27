@@ -2,6 +2,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:signals_flutter/signals_flutter.dart';
+
 import '../signals.dart';
 import '../widgets/notification_preferences_dialog.dart';
 
@@ -192,10 +193,9 @@ class NotificationScreen extends HookWidget {
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
-                                  un.createdAt
-                                      .toLocal()
-                                      .toString()
-                                      .split('.')[0],
+                                  un.createdAt.toLocal().toString().split(
+                                    '.',
+                                  )[0],
                                   style: TextStyle(
                                     fontSize: 12,
                                     color: Colors.grey[600],

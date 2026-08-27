@@ -1,6 +1,7 @@
 import 'package:alpine_pod_client/alpine_pod_client.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+
 import '../signals.dart';
 
 class const NotificationPreferencesDialog({super.key}) extends HookWidget {
@@ -167,8 +168,7 @@ class const NotificationPreferencesDialog({super.key}) extends HookWidget {
                       const SizedBox(height: 8),
                       _PreferenceSwitchTile(
                         title: 'New Events',
-                        subtitle:
-                            'Get notified when new events are posted in your sections',
+                        subtitle: 'Get notified when new events are posted in your sections',
                         icon: Icons.event,
                         value: prefs.newEvents,
                         onChanged: (val) async {

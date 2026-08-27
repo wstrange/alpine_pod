@@ -3,11 +3,11 @@ import 'package:material_ui/material_ui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:signals_hooks/signals_hooks.dart';
+
 import '../router.dart' show resetRouterBootstrap;
 import '../signals.dart';
 
 class const RegistrationScreen({super.key}) extends HookWidget {
-
   @override
   Widget build(BuildContext context) {
     final formKey = useMemoized(() => GlobalKey<FormState>());
@@ -85,9 +85,8 @@ class const RegistrationScreen({super.key}) extends HookWidget {
         }
       } catch (e) {
         if (context.mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text('Registration failed: $e')));
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text('Registration failed: $e')));
         }
       }
     }

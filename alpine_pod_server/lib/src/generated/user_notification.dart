@@ -13,8 +13,6 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:alpine_pod_server/src/generated/protocol.dart' as _i1rm9ghy;
 import 'package:serverpod/serverpod.dart' as _is;
-import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
-    as _iacs;
 import 'notification.dart' as _irt10kca;
 
 abstract class UserNotification
@@ -22,7 +20,6 @@ abstract class UserNotification
   UserNotification._({
     _is.UuidValue? id,
     required this.userId,
-    this.user,
     required this.notificationId,
     this.notification,
     bool? isRead,
@@ -38,7 +35,6 @@ abstract class UserNotification
   factory UserNotification({
     _is.UuidValue? id,
     required _is.UuidValue userId,
-    _iacs.AuthUser? user,
     required _is.UuidValue notificationId,
     _irt10kca.Notification? notification,
     bool? isRead,
@@ -54,11 +50,6 @@ abstract class UserNotification
           ? null
           : _is.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
       userId: _is.UuidValueJsonExtension.fromJson(jsonSerialization['userId']),
-      user: jsonSerialization['user'] == null
-          ? null
-          : _i1rm9ghy.Protocol().deserialize<_iacs.AuthUser>(
-              jsonSerialization['user'],
-            ),
       notificationId: _is.UuidValueJsonExtension.fromJson(
         jsonSerialization['notificationId'],
       ),
@@ -94,8 +85,6 @@ abstract class UserNotification
 
   _is.UuidValue userId;
 
-  _iacs.AuthUser? user;
-
   _is.UuidValue notificationId;
 
   _irt10kca.Notification? notification;
@@ -119,7 +108,6 @@ abstract class UserNotification
   UserNotification copyWith({
     _is.UuidValue? id,
     _is.UuidValue? userId,
-    _iacs.AuthUser? user,
     _is.UuidValue? notificationId,
     _irt10kca.Notification? notification,
     bool? isRead,
@@ -134,7 +122,6 @@ abstract class UserNotification
       '__className__': 'UserNotification',
       'id': id.toJson(),
       'userId': userId.toJson(),
-      if (user != null) 'user': user?.toJson(),
       'notificationId': notificationId.toJson(),
       if (notification != null) 'notification': notification?.toJson(),
       'isRead': isRead,
@@ -151,7 +138,6 @@ abstract class UserNotification
       '__className__': 'UserNotification',
       'id': id.toJson(),
       'userId': userId.toJson(),
-      if (user != null) 'user': user?.toJson(),
       'notificationId': notificationId.toJson(),
       if (notification != null)
         'notification': notification?.toJsonForProtocol(),
@@ -164,10 +150,9 @@ abstract class UserNotification
   }
 
   static UserNotificationInclude include({
-    _iacs.AuthUserInclude? user,
     _irt10kca.NotificationInclude? notification,
   }) {
-    return UserNotificationInclude._(user: user, notification: notification);
+    return UserNotificationInclude._(notification: notification);
   }
 
   static UserNotificationIncludeList includeList({
@@ -200,7 +185,6 @@ class _UserNotificationImpl extends UserNotification {
   _UserNotificationImpl({
     _is.UuidValue? id,
     required _is.UuidValue userId,
-    _iacs.AuthUser? user,
     required _is.UuidValue notificationId,
     _irt10kca.Notification? notification,
     bool? isRead,
@@ -211,7 +195,6 @@ class _UserNotificationImpl extends UserNotification {
   }) : super._(
          id: id,
          userId: userId,
-         user: user,
          notificationId: notificationId,
          notification: notification,
          isRead: isRead,
@@ -228,7 +211,6 @@ class _UserNotificationImpl extends UserNotification {
   UserNotification copyWith({
     _is.UuidValue? id,
     _is.UuidValue? userId,
-    Object? user = _Undefined,
     _is.UuidValue? notificationId,
     Object? notification = _Undefined,
     bool? isRead,
@@ -240,7 +222,6 @@ class _UserNotificationImpl extends UserNotification {
     return UserNotification(
       id: id ?? this.id,
       userId: userId ?? this.userId,
-      user: user is _iacs.AuthUser? ? user : this.user?.copyWith(),
       notificationId: notificationId ?? this.notificationId,
       notification: notification is _irt10kca.Notification?
           ? notification
@@ -298,8 +279,6 @@ class UserNotificationTable extends _is.Table<_is.UuidValue> {
 
   late final _is.ColumnUuid userId;
 
-  _iacs.AuthUserTable? _user;
-
   late final _is.ColumnUuid notificationId;
 
   _irt10kca.NotificationTable? _notification;
@@ -313,19 +292,6 @@ class UserNotificationTable extends _is.Table<_is.UuidValue> {
   late final _is.ColumnDateTime createdAt;
 
   late final _is.ColumnDateTime updatedAt;
-
-  _iacs.AuthUserTable get user {
-    if (_user != null) return _user!;
-    _user = _is.createRelationTable(
-      relationFieldName: 'user',
-      field: UserNotification.t.userId,
-      foreignField: _iacs.AuthUser.t.id,
-      tableRelation: tableRelation,
-      createTable: (foreignTableRelation) =>
-          _iacs.AuthUserTable(tableRelation: foreignTableRelation),
-    );
-    return _user!;
-  }
 
   _irt10kca.NotificationTable get notification {
     if (_notification != null) return _notification!;
@@ -354,9 +320,6 @@ class UserNotificationTable extends _is.Table<_is.UuidValue> {
 
   @override
   _is.Table? getRelationTable(String relationField) {
-    if (relationField == 'user') {
-      return user;
-    }
     if (relationField == 'notification') {
       return notification;
     }
@@ -365,23 +328,14 @@ class UserNotificationTable extends _is.Table<_is.UuidValue> {
 }
 
 class UserNotificationInclude extends _is.IncludeObject {
-  UserNotificationInclude._({
-    _iacs.AuthUserInclude? user,
-    _irt10kca.NotificationInclude? notification,
-  }) {
-    _user = user;
+  UserNotificationInclude._({_irt10kca.NotificationInclude? notification}) {
     _notification = notification;
   }
-
-  _iacs.AuthUserInclude? _user;
 
   _irt10kca.NotificationInclude? _notification;
 
   @override
-  Map<String, _is.Include?> get includes => {
-    'user': _user,
-    'notification': _notification,
-  };
+  Map<String, _is.Include?> get includes => {'notification': _notification};
 
   @override
   _is.Table<_is.UuidValue> get table => UserNotification.t;
@@ -813,29 +767,6 @@ class UserNotificationRepository {
 
 class UserNotificationAttachRowRepository {
   const UserNotificationAttachRowRepository._();
-
-  /// Creates a relation between the given [UserNotification] and [AuthUser]
-  /// by setting the [UserNotification]'s foreign key `userId` to refer to the [AuthUser].
-  Future<void> user(
-    _is.DatabaseSession session,
-    UserNotification userNotification,
-    _iacs.AuthUser user, {
-    _is.Transaction? transaction,
-  }) async {
-    if (userNotification.id == null) {
-      throw ArgumentError.notNull('userNotification.id');
-    }
-    if (user.id == null) {
-      throw ArgumentError.notNull('user.id');
-    }
-
-    var $userNotification = userNotification.copyWith(userId: user.id);
-    await session.db.updateRow<UserNotification>(
-      $userNotification,
-      columns: [UserNotification.t.userId],
-      transaction: transaction,
-    );
-  }
 
   /// Creates a relation between the given [UserNotification] and [Notification]
   /// by setting the [UserNotification]'s foreign key `notificationId` to refer to the [Notification].

@@ -1,5 +1,6 @@
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_auth_idp_server/core.dart';
+
 import '../generated/protocol.dart';
 
 // These methods are admin only for managing the application state.
