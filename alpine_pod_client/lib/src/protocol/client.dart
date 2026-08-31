@@ -10,6 +10,7 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
+
 import 'dart:async' as _ida;
 import 'dart:typed_data' as _idt;
 import 'package:alpine_pod_client/src/protocol/event.dart' as _ix4abnwg;

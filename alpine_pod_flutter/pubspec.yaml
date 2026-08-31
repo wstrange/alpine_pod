@@ -26,15 +26,15 @@ resolution: workspace
 dependencies:
   flutter:
     sdk: flutter
-  serverpod_flutter: 4.0.0-beta.4
+  serverpod_flutter: 4.0.0-rc.1
   alpine_pod_client:
     path: ../alpine_pod_client
   go_router: ^17.1.0
 
-  serverpod_auth_idp_flutter: 4.0.0-beta.4
-  serverpod_auth_client: 4.0.0-beta.4
-  serverpod_auth_core_flutter: 4.0.0-beta.4
-  serverpod_database: 4.0.0-beta.4
+  serverpod_auth_idp_flutter: 4.0.0-rc.1
+  serverpod_auth_client: 4.0.0-rc.1
+  serverpod_auth_core_flutter: 4.0.0-rc.1
+  serverpod_database: 4.0.0-rc.1
 
   signals: ^7.1.0
   signals_flutter: ^7.1.0
@@ -46,20 +46,17 @@ dependencies:
   logging: ^1.3.0
   intl: ^0.20.2
   url_launcher: ^6.3.2
-  serverpod_auth_idp_flutter_facebook: ^4.0.0-beta.4
+  serverpod_auth_idp_flutter_facebook: ^4.0.0-rc.1
   image_picker: ^1.2.3
   image_cropper: ^12.2.1
   flutter_image_compress: ^2.5.0
   image: ^4.9.1
   path: ^1.9.1
   path_provider: ^2.1.6
-
-
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
-  # cupertino_icons: ^1.0.5
-
   material_ui: ^1.0.0
+  bloc_signals_flutter: ^1.2.0
+
+
 dev_dependencies:
   # custom_lint: any
   flutter_lints:  ^6.0.0
@@ -112,3 +109,4 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+

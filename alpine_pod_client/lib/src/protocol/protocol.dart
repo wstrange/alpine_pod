@@ -8,9 +8,9 @@
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
 // ignore_for_file: invalid_use_of_internal_member
-// ignore_for_file: dead_code, unnecessary_type_check
+// ignore_for_file: dead_code, no_leading_underscores_for_library_prefixes
+// ignore_for_file: unnecessary_type_check
 
-// ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:alpine_pod_client/src/protocol/event.dart' as _ix4abnwg;
 import 'package:alpine_pod_client/src/protocol/event_manager.dart' as _iygn3jma;
 import 'package:alpine_pod_client/src/protocol/event_registration.dart'
