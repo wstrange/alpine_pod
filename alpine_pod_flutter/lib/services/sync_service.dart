@@ -471,23 +471,24 @@ class SyncService {
         offset: 0,
       );
       for (final un in notifications) {
-        if (un.notification != null) {
-          final notifId = un.notification!.id;
-          final existingNotif = notifId != null
-              ? await Notification.db.findById(dbSession, notifId)
-              : null;
-          if (existingNotif != null) {
-            await Notification.db.updateRow(dbSession, un.notification!);
-          } else {
-            await Notification.db.insertRow(dbSession, un.notification!);
-          }
+        // Upsert the parent Notification first so the FK is satisfied.
+        // Skip if the embedded notification or its id is null — the row may
+        // already exist in the local DB from a prior sync.
+        final notif = un.notification;
+        if (notif != null && notif.id != null) {
+          await Notification.db.upsertRow(
+            dbSession,
+            notif,
+            conflictColumns: (t) => [t.id],
+          );
         }
-        final existing = await UserNotification.db.findById(dbSession, un.id);
-        if (existing != null) {
-          await UserNotification.db.updateRow(dbSession, un);
-        } else {
-          await UserNotification.db.insertRow(dbSession, un);
-        }
+
+        // Now upsert the UserNotification (which FK-references notificationId).
+        await UserNotification.db.upsertRow(
+          dbSession,
+          un,
+          conflictColumns: (t) => [t.id],
+        );
       }
     } catch (e) {
       _log.warning('Failed to sync notifications: $e');

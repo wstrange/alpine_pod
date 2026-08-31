@@ -19,4 +19,5 @@ When network is offline:
 * Maps package: https://pub.dev/packages/goodmap
 * look for redundant endpoint code
 * RBAC testing
+* Kaisel Router
 
