@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import 'repositories/member_repository.dart';
 import 'signals.dart';
 import 'screens/event_details_screen.dart';
-import 'screens/event_edit_screen.dart';
 import 'screens/event_edit_screen_2.dart';
 import 'screens/home_screen.dart';
 import 'screens/member_directory_screen.dart';
@@ -49,18 +48,18 @@ final router = GoRouter(
         return EventDetailsScreen(eventId: id);
       },
     ),
+    // GoRoute(
+    //   path: '/event-edit/:id',
+    //   name: 'event-edit',
+    //   builder: (context, state) {
+    //     final s = state.pathParameters['id'];
+    //     if (s == null) return const HomeScreen();
+    //     return EventEditScreen2(eventId: UuidValue.fromString(s));
+    //   },
+    // ),
     GoRoute(
       path: '/event-edit/:id',
       name: 'event-edit',
-      builder: (context, state) {
-        final s = state.pathParameters['id'];
-        if (s == null) return const HomeScreen();
-        return EventEditScreen2(eventId: UuidValue.fromString(s));
-      },
-    ),
-    GoRoute(
-      path: '/event-edit-2/:id',
-      name: 'event-edit-2',
       builder: (context, state) {
         final s = state.pathParameters['id'];
         if (s == null) return const HomeScreen();
@@ -73,20 +72,11 @@ final router = GoRouter(
       builder: (context, state) {
         final extra = state.extra;
         if (extra is Event) {
-          return EventEditScreen(event: extra);
-        }
-        return const EventEditScreen();
-      },
-    ),
-    GoRoute(
-      path: '/create-event-2',
-      name: 'create-event-2',
-      builder: (context, state) {
-        final extra = state.extra;
-        if (extra is Event) {
           return EventEditScreen2(event: extra);
         }
-        return const EventEditScreen2();
+        // new event with default values
+
+        return EventEditScreen2();
       },
     ),
     GoRoute(path: '/', name: 'home', builder: (context, state) => const HomeScreen()),

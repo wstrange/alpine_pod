@@ -23,17 +23,12 @@ final log = Logger('EventEditScreen2');
 /// Each mutation method calls emit() directly — no event dispatch indirection.
 class EventEditCubit extends CubitSignal<Event> {
   final Event? initialEvent;
-  final Member currentMember;
-  final UuidValue sectionId;
 
   // Signals for async loading state — readable by the widget via Watch.
   final isLoading = signal(false);
   final error = signal<String?>(null);
 
-  EventEditCubit({this.initialEvent, required this.currentMember, required this.sectionId})
-    : super(
-        initialState: initialEvent ?? _createDefaultEvent(sectionId: sectionId, currentMember: currentMember),
-      );
+  EventEditCubit({this.initialEvent}) : super(initialState: initialEvent ?? _createDefaultEvent());
 
   // ---------------------------------------------------------------------------
   // Mutation methods — call these from widget callbacks.
@@ -68,7 +63,7 @@ class EventEditCubit extends CubitSignal<Event> {
   );
 
   /// Resets to the initial event (or a blank default).
-  void reset() => emit(initialEvent ?? _createDefaultEvent(sectionId: sectionId, currentMember: currentMember));
+  void reset() => emit(initialEvent ?? _createDefaultEvent(sectionId: sectionSignal.value!.id!));
 
   // ---------------------------------------------------------------------------
 
@@ -95,12 +90,12 @@ class EventEditCubit extends CubitSignal<Event> {
     }
   }
 
-  static Event _createDefaultEvent({required UuidValue sectionId, Member? currentMember}) {
+  static Event _createDefaultEvent({UuidValue? sectionId, Member? currentMember}) {
     final now = DateTime.now();
     final eventId = const Uuid().v7obj();
     return Event(
       id: eventId,
-      sectionId: sectionId,
+      sectionId: sectionId ?? sectionSignal.value!.id!,
       title: 'Untitled Event',
       description: 'Enter event description (supports markdown)',
       type: eventTypes.first,
@@ -127,7 +122,8 @@ class EventEditCubit extends CubitSignal<Event> {
 class EventEditScreen2 extends HookWidget {
   final UuidValue? eventId;
   final Event? event;
-
+  // If event Id is passed in, lookup the event. Otherwise we
+  // expect it to be passed in as an argument.
   const EventEditScreen2({super.key, this.eventId, this.event});
 
   @override
@@ -148,10 +144,7 @@ class EventEditScreen2 extends HookWidget {
     final isSaving = useState(false);
 
     // 3. Initialize and manage the CubitSignal lifecycle via Flutter Hooks
-    final cubit = useMemoized(
-      () => EventEditCubit(initialEvent: event, currentMember: currentMember!, sectionId: section!.id!),
-      [event, currentMember, section?.id],
-    );
+    final cubit = useMemoized(() => EventEditCubit(initialEvent: event), [event]);
 
     useEffect(() => cubit.close, [cubit]);
 
@@ -198,13 +191,6 @@ class EventEditScreen2 extends HookWidget {
     Future<void> onSave() async {
       if (!formKey.currentState!.validate()) return;
 
-      final sec = section;
-      if (sec == null) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text('No section selected. Please select a section first.')));
-        return;
-      }
-
       final minParticipants = int.tryParse(minParticipantsController.text) ?? 1;
       final maxParticipants = int.tryParse(maxParticipantsController.text) ?? 10;
 
@@ -217,7 +203,7 @@ class EventEditScreen2 extends HookWidget {
 
       final isCreating = event == null && eventId == null;
       final eventToSave = cubit.stateValue.copyWith(
-        sectionId: sec.id!,
+        sectionId: section!.id!,
         title: titleController.text.trim(),
         description: descriptionController.text.trim(),
         eventLocation: locationController.text.trim().isEmpty ? null : locationController.text.trim(),
@@ -292,7 +278,6 @@ class EventEditScreen2 extends HookWidget {
     }
 
     final isCreating = event == null && eventId == null;
-    final sid = section?.id;
 
     // 5. Build UI reacting directly to the CubitSignal<Event>
     return BlocSignalBuilder<EventEditCubit, Event>(
@@ -558,13 +543,12 @@ class EventEditScreen2 extends HookWidget {
                           },
                         ),
                         const SizedBox(height: 16),
-                        if (sid != null)
-                          EventManagersManager(
-                            eventId: isCreating ? null : currentEvent.id,
-                            sectionId: sid,
-                            managers: cubit.managers,
-                            onChanged: cubit.updateManagers,
-                          ),
+                        EventManagersManager(
+                          eventId: isCreating ? null : currentEvent.id,
+                          sectionId: section!.id!,
+                          managers: cubit.managers,
+                          onChanged: cubit.updateManagers,
+                        ),
                       ],
                     ),
                   ),

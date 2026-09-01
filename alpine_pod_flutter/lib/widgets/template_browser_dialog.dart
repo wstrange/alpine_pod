@@ -8,9 +8,7 @@ import '../signals.dart';
 class const TemplateBrowserDialog({super.key}) extends HookWidget {
   @override
   Widget build(BuildContext context) {
-    final templatesFuture = useMemoized(
-      () => client.eventTemplate.listTemplates(),
-    );
+    final templatesFuture = useMemoized(() => client.eventTemplate.listTemplates());
     final templatesSnapshot = useFuture(templatesFuture);
     final selectedTemplate = useState<EventTemplate?>(null);
 
@@ -24,71 +22,54 @@ class const TemplateBrowserDialog({super.key}) extends HookWidget {
     final double dialogWidth = isNarrow ? size.width * 0.95 : 800;
     final double dialogHeight = isNarrow ? size.height * 0.85 : 600;
 
-    Widget buildTemplateList(
-      List<EventTemplate>? templates,
-      ValueNotifier<EventTemplate?> selectedTemplateNotifier,
-    ) {
+    Widget buildTemplateList(List<EventTemplate>? templates, ValueNotifier<EventTemplate?> selectedTemplateNotifier) {
       return ListView.separated(
         itemCount: templates?.length ?? 0,
-        separatorBuilder: (context, index) =>
-            Divider(color: Colors.white.withAlpha(10), height: 1),
+        separatorBuilder: (context, index) => Divider(color: Colors.white.withAlpha(10), height: 1),
         itemBuilder: (context, index) {
           final template = templates![index];
           final isSelected = selectedTemplateNotifier.value?.id == template.id;
 
-          return ListTile(
-            title: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    template.name,
-                    style: TextStyle(
-                      color: isSelected ? Colors.white : Colors.white70,
-                      fontWeight: isSelected
-                          ? FontWeight.bold
-                          : FontWeight.normal,
+          return Material(
+            type: MaterialType.transparency,
+            child: ListTile(
+              title: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      template.name,
+                      style: TextStyle(
+                        color: isSelected ? Colors.white : Colors.white70,
+                        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                      ),
                     ),
                   ),
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 6,
-                    vertical: 2,
-                  ),
-                  decoration: BoxDecoration(
-                    color: isSelected
-                        ? Colors.white.withAlpha(40)
-                        : Colors.white.withAlpha(20),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(
-                    template.language.toUpperCase(),
-                    style: const TextStyle(
-                      color: Colors.white70,
-                      fontSize: 9,
-                      fontWeight: FontWeight.bold,
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: isSelected ? Colors.white.withAlpha(40) : Colors.white.withAlpha(20),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      template.language.toUpperCase(),
+                      style: const TextStyle(color: Colors.white70, fontSize: 9, fontWeight: FontWeight.bold),
                     ),
                   ),
-                ),
-              ],
-            ),
-            subtitle: Text(
-              template.description,
-              style: TextStyle(
-                color: isSelected ? Colors.white54 : Colors.white38,
-                fontSize: 12,
+                ],
               ),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
+              subtitle: Text(
+                template.description,
+                style: TextStyle(color: isSelected ? Colors.white54 : Colors.white38, fontSize: 12),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+              tileColor: isSelected ? const Color(0xFF6C63FF).withAlpha(30) : null,
+              selectedTileColor: const Color(0xFF6C63FF).withAlpha(50),
+              selected: isSelected,
+              onTap: () {
+                selectedTemplateNotifier.value = template;
+              },
             ),
-            tileColor: isSelected
-                ? const Color(0xFF6C63FF).withAlpha(30)
-                : null,
-            selectedTileColor: const Color(0xFF6C63FF).withAlpha(50),
-            selected: isSelected,
-            onTap: () {
-              selectedTemplateNotifier.value = template;
-            },
           );
         },
       );
@@ -100,12 +81,7 @@ class const TemplateBrowserDialog({super.key}) extends HookWidget {
         children: [
           Text(
             'Preview: ${template.name}',
-            style: const TextStyle(
-              color: Colors.white54,
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 1,
-            ),
+            style: const TextStyle(color: Colors.white54, fontSize: 12, fontWeight: FontWeight.bold, letterSpacing: 1),
           ),
           const SizedBox(height: 12),
           Expanded(
@@ -118,8 +94,7 @@ class const TemplateBrowserDialog({super.key}) extends HookWidget {
                   h2: const TextStyle(color: Colors.white),
                   h3: const TextStyle(color: Colors.white),
                   listBullet: const TextStyle(color: Colors.white70),
-                  blockSpacing:
-                      4.0, // Reduces space between list items and paragraphs
+                  blockSpacing: 4.0, // Reduces space between list items and paragraphs
                 ),
               ),
             ),
@@ -144,11 +119,7 @@ class const TemplateBrowserDialog({super.key}) extends HookWidget {
               children: [
                 const Text(
                   'Markdown Templates',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 IconButton(
                   icon: const Icon(Icons.close, color: Colors.white54),
@@ -160,15 +131,11 @@ class const TemplateBrowserDialog({super.key}) extends HookWidget {
 
             // Body
             Expanded(
-              child:
-                  templatesSnapshot.connectionState == ConnectionState.waiting
+              child: templatesSnapshot.connectionState == ConnectionState.waiting
                   ? const Center(child: CircularProgressIndicator())
                   : templatesSnapshot.hasError
                   ? Center(
-                      child: Text(
-                        'Error loading templates',
-                        style: TextStyle(color: Colors.red[300]),
-                      ),
+                      child: Text('Error loading templates', style: TextStyle(color: Colors.red[300])),
                     )
                   : isNarrow
                   ? Column(
@@ -181,14 +148,9 @@ class const TemplateBrowserDialog({super.key}) extends HookWidget {
                             decoration: BoxDecoration(
                               color: const Color(0xFF0F1117),
                               borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: Colors.white.withAlpha(20),
-                              ),
+                              border: Border.all(color: Colors.white.withAlpha(20)),
                             ),
-                            child: buildTemplateList(
-                              filteredTemplates,
-                              selectedTemplate,
-                            ),
+                            child: buildTemplateList(filteredTemplates, selectedTemplate),
                           ),
                         ),
                         if (selectedTemplate.value != null) ...[
@@ -200,9 +162,7 @@ class const TemplateBrowserDialog({super.key}) extends HookWidget {
                               decoration: BoxDecoration(
                                 color: const Color(0xFF0F1117),
                                 borderRadius: BorderRadius.circular(12),
-                                border: Border.all(
-                                  color: Colors.white.withAlpha(20),
-                                ),
+                                border: Border.all(color: Colors.white.withAlpha(20)),
                               ),
                               padding: const EdgeInsets.all(12),
                               child: buildPreview(selectedTemplate.value!),
@@ -221,14 +181,9 @@ class const TemplateBrowserDialog({super.key}) extends HookWidget {
                             decoration: BoxDecoration(
                               color: const Color(0xFF0F1117),
                               borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: Colors.white.withAlpha(20),
-                              ),
+                              border: Border.all(color: Colors.white.withAlpha(20)),
                             ),
-                            child: buildTemplateList(
-                              filteredTemplates,
-                              selectedTemplate,
-                            ),
+                            child: buildTemplateList(filteredTemplates, selectedTemplate),
                           ),
                         ),
                         const SizedBox(width: 24),
@@ -239,9 +194,7 @@ class const TemplateBrowserDialog({super.key}) extends HookWidget {
                             decoration: BoxDecoration(
                               color: const Color(0xFF0F1117),
                               borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: Colors.white.withAlpha(20),
-                              ),
+                              border: Border.all(color: Colors.white.withAlpha(20)),
                             ),
                             padding: const EdgeInsets.all(16),
                             child: selectedTemplate.value == null
@@ -265,24 +218,19 @@ class const TemplateBrowserDialog({super.key}) extends HookWidget {
               children: [
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  child: const Text(
-                    'Cancel',
-                    style: TextStyle(color: Colors.white54),
-                  ),
+                  child: const Text('Cancel', style: TextStyle(color: Colors.white54)),
                 ),
                 const SizedBox(width: 12),
                 FilledButton.icon(
                   style: FilledButton.styleFrom(
                     backgroundColor: const Color(0xFF6C63FF),
-                    disabledBackgroundColor: const Color(0xFF6C63FF)
-                        .withAlpha(100),
+                    disabledBackgroundColor: const Color(0xFF6C63FF).withAlpha(100),
                   ),
                   onPressed: selectedTemplate.value == null
                       ? null
                       : () {
                           // Return the selected template content to the caller
-                          Navigator.of(context)
-                              .pop(selectedTemplate.value!.content);
+                          Navigator.of(context).pop(selectedTemplate.value!.content);
                         },
                   icon: const Icon(Icons.add_box),
                   label: const Text('Insert Template'),
