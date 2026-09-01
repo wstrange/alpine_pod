@@ -21,3 +21,11 @@ When network is offline:
 * RBAC testing
 * Kaisel Router
 
+
+EventEdit - can prolly get rid of create-event route, and clean up event-edit routes.
+if event.id is null, it's a new event that needs to be saved.
+new event can be from default, or a copy of another event.
+
+Should eventEdit - only take a single Event param?
+If id is provided, fetch event from server and return to widget.
+

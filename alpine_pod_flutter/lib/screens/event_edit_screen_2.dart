@@ -23,16 +23,16 @@ final log = Logger('EventEditScreen2');
 /// Each mutation method calls emit() directly — no event dispatch indirection.
 class EventEditCubit extends CubitSignal<Event> {
   final Event? initialEvent;
-  final Member? currentMember;
-  final UuidValue defaultSectionId;
+  final Member currentMember;
+  final UuidValue sectionId;
 
   // Signals for async loading state — readable by the widget via Watch.
   final isLoading = signal(false);
   final error = signal<String?>(null);
 
-  EventEditCubit({this.initialEvent, this.currentMember, required this.defaultSectionId})
+  EventEditCubit({this.initialEvent, required this.currentMember, required this.sectionId})
     : super(
-        initialState: initialEvent ?? _createDefaultEvent(sectionId: defaultSectionId, currentMember: currentMember),
+        initialState: initialEvent ?? _createDefaultEvent(sectionId: sectionId, currentMember: currentMember),
       );
 
   // ---------------------------------------------------------------------------
@@ -68,7 +68,7 @@ class EventEditCubit extends CubitSignal<Event> {
   );
 
   /// Resets to the initial event (or a blank default).
-  void reset() => emit(initialEvent ?? _createDefaultEvent(sectionId: defaultSectionId, currentMember: currentMember));
+  void reset() => emit(initialEvent ?? _createDefaultEvent(sectionId: sectionId, currentMember: currentMember));
 
   // ---------------------------------------------------------------------------
 
@@ -149,7 +149,7 @@ class EventEditScreen2 extends HookWidget {
 
     // 3. Initialize and manage the CubitSignal lifecycle via Flutter Hooks
     final cubit = useMemoized(
-      () => EventEditCubit(initialEvent: event, currentMember: currentMember, defaultSectionId: section!.id!),
+      () => EventEditCubit(initialEvent: event, currentMember: currentMember!, sectionId: section!.id!),
       [event, currentMember, section?.id],
     );
 
@@ -582,7 +582,7 @@ class EventEditScreen2 extends HookWidget {
                   icon: isSaving.value
                       ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2))
                       : const Icon(Icons.save),
-                  label: Text(isSaving.value ? 'Saving...' :  'Save'),
+                  label: Text(isSaving.value ? 'Saving...' : 'Save'),
                 ),
               ],
             ),
