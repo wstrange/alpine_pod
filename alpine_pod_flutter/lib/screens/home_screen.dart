@@ -23,45 +23,50 @@ class HomeScreen extends SignalWidget {
         title: Row(
           children: [
             Text('$sectionName Section', style: const TextStyle(fontSize: 16)),
-            if (!isOnline) ...[
-              const SizedBox(width: 8),
-              Tooltip(
-                message: !isNetwork
-                    ? 'Offline (No internet)'
-                    : (!isServerReachable
+            const SizedBox(width: 8),
+            Tooltip(
+              message: isOnline
+                  ? 'Online (Connected to server)'
+                  : (!isNetwork
+                      ? 'Offline (No internet)'
+                      : (!isServerReachable
                           ? 'Server unreachable (Offline mode)'
-                          : 'Offline'),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 6,
-                    vertical: 2,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.amber.shade800,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        !isNetwork ? Icons.wifi_off : Icons.cloud_off,
-                        size: 12,
+                          : 'Offline')),
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 7,
+                  vertical: 3,
+                ),
+                decoration: BoxDecoration(
+                  color: isOnline
+                      ? Colors.green.shade700
+                      : Colors.amber.shade800,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      isOnline
+                          ? Icons.cloud_done
+                          : (!isNetwork ? Icons.wifi_off : Icons.cloud_off),
+                      size: 13,
+                      color: Colors.white,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      isOnline ? 'ONLINE' : 'OFFLINE',
+                      style: const TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
                         color: Colors.white,
+                        letterSpacing: 0.5,
                       ),
-                      const SizedBox(width: 4),
-                      const Text(
-                        'OFFLINE',
-                        style: TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
-            ],
+            ),
           ],
         ),
         actions: [

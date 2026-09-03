@@ -109,23 +109,26 @@ class const _SectionsTab() extends HookWidget {
         message: 'Delete "${s.name}"? This cannot be undone.',
       );
       if (!confirmed || !context.mounted) return;
-      final messenger = ScaffoldMessenger.of(context);
       try {
         await client.admin.deleteSection(s.id!);
-        messenger.showSnackBar(
-          SnackBar(
-            content: Text('"${s.name}" deleted.'),
-            backgroundColor: const Color(0xFF4ECDC4),
-          ),
-        );
+        if (context.mounted) {
+          ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+            SnackBar(
+              content: Text('"${s.name}" deleted.'),
+              backgroundColor: const Color(0xFF4ECDC4),
+            ),
+          );
+        }
         refresh();
       } catch (e) {
-        messenger.showSnackBar(
-          SnackBar(
-            content: Text('Error: $e'),
-            backgroundColor: Colors.red[700],
-          ),
-        );
+        if (context.mounted) {
+          ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+            SnackBar(
+              content: Text('Error: $e'),
+              backgroundColor: Colors.red[700],
+            ),
+          );
+        }
       }
     }
 
@@ -295,7 +298,7 @@ class const _SectionDialog({
         }
       } catch (e) {
         if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
+          ScaffoldMessenger.maybeOf(context)?.showSnackBar(
             SnackBar(
               content: Text('Save failed: $e'),
               backgroundColor: Colors.red[700],
@@ -499,23 +502,26 @@ class const _MembersTab() extends HookWidget {
             'Permanently delete "$fullName"? This will remove all their data and cannot be undone.',
       );
       if (!confirmed || !context.mounted) return;
-      final messenger = ScaffoldMessenger.of(context);
       try {
         await client.admin.deleteUser(member.id);
-        messenger.showSnackBar(
-          SnackBar(
-            content: Text('"$fullName" deleted.'),
-            backgroundColor: const Color(0xFF4ECDC4),
-          ),
-        );
+        if (context.mounted) {
+          ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+            SnackBar(
+              content: Text('"$fullName" deleted.'),
+              backgroundColor: const Color(0xFF4ECDC4),
+            ),
+          );
+        }
         reload.value++;
       } catch (e) {
-        messenger.showSnackBar(
-          SnackBar(
-            content: Text('Error: $e'),
-            backgroundColor: Colors.red[700],
-          ),
-        );
+        if (context.mounted) {
+          ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+            SnackBar(
+              content: Text('Error: $e'),
+              backgroundColor: Colors.red[700],
+            ),
+          );
+        }
       }
     }
 
@@ -701,48 +707,55 @@ class const _NotificationsTab() extends HookWidget {
       final confirmed = await _showConfirmDialog(
         context,
         title: 'Purge Deliveries',
-        message: 'Delete every notification delivery row? Notification history will remain, but delivery status records will be removed.',
+        message:
+            'Delete every notification delivery row? Notification history will remain, but delivery status records will be removed.',
       );
       if (!confirmed || !context.mounted) return;
 
-      final messenger = ScaffoldMessenger.of(context);
       try {
         await client.admin.clearNotificationDeliveries();
-        messenger.showSnackBar(
-          const SnackBar(
-            content: Text('Notification delivery table purged.'),
-            backgroundColor: Color(0xFF4ECDC4),
-          ),
-        );
+        if (context.mounted) {
+          ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+            const SnackBar(
+              content: Text('Notification delivery table purged.'),
+              backgroundColor: Color(0xFF4ECDC4),
+            ),
+          );
+        }
         refresh();
       } catch (e) {
-        messenger.showSnackBar(
-          SnackBar(
-            content: Text('Purge failed: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        if (context.mounted) {
+          ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+            SnackBar(
+              content: Text('Purge failed: $e'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
       }
     }
 
     Future<void> retryFailed() async {
-      final messenger = ScaffoldMessenger.of(context);
       try {
         await client.admin.retryFailedNotifications();
-        messenger.showSnackBar(
-          const SnackBar(
-            content: Text('Failed deliveries queued for retry.'),
-            backgroundColor: Color(0xFF4ECDC4),
-          ),
-        );
+        if (context.mounted) {
+          ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+            const SnackBar(
+              content: Text('Failed deliveries queued for retry.'),
+              backgroundColor: Color(0xFF4ECDC4),
+            ),
+          );
+        }
         refresh();
       } catch (e) {
-        messenger.showSnackBar(
-          SnackBar(
-            content: Text('Retry failed: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        if (context.mounted) {
+          ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+            SnackBar(
+              content: Text('Retry failed: $e'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
       }
     }
 
@@ -1077,23 +1090,26 @@ class const _TemplatesTab() extends HookWidget {
         message: 'Delete "${t.name}"? This cannot be undone.',
       );
       if (!confirmed || !context.mounted) return;
-      final messenger = ScaffoldMessenger.of(context);
       try {
         await client.eventTemplate.deleteTemplate(t.id!);
-        messenger.showSnackBar(
-          SnackBar(
-            content: Text('"${t.name}" deleted.'),
-            backgroundColor: const Color(0xFF4ECDC4),
-          ),
-        );
+        if (context.mounted) {
+          ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+            SnackBar(
+              content: Text('"${t.name}" deleted.'),
+              backgroundColor: const Color(0xFF4ECDC4),
+            ),
+          );
+        }
         refresh();
       } catch (e) {
-        messenger.showSnackBar(
-          SnackBar(
-            content: Text('Error: $e'),
-            backgroundColor: Colors.red[700],
-          ),
-        );
+        if (context.mounted) {
+          ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+            SnackBar(
+              content: Text('Error: $e'),
+              backgroundColor: Colors.red[700],
+            ),
+          );
+        }
       }
     }
 
@@ -1282,7 +1298,7 @@ class const _TemplateDialog({
         }
       } catch (e) {
         if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
+          ScaffoldMessenger.maybeOf(context)?.showSnackBar(
             SnackBar(
               content: Text('Save failed: $e'),
               backgroundColor: Colors.red[700],
