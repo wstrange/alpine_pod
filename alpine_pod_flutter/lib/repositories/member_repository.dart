@@ -35,7 +35,7 @@ class MemberRepository {
           return member;
         } catch (e) {
           _log.warning('Failed to sync current member: $e');
-          connectivityService.markServerUnreachable();
+          connectivityService.markServerUnreachable(error: e);
         }
       }
     } else {
@@ -53,7 +53,7 @@ class MemberRepository {
           _log.warning(
             'Failed to fetch current member directly from server: $e',
           );
-          connectivityService.markServerUnreachable();
+          connectivityService.markServerUnreachable(error: e);
         }
       }
       if (currentUserId != null) {
@@ -101,7 +101,7 @@ class MemberRepository {
           );
         } catch (e) {
           _log.warning('Failed to sync section memberships: $e');
-          connectivityService.markServerUnreachable();
+          connectivityService.markServerUnreachable(error: e);
           try {
             return await SectionMembership.db.find(
               dbSession,
@@ -134,7 +134,7 @@ class MemberRepository {
           _log.warning(
             'Failed to fetch section memberships directly from server: $e',
           );
-          connectivityService.markServerUnreachable();
+          connectivityService.markServerUnreachable(error: e);
         }
       }
       if (memberId != null) {

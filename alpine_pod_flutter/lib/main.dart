@@ -46,7 +46,7 @@ void main() async {
   sessionManager = client.auth;
   await sessionManager.initialize();
 
-  connectivityService.initialize(client.connectivityMonitor);
+  await connectivityService.initialize(client.connectivityMonitor);
 
   // Initialize client-side SQLite database session before initializing auth/signals
   try {

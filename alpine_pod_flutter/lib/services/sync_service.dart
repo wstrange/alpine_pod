@@ -88,6 +88,7 @@ class SyncService {
       _log.info('syncAll completed successfully at $syncTime');
     } catch (e, stack) {
       _log.severe('Error during syncAll', e, stack);
+      connectivityService.markServerUnreachable(error: e);
     } finally {
       _isSyncing = false;
     }

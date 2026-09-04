@@ -100,7 +100,7 @@ class EventRepository {
           );
         } catch (e) {
           _log.warning('Sync events failed, falling back to local cache: $e');
-          connectivityService.markServerUnreachable();
+          connectivityService.markServerUnreachable(error: e);
           try {
             return await _queryCachedEvents(
               sectionId: sectionId,
@@ -126,7 +126,7 @@ class EventRepository {
           return events;
         } catch (e) {
           _log.warning('Failed to fetch events directly from server: $e');
-          connectivityService.markServerUnreachable();
+          connectivityService.markServerUnreachable(error: e);
           // Fallback to local cache even if cache toggle was off
           try {
             return await _queryCachedEvents(

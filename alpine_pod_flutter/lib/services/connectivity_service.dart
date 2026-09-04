@@ -16,14 +16,13 @@ final isNetworkConnectedSignal = signal<bool>(
 
 /// Reactive signal indicating whether the Serverpod server backend is reachable.
 final isServerReachableSignal = signal<bool>(
-  true,
+  false,
   options: SignalOptions(name: 'isServerReachableSignal'),
 );
 
-/// Computed signal: true if the Serverpod server backend is reachable.
-/// Replaces testing for WiFi/network interfaces directly, using actual server reachability.
+/// Computed signal: true if the device is connected to the network AND the Serverpod server backend is reachable.
 final isOnlineSignal = computed<bool>(() {
-  return isServerReachableSignal.value;
+  return isNetworkConnectedSignal.value && isServerReachableSignal.value;
 }, options: ComputedOptions(name: 'isOnlineSignal'));
 
 /// Reactive signal holding the timestamp of the last successful data sync.
@@ -43,12 +42,16 @@ class ConnectivityService {
 
   /// Initializes connectivity tracking using Serverpod's [ConnectivityMonitor]
   /// and starts periodic server reachability checks.
-  void initialize(ConnectivityMonitor? monitor) {
+  Future<void> initialize(ConnectivityMonitor? monitor) async {
     _monitor = monitor;
     if (_monitor != null) {
       _monitor!.addListener((bool isConnected) {
         isNetworkConnectedSignal.value = isConnected;
-        checkServerReachability();
+        if (isConnected) {
+          checkServerReachability();
+        } else {
+          isServerReachableSignal.value = false;
+        }
       });
     }
 
@@ -61,13 +64,12 @@ class ConnectivityService {
     // Listen to session changes to immediately update reachability upon login
     sessionManager.authInfoListenable.addListener(() {
       if (sessionManager.isAuthenticated) {
-        markServerReachable();
         checkServerReachability();
       }
     });
 
     // Initial check
-    checkServerReachability();
+    await checkServerReachability();
   }
 
   /// Pings the server to verify if the Serverpod backend is reachable.
@@ -76,36 +78,28 @@ class ConnectivityService {
     _isCheckingReachability = true;
 
     try {
-      // Call the status endpoint to verify server reachability
-      final status = await client.status.getStatus().timeout(
-        const Duration(seconds: 4),
-      );
-      if (!isServerReachableSignal.value) {
-        _log.info('Server connection restored (status: $status)');
+      if (!isNetworkConnectedSignal.value) {
+        isServerReachableSignal.value = false;
+        return false;
       }
-      isServerReachableSignal.value = true;
-      return true;
-    } on TimeoutException catch (e) {
-      _log.warning('Server unreachable (timeout): $e');
-      isServerReachableSignal.value = false;
-      return false;
-    } catch (e) {
-      // If server responded with an auth/HTTP exception (e.g., requireLogin),
-      // the server is reachable and responding.
-      final errorStr = e.toString().toLowerCase();
-      if (e is ServerpodClientException ||
-          errorStr.contains('unauthorized') ||
-          errorStr.contains('401') ||
-          errorStr.contains('403') ||
-          (!errorStr.contains('handshake') &&
-              (errorStr.contains('statuscode') ||
-                  errorStr.contains('status code')))) {
+
+      // Call the status endpoint to verify server reachability.
+      // StatusEndpoint has requireLogin => false and returns 'OK'.
+      final status = await client.status.getStatus().timeout(
+        const Duration(seconds: 3),
+      );
+      if (status == 'OK') {
         if (!isServerReachableSignal.value) {
-          _log.info('Server connection verified (server responded)');
+          _log.info('Server connection restored (status: $status)');
         }
         isServerReachableSignal.value = true;
         return true;
+      } else {
+        _log.warning('Server returned unexpected status: $status');
+        isServerReachableSignal.value = false;
+        return false;
       }
+    } catch (e) {
       _log.warning('Server unreachable: $e');
       isServerReachableSignal.value = false;
       return false;
@@ -114,16 +108,19 @@ class ConnectivityService {
     }
   }
 
-  /// Marks server as unreachable immediately when a network failure occurs in any repository.
+  /// Marks server as unreachable if the error indicates a network or server failure.
   void markServerUnreachable({Object? error}) {
     if (error != null) {
-      final errorStr = error.toString().toLowerCase();
-      if (error is ServerpodClientException ||
-          errorStr.contains('unauthorized') ||
-          errorStr.contains('401') ||
-          errorStr.contains('403')) {
-        // Not a reachability error
-        return;
+      // If server responded with an HTTP status code (e.g. 400, 401, 403, 404),
+      // the server WAS reachable and responding.
+      if (error is ServerpodClientHttpException) {
+        // Status codes 502 (Bad Gateway), 503 (Service Unavailable), 504 (Gateway Timeout)
+        // indicate that the upstream Serverpod server is down.
+        if (error.statusCode != 502 &&
+            error.statusCode != 503 &&
+            error.statusCode != 504) {
+          return;
+        }
       }
     }
     isServerReachableSignal.value = false;
