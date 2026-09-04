@@ -158,6 +158,7 @@ final currentEventsSignal = futureSignal<List<Event>>(
   options: AsyncSignalOptions(
     dependencies: [
       sectionSignal,
+      currentMemberSignal,
       selectedDateSignal,
       showMyEventsOnlySignal,
       useClientCacheSignal,

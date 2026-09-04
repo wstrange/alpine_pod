@@ -16,7 +16,7 @@ class EventRepository {
     bool onlyMyEvents = false,
   }) async {
     final currentMember = currentMemberSignal.value;
-    final memberId = currentMember?.id;
+    final memberId = currentMember?.id ?? sessionManager.authInfo?.authUserId;
 
     return await Event.db.find(
       dbSession,
@@ -48,6 +48,7 @@ class EventRepository {
       },
       orderBy: (t) => t.startTime,
       include: Event.include(
+        section: Section.include(),
         eventManagers: EventManager.includeList(
           include: EventManager.include(member: Member.include()),
         ),
@@ -59,7 +60,7 @@ class EventRepository {
   }
 
   /// Reads events from the local SQLite cache (or pure server fetch if cache is bypassed).
-  /// If online and cache is empty, triggers a sync first.
+  /// When online, ensures the local cache is synced before querying SQLite.
   Future<List<Event>> listEvents({
     UuidValue? sectionId,
     DateTime? startTime,
@@ -67,24 +68,6 @@ class EventRepository {
     bool onlyMyEvents = false,
   }) async {
     if (useClientCacheSignal.value) {
-      try {
-        final cachedEvents = await _queryCachedEvents(
-          sectionId: sectionId,
-          startTime: startTime,
-          endTime: endTime,
-          onlyMyEvents: onlyMyEvents,
-        );
-
-        if (cachedEvents.isNotEmpty || !isOnlineSignal.value) {
-          return cachedEvents;
-        }
-      } catch (e) {
-        _log.warning(
-          'Failed to query local Event cache, falling back to server: $e',
-        );
-      }
-
-      // Fallback: sync from server and return from local cache
       if (isOnlineSignal.value) {
         try {
           final now = DateTime.now();
@@ -92,26 +75,22 @@ class EventRepository {
           final end = endTime ?? DateTime(now.year, now.month + 2, 0);
           await syncService.syncEvents(sectionId, start, end);
           connectivityService.markServerReachable();
-          return await _queryCachedEvents(
-            sectionId: sectionId,
-            startTime: startTime,
-            endTime: endTime,
-            onlyMyEvents: onlyMyEvents,
-          );
         } catch (e) {
           _log.warning('Sync events failed, falling back to local cache: $e');
           connectivityService.markServerUnreachable(error: e);
-          try {
-            return await _queryCachedEvents(
-              sectionId: sectionId,
-              startTime: startTime,
-              endTime: endTime,
-              onlyMyEvents: onlyMyEvents,
-            );
-          } catch (_) {
-            return [];
-          }
         }
+      }
+
+      try {
+        return await _queryCachedEvents(
+          sectionId: sectionId,
+          startTime: startTime,
+          endTime: endTime,
+          onlyMyEvents: onlyMyEvents,
+        );
+      } catch (e) {
+        _log.warning('Failed to query local Event cache: $e');
+        return [];
       }
     } else {
       if (isOnlineSignal.value) {
