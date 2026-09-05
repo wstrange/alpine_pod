@@ -8,9 +8,9 @@
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
 // ignore_for_file: invalid_use_of_internal_member
-// ignore_for_file: dead_code, no_leading_underscores_for_library_prefixes
-// ignore_for_file: unnecessary_type_check
+// ignore_for_file: dead_code, unnecessary_type_check
 
+// ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:alpine_pod_server/src/generated/event.dart' as _ix3n45j3;
 import 'package:alpine_pod_server/src/generated/event_manager.dart'
     as _ic9gt6sp;
@@ -1393,7 +1393,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           'className': dataClassName,
           'data': data,
         });
-      } on FormatException catch (_) {
+      } on _is.DeserializationClassNameNotFoundException catch (_) {
         // If the className is not recognized (e.g., older client receiving
         // data with a new subtype), fall back to deserializing without the
         // className, using the expected type T.
