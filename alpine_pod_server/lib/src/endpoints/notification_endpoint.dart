@@ -21,7 +21,11 @@ class NotificationEndpoint extends Endpoint {
       orderBy: (t) => t.createdAt.desc(),
       limit: limit,
       offset: offset,
-      include: UserNotification.include(notification: Notification.include()),
+      include: UserNotification.include(
+        notification: Notification.include(
+          template: NotificationTemplate.include(),
+        ),
+      ),
     );
 
     return userNotifications;

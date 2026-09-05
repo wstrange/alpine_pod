@@ -28,7 +28,8 @@ class EventEditCubit extends CubitSignal<Event> {
   final isLoading = signal(false);
   final error = signal<String?>(null);
 
-  EventEditCubit({this.initialEvent}) : super(initialState: initialEvent ?? _createDefaultEvent());
+  EventEditCubit({this.initialEvent})
+    : super(initialState: initialEvent ?? _createDefaultEvent());
 
   // ---------------------------------------------------------------------------
   // Mutation methods — call these from widget callbacks.
@@ -38,19 +39,23 @@ class EventEditCubit extends CubitSignal<Event> {
   void setEvent(Event event) => emit(event);
 
   /// Updates the start time (and auto-advances end time by 8 hours).
-  void updateStartTime(DateTime t) => emit(stateValue.copyWith(startTime: t, endTime: t.add(const Duration(hours: 8))));
+  void updateStartTime(DateTime t) => emit(
+    stateValue.copyWith(startTime: t, endTime: t.add(const Duration(hours: 8))),
+  );
 
   /// Updates the end time.
   void updateEndTime(DateTime t) => emit(stateValue.copyWith(endTime: t));
 
   /// Updates or clears the carpool meet time.
-  void updateCarpoolTime(DateTime? t) => emit(stateValue.copyWith(carpoolTime: t));
+  void updateCarpoolTime(DateTime? t) =>
+      emit(stateValue.copyWith(carpoolTime: t));
 
   /// Updates the event type.
   void updateType(String type) => emit(stateValue.copyWith(type: type));
 
   /// Updates whether registrations require approval.
-  void updateRequiresApproval(bool v) => emit(stateValue.copyWith(requiresApproval: v));
+  void updateRequiresApproval(bool v) =>
+      emit(stateValue.copyWith(requiresApproval: v));
 
   /// Updates the published flag.
   void updatePublished(bool v) => emit(stateValue.copyWith(published: v));
@@ -58,12 +63,19 @@ class EventEditCubit extends CubitSignal<Event> {
   /// Replaces the full manager list.
   void updateManagers(List<Member> managers) => emit(
     stateValue.copyWith(
-      eventManagers: managers.map((m) => EventManager(eventId: stateValue.id, memberId: m.id, member: m)).toList(),
+      eventManagers: managers
+          .map(
+            (m) =>
+                EventManager(eventId: stateValue.id, memberId: m.id, member: m),
+          )
+          .toList(),
     ),
   );
 
   /// Resets to the initial event (or a blank default).
-  void reset() => emit(initialEvent ?? _createDefaultEvent(sectionId: sectionSignal.value!.id!));
+  void reset() => emit(
+    initialEvent ?? _createDefaultEvent(sectionId: sectionSignal.value!.id!),
+  );
 
   // ---------------------------------------------------------------------------
 
@@ -90,7 +102,10 @@ class EventEditCubit extends CubitSignal<Event> {
     }
   }
 
-  static Event _createDefaultEvent({UuidValue? sectionId, Member? currentMember}) {
+  static Event _createDefaultEvent({
+    UuidValue? sectionId,
+    Member? currentMember,
+  }) {
     final now = DateTime.now();
     final eventId = const Uuid().v7obj();
     return Event(
@@ -106,13 +121,23 @@ class EventEditCubit extends CubitSignal<Event> {
       requiresApproval: true,
       published: false,
       eventManagers: currentMember != null
-          ? [EventManager(eventId: eventId, memberId: currentMember.id, member: currentMember)]
+          ? [
+              EventManager(
+                eventId: eventId,
+                memberId: currentMember.id,
+                member: currentMember,
+              ),
+            ]
           : null,
     );
   }
 
   List<Member> get managers =>
-      stateValue.eventManagers?.where((m) => m.member != null).map((m) => m.member!).toList() ?? [];
+      stateValue.eventManagers
+          ?.where((m) => m.member != null)
+          .map((m) => m.member!)
+          .toList() ??
+      [];
 }
 
 // =============================================================================
@@ -144,7 +169,9 @@ class EventEditScreen2 extends HookWidget {
     final isSaving = useState(false);
 
     // 3. Initialize and manage the CubitSignal lifecycle via Flutter Hooks
-    final cubit = useMemoized(() => EventEditCubit(initialEvent: event), [event]);
+    final cubit = useMemoized(() => EventEditCubit(initialEvent: event), [
+      event,
+    ]);
 
     useEffect(() => cubit.close, [cubit]);
 
@@ -192,22 +219,31 @@ class EventEditScreen2 extends HookWidget {
       if (!formKey.currentState!.validate()) return;
 
       final minParticipants = int.tryParse(minParticipantsController.text) ?? 1;
-      final maxParticipants = int.tryParse(maxParticipantsController.text) ?? 10;
+      final maxParticipants =
+          int.tryParse(maxParticipantsController.text) ?? 10;
 
       if (minParticipants > maxParticipants) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Minimum participants cannot be greater than maximum participants.')),
+          const SnackBar(
+            content: Text(
+              'Minimum participants cannot be greater than maximum participants.',
+            ),
+          ),
         );
         return;
       }
 
-      final isCreating = event == null && eventId == null;
+      final isCreating = eventId == null;
       final eventToSave = cubit.stateValue.copyWith(
         sectionId: section!.id!,
         title: titleController.text.trim(),
         description: descriptionController.text.trim(),
-        eventLocation: locationController.text.trim().isEmpty ? null : locationController.text.trim(),
-        carpoolLocation: carpoolLocationController.text.trim().isEmpty ? null : carpoolLocationController.text.trim(),
+        eventLocation: locationController.text.trim().isEmpty
+            ? null
+            : locationController.text.trim(),
+        carpoolLocation: carpoolLocationController.text.trim().isEmpty
+            ? null
+            : carpoolLocationController.text.trim(),
         minimumParticipants: minParticipants,
         maxParticipants: maxParticipants,
       );
@@ -216,11 +252,16 @@ class EventEditScreen2 extends HookWidget {
       try {
         final Event savedEvent;
         if (isCreating) {
-          final additionalManagerIds = cubit.managers.where((m) => m.id != currentMember?.id).map((m) => m.id).toList();
+          final additionalManagerIds = cubit.managers
+              .where((m) => m.id != currentMember?.id)
+              .map((m) => m.id)
+              .toList();
 
           savedEvent = await eventRepository.createEvent(
             eventToSave,
-            additionalManagerIds: additionalManagerIds.isEmpty ? null : additionalManagerIds,
+            additionalManagerIds: additionalManagerIds.isEmpty
+                ? null
+                : additionalManagerIds,
             notifyNewEvent: true,
           );
         } else {
@@ -230,13 +271,20 @@ class EventEditScreen2 extends HookWidget {
         currentEventsSignal.refresh();
 
         if (context.mounted) {
-          final msg = savedEvent.published ? 'Published live to site' : 'DRAFT: Not visible to other members.';
+          final msg = savedEvent.published
+              ? 'Published live to site'
+              : 'DRAFT: Not visible to other members.';
           await showDialog(
             context: context,
             builder: (context) => AlertDialog(
               title: const Text('Success'),
               content: Text('Event saved successfully. Event Status: $msg'),
-              actions: [TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('OK'))],
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('OK'),
+                ),
+              ],
             ),
           );
           if (context.mounted) {
@@ -250,7 +298,12 @@ class EventEditScreen2 extends HookWidget {
             builder: (context) => AlertDialog(
               title: const Text('Error'),
               content: Text('Error saving event: $e'),
-              actions: [TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('OK'))],
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('OK'),
+                ),
+              ],
             ),
           );
         }
@@ -277,7 +330,7 @@ class EventEditScreen2 extends HookWidget {
       );
     }
 
-    final isCreating = event == null && eventId == null;
+    final isCreating = eventId == null;
 
     // 5. Build UI reacting directly to the CubitSignal<Event>
     return BlocSignalBuilder<EventEditCubit, Event>(
@@ -285,7 +338,10 @@ class EventEditScreen2 extends HookWidget {
       builder: (context, currentEvent) {
         return Scaffold(
           appBar: AppBar(
-            leading: IconButton(icon: const Icon(Icons.arrow_back), onPressed: () => GoRouter.of(context).go('/')),
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () => GoRouter.of(context).go('/'),
+            ),
             title: Text(isCreating ? 'Create Event (v2)' : 'Edit Event (v2)'),
           ),
           body: Column(
@@ -314,27 +370,44 @@ class EventEditScreen2 extends HookWidget {
                               padding: EdgeInsets.only(left: 4.0),
                               child: Text(
                                 'Description',
-                                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white70),
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white70,
+                                ),
                               ),
                             ),
                             TextButton.icon(
                               onPressed: () async {
                                 final template = await showDialog<String>(
                                   context: context,
-                                  builder: (context) => const TemplateBrowserDialog(),
+                                  builder: (context) =>
+                                      const TemplateBrowserDialog(),
                                 );
                                 if (template != null) {
-                                  final currentText = descriptionController.text;
-                                  final selection = descriptionController.selection;
+                                  final currentText =
+                                      descriptionController.text;
+                                  final selection =
+                                      descriptionController.selection;
                                   if (selection.baseOffset < 0) {
                                     descriptionController.text =
-                                        currentText + (currentText.isEmpty ? '' : '\n\n') + template;
+                                        currentText +
+                                        (currentText.isEmpty ? '' : '\n\n') +
+                                        template;
                                   } else {
-                                    final newText = currentText.replaceRange(selection.start, selection.end, template);
-                                    descriptionController.value = descriptionController.value.copyWith(
-                                      text: newText,
-                                      selection: TextSelection.collapsed(offset: selection.start + template.length),
+                                    final newText = currentText.replaceRange(
+                                      selection.start,
+                                      selection.end,
+                                      template,
                                     );
+                                    descriptionController.value =
+                                        descriptionController.value.copyWith(
+                                          text: newText,
+                                          selection: TextSelection.collapsed(
+                                            offset:
+                                                selection.start +
+                                                template.length,
+                                          ),
+                                        );
                                   }
                                 }
                               },
@@ -345,7 +418,10 @@ class EventEditScreen2 extends HookWidget {
                         ),
                         TextFormField(
                           controller: descriptionController,
-                          decoration: const InputDecoration(hintText: 'Enter event description (supports markdown)'),
+                          decoration: const InputDecoration(
+                            hintText:
+                                'Enter event description (supports markdown)',
+                          ),
                           maxLines: 30,
                           minLines: 5,
                           validator: (value) {
@@ -369,13 +445,17 @@ class EventEditScreen2 extends HookWidget {
                           alignment: Alignment.centerLeft,
                           child: Padding(
                             padding: EdgeInsets.symmetric(vertical: 4),
-                            child: Text('Carpool', style: TextStyle(fontWeight: FontWeight.w600)),
+                            child: Text(
+                              'Carpool',
+                              style: TextStyle(fontWeight: FontWeight.w600),
+                            ),
                           ),
                         ),
                         TextFormField(
                           controller: carpoolLocationController,
                           decoration: const InputDecoration(
-                            labelText: 'Carpool Meet Location (supports markdown)',
+                            labelText:
+                                'Carpool Meet Location (supports markdown)',
                             hintText: 'Address, place name, or Google Maps URL',
                             prefixIcon: Icon(Icons.directions_car_outlined),
                           ),
@@ -385,30 +465,44 @@ class EventEditScreen2 extends HookWidget {
                           leading: const Icon(Icons.access_time),
                           title: const Text('Carpool Meet Time'),
                           subtitle: Text(
-                            currentEvent.carpoolTime != null ? eventDateFormat(currentEvent.carpoolTime!) : 'Not set',
+                            currentEvent.carpoolTime != null
+                                ? eventDateFormat(currentEvent.carpoolTime!)
+                                : 'Not set',
                           ),
                           trailing: currentEvent.carpoolTime != null
                               ? IconButton(
                                   icon: const Icon(Icons.clear),
                                   tooltip: 'Clear',
-                                  onPressed: () => cubit.updateCarpoolTime(null),
+                                  onPressed: () =>
+                                      cubit.updateCarpoolTime(null),
                                 )
                               : null,
                           onTap: () async {
                             final date = await showDatePicker(
                               context: context,
-                              initialDate: currentEvent.carpoolTime ?? currentEvent.startTime,
+                              initialDate:
+                                  currentEvent.carpoolTime ??
+                                  currentEvent.startTime,
                               firstDate: DateTime(2025),
                               lastDate: DateTime(2100),
                             );
                             if (date != null && context.mounted) {
                               final time = await showTimePicker(
                                 context: context,
-                                initialTime: TimeOfDay.fromDateTime(currentEvent.carpoolTime ?? currentEvent.startTime),
+                                initialTime: TimeOfDay.fromDateTime(
+                                  currentEvent.carpoolTime ??
+                                      currentEvent.startTime,
+                                ),
                               );
                               if (time != null) {
                                 cubit.updateCarpoolTime(
-                                  DateTime(date.year, date.month, date.day, time.hour, time.minute),
+                                  DateTime(
+                                    date.year,
+                                    date.month,
+                                    date.day,
+                                    time.hour,
+                                    time.minute,
+                                  ),
                                 );
                               }
                             }
@@ -417,8 +511,15 @@ class EventEditScreen2 extends HookWidget {
                         const Divider(),
                         DropdownButtonFormField<String>(
                           initialValue: currentEvent.type,
-                          decoration: const InputDecoration(labelText: 'Event Type'),
-                          items: eventTypes.map((t) => DropdownMenuItem(value: t, child: Text(t))).toList(),
+                          decoration: const InputDecoration(
+                            labelText: 'Event Type',
+                          ),
+                          items: eventTypes
+                              .map(
+                                (t) =>
+                                    DropdownMenuItem(value: t, child: Text(t)),
+                              )
+                              .toList(),
                           onChanged: (value) {
                             if (value != null) {
                               cubit.updateType(value);
@@ -465,7 +566,9 @@ class EventEditScreen2 extends HookWidget {
                                   if (min == null || min < 1) {
                                     return 'Must be at least 1';
                                   }
-                                  final max = int.tryParse(maxParticipantsController.text);
+                                  final max = int.tryParse(
+                                    maxParticipantsController.text,
+                                  );
                                   if (max != null && min > max) {
                                     return 'Must be ≤ max';
                                   }
@@ -487,7 +590,9 @@ class EventEditScreen2 extends HookWidget {
                                   if (max == null || max < 1) {
                                     return 'Must be at least 1';
                                   }
-                                  final min = int.tryParse(minParticipantsController.text);
+                                  final min = int.tryParse(
+                                    minParticipantsController.text,
+                                  );
                                   if (min != null && max < min) {
                                     return 'Must be ≥ min';
                                   }
@@ -500,7 +605,9 @@ class EventEditScreen2 extends HookWidget {
                         const SizedBox(height: 16),
                         ListTile(
                           title: const Text('Start Time'),
-                          subtitle: Text(eventDateFormat(currentEvent.startTime)),
+                          subtitle: Text(
+                            eventDateFormat(currentEvent.startTime),
+                          ),
                           onTap: () async {
                             final date = await showDatePicker(
                               context: context,
@@ -511,11 +618,19 @@ class EventEditScreen2 extends HookWidget {
                             if (date != null && context.mounted) {
                               final time = await showTimePicker(
                                 context: context,
-                                initialTime: TimeOfDay.fromDateTime(currentEvent.startTime),
+                                initialTime: TimeOfDay.fromDateTime(
+                                  currentEvent.startTime,
+                                ),
                               );
                               if (time != null) {
                                 cubit.updateStartTime(
-                                  DateTime(date.year, date.month, date.day, time.hour, time.minute),
+                                  DateTime(
+                                    date.year,
+                                    date.month,
+                                    date.day,
+                                    time.hour,
+                                    time.minute,
+                                  ),
                                 );
                               }
                             }
@@ -534,10 +649,20 @@ class EventEditScreen2 extends HookWidget {
                             if (date != null && context.mounted) {
                               final time = await showTimePicker(
                                 context: context,
-                                initialTime: TimeOfDay.fromDateTime(currentEvent.endTime),
+                                initialTime: TimeOfDay.fromDateTime(
+                                  currentEvent.endTime,
+                                ),
                               );
                               if (time != null) {
-                                cubit.updateEndTime(DateTime(date.year, date.month, date.day, time.hour, time.minute));
+                                cubit.updateEndTime(
+                                  DateTime(
+                                    date.year,
+                                    date.month,
+                                    date.day,
+                                    time.hour,
+                                    time.minute,
+                                  ),
+                                );
                               }
                             }
                           },
@@ -560,11 +685,19 @@ class EventEditScreen2 extends HookWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                ElevatedButton.icon(onPressed: onReset, icon: const Icon(Icons.refresh), label: const Text('Reset')),
+                ElevatedButton.icon(
+                  onPressed: onReset,
+                  icon: const Icon(Icons.refresh),
+                  label: const Text('Reset'),
+                ),
                 ElevatedButton.icon(
                   onPressed: !isSaving.value ? onSave : null,
                   icon: isSaving.value
-                      ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2))
+                      ? const SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
                       : const Icon(Icons.save),
                   label: Text(isSaving.value ? 'Saving...' : 'Save'),
                 ),

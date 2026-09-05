@@ -72,10 +72,26 @@ class EventDetailsScreen extends HookWidget {
                                 : 'Copy Event (Offline)',
                             onPressed: isOnline
                                 ? () {
+                                    final copiedManagers = [
+                                      ...?event.eventManagers,
+                                      if (currentMember != null &&
+                                          !(event.eventManagers?.any(
+                                                (manager) =>
+                                                    manager.memberId ==
+                                                    currentMember.id,
+                                              ) ??
+                                              false))
+                                        EventManager(
+                                          eventId: event.id,
+                                          memberId: currentMember.id,
+                                          member: currentMember,
+                                        ),
+                                    ];
                                     final clonedEvent = event.copyWith(
-                                      id: null,
+                                      id: const Uuid().v7obj(),
                                       title: 'Copy of ${event.title}',
                                       published: false,
+                                      eventManagers: copiedManagers,
                                     );
                                     GoRouter.of(
                                       context,

@@ -472,15 +472,30 @@ class SyncService {
     try {
       final notifications = await client.notification.getMyFeed(limit: 50, offset: 0);
       for (final un in notifications) {
-        // Upsert the parent Notification first so the FK is satisfied.
-        // Skip if the embedded notification or its id is null — the row may
-        // already exist in the local DB from a prior sync.
+        // Save the full dependency chain before the UserNotification row:
+        // UserNotification -> Notification -> NotificationTemplate.
         final notif = un.notification;
-        if (notif != null && notif.id != null) {
-          await Notification.db.upsertRow(dbSession, notif, conflictColumns: (t) => [t.id]);
+        final template = notif?.template;
+        if (notif == null ||
+            notif.id == null ||
+            template == null ||
+            template.id == null) {
+          _log.warning(
+            'Skipping notification ${un.id}: its notification or template is missing from the feed.',
+          );
+          continue;
         }
 
-        // Now upsert the UserNotification (which FK-references notificationId).
+        await NotificationTemplate.db.upsertRow(
+          dbSession,
+          template,
+          conflictColumns: (t) => [t.id],
+        );
+        await Notification.db.upsertRow(
+          dbSession,
+          notif,
+          conflictColumns: (t) => [t.id],
+        );
         await UserNotification.db.upsertRow(dbSession, un, conflictColumns: (t) => [t.id]);
       }
     } catch (e) {
