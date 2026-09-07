@@ -29,79 +29,75 @@ class EventParticipantsManager extends HookWidget {
   Widget build(BuildContext context) {
     final isOnline = isOnlineSignal.value;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Divider(thickness: 1.5),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return IgnorePointer(
+      ignoring: !isOnline,
+      child: Opacity(
+        opacity: isOnline ? 1 : 0.6,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Manage Participants',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.primary,
+            const Divider(thickness: 1.5),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Manage Participants',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+                FilledButton.icon(
+                  onPressed: () => _showAddParticipantDialog(context),
+                  icon: const Icon(Icons.person_add_alt_1, size: 18),
+                  label: const Text('Add'),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+
+            if (confirmed.isEmpty && waitlisted.isEmpty)
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 8),
+                child: Text(
+                  'No participants yet.',
+                  style: TextStyle(color: Colors.grey),
+                ),
               ),
-            ),
-            FilledButton.icon(
-              onPressed: isOnline
-                  ? () => _showAddParticipantDialog(context)
-                  : null,
-              icon: const Icon(Icons.person_add_alt_1, size: 18),
-              label: Text(isOnline ? 'Add' : 'Add (Offline)'),
-            ),
+
+            if (confirmed.isNotEmpty) ...[
+              Text(
+                'Confirmed (${confirmed.length})',
+                style: Theme.of(context).textTheme.titleSmall,
+              ),
+              const SizedBox(height: 4),
+              ...confirmed.map(
+                (reg) => _ParticipantTile(
+                  registration: reg,
+                  onRemove: () => _removeParticipant(context, reg),
+                ),
+              ),
+              const SizedBox(height: 8),
+            ],
+
+            if (waitlisted.isNotEmpty) ...[
+              Text(
+                'Waitlist – Pending Approval (${waitlisted.length})',
+                style: Theme.of(context).textTheme.titleSmall
+                    ?.copyWith(color: Colors.orange.shade700),
+              ),
+              const SizedBox(height: 4),
+              ...waitlisted.map(
+                (reg) => _ParticipantTile(
+                  registration: reg,
+                  onRemove: () => _removeParticipant(context, reg),
+                  onApprove: () => _approveParticipant(context, reg),
+                ),
+              ),
+            ],
           ],
         ),
-        const SizedBox(height: 8),
-
-        if (confirmed.isEmpty && waitlisted.isEmpty)
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 8),
-            child: Text(
-              'No participants yet.',
-              style: TextStyle(color: Colors.grey),
-            ),
-          ),
-
-        if (confirmed.isNotEmpty) ...[
-          Text(
-            'Confirmed (${confirmed.length})',
-            style: Theme.of(context).textTheme.titleSmall,
-          ),
-          const SizedBox(height: 4),
-          ...confirmed.map(
-            (reg) => _ParticipantTile(
-              registration: reg,
-              isOnline: isOnline,
-              onRemove: isOnline
-                  ? () => _removeParticipant(context, reg)
-                  : null,
-            ),
-          ),
-          const SizedBox(height: 8),
-        ],
-
-        if (waitlisted.isNotEmpty) ...[
-          Text(
-            'Waitlist – Pending Approval (${waitlisted.length})',
-            style: Theme.of(context).textTheme.titleSmall
-                ?.copyWith(color: Colors.orange.shade700),
-          ),
-          const SizedBox(height: 4),
-          ...waitlisted.map(
-            (reg) => _ParticipantTile(
-              registration: reg,
-              isOnline: isOnline,
-              onRemove: isOnline
-                  ? () => _removeParticipant(context, reg)
-                  : null,
-              onApprove: isOnline
-                  ? () => _approveParticipant(context, reg)
-                  : null,
-            ),
-          ),
-        ],
-      ],
+      ),
     );
   }
 
@@ -205,13 +201,11 @@ class EventParticipantsManager extends HookWidget {
 class _ParticipantTile extends StatelessWidget {
   const _ParticipantTile({
     required this.registration,
-    required this.isOnline,
     this.onRemove,
     this.onApprove,
   });
 
   final EventRegistration registration;
-  final bool isOnline;
   final VoidCallback? onRemove;
   final VoidCallback? onApprove;
 

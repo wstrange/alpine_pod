@@ -28,28 +28,19 @@ class HomeScreen extends SignalWidget {
               message: isOnline
                   ? 'Online (Connected to server)'
                   : (!isNetwork
-                      ? 'Offline (No internet)'
-                      : (!isServerReachable
-                          ? 'Server unreachable (Offline mode)'
-                          : 'Offline')),
+                        ? 'Offline (No internet)'
+                        : (!isServerReachable ? 'Server unreachable (Offline mode)' : 'Offline')),
               child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 7,
-                  vertical: 3,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
                 decoration: BoxDecoration(
-                  color: isOnline
-                      ? Colors.green.shade700
-                      : Colors.amber.shade800,
+                  color: isOnline ? Colors.green.shade700 : Colors.amber.shade800,
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(
-                      isOnline
-                          ? Icons.cloud_done
-                          : (!isNetwork ? Icons.wifi_off : Icons.cloud_off),
+                      isOnline ? Icons.cloud_done : (!isNetwork ? Icons.wifi_off : Icons.cloud_off),
                       size: 13,
                       color: Colors.white,
                     ),
@@ -70,46 +61,6 @@ class HomeScreen extends SignalWidget {
           ],
         ),
         actions: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4.0),
-            child: Tooltip(
-              message: useCache ? 'Client Cache: ON' : 'Client Cache: OFF',
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    useCache ? Icons.storage : Icons.cloud_outlined,
-                    size: 18,
-                    color: useCache
-                        ? Theme.of(context).colorScheme.primary
-                        : Colors.grey,
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    'Cache',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: useCache
-                          ? Theme.of(context).colorScheme.primary
-                          : Colors.grey,
-                      fontWeight: useCache
-                          ? FontWeight.bold
-                          : FontWeight.normal,
-                    ),
-                  ),
-                  Transform.scale(
-                    scale: 0.8,
-                    child: Switch(
-                      value: useCache,
-                      onChanged: (val) {
-                        useClientCacheSignal.value = val;
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
           IconButton(
             icon: Badge(
               label: unreadCount > 0 ? Text(unreadCount.toString()) : null,
@@ -133,12 +84,7 @@ class HomeScreen extends SignalWidget {
             ListTile(
               leading: const Icon(Icons.person),
               title: Text(isOnline ? 'Profile' : 'Profile (Offline)'),
-              subtitle: !isOnline
-                  ? const Text(
-                      'Requires internet connection',
-                      style: TextStyle(fontSize: 11),
-                    )
-                  : null,
+              subtitle: !isOnline ? const Text('Requires internet connection', style: TextStyle(fontSize: 11)) : null,
               enabled: isOnline,
               onTap: isOnline
                   ? () {
@@ -147,10 +93,7 @@ class HomeScreen extends SignalWidget {
                       final id = m.id.toString();
 
                       Navigator.pop(context); // Close the drawer
-                      context.pushNamed(
-                        'member-edit',
-                        pathParameters: {'id': id},
-                      );
+                      context.pushNamed('member-edit', pathParameters: {'id': id});
                     }
                   : null,
             ),
@@ -158,12 +101,7 @@ class HomeScreen extends SignalWidget {
             ListTile(
               leading: const Icon(Icons.add),
               title: Text(isOnline ? 'Create Event' : 'Create Event (Offline)'),
-              subtitle: !isOnline
-                  ? const Text(
-                      'Requires internet connection',
-                      style: TextStyle(fontSize: 11),
-                    )
-                  : null,
+              subtitle: !isOnline ? const Text('Requires internet connection', style: TextStyle(fontSize: 11)) : null,
               enabled: isOnline,
               onTap: isOnline
                   ? () {
@@ -184,11 +122,7 @@ class HomeScreen extends SignalWidget {
             SwitchListTile(
               secondary: Icon(useCache ? Icons.storage : Icons.cloud_outlined),
               title: const Text('Client Cache'),
-              subtitle: Text(
-                useCache
-                    ? 'Using local SQLite cache'
-                    : 'Direct server fetching',
-              ),
+              subtitle: Text(useCache ? 'Using local SQLite cache' : 'Direct server fetching'),
               value: useCache,
               onChanged: (val) {
                 useClientCacheSignal.value = val;
@@ -198,9 +132,7 @@ class HomeScreen extends SignalWidget {
               SwitchListTile(
                 secondary: const Icon(Icons.history),
                 title: const Text('Sync Changes Only'),
-                subtitle: const Text(
-                  'Only fetch events updated since last sync',
-                ),
+                subtitle: const Text('Only fetch events updated since last sync'),
                 value: syncOnlyUpdatedDataSignal.value,
                 onChanged: (val) {
                   syncOnlyUpdatedDataSignal.value = val;

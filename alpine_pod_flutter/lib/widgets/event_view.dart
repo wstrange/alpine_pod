@@ -19,7 +19,6 @@ class EventView extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final isPast = DateTime.now().isAfter(event.endTime.toLocal());
-    final isOnline = isOnlineSignal.value;
 
     // A single counter that drives re-fetches of the event details.
     // Incremented both by the onRefresh callback (local actions) and whenever
@@ -42,78 +41,6 @@ class EventView extends HookWidget {
     );
 
     final snapshot = useFuture(detailsFuture);
-
-    Future<void> register() async {
-      if (!isOnline) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              'You are currently offline. Registration requires an internet connection.',
-            ),
-          ),
-        );
-        return;
-      }
-      try {
-        final reg = await eventRepository.registerForEvent(
-          event.id,
-          event.sectionId,
-        );
-        if (context.mounted) {
-          final isWaitlisted =
-              reg.registrationStatus == RegistrationStatus.waitlisted;
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                isWaitlisted
-                    ? 'Added to waitlist. A manager will review your registration.'
-                    : 'Registration successful!',
-              ),
-              backgroundColor: isWaitlisted ? Colors.orange.shade700 : null,
-            ),
-          );
-          // Refresh global list; the useEffect subscription will bump refreshCount
-          currentEventsSignal.refresh();
-        }
-      } catch (e) {
-        if (context.mounted) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text('Error registering: $e')));
-        }
-      }
-    }
-
-    Future<void> cancelRegistration(
-      UuidValue registrationId,
-      UuidValue memberId,
-    ) async {
-      if (!isOnline) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              'You are currently offline. Cancellation requires an internet connection.',
-            ),
-          ),
-        );
-        return;
-      }
-      try {
-        await eventRepository.cancelRegistration(registrationId, memberId);
-        if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Registration cancelled.')),
-          );
-          // Refresh global list; the useEffect subscription will bump refreshCount
-          currentEventsSignal.refresh();
-        }
-      } catch (e) {
-        if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error cancelling registration: $e')),
-          );
-        }
-      }
-    }
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(8.0),
@@ -367,13 +294,6 @@ class EventView extends HookWidget {
 
                 final currentMember = currentMemberSignal.value;
 
-                final myRegistration = currentMember == null
-                    ? null
-                    : [...confirmed, ...waitlisted]
-                          .where((r) => r.memberId == currentMember.id)
-                          .firstOrNull;
-                final isRegistered = myRegistration != null;
-
                 // Management check: user is an event manager, section manager, or global admin
                 final isEventManager =
                     currentMember != null &&
@@ -475,44 +395,6 @@ class EventView extends HookWidget {
                       ),
                     ),
 
-                    if (!isPast)
-                      Center(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 16.0),
-                          child: isRegistered
-                              ? ElevatedButton.icon(
-                                  onPressed: isOnline
-                                      ? () => cancelRegistration(
-                                          myRegistration.id!,
-                                          myRegistration.memberId,
-                                        )
-                                      : null,
-                                  icon: const Icon(Icons.cancel_outlined),
-                                  label: Text(
-                                    isOnline
-                                        ? 'Cancel My Registration'
-                                        : 'Cancel Registration (Offline)',
-                                  ),
-                                  style: ElevatedButton.styleFrom(
-                                    minimumSize: const Size(200, 50),
-                                    backgroundColor: Colors.red.shade600,
-                                    foregroundColor: Colors.white,
-                                  ),
-                                )
-                              : ElevatedButton.icon(
-                                  onPressed: isOnline ? register : null,
-                                  icon: const Icon(Icons.person_add),
-                                  label: Text(
-                                    isOnline
-                                        ? 'Register'
-                                        : 'Register (Offline)',
-                                  ),
-                                  style: ElevatedButton.styleFrom(
-                                    minimumSize: const Size(200, 50),
-                                  ),
-                                ),
-                        ),
-                      ),
                     // Managers see the management UI; others see read-only lists
                     if (canManage && !isPast) ...[
                       EventParticipantsManager(
